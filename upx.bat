@@ -1,0 +1,1 @@
+\upx\upx siai.exe
