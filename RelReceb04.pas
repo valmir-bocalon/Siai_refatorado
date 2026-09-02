@@ -1,4 +1,4 @@
-unit RelReceb04;
+﻿unit RelReceb04;
 
 interface
 
@@ -119,7 +119,7 @@ begin
     if FrmRelRecebimento.CBOBSBaix.Checked Then
       RLBand7.Visible := True;
   end;
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;  
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure TFrmRelReceb04.RLBand3BeforePrint(Sender: TObject;

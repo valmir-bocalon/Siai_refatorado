@@ -1,4 +1,4 @@
-unit RelRecibodeQuita;
+﻿unit RelRecibodeQuita;
 
 interface
 
@@ -258,9 +258,9 @@ begin
   RLLabel17.Caption := FrmImpRecibo.Nomecli.Text;    // DM_Tabelas.ZQRecebimentonomecli.Value;
   RLLabel51.Caption := RLLabel17.Caption;
   RLLabel71.Caption := RLLabel17.Caption;
-  RLLabel44.Caption := inttostr(ZQTit.RecordCount)+' T�tulo(s)';
+  RLLabel44.Caption := inttostr(ZQTit.RecordCount)+' Título(s)';
   RLLabel50.Caption := RLLabel44.Caption;
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;  
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure TFrmRelRecibodeQuita.ZQRateioCalcFields(DataSet: TDataSet);

@@ -1,4 +1,4 @@
-unit Price;
+﻿unit Price;
 
 interface
 
@@ -163,7 +163,7 @@ end;
 
 procedure TFrm_Price.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Price','Gravar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
+  if not Verif_senha('Price','Gravar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
   DM_Tabelas.ZQPrice.Post;
   desativacidade;
   DBGCid.SetFocus;
@@ -171,7 +171,7 @@ end;
 
 procedure TFrm_Price.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Price','Cancelar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
+  if not Verif_senha('Price','Cancelar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
   DM_Tabelas.ZQPrice.Cancel;
   desativacidade;
   DBGCid.SetFocus;
@@ -179,7 +179,7 @@ end;
 
 procedure TFrm_Price.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Price','Inclus�o','') Then Exit;
+  if not Verif_senha('Price','Inclusão','') Then Exit;
   DM_Tabelas.ZQPrice.Insert;
   ativacidade;
   DBECidNome.SetFocus;
@@ -188,7 +188,7 @@ end;
 
 procedure TFrm_Price.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Price','Edi��o','C�digo: '+DM_Tabelas.ZQprice.FieldByName('idPrice').Text+' - '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
+  if not Verif_senha('Price','Edição','Código: '+DM_Tabelas.ZQprice.FieldByName('idPrice').Text+' - '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
   DM_Tabelas.ZQPrice.Edit;
   ativacidade;
   DBECidNome.SetFocus;
@@ -197,7 +197,7 @@ end;
 
 procedure TFrm_Price.BtExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Price','Exclus�o','C�digo: '+DM_Tabelas.ZQprice.FieldByName('idPrice').Text+' - '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
+  if not Verif_senha('Price','Exclusão','Código: '+DM_Tabelas.ZQprice.FieldByName('idPrice').Text+' - '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
   if DM_Tabelas.ZQPrice.RecordCount>0 Then
     DM_Tabelas.ZQPrice.Delete;
 

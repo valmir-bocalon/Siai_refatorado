@@ -1576,7 +1576,7 @@ begin
       exit;
     end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA n�o deve ser menor que o valor venal...');
+//    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
@@ -1623,7 +1623,7 @@ begin
     end;
     DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
     DM_Tabelas.ZQImovel.Edit;
-    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'N�O';
+    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
     DM_Tabelas.ZQImovel.Post;
 
     if DM_TAbelas.ZQmemorial.Active=false then
@@ -1783,7 +1783,7 @@ begin
          Bar1.Position:=0;
 
          entrada:='S';
-        // at� aqui
+        // até aqui
       end;
 
       DM_Tabelas.CDSPagParcela.First;
@@ -2076,7 +2076,7 @@ begin
          Bar1.Position:=0;
 
          entrada:='S';
-         // at� aqui
+         // até aqui
         end;
         DM_Tabelas.CDSPagParcela.First;
 
@@ -2302,7 +2302,7 @@ procedure TFrm_Venda.BtEditarClick(Sender: TObject);
 var
 tv:string;
 begin
-  if not Verif_senha('Venda','Editar ','Venda N�: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
+  if not Verif_senha('Venda','Editar ','Venda Nº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
   if Pag_Venda.PageIndex=3 then
   begin
       DM_TAbelas.ZQmemorial.Edit;
@@ -2337,12 +2337,12 @@ procedure TFrm_Venda.BTExcluirClick(Sender: TObject);
 var
 cd:integer;
 begin
-  if not Verif_senha('Venda','Excluir ','Venda N�: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
+  if not Verif_senha('Venda','Excluir ','Venda Nº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
   if SIMNAO('Deseja Realmente Excluir esse Registro ?','SIM') then
   begin
     if Pag_Venda.PageIndex<>4 then
     begin
-      if SIMNAO('� Rescis�o de Contrato ?','SIM') then
+      if SIMNAO('É Rescisão de Contrato ?','SIM') then
       begin
         gbrescisao.Visible:=true;
         mdata.SetFocus;
@@ -2449,7 +2449,7 @@ begin
         DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
         DM_Tabelas.ZQImovel.Edit;
         DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'N�O';
+        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
         DM_Tabelas.ZQImovel.Post;
 
         if DM_TAbelas.ZQmemorial.active= false then
@@ -2465,7 +2465,7 @@ begin
         DM_Tabelas.ZQCheque.Open;
 
 
-        showmessage('Exclus�o Efetuada Com Sucesso!');
+        showmessage('Exclusão Efetuada Com Sucesso!');
 
 
       end;
@@ -2522,7 +2522,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',  DM_Tabelas.ZQProposta.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'N�O';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
       DM_Tabelas.ZQImovel.Post;
 
       DM_Tabelas.ZQComprador_proposta.close;
@@ -2590,7 +2590,7 @@ begin
       DM_Tabelas.ZQVendedor_proposta.SQL.Add('select * from Vendedor_proposta ');
       DM_Tabelas.ZQVendedor_proposta.Open;
       
-      showmessage('Exclus�o Efetuada Com Sucesso!');
+      showmessage('Exclusão Efetuada Com Sucesso!');
 
     end;
   end;
@@ -2598,7 +2598,7 @@ end;
 
 procedure TFrm_Venda.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Vendas','Relat�rios','') Then Exit;
+  if not Verif_senha('Vendas','Relatórios','') Then Exit;
   JvXPBar1.Visible := True;
   JvXPBar1.SetFocus;
 end;
@@ -2704,7 +2704,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato n�o encontrado');
+      showmessage('PDF do Contrato não encontrado');
     end;
   end
   else
@@ -2719,7 +2719,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato n�o encontrado');
+      showmessage('PDF do Contrato não encontrado');
     end;
   end;
 end;
@@ -3143,7 +3143,7 @@ Begin
   if Pag_Venda.PageIndex=2 then
   begin
     if xdqtdeparcelas.Value=xdparpagas.Value then
-       Showmessage('N�o h� Valores para Quita��o.');
+       Showmessage('Não há Valores para Quitação.');
   end;
 end;
 
@@ -3436,7 +3436,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat<(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat) Then
-    Showmessage('O valor de venda � menor que o valor de tabela + Comiss�o...');
+    Showmessage('O valor de venda é menor que o valor de tabela + Comissão...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);
@@ -3753,7 +3753,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').AsString;
-      DM_Tabelas.CDSAsscargo.Value :='Respons�vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -3790,7 +3790,7 @@ end;
 
 procedure TFrm_Venda.JvXPBar1Items1Click(Sender: TObject);
 begin
-  if not Verif_senha('Vendas','Relat�rios Administrativo','') Then Exit;
+  if not Verif_senha('Vendas','Relatórios Administrativo','') Then Exit;
   JvXPBar1.Visible := False;
   Panel1.Visible:=true;
   Application.ProcessMessages;
@@ -3910,7 +3910,7 @@ begin
     XCorrigido.Value:=0;
 //    xpcorrecao_igpm.SetFocus;
 
-    if simnao('Deseja uitlizar a Tabela Price Para Mora/Dia ?','SIM') then
+    if simnao('Deseja utilizar a Tabela Price Para Mora/Dia ?','SIM') then
        Lmora.Caption:='S'
     else
        Lmora.Caption:='N';
@@ -4119,7 +4119,7 @@ gera:Boolean;
 begin
    if DM_Tabelas.zqvenda.state in [DsInsert] then
    begin
-       if simnao('Gerar Comiss�o ?','SIM') then
+       if simnao('Gerar Comissão ?','SIM') then
        begin
          if DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat>0 then
          begin
@@ -4140,7 +4140,7 @@ begin
          DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat:=(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat*DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat)/100;
        end;
      end
-     else if simnao('Gerar Comiss�o ?','SIM') then
+     else if simnao('Gerar Comissão ?','SIM') then
      begin
          if DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat>0 then
          begin
@@ -4252,7 +4252,7 @@ end;
 
 procedure TFrm_Venda.dxButton2Click(Sender: TObject);
 begin
-  if simnao('Deseja Efetuar a Quita��o ?','SIM') then
+  if simnao('Deseja Efetuar a Quitação ?','SIM') then
   begin
     if Frmquitacao=nil then
        Frmquitacao:=TFrmquitacao.Create(Self);
@@ -4670,7 +4670,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').AsString;
-      DM_Tabelas.CDSAsscargo.Value :='Respons�vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -5107,7 +5107,7 @@ begin
     while not CdsImovel.Eof do
     begin
       application.ProcessMessages;
-      Label85.caption:='Verificando Im�veis...                ';
+      Label85.caption:='Verificando Imóveis...                ';
       Gauge2.Progress:=CdsImovel.RecNo;
       DM_Tabelas.ZQimovel.close;
       DM_Tabelas.ZQimovel.SQL.Clear;
@@ -5413,9 +5413,9 @@ begin
   caminho:=ExtractFilePath(Application.ExeName);
                                     //SW_ShowNormal                                                                                                                                                                     //SW_ShowNormal
   if WinExecAndWait32(comando,caminho,SW_Hide) = 0 then
-     showmessage('Exporta��o Foi Realizada!')
+     showmessage('Exportação Foi Realizada!')
   else
-     showmessage('Exporta��o N�o Foi Realizada!');
+     showmessage('Exportação Não Foi Realizada!');
 end;
 
 procedure TFrm_Venda.dxButton4Click(Sender: TObject);
@@ -5720,7 +5720,7 @@ begin
   DM_Tabelas.ZQConjuge_proposta.open;
 
   application.ProcessMessages;
-  Label85.caption:='Verificando Im�vel...';
+  Label85.caption:='Verificando Imóvel...';
   application.ProcessMessages;
 
 
@@ -5732,7 +5732,7 @@ begin
   DM_Tabelas.ZQimovel.open;
   if DM_Tabelas.ZQimovel.RecordCount>0 then
   begin
-    showmessage('Im�vel N�o Dispon�vel !');
+    showmessage('Imóvel Não Disponível !');
     exit;
   end;
 
@@ -6068,8 +6068,8 @@ begin
     if (DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString='SIM') then
      begin
        DM_Tabelas.ZQimovel.Edit;
-       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='N�O';
-       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='N�O';
+       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='NºO';
+       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='NºO';
        DM_Tabelas.ZQimovel.post;
      end;
   end;
@@ -6085,7 +6085,7 @@ begin
      DM_Tabelas.ZQProposta.Delete;
 
 
-  // aqui corrige o incoporador do loteamento para cobran�a bancaria
+  // aqui corrige o incoporador do loteamento para cobrança bancaria
 {  ZQRecebimento_temp.close;
   ZQRecebimento_temp.SQL.Clear;
   ZQRecebimento_temp.SQL.Add('update recebimento,incorporador_loteamento set cliente=incorporador_idincorporador where idloteamento='+quotedstr(inttostr(xidloteamento))+' and loteamento_idloteamento='+quotedstr(inttostr(xidloteamento)));
@@ -6104,7 +6104,7 @@ begin
   Label85.caption:='';
   application.ProcessMessages;
   Gauge2.Progress:=0;
-  showmessage('Transfer�ncia Completa.');
+  showmessage('Transferência Completa.');
 end;
 
 procedure TFrm_Venda.dxButton5Click(Sender: TObject);
@@ -6122,7 +6122,7 @@ procedure TFrm_Venda.Button2Click(Sender: TObject);
 begin
   if mdata.Text='  /  /    ' then
   begin
-    showmessage('Informe a data de Rescis�o!');
+    showmessage('Informe a data de Rescisão!');
     mdata.SetFocus;
     exit;
   end;  
@@ -6147,7 +6147,7 @@ begin
     ZQRescisao.FieldByName('idcomprador').AsLargeInt:=DM_Tabelas.CDSCompradorTempcodparticipante.Value;
     ZQRescisao.FieldByName('idparticipante').AsLargeInt:=DM_Tabelas.CDSCompradorTempcodparticipante.Value;;
     ZQRescisao.FieldByName('nome_parte').AsString:=DM_Tabelas.CDSCompradorTempnomeparticipante.Value;
-    ZQRescisao.FieldByName('historico').AsString:='Rescis�o de Contrato da compra do im�vel por:'+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ n� '+DM_Tabelas.CDSCompradorTempdoc1.Value;
+    ZQRescisao.FieldByName('historico').AsString:='Rescisão de Contrato da compra do imóvel por:'+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ nº '+DM_Tabelas.CDSCompradorTempdoc1.Value;
     ZQRescisao.FieldByName('hora_rescisao').AsDateTime:=time;
     ZQRescisao.FieldByName('quadralote').AsString:=DM_Tabelas.ZQRecebimento.FieldByName('quadralote').AsString;
     ZQRescisao.post;
@@ -6280,7 +6280,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'N�O';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
       DM_Tabelas.ZQImovel.Post;
 
       if DM_TAbelas.ZQmemorial.active= false then
@@ -6293,12 +6293,12 @@ begin
       DM_Tabelas.ZQCheque.SQL.Clear;
       DM_Tabelas.ZQCheque.SQL.Add('select * from cheque_rec ');
       DM_Tabelas.ZQCheque.Open;
-      showmessage('Rescis�o Efetuada Com Sucesso!');
+      showmessage('Rescisão Efetuada Com Sucesso!');
     end;
   end
   else
   begin
-    showmessage('Rescis�o N�o Efetuada. Parcelas todas pagas e inadimplentes!');
+    showmessage('Rescisão Não Efetuada. Parcelas todas pagas e inadimplentes!');
   end;  
   mdata.Clear;
   gbrescisao.Visible:=false;

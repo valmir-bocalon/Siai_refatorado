@@ -1,4 +1,4 @@
-unit acertaproximo_reajuste_em_recebimento;
+﻿unit acertaproximo_reajuste_em_recebimento;
 
 interface
 
@@ -429,7 +429,7 @@ begin
 //  dxButton2.Enabled:=true;
 
   // botao processar
-  Label2.Caption:='Aguarde At� o Final! N�o Desligue a M�quina!';
+  Label2.Caption:='Aguarde Até o Final! Não Desligue a Máquina!';
   Label2.Visible:=true;
   application.ProcessMessages;
   Recebetemp.recordcount;
@@ -473,7 +473,7 @@ procedure TFrm_acertaproximo_reajuste_em_recebimento.dxButton2Click(
   Sender: TObject);
 begin
 
-{  Label2.Caption:='Aguarde At� o Final! N�o Desligue a M�quina!';
+{  Label2.Caption:='Aguarde Até o Final! Não Desligue a Máquina!';
   Label2.Visible:=true;
   application.ProcessMessages;
   Recebetemp.recordcount;

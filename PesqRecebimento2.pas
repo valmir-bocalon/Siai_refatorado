@@ -1,4 +1,4 @@
-unit PesqRecebimento2;
+﻿unit PesqRecebimento2;
 
 interface
 
@@ -294,7 +294,7 @@ begin
     begin
       ZQCheque.close;
       DBGrid2.Visible:=false;
-      showmessage('N�mero de Cheque n�o Encontrado.');
+      showmessage('Número de Cheque não Encontrado.');
     end;
   end;
 end;
@@ -337,7 +337,7 @@ begin
   begin
     if veio.Caption='S' then
     begin
-      Showmessage('Dados da Pesquisa N�o Encontrados.');
+      Showmessage('Dados da Pesquisa Não Encontrados.');
     end
     else
     begin

@@ -1,4 +1,4 @@
-unit exportar_excel;
+﻿unit exportar_excel;
 
 interface
 
@@ -152,7 +152,7 @@ begin
    planilha.Workbooks.add(1);
    planilha.Cells.Select;
    planilha.Selection.NumberFormat := '@';
-   planilha.caption:= 'Exporta��o de dados para o excel';
+   planilha.caption:= 'Exportação de dados para o excel';
    planilha.visible:= true;
    ZQCidade.open;
    ZqParticipante.open;
@@ -251,8 +251,8 @@ begin
   Try
   VarPedeSenha := ArqIni.ReadString('BACKUP','PEDESENHA', VarPedeSenha );
   if VarPedeSenha='' then Begin
-    ArqIni.WriteString('BACKUP','PEDESENHA','N�O');
-    VarPedeSenha := 'N�O';
+    ArqIni.WriteString('BACKUP','PEDESENHA','NºO');
+    VarPedeSenha := 'NºO';
   end;
   Finally
   end;

@@ -1,4 +1,4 @@
-unit Excluir_loteamento;
+﻿unit Excluir_loteamento;
 
 interface
 
@@ -384,7 +384,7 @@ procedure TFrm_Excluir.BTFecharClick(Sender: TObject);
 begin
   if empty(cdlt.Text) then
   begin
-    showmessage('Informe o C�digo do Loteamento.');
+    showmessage('Informe o Código do Loteamento.');
     cdlt.SetFocus;
     exit;
   end;

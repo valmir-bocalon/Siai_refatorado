@@ -1,4 +1,4 @@
-unit ipca;
+﻿unit ipca;
 
 interface
 
@@ -155,7 +155,7 @@ end;
 
 procedure TFrm_ipca.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('IPCA','Gravar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IPCA','Gravar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQipca.Post;
   DM_Tabelas.ZQipca.Refresh;
   desativacidade;
@@ -165,7 +165,7 @@ end;
 
 procedure TFrm_ipca.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('IPCA','Cancelar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IPCA','Cancelar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQipca.Cancel;
   desativacidade;
   DBGCid.SetFocus;
@@ -173,7 +173,7 @@ end;
 
 procedure TFrm_ipca.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('IPCA','Inclus�o','') Then Exit;
+  if not Verif_senha('IPCA','Inclusão','') Then Exit;
   DM_Tabelas.ZQipca.Insert;
   ativacidade;
   DBECidNome.SetFocus;
@@ -182,7 +182,7 @@ end;
 
 procedure TFrm_ipca.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('IPCA','Edi��o','C�digo: '+DM_Tabelas.ZQIPCA.FieldByName('idipca').Text+' - '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IPCA','Edição','Código: '+DM_Tabelas.ZQIPCA.FieldByName('idipca').Text+' - '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQipca.Edit;
   ativacidade;
   DBECidNome.SetFocus;
@@ -191,7 +191,7 @@ end;
 
 procedure TFrm_ipca.BtExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('IPCA','Exclus�o','C�digo: '+DM_Tabelas.ZQIPCA.FieldByName('idipca').Text+' - '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IPCA','Exclusão','Código: '+DM_Tabelas.ZQIPCA.FieldByName('idipca').Text+' - '+DM_Tabelas.ZQIPCA.FieldByName('percentual').Text) Then Exit;
   if DM_Tabelas.ZQipca.RecordCount>0 Then
     DM_Tabelas.ZQipca.Delete;
 

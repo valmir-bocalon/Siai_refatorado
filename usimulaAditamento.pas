@@ -1,4 +1,4 @@
-unit usimulaAditamento;
+﻿unit usimulaAditamento;
 
 interface
 
@@ -136,9 +136,9 @@ var
   n,z: Integer;
 
 begin
-  PV := XNumEdit3.Value; // Valor da d�vida
-  i  := strtofloat(tprice.Text)/100; // Taxa de juros de 0,5% ao m�s
-  n  := floattostr(XNumEdit2.Value).ToInteger; // N�mero de presta��es
+  PV := XNumEdit3.Value; // Valor da dívida
+  i  := strtofloat(tprice.Text)/100; // Taxa de juros de 0,5% ao mês
+  n  := floattostr(XNumEdit2.Value).ToInteger; // Número de prestações
 
   XNumEdit5.Value := CalcularParcela(PV, i, n);
   XNumEdit6.Value := XNumEdit5.Value * XNumEdit2.Value;

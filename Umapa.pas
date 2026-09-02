@@ -1,10 +1,10 @@
-unit Umapa;
+﻿unit Umapa;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, OleCtrls, SHDocVw, ExtCtrls, XBanner;
+  Dialogs, StdCtrls, OleCtrls, SHDocVw, ExtCtrls, XBanner, ShellAPI;
 
 type
   Tfrmgoogle = class(TForm)
@@ -36,6 +36,7 @@ type
   private
     { Private declarations }
 
+    function AbrirNoNavegadorPadrao(const URL: string): Boolean;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -50,10 +51,15 @@ uses
 
 {$R *.dfm}
 
+function Tfrmgoogle.AbrirNoNavegadorPadrao(const URL: string): Boolean;
+begin
+  Result := ShellExecute(Handle, 'open', PChar(URL), nil, nil, SW_SHOWNORMAL) > 32;
+end;
+
 procedure Tfrmgoogle.Button1Click(Sender: TObject);
 Var ConsultaEndereco : string;
 begin
-   ConsultaEndereco := 'http://maps.google.com/maps?q=';
+   ConsultaEndereco := 'https://www.google.com/maps/search/?api=1&query=';
    If Cidade.Text <> '' Then
       ConsultaEndereco := ConsultaEndereco + Cidade.Text + ',';
    If Estado.Text <> '' Then
@@ -63,22 +69,36 @@ begin
    If Cep.Text <> ''  Then
       ConsultaEndereco := ConsultaEndereco + Cep.Text;
    Caption := ConsultaEndereco;
-   WebBrowser1.Navigate(ConsultaEndereco);
+   ConsultaEndereco := StringReplace(ConsultaEndereco, ' ', '+', [rfReplaceAll]);
+   if AbrirNoNavegadorPadrao(ConsultaEndereco) then
+     PostMessage(Handle, WM_CLOSE, 0, 0)
+   else
+     WebBrowser1.Navigate(ConsultaEndereco);
 end;
 
 procedure Tfrmgoogle.Button2Click(Sender: TObject);
 Var ConsultaEndereco : string;
 begin
-   ConsultaEndereco := 'http://maps.google.com/maps?q=';
+   ConsultaEndereco := 'https://www.google.com/maps/search/?api=1&query=';
    If ( Latitude.Text <> '' ) and ( Longitude.Text <> '' ) Then
       ConsultaEndereco := ConsultaEndereco + Latitude.Text + ',' + Longitude.Text ;
    Caption := ConsultaEndereco;
-   WebBrowser1.Navigate(ConsultaEndereco);
+   ConsultaEndereco := StringReplace(ConsultaEndereco, ' ', '+', [rfReplaceAll]);
+   if AbrirNoNavegadorPadrao(ConsultaEndereco) then
+     PostMessage(Handle, WM_CLOSE, 0, 0)
+   else
+     WebBrowser1.Navigate(ConsultaEndereco);
 end;
 
 procedure Tfrmgoogle.Button3Click(Sender: TObject);
+var
+  CaminhoPesquisa: string;
 begin
-     Webbrowser1.Navigate(ExtractFilePath(Application.ExeName)+'pesquisa.html');
+  CaminhoPesquisa := ExtractFilePath(Application.ExeName) + 'pesquisa.html';
+  if AbrirNoNavegadorPadrao(CaminhoPesquisa) then
+    PostMessage(Handle, WM_CLOSE, 0, 0)
+  else
+    WebBrowser1.Navigate(CaminhoPesquisa);
 end;
 
 procedure Tfrmgoogle.FormClose(Sender: TObject; var Action: TCloseAction);

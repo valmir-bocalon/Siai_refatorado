@@ -1,4 +1,4 @@
-unit zerarNossoNumero;
+﻿unit zerarNossoNumero;
 
 interface
 
@@ -244,7 +244,7 @@ begin
   LREg.Caption := inttostr(ZQREcbai.RecordCount)+' Registros';
 
   Resp:='N';
-  if simnao('Zerar Nosso N� e Remessas Geradas at� Agora ?','SIM') then
+  if simnao('Zerar Nosso Nº e Remessas Geradas até Agora ?','SIM') then
   begin
     ZQRecBai.close;
     ZQRecBai.SQL.Clear;
@@ -294,7 +294,7 @@ begin
   DXBFechar.Enabled := true;
   zqrecbai.Filtered:=false;
   ZQRecBai.close;
-  mensagem('Opera��o Terminada!');
+  mensagem('Operação Terminada!');
 
 end;
 

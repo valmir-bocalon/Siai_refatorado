@@ -1,4 +1,4 @@
-unit Transferencia;
+﻿unit Transferencia;
 
 interface
 
@@ -65,9 +65,9 @@ try
     XLApp.Workbooks.Open(AXLSFile);
     Sheet:=XLApp.Workbooks[ExtractFileName(AXLSFile)].WorkSheets[1];
     Sheet.Cells.SpecialCells(xlCellTypeLastCell, EmptyParam).Activate;
-    //Pegar o n�mero da �ltima linha
+    //Pegar o número da Última linha
     x:=XLApp.ActiveCell.Row;
-    //Pegar o n�mero da �ltima coluna
+    //Pegar o número da Última coluna
     y:=XLApp.ActiveCell.Column;
     //Seta Stringgrid linha e coluna
     AGrid.RowCount:=x;
@@ -131,7 +131,7 @@ begin
   DM_Tabelas.ZqParticipante.SQL.Add('select * from Participante');
   DM_Tabelas.ZqParticipante.Open;
   BarraVertical.Maximum := 10;
-  Label3.Caption := 'Guardando os im�veis....';
+  Label3.Caption := 'Guardando os imóveis....';
   BarraVertical.Value := 1;
   XlsToStringGrid(SGPart,ExtractFilePath( Application.ExeName )+'imovel.xls');
   Gauge2.MaxValue := SGPart.RowCount-1;
@@ -159,7 +159,7 @@ begin
       if SGPart.Cells[4,varlinhas]='VERDADEIRO' then
         DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM'
       else
-        DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'N�O';
+        DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
       DM_Tabelas.ZQimovel.FieldByName('medidafrente').AsString := SGPart.Cells[7,varlinhas];
       DM_Tabelas.ZQimovel.FieldByName('medidafundo').AsString := SGPart.Cells[8,varlinhas];
       DM_Tabelas.ZQimovel.FieldByName('medidadedireita').AsString := SGPart.Cells[9,varlinhas];
@@ -218,7 +218,7 @@ begin
       DM_Tabelas.ZqParticipante.FieldByName('renda').AsFloat := strtofloat(SGPart.Cells[15,varlinhas]);
       DM_Tabelas.ZqParticipante.FieldByName('naturalidade').AsInteger := DM_Tabelas.ZQCidade.FieldByName('idcidade').AsLargeInt;
       if not Verif_doc(DM_Tabelas.ZqParticipante.FieldByName('doc1').AsString,False) Then
-        DM_Tabelas.ZqParticipante.FieldByName('observacao').AsString := DM_Tabelas.ZqParticipante.FieldByName('observacao').AsString+chr(13)+'Documento inv�lido';
+        DM_Tabelas.ZqParticipante.FieldByName('observacao').AsString := DM_Tabelas.ZqParticipante.FieldByName('observacao').AsString+chr(13)+'Documento inválido';
       DM_Tabelas.ZqParticipante.Post;
     end;
   end;
@@ -324,7 +324,7 @@ begin
       DM_Tabelas.ZqParticipante.Post;
     end;
   end;
-  Label3.Caption := 'Guardando endere�os dos clientes...';
+  Label3.Caption := 'Guardando endereços dos clientes...';
   BarraVertical.Value := 7;
   XlsToStringGrid(SGPart,ExtractFilePath( Application.ExeName )+'enderecocli.xls');
   Gauge2.MaxValue := SGPart.RowCount-1;
@@ -427,7 +427,7 @@ begin
       DM_Tabelas.ZQincorp_loteame.Post;
     end;
   end;
-  Label3.Caption := 'Guardando as profiss�es...';
+  Label3.Caption := 'Guardando as profissões...';
   BarraVertical.Value := 11;
   XlsToStringGrid(SGPart,ExtractFilePath( Application.ExeName )+'profissao.xls');
   Gauge2.MaxValue := SGPart.RowCount-1;

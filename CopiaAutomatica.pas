@@ -1,4 +1,4 @@
-unit CopiaAutomatica;
+﻿unit CopiaAutomatica;
 
 interface
 
@@ -184,7 +184,7 @@ begin
       uCallbackMessage:= WM_TRAYICON;
       uFlags:= NIF_ICON or NIF_TIP or NIF_MESSAGE;
       hIcon:= Application.Icon.Handle;
-      szTip:= 'C�pia de dados';
+      szTip:= 'Cópia de dados';
     end;
     Shell_NotifyIcon(NIM_ADD, @NotifyIconData);
 //    Application.ShowMainForm:= False;
@@ -204,12 +204,12 @@ end;
 
 
 
-    {Captura todas as mensagens enviadas para a aplica��o.
-     Neste caso, trabalhamos apenas com as mensagens SC_MINIMIZE e SC_MAXIMIZE, que s�o enviadas
-     quando devemos Minimizar ou Maximizar o formulario da aplica��o. Capturando estas mensagens
-     para esconder o �cone da aplica��o da Barra de Tarefas do Windows e para criar / destruir o
-     �cone que ficar� ao lado do rel�gio.
-     Obs: Voc� pode trabalhar com outras mensagem tamb�m. Tipo SC_CLOSE, SC_RESTORE e etc.}
+    {Captura todas as mensagens enviadas para a aplicação.
+     Neste caso, trabalhamos apenas com as mensagens SC_MINIMIZE e SC_MAXIMIZE, que são enviadas
+     quando devemos Minimizar ou Maximizar o formulario da aplicação. Capturando estas mensagens
+     para esconder o Ícone da aplicação da Barra de Tarefas do Windows e para criar / destruir o
+     Ícone que ficará ao lado do relógio.
+     Obs: Você pode trabalhar com outras mensagem também. Tipo SC_CLOSE, SC_RESTORE e etc.}
 procedure TFrmCopiaAutomatica.WMSysCommand(var Msg: TWMSysCommand);
 begin
     case (Msg.CmdType) of
@@ -227,12 +227,12 @@ begin
     end;
 end;
 
-      {Quando dar um duplo clique sobre o �cone da aplica��o, destr�mos este mesmo �cone e
-      exibimos o formul�rio principal. Isto s� funciona se implementarmos um manipulador
-      para as Mensagens WMTrayIcon, que � o que faremos abaixo.
+      {Quando dar um duplo clique sobre o Ícone da aplicação, destruímos este mesmo Ícone e
+      exibimos o formulário principal. Isto só funciona se implementarmos um manipulador
+      para as Mensagens WMTrayIcon, que é o que faremos abaixo.
 
-      Lembra-se da constante declarada no �nicio de nossa Unit?
-      Pois bem, ela � passada como par�metro para esta procedure.}
+      Lembra-se da constante declarada no Início de nossa Unit?
+      Pois bem, ela é passada como parâmetro para esta procedure.}
 procedure TFrmCopiaAutomatica.WMTrayIcon(var Msg: TMessage);
   var
     Pt: TPoint;
@@ -270,14 +270,14 @@ begin
       // Inicializa a variavel do tipo TRegistry
       Reg:= TRegistry.Create;
 
-      // Define a hirearquia das pasta, a qual ir� trabalhar.
+      // Define a hierarquia das pasta, a qual irá trabalhar.
       Reg.RootKey:= HKEY_LOCAL_MACHINE;
 
-      // Cria/entra, dentro da pasta do registro no qual ir� aguardar informa��o
+      // Cria/entra, dentro da pasta do registro no qual irá aguardar informação
       Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Run', False);
 
-      // Escreve a inform��o na chave
-      // NomeDaChave, pode ser qualquer nome que voc� queira
+      // Escreve a informação na chave
+      // NomeDaChave, pode ser qualquer nome que você queira
       Reg.WriteString('SiAPCopia', Application.ExeName);
 
       // Fecha a chave do registro
@@ -315,7 +315,7 @@ begin
   ENomeArquivo.Text := copy(OpenDialog1.FileName,tamanhonome+1,length(OpenDialog1.FileName));;
   Perform(WM_NEXTDLGCTL, 0, 0);
   if pos(' ',EDestino.Text)>0 Then Begin
-    Showmessage('N�o pode existir espa�o em branco no meio do nome do DESTINHO');
+    Showmessage('Não pode existir espaço em branco no meio do nome do DESTINO');
     EDestino.SetFocus;
   end;
 end;
@@ -390,8 +390,8 @@ Begin
   Try
     VarPedeSenha := ArqIni.ReadString('BACKUP','PEDESENHA', VarPedeSenha );
     if length(VarPedeSenha)=0 then Begin
-      ArqIni.WriteString('BACKUP','PEDESENHA','N�O');
-      VarPedeSenha := 'N�O';
+      ArqIni.WriteString('BACKUP','PEDESENHA','NºO');
+      VarPedeSenha := 'NºO';
     end;
   Finally
   end;
@@ -413,7 +413,7 @@ Begin
   end;
   ArqIni.Free;
   CBPedesenha.ItemIndex := 0;
-  if VarPedeSenha='N�O' Then
+  if VarPedeSenha='NºO' Then
     CBPedesenha.ItemIndex := 1;
   ESenhaSQL.Text := decodifica(varsenha);
 End;
@@ -425,12 +425,12 @@ begin
   LerIni;
   nomevelho := EDestino.Text+ENomeArquivo.Text+copy(datetostr(date),7,4)+ copy(datetostr(date),4,2)+ copy(datetostr(date),1,2)+copy(timetostr(time),1,2)+copy(timetostr(time),4,2)+'.sql';
   application.ProcessMessages;
-  LMensagem.Caption := 'Iniciando gera��o da c�pia de seguran�a....';
+  LMensagem.Caption := 'Iniciando geração da cópia de segurança....';
   application.ProcessMessages;  
   comando:='cmd.exe /c mysqldump.exe '+ ENomeTabela.Text+' -u '+EUsuarioSQL.Text+' -h'+EIPServidor.Text+' -p'+ESenhaSQL.Text+' --databases '+ENomeTabela.text +' > '+ nomevelho;
 //  comando:='cmd.exe /c mysqldump.exe '+ ENomeTabela.Text+' -u '+EUsuarioSQL.Text+' -h'+EIPServidor.Text+' -p'+ESenhaSQL.Text+' --opt -v>'+nomevelho;
   if not createProcessSimple(comando) then
-    LMensagem.Caption := 'BACKUP N�O FOI PROCESSADO!';
+    LMensagem.Caption := 'BACKUP NºO FOI PROCESSADO!';
   application.ProcessMessages;  
   LMensagem.Caption := 'Gerei o '+nomevelho;
 end;
@@ -491,24 +491,24 @@ begin
   Opendialog1.Execute;
   pat2:=Opendialog1.FileName;
   nomevelho := EDestino.Text+ENomeArquivo.Text+copy(datetostr(date),7,4)+ copy(datetostr(date),4,2)+ copy(datetostr(date),1,2)+copy(timetostr(time),1,2)+copy(timetostr(time),4,2)+'.sql';
-  if not SIMNAO('Confirma restaura��o ?','N') Then
+  if not SIMNAO('Confirma restauração ?','N') Then
     Exit;
-  pt:=ExtractFilePath( Application.ExeName );  // informa o diret�rio de onde o executavel esta...
+  pt:=ExtractFilePath( Application.ExeName );  // informa o diretório de onde o executavel esta...
   comando:='cmd.exe /c mysqladmin.exe -u '+EUsuarioSQL.Text+' -p'+ESenhaSQL.Text+' drop if exists '+ENomeTabela.Text;
   if not createProcessSimple(comando) then
-     LMensagem.Caption := 'BASE DE DADOS N�O ATUALIZADA!  ';
+     LMensagem.Caption := 'BASE DE DADOS NºO ATUALIZADA!  ';
   application.ProcessMessages;
 
   comando:='cmd.exe /c mysqladmin.exe -u'+EUsuarioSQL.Text+' -p'+ESenhaSQL.Text+' create '+ENomeTabela.Text;
   if not createProcessSimple(comando) then
-     LMensagem.Caption := 'BASE DE DADOS N�O CRIADO!  ';
+     LMensagem.Caption := 'BASE DE DADOS NÃO CRIADA!  ';
   application.ProcessMessages;
   comando:='cmd.exe /c mysql.exe -u'+EUsuarioSQL.Text+' -p'+ESenhaSQL.Text+' --default-character-set=latin1 '+ENomeTabela.Text+' < '+pat2;
   application.ProcessMessages;
   LMensagem.Caption := 'BASE DE DADOS SENDO RESTAURADA!  ';
   application.ProcessMessages;
   if not createProcessSimple(comando) then
-     LMensagem.Caption := 'BASE DE DADOS N�O RESTAURADA!  ';
+     LMensagem.Caption := 'BASE DE DADOS NºO RESTAURADA!  ';
   application.ProcessMessages;
   LMensagem.Caption := ' BACKUP FOI RESTAURADO! ';
   application.ProcessMessages;

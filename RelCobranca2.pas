@@ -1,4 +1,4 @@
-unit RelCobranca2;
+﻿unit RelCobranca2;
 
 interface
 
@@ -90,7 +90,7 @@ uses Tabelas, Funcoes, Cad_Recebimento, principal, uRuntimeFields;
 procedure TFrmRelCobranca2.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure TFrmRelCobranca2.FormClose(Sender: TObject;

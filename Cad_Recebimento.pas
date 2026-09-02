@@ -1,4 +1,4 @@
-unit Cad_Recebimento;
+﻿unit Cad_Recebimento;
 
 interface
 
@@ -2198,7 +2198,7 @@ begin
   end;
   if Pag_Receb.PageIndex = 3 Then
   begin
-    if simnao('Deseja uitlizar a Tabela Price Para Mora/Dia ?','SIM') then
+    if simnao('Deseja utilizar a Tabela Price Para Mora/Dia ?','SIM') then
        Lmora.Caption:='S'
     else
        Lmora.Caption:='N';
@@ -3773,6 +3773,11 @@ end;
 procedure TFrmCad_Recebimento.AfterConstruction;
 begin
   inherited AfterConstruction;
+  { O DFM binario pode manter as aspas escapadas do texto-fonte dentro do
+    SQL. Corrige somente a consulta local antes de preparar seus campos. }
+  ZQRecebimento4.Close;
+  ZQRecebimento4.SQL.Clear;
+  ZQRecebimento4.SQL.Add('Select * from Cobranca where saldo > ''0''');
   EnsureRuntimeFields(Self);
 end;
 

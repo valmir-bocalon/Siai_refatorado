@@ -1,4 +1,4 @@
-unit uFrmRelMovBanco03;
+﻿unit uFrmRelMovBanco03;
 
 interface
 
@@ -68,9 +68,9 @@ begin
   RLDBObs.Visible := False;
   if FrmRelMovBanco.CBMostraObs.Checked then
     RLDBObs.Visible := True;
-  RLLabel2.Caption := 'Per�odo de '+Datetostr(FrmRelMovBanco.XDEInicial.Date)+' � '+Datetostr(FrmRelMovBanco.XDEFinal.Date)+' da date de ';
+  RLLabel2.Caption := 'Período de '+Datetostr(FrmRelMovBanco.XDEInicial.Date)+' até '+Datetostr(FrmRelMovBanco.XDEFinal.Date)+' da data de ';
   if FrmrelMovBanco.RGOrdem.ItemIndex = 0 Then Begin
-    RLLabel2.Caption := RLLabel2.Caption +'Lan�amento';
+    RLLabel2.Caption := RLLabel2.Caption +'Lançamento';
     RLDBText6.DataField := 'dt_lanc';
     RLDBText3.DataField := 'Saldo_lanc';
     if FrmRelMovBanco.CBSomalimite.Checked Then
@@ -78,13 +78,13 @@ begin
   end
   else
   Begin
-    RLLabel2.Caption := RLLabel2.Caption +'Compensa��o';
+    RLLabel2.Caption := RLLabel2.Caption +'Compensação';
     RLDBText6.DataField := 'dt_conciliado';
     RLDBText3.DataField := 'Saldo_conci';
     if FrmRelMovBanco.CBSomalimite.Checked Then
       RLDBText3.DataField := 'saldo_Conci_plus';
   end;
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure TFrmRelMovBanco03.RLBand2BeforePrint(Sender: TObject;

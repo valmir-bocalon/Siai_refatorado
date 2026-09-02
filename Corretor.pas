@@ -1,4 +1,4 @@
-unit Corretor;
+﻿unit Corretor;
 
 interface
 
@@ -228,14 +228,14 @@ end;
 
 procedure TFrm_Corretor.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Corretor','Gravar inclus�o ou edi��o','Corretor: '+DM_Tabelas.ZQCorretor.FieldByName('idcorretor').Text+' - '+DM_Tabelas.ZQCorretor.FieldByName('nomecorretor').AsString) Then Exit;
+  if not Verif_senha('Corretor','Gravar inclusão ou edição','Corretor: '+DM_Tabelas.ZQCorretor.FieldByName('idcorretor').Text+' - '+DM_Tabelas.ZQCorretor.FieldByName('nomecorretor').AsString) Then Exit;
   DM_tabelas.ZQCorretor.Post;
   Desativarcampos;
 end;
 
 procedure TFrm_Corretor.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Corretor','Cancelar inclus�o ou edi��o','Corretor: '+DM_Tabelas.ZQCorretor.FieldByName('idcorretor').Text+' - '+DM_Tabelas.ZQCorretor.FieldByName('nomecorretor').AsString) Then Exit;
+  if not Verif_senha('Corretor','Cancelar inclusão ou edição','Corretor: '+DM_Tabelas.ZQCorretor.FieldByName('idcorretor').Text+' - '+DM_Tabelas.ZQCorretor.FieldByName('nomecorretor').AsString) Then Exit;
   DM_tabelas.ZQCorretor.Cancel;
   Desativarcampos;
 end;
@@ -274,7 +274,7 @@ end;
 
 procedure TFrm_Corretor.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Corretor','Relat�rio','') Then Exit;
+  if not Verif_senha('Corretor','Relatório','') Then Exit;
 //  Relatorio
 end;
 

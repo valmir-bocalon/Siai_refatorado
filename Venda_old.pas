@@ -1,4 +1,4 @@
- unit Venda;
+﻿ unit Venda;
 
 interface
 
@@ -654,7 +654,7 @@ begin
     exit;
   end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA n�o deve ser menor que o valor venal...');
+//    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
@@ -694,7 +694,7 @@ begin
   end;
   DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').Value,[]);
   DM_Tabelas.ZQImovel.Edit;
-  DM_Tabelas.ZQimovel.FieldByName('disponivel').Value := 'N�O';
+  DM_Tabelas.ZQimovel.FieldByName('disponivel').Value := 'NºO';
   DM_Tabelas.ZQImovel.Post;
   DM_Tabelas.ZQComprador.First;
   while not DM_Tabelas.ZQComprador.Eof do
@@ -828,7 +828,7 @@ begin
        end;
 
        entrada:='S';
-       // at� aqui
+       // até aqui
       end;
       DM_Tabelas.CDSPagParcela.First;
       while not DM_Tabelas.cdSPagParcela.Eof do Begin
@@ -999,7 +999,7 @@ begin
        end;
 
        entrada:='S';
-       // at� aqui
+       // até aqui
       end;
       DM_Tabelas.CDSPagParcela.First;
       while not DM_Tabelas.cdSPagParcela.Eof do Begin
@@ -1617,7 +1617,7 @@ Begin
   if Pag_Venda.PageIndex=2 then
   begin
     if xdqtdeparcelas.Value=xdparpagas.Value then
-       Showmessage('N�o h� Valores para Quita��o.');
+       Showmessage('Não há Valores para Quitação.');
   end;     
 end;
 
@@ -1869,7 +1869,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').Value<DM_Tabelas.ZQVenda.FieldByName('valorvenal').Value Then
-    Showmessage('O valor de venda � menor que o valor de tabela...');
+    Showmessage('O valor de venda é menor que o valor de tabela...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);
@@ -2133,7 +2133,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').Value;
-      DM_Tabelas.CDSAsscargo.Value :='Respons�vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -2378,7 +2378,7 @@ end;
 
 procedure TFrm_Venda.dxButton2Click(Sender: TObject);
 begin
-  if simnao('Deseja Efetuar a Quita��o ?','SIM') then
+  if simnao('Deseja Efetuar a Quitação ?','SIM') then
   begin
     Frmquitacao.Elote.Text:= DM_Tabelas.ZQVenda.FieldByName('quadra').Value+'-'+DM_Tabelas.ZQVenda.FieldByName('lote').Value;
     Frmquitacao.xvequta.Value:=xdliquidado.Value;

@@ -1,4 +1,4 @@
-unit Empresa;
+﻿unit Empresa;
 
 interface
 
@@ -145,7 +145,7 @@ end;
 
 procedure TFrmCad_Empresa.DXBIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Empresa','Incluir Conta Banc�ria','') then exit;
+  if not Verif_senha('Empresa','Incluir Conta Bancária','') then exit;
   DM_Tabelas.ZQEmpresa.Insert;
   Ativar_campos;
   DBERazao.setFocus;
@@ -153,7 +153,7 @@ end;
 
 procedure TFrmCad_Empresa.DXBGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Empresa','Confirmar Inclus�o ou Edi��o (Bot�o GRAVAR)','Raz�o: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then
+  if not Verif_senha('Empresa','Confirmar Inclusão ou Edição (Botão GRAVAR)','Razão: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then
    exit;
   DM_Tabelas.ZQEmpresa.Post;
   Desativar_campos;
@@ -161,7 +161,7 @@ end;
 
 procedure TFrmCad_Empresa.DXBCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Empresa','Cancelamento de Inclus�o ou Edi��o (Bot�o CANCELAR) ','Raz�o: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then exit;
+  if not Verif_senha('Empresa','Cancelamento de Inclusão ou Edição (Botão CANCELAR) ','Razão: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then exit;
   DM_Tabelas.ZQEmpresa.Cancel;
   Desativar_campos;
 end;
@@ -266,7 +266,7 @@ End;
 
 procedure TFrmCad_Empresa.DXBEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Empresa','Editar','C�digo: '+DM_Tabelas.ZQEmpresa.FieldByName('codigo').Text+'  Raz�o: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then Exit;
+  if not Verif_senha('Empresa','Editar','Código: '+DM_Tabelas.ZQEmpresa.FieldByName('codigo').Text+'  Razão: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then Exit;
   DM_Tabelas.ZQEmpresa.Edit;
   Ativar_campos;
   DBERazao.setFocus;
@@ -473,7 +473,7 @@ end;
 
 procedure TFrmCad_Empresa.DXBExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Empresa','Deletar','C�digo: '+DM_Tabelas.ZQEmpresa.FieldByName('codigo').Text+'  Raz�o: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then Exit;
+  if not Verif_senha('Empresa','Deletar','Código: '+DM_Tabelas.ZQEmpresa.FieldByName('codigo').Text+'  Razão: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then Exit;
   DM_Tabelas.ZQEmpresa.Delete;
   Ativar_campos;
   DBERazao.setFocus;

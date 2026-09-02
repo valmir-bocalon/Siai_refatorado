@@ -1,4 +1,4 @@
-unit ReajusteDeParcelas;
+﻿unit ReajusteDeParcelas;
 
 interface
 
@@ -524,7 +524,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote n�o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -723,7 +723,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1088,7 +1088,7 @@ begin
   end
   else if (percent.Value=0) and (ZQRecebtmp.RecordCount>0) then
   begin
-    showmessage('Informe o Percentual; Adicione os T�tulos Selecionados no Grid !');
+    showmessage('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
     percent.SetFocus;
     exit;
   end;
@@ -1310,7 +1310,7 @@ begin
     ZQRecebimento.Open;
     ZQRecebimento.First;
   end;
-  // at� aqui
+  // até aqui
   if DM_tabelas.ZQRecebimento.Active=true then
      DM_tabelas.ZQRecebimento.refresh;
 
@@ -1337,7 +1337,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1401,7 +1401,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1656,7 +1656,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1972,7 +1972,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

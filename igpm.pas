@@ -1,4 +1,4 @@
-unit igpm;
+﻿unit igpm;
 
 interface
 
@@ -155,7 +155,7 @@ end;
 
 procedure TFrm_igpm.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('IGPM','Gravar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IGPM','Gravar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQigpm.Post;
   DM_Tabelas.ZQigpm.Refresh;
   desativacidade;
@@ -165,7 +165,7 @@ end;
 
 procedure TFrm_igpm.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('IGPM','Cancelar inclus�o ou edi��o','Taxa M�s: '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IGPM','Cancelar inclusão ou edição','Taxa Mês: '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQigpm.Cancel;
   desativacidade;
   DBGCid.SetFocus;
@@ -173,7 +173,7 @@ end;
 
 procedure TFrm_igpm.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('IGPM','Inclus�o','') Then Exit;
+  if not Verif_senha('IGPM','Inclusão','') Then Exit;
   DM_Tabelas.ZQigpm.Insert;
   ativacidade;
   DBECidNome.SetFocus;
@@ -182,7 +182,7 @@ end;
 
 procedure TFrm_igpm.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('IGPM','Edi��o','C�digo: '+DM_Tabelas.ZQigpm.FieldByName('idIGPM').Text+' - '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IGPM','Edição','Código: '+DM_Tabelas.ZQigpm.FieldByName('idIGPM').Text+' - '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
   DM_Tabelas.ZQigpm.Edit;
   ativacidade;
   DBECidNome.SetFocus;
@@ -191,7 +191,7 @@ end;
 
 procedure TFrm_igpm.BtExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('IGPM','Exclus�o','C�digo: '+DM_Tabelas.ZQigpm.FieldByName('idIGPM').Text+' - '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
+  if not Verif_senha('IGPM','Exclusão','Código: '+DM_Tabelas.ZQigpm.FieldByName('idIGPM').Text+' - '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
   if DM_Tabelas.ZQigpm.RecordCount>0 Then
     DM_Tabelas.ZQigpm.Delete;
 

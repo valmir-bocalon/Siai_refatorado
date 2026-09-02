@@ -1,4 +1,4 @@
-unit Cad_TipoDoc;
+﻿unit Cad_TipoDoc;
 
 interface
 
@@ -161,7 +161,7 @@ end;
 
 procedure TFrmCad_TipoDoc.DXBGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Tipo de Documento','Gravar Inclus�o ou Edi��o (Bot�o GRAVAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
+  if not Verif_senha('Tipo de Documento','Gravar Inclusão ou Edição (Botão GRAVAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
   DM_tabelas.ZQTipodoc.Post;
   Desativa_campos;
   DBGTipoDoc.SetFocus;
@@ -169,7 +169,7 @@ end;
 
 procedure TFrmCad_TipoDoc.DXBCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Tipo de Documento','Cancelar Inclus�o ou Edi��o (Bot�o CANCELAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
+  if not Verif_senha('Tipo de Documento','Cancelar Inclusão ou Edição (Botão CANCELAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
   DM_tabelas.ZQTipodoc.Cancel;
   Desativa_campos;
   DBGTipoDoc.SetFocus;
@@ -177,7 +177,7 @@ end;
 
 procedure TFrmCad_TipoDoc.DXBIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Tipo de Documento','Inclus�o de Registro(Bot�o INCLUIR)','') then exit;
+  if not Verif_senha('Tipo de Documento','Inclusão de Registro(Botão INCLUIR)','') then exit;
   DM_tabelas.ZQTipodoc.Insert;
   Ativa_campos;
   DBEAbrev.SetFocus;
@@ -185,7 +185,7 @@ end;
 
 procedure TFrmCad_TipoDoc.DXBEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Tipo de Documento','Edi��o de Registro(Bot�o EDITAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
+  if not Verif_senha('Tipo de Documento','Edição de Registro(Botão EDITAR)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
   DM_tabelas.ZQTipodoc.Edit;
   Ativa_campos;
   DBEAbrev.SetFocus;
@@ -193,7 +193,7 @@ end;
 
 procedure TFrmCad_TipoDoc.DXBExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Tipo de Documento','Exclus�o de Registro (Bot�o EXCLUS�O)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
+  if not Verif_senha('Tipo de Documento','Exclusão de Registro (Botão EXCLUSÃO)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
   IF DM_tabelas.ZQTipodoc.RecordCount>1 then
     DM_tabelas.ZQTipodoc.Delete;
   botoes_setas;

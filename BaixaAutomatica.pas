@@ -1,4 +1,4 @@
-unit BaixaAutomatica;
+﻿unit BaixaAutomatica;
 
 interface
 
@@ -241,7 +241,7 @@ begin
       if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
       begin
   //      if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele n�o pode mais ser baixado!!!!');
+    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
         showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
         DM_TAbelas.ZQRemesRec.Open;
         DM_TAbelas.ZQBancRemes2.First;
@@ -305,7 +305,7 @@ begin
       if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
       begin
   //      if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele n�o pode mais ser baixado!!!!');
+    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
         showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
         DM_TAbelas.ZQRemesRec.Open;
         DM_TAbelas.ZQBancRemes2.First;
@@ -949,7 +949,7 @@ begin
                   else
                   begin
                     vartext := '';
-                    CDSArqRetornoidrece.Clear; // se quiser deixar vazio quando inv�lido
+                    CDSArqRetornoidrece.Clear; // se quiser deixar vazio quando inválido
                   end;
 
                  // CDSArqRetornoidrece.Value := strtoint(trim(copy(vartext,1,11)));
@@ -995,7 +995,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco ou inv�lido. Coluna 39.');
+                showmessage('Código do Recebimento em Branco ou inválido. Coluna 39.');
               end;
           end;
         end;
@@ -1156,7 +1156,7 @@ begin
               end
               else
               begin
-             //   showmessage('C�digo do Recebimento em Branco. Coluna 38.');
+             //   showmessage('Código do Recebimento em Branco. Coluna 38.');
               end;
             end;
           end;
@@ -1311,7 +1311,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 39.');
+                showmessage('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1434,7 +1434,7 @@ begin
                     begin
                       datacredito.Clear;
                       dtscr:=alltrim(Copy(Linha,138,2)+'/'+Copy(Linha,140,2)+'/'+Copy(Linha,142,4));   // data da ocorrencia
-                     // dtscr:=alltrim(Copy(Linha,146,2)+'/'+Copy(Linha,148,2)+'/'+Copy(Linha,150,4)); // data da efetiva��o do credito
+                     // dtscr:=alltrim(Copy(Linha,146,2)+'/'+Copy(Linha,148,2)+'/'+Copy(Linha,150,4)); // data da efetivação do credito
                       if not empty(dtscr) and (dtscr<>'00000000') then
                       begin
                         hj:='N';
@@ -1648,7 +1648,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 39.');
+                showmessage('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1810,7 +1810,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 39.');
+                showmessage('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1949,7 +1949,7 @@ Var
 begin
   DXBProcessar.Enabled:=false;
   processou:='S';
-  if not Verif_senha('Recebimento','Processa baixa autom�tica','') then exit;
+  if not Verif_senha('Recebimento','Processa baixa automática','') then exit;
   DM_TAbelas.ZQBancRemes2.Open;
 {  for varx := length(OpenDialog1.FileName) to 1 do
     if copy(OpenDialog1.FileName,varx,1)='/' Then
@@ -1992,7 +1992,7 @@ begin
   if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
   begin
     if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele n�o pode mais ser baixado!!!!');
+       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
       // showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+' prosseguindo...');
        DM_TAbelas.ZQBancRemes2.close;
        exit;
@@ -2139,7 +2139,7 @@ begin
           DM_tabelas.ZQReceb_BaixaDesc_Vr.Value  := CDSArqRetornovrdesconto.Value;
           DM_tabelas.ZQReceb_Baixarefbaixa.Value := DM_tabelas.ZQCobaRecotagem.Value;
           DM_tabelas.ZQReceb_Baixacodcontabil.Value := DM_Tabelas.ZQconfiguracoesbxautoplc.Value;
-          DM_tabelas.ZQReceb_BaixaObsebx.Value := 'Baixa Autom�tica';
+          DM_tabelas.ZQReceb_BaixaObsebx.Value := 'Baixa Automática';
           DM_tabelas.ZQReceb_Baixavalor_parcela.Value := CDSArqRetornovrtit.Value;
           DM_tabelas.ZQReceb_Baixa.Post;}
 
@@ -2165,7 +2165,7 @@ begin
             DM_tabelas.ZQReceb_Baixa.SQL.Add('INSERT INTO  Receb_Baixa (Vr_rec,Dt_rec,dataref,vencimento,Tipdoc,Docum,Juros_Vr,Desc_Vr,refbaixa,codcontabil,Obsebx,valor_parcela) VALUES ('+
                                             quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrarq.Text,'.')))+','+quotedstr(FormatDateTime('YYYY-MM-DD',EData.DateValue))+','+quotedstr(FormatDateTime('YYYY-MM-DD',CDSArqRetornodt_credito.value))+','+
                                             quotedstr(FormatDateTime('YYYY-MM-DD',CDSArqRetornodtvenci.Value))+','+quotedstr('BB')+','+quotedstr(alltrim(copy(Label3.Caption,1,19)))+','+quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrjuros.Text,'.')))+','+
-                                            quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrdesconto.Text,'.')))+','+quotedstr(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text)+','+quotedstr(ctbl)+','+quotedstr('Baixa Autom�tica')+','+
+                                            quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrdesconto.Text,'.')))+','+quotedstr(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text)+','+quotedstr(ctbl)+','+quotedstr('Baixa Automática')+','+
                                             quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrtit.Text,'.')))+')');
 
           end
@@ -2178,7 +2178,7 @@ begin
             DM_tabelas.ZQReceb_Baixa.SQL.Add('INSERT INTO  Receb_Baixa (Vr_rec,Dt_rec,dataref,vencimento,Tipdoc,Docum,Juros_Vr,Desc_Vr,refbaixa,codcontabil,Obsebx) VALUES ('+
                                             quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrarq.Text,'.')))+','+quotedstr(FormatDateTime('YYYY-MM-DD',EData.DateValue))+','+quotedstr(FormatDateTime('YYYY-MM-DD',CDSArqRetornodt_credito.value))+','+
                                             quotedstr(FormatDateTime('YYYY-MM-DD',CDSArqRetornodtvenci.Value))+','+quotedstr('BB')+','+quotedstr(alltrim(copy(Label3.Caption,1,19)))+','+quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrarq.Text,'.')))+','+
-                                            quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrdesconto.Text,'.')))+','+quotedstr(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text)+','+quotedstr(ctbl)+','+quotedstr('Baixa Autom�tica')+')');
+                                            quotedstr(TrocaVirgPPto(TrimChar(CDSArqRetornovrdesconto.Text,'.')))+','+quotedstr(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text)+','+quotedstr(ctbl)+','+quotedstr('Baixa Automática')+')');
 
 
           end;
@@ -2202,7 +2202,7 @@ begin
             ZQReceb.Edit;
             if empty(ZQReceb.FieldByName('numboleto').AsString) then
                ZQReceb.FieldByName('numboleto').AsString:=CDSArqRetornonossonumero.Value;
-            ZQReceb.FieldByName('Observ').AsString := 'Baixa Autom�tica';
+            ZQReceb.FieldByName('Observ').AsString := 'Baixa Automática';
 
             // 21/05/2014
             if (CDSArqRetornovrdesconto.Value=0) and (abs(CDSArqRetornovrarq.Value)<ZQReceb.FieldByName('saldo').AsFloat) then
@@ -2245,7 +2245,7 @@ begin
           DM_tabelas.ZQCaixa.FieldByName('credeb').AsString := 'C';
           DM_tabelas.ZQCaixa.FieldByName('vinculo').AsString := 'R'+DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text;
           DM_tabelas.ZQCaixa.FieldByName('contracodigo').AsInteger :=ZQReceb.FieldByName('cliente').AsInteger;
-          DM_tabelas.ZQCaixa.FieldByName('obs').AsString := 'Baixa Autom�tica';
+          DM_tabelas.ZQCaixa.FieldByName('obs').AsString := 'Baixa Automática';
           IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString = 'S' Then Begin
               DM_tabelas.ZQCaixa.FieldByName('obs').AsString :=DM_tabelas.ZQCaixa.FieldByName('obs').AsString + ' Vencimento em: '+datetostr(CDSArqRetornodtvenci.Value);
           end;

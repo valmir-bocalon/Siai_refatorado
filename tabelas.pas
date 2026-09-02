@@ -484,8 +484,8 @@ begin
   Try
   VarPedeSenha := ArqIni.ReadString('BACKUP','PEDESENHA', VarPedeSenha );
   if empty(VarPedeSenha) then Begin
-    ArqIni.WriteString('BACKUP','PEDESENHA','N�O');
-    VarPedeSenha := 'N�O';
+    ArqIni.WriteString('BACKUP','PEDESENHA','NºO');
+    VarPedeSenha := 'NºO';
   end;
   Finally
   end;

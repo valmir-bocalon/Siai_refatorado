@@ -1,4 +1,4 @@
-unit UAgenda;
+﻿unit UAgenda;
 
 interface
 
@@ -92,7 +92,7 @@ begin
   if num = '02' then
   MESEXT:='Fevereiro';
   if num = '03' then
-  MESEXT:='Mar�o';
+  MESEXT:='Março';
   if num = '04' then
   MESEXT:='Abril';
   if num = '05' then
@@ -117,7 +117,7 @@ var
 xano:integer;
 begin
 //   anos:=FormatDateTime('yyyy', Date );
-   Inc(Meses); //Soma 1 a variavel meses, Cada click mostra o pr�ximo m�s.
+   Inc(Meses); //Soma 1 a variavel meses, Cada click mostra o próximo mês.
    if Meses >= 13 then
    begin
       xano:=anos.ToInteger;
@@ -126,7 +126,7 @@ begin
       anos:=xano.ToString;
    end;
 
-   Dias(Meses,anos.ToInteger); //Agora ainda ter� de decidir como ser� definido o ano.//Poder� utilizar uma varaivel no lugar onde est� escrito 2015 para passar o ano para//o procedimento que escrever� no grid.
+   Dias(Meses,anos.ToInteger); //Agora ainda terá de decidir como será definido o ano.//Poderá utilizar uma varaivel no lugar onde está escrito 2015 para passar o ano para//o procedimento que escreverá no grid.
 
 end;
 
@@ -144,7 +144,7 @@ begin
       anos:=xano.ToString;
    end;
    dec(Meses);
-   Dias(Meses,anos.ToInteger); //Agora ainda ter� de decidir como ser� definido o ano.//Poder� utilizar uma varaivel no lugar onde est� escrito 2015 para passar o ano para//o procedimento que escrever� no grid.
+   Dias(Meses,anos.ToInteger); //Agora ainda terá de decidir como será definido o ano.//Poderá utilizar uma varaivel no lugar onde está escrito 2015 para passar o ano para//o procedimento que escreverá no grid.
 end;
 
 procedure TFrmAgenda.DBAdvGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -173,19 +173,19 @@ begin//Loops para limpar celulas do Grid antes de preencher o proximo mes, pode 
   end;//////////////
   days[0] := 'Domingo';
   days[1] := 'Segunda';
-  days[2] := 'Ter�a';
+  days[2] := 'Terça';
   days[3] := 'Quarta';
   days[4] := 'Quinta';
   days[5] := 'Sexta';
-  days[6] := 'S�bado';
+  days[6] := 'Sábado';
   with StringGridCal do
   begin
     for i := 0 to 6 do
        Cells[i, 0] := days[i]
-  end;// pegar o n�mero de dias
+  end;// pegar o número de dias
   iNumDays := MonthDays[IsLeapYear(Ano), Mes]; //Modifiquei aqui >
   formatsettings.ShortDateFormat := 'dd/mm/yyyy';
-  iDay := DayOfWeek(StrToDate('01/'+IntToStr(Mes)+'/'+IntToStr(Ano)));  //E aqui para receber as variaveis Ano e M�s
+  iDay := DayOfWeek(StrToDate('01/'+IntToStr(Mes)+'/'+IntToStr(Ano)));  //E aqui para receber as variaveis Ano e Mês
 
   data:=datetostr(date);
 
@@ -203,7 +203,7 @@ begin//Loops para limpar celulas do Grid antes de preencher o proximo mes, pode 
 
     DM_Tabelas.qryagenda.Close;
     DM_Tabelas.qryAgenda.SQL.Clear;
-    DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto1)))); //que � essa 27/11/2012 00:00:00
+    DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto1)))); //que é essa 27/11/2012 00:00:00
     DM_Tabelas.qryAgenda.Open;
 
     if DM_Tabelas.qryagenda.RecordCount>0 then
@@ -222,13 +222,13 @@ begin//Loops para limpar celulas do Grid antes de preencher o proximo mes, pode 
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Sexta-Feira Santa';
         iano:=CalcFeriadosMoveis(Ano);
         if xtexto1=datetostr(iano) then
-           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -         P�scoa';
+           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -         Páscoa';
         iano:=CalcFeriadosMoveis(Ano) + 60;
         if xtexto1=datetostr(iano) then
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+ ' -  Corpus Christi';
 
         if xtexto1='01/01/' + Ano.ToString then
-          StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -  Confraterniza��o Universal';
+          StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -  Confraternização Universal';
 
         // feriados fixos
         if xtexto1='21/04/' + Ano.ToString then
@@ -237,13 +237,13 @@ begin//Loops para limpar celulas do Grid antes de preencher o proximo mes, pode 
         if xtexto1='01/05/' + Ano.ToString then
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -  Dia do Trabalho';
         if xtexto1='07/09/' + Ano.ToString then
-           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Independ�ncia do Brasil';
+           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Independência do Brasil';
         if xtexto1='12/10/' + Ano.ToString then
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Nossa Senhora Aparecida';
         if xtexto1='02/11/' + Ano.ToString then
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -  Finados';
         if xtexto1='15/11/' + Ano.ToString then
-           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Proclama��o da Rep�blica';
+           StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' - Proclamação da República';
         if xtexto1='25/12/' + Ano.ToString then
            StringGridCal.Cells[iColCtr, iRowCtr] := IntToStr(i)+' -  Natal';
 
@@ -277,7 +277,7 @@ begin
   EnsureRuntimeFields(Self);
   mes2:=FormatDateTime('mm', Date );
   anos:=FormatDateTime('yyyy', Date );
-  Dias(mes2.ToInteger,anos.ToInteger); //Ano e m�s desejado para preencher o grid assim que iniciar.
+  Dias(mes2.ToInteger,anos.ToInteger); //Ano e mês desejado para preencher o grid assim que iniciar.
 end;
 
 procedure TFrmAgenda.FormShow(Sender: TObject);
@@ -289,21 +289,21 @@ begin
    mes2:=FormatDateTime('mm', Date );
    anos:=FormatDateTime('yyyy', Date );
    Meses:=mes2.ToInteger;
-   Dias(Meses,anos.ToInteger); //Agora ainda ter� de decidir como ser� definido o ano.//Poder� utilizar uma varaivel no lugar onde est� escrito 2015 para passar o ano para//o procedimento que escrever� no grid.
+   Dias(Meses,anos.ToInteger); //Agora ainda terá de decidir como será definido o ano.//Poderá utilizar uma varaivel no lugar onde está escrito 2015 para passar o ano para//o procedimento que escreverá no grid.
    Labelcomp.Caption:= MESEXT(STRZERO(Mes2.ToInteger,2))+'/'+anos;
    xtexto1:=copy(datetostr(date),1,2);
    xtexto1:=xtexto1+'/'+mes2+'/'+anos;
-  //listar os hor�rios daquela data
+  //listar os horários daquela data
 //   DM_Tabelas.qryAgenda.Close;
 //   DM_Tabelas.qryAgenda.SQL.Clear;
-//   DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto1)))); //que � essa 27/11/2012 00:00:00
+//   DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto1)))); //que é essa 27/11/2012 00:00:00
 //   DM_Tabelas.qryAgenda.Open;
   //zerar o tempo do MonthCalendar
 //  DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd hh:mm:ss', DateOf(MonthCalendar1.Date))));
 
     DM_Tabelas.qryAgenda.Close;
     DM_Tabelas.qryAgenda.SQL.Clear;
-    DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', date))); //que � essa 27/11/2012 00:00:00
+    DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', date))); //que é essa 27/11/2012 00:00:00
     DM_Tabelas.qryAgenda.Open;
 end;
 
@@ -499,7 +499,7 @@ begin
         xtexto:=copy(xtexto,1,2)+'/'+mes2+'/'+anos;
         DM_Tabelas.qryAgenda.Close;
         DM_Tabelas.qryAgenda.SQL.Clear;
-        DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto)))); //que � essa 27/11/2012 00:00:00
+        DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto)))); //que é essa 27/11/2012 00:00:00
         DM_Tabelas.qryAgenda.Open;
 
     end
@@ -508,7 +508,7 @@ begin
       xtexto:='0'+xtexto+'/'+mes2+'/'+anos;
       DM_Tabelas.qryAgenda.Close;
       DM_Tabelas.qryAgenda.SQL.Clear;
-      DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto)))); //que � essa 27/11/2012 00:00:00
+      DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', StrToDate(xtexto)))); //que é essa 27/11/2012 00:00:00
       DM_Tabelas.qryAgenda.Open;
     end
     else
@@ -516,7 +516,7 @@ begin
       DM_Tabelas.qryAgenda.Close;
     end;
 
-  //listar os hor�rios daquela data
+  //listar os horários daquela data
   //zerar o tempo do MonthCalendar
 //  qryAgenda.SQL.Add('SELECT * FROM agendados WHERE dtagendamento = ' + QuotedStr(FormatDateTime('yyyy-mm-dd hh:mm:ss', DateOf(MonthCalendar1.Date))));
 end;

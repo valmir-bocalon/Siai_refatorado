@@ -1,4 +1,4 @@
-unit Incorporador;
+﻿unit Incorporador;
 
 interface
 
@@ -111,7 +111,7 @@ end;
 
 procedure TFrm_Incorporador.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Incorporadores','Gravar inclus�o ou edi��o','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
+  if not Verif_senha('Incorporadores','Gravar inclusão ou edição','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
   DM_Tabelas.ZQIncorporador.Post;
   Desativacampos;
   DBGIncorporador.SetFocus;
@@ -119,7 +119,7 @@ end;
 
 procedure TFrm_Incorporador.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Incorporadores','Cancelar inclus�o ou edi��o','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
+  if not Verif_senha('Incorporadores','Cancelar inclusão ou edição','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
   DM_Tabelas.ZQIncorporador.Cancel;
   Desativacampos;
   DBGIncorporador.SetFocus;
@@ -127,7 +127,7 @@ end;
 
 procedure TFrm_Incorporador.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Incorporadores','Inclus�o','') Then Exit;
+  if not Verif_senha('Incorporadores','Inclusão','') Then Exit;
   Ativacampos;
   DBENome.SetFocus;
   DM_Tabelas.ZQIncorporador.Insert;
@@ -135,7 +135,7 @@ end;
 
 procedure TFrm_Incorporador.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Incorporadores','Edi��o','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
+  if not Verif_senha('Incorporadores','Edição','Incorporador: '+DM_Tabelas.ZQIncorporador.FieldByName('idincorporador').Text+' - '+DM_Tabelas.ZQIncorporador.FieldByName('nomeincorp').Value) Then Exit;
   Ativacampos;
   DBENome.SetFocus;
   DM_Tabelas.ZQIncorporador.Edit;

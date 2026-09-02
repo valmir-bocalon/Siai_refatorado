@@ -1,4 +1,4 @@
-unit ProximoVectoParcelas;
+﻿unit ProximoVectoParcelas;
 
 interface
 
@@ -525,7 +525,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote n�o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -701,7 +701,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -814,7 +814,7 @@ begin
   //  dxButton13.Enabled:=true;
     //dxButton14.Enabled:=true;
 //    dxButton14.SetFocus;
-    Showmessage('Sele��o Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
+    Showmessage('Seleção Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
     DBGrid2.DataSource:=DS_Recebimento;
     dxButton1.Enabled:=true;
     dxButton1.SetFocus;
@@ -894,7 +894,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

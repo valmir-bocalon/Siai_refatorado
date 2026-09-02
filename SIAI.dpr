@@ -175,12 +175,12 @@ begin
     // nao executar mais de uma vez
 
 
-   //  (1) - Troque o t�tulo do seu aplicativo para Teste;
-   //  (2) - Veja essa modifica��o na unit Project1:
+   //  (1) - Troque o título do seu aplicativo para Teste;
+   //  (2) - Veja essa modificação na unit Project1:
 
     Aplicativo := FindWindow('TApplication', 'Gerenciamento de Loteamento');
 //    Aplicativo := FindWindow('FrmPrincipal', nil);
-    { "Se, n�o estiver aberto" }
+    { "Se, não estiver aberto" }
     If (Aplicativo = 0) then
     begin
       Application.MainFormOnTaskbar := True;

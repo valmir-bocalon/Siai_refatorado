@@ -1,4 +1,4 @@
-unit RelImovelREMESSA;
+﻿unit RelImovelREMESSA;
 
 interface
 
@@ -98,7 +98,7 @@ end;
 procedure TRLReportREMESSA.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

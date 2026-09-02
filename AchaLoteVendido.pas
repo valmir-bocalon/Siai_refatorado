@@ -1,4 +1,4 @@
-unit AchaLoteVendido;
+﻿unit AchaLoteVendido;
 
 interface
 
@@ -49,7 +49,7 @@ begin
   Empreendimento.Clear;
   DM_Tabelas.ZQImovelTemp.SQL.Clear;
   DM_Tabelas.ZQImovelTemp.SQL.Add('SELECT * FROM imovel join loteamento on loteamento_idloteamento=idloteamento');
-  DM_Tabelas.ZQImovelTemp.SQL.Add(' where (disponivel ='+quotedstr('N�O')+')');
+  DM_Tabelas.ZQImovelTemp.SQL.Add(' where (disponivel ='+quotedstr('NºO')+')');
   if DM_Tabelas.ZQVenda.RecordCount>0 Then
     DM_Tabelas.ZQImovelTemp.SQL.Add(' or idimovel = '+quotedstr(DM_Tabelas.ZQVenda.FieldByName('imovel').Text))
   else
@@ -114,7 +114,7 @@ Var
 begin
   varfilt := '';
   DM_Tabelas.ZQImovelTemp.Close;
-  varfilt := 'lote like '+quotedstr(CBLote.Text+'%')+' and (disponivel ='+quotedstr('N�O')+')';
+  varfilt := 'lote like '+quotedstr(CBLote.Text+'%')+' and (disponivel ='+quotedstr('NºO')+')';
   if not empty(CBQuadra.Text) Then Begin
     if not empty(varfilt) then
       varfilt := varfilt +' and ';

@@ -1,4 +1,4 @@
-unit Recebi04;
+﻿unit Recebi04;
 
 interface
 
@@ -272,7 +272,7 @@ end;
 procedure TFRM_Recebi04.RLLabel3BeforePrint(Sender: TObject;
   var Text: String; var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

@@ -1,4 +1,4 @@
-unit RelPlanoDeContas;
+﻿unit RelPlanoDeContas;
 
 interface
 
@@ -74,7 +74,7 @@ end;
 procedure TFrmRelPlanoDeContas.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel10.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel10.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

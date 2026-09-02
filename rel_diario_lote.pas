@@ -1,4 +1,4 @@
-unit rel_diario_lote;
+﻿unit rel_diario_lote;
 
 interface
 
@@ -92,7 +92,7 @@ end;
 procedure Tfrm_rel_diario.RLBand6BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel4.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel4.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

@@ -1,4 +1,4 @@
-unit ProximoReajusteDeParcelas;
+﻿unit ProximoReajusteDeParcelas;
 
 interface
 
@@ -519,7 +519,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote n�o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -694,7 +694,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -834,7 +834,7 @@ begin
       ZQRecebtmp.post;
       ZQRecebtmp.Next;
     end;
-    if simnao('Confirma o a Atera��o do Campo Pr�ximo Reajuste ?','SIM') then
+    if simnao('Confirma o a Alteração do Campo Próximo Reajuste ?','SIM') then
     begin
       ZQRecebtmp.First;
       if ZQRecebtmp.RecordCount>0 then
@@ -878,7 +878,7 @@ begin
   end
   else
   begin
-    showmessage('Adicione os T�tulos Selecionados no Grid !');
+    showmessage('Adicione os Títulos Selecionados no Grid !');
     dxButton3.SetFocus;
     exit;
   end;
@@ -988,7 +988,7 @@ begin
   ZQEntrada.close;
   ZQParcela.close;
   ql:='';
-  // at� aqui
+  // até aqui
  }
   dxButton13.Enabled:=false;
   dxButton14.Enabled:=false;
@@ -1009,7 +1009,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar�o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

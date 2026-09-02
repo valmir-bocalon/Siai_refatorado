@@ -1,4 +1,4 @@
-unit Cidade;
+﻿unit Cidade;
 
 interface
 
@@ -182,7 +182,7 @@ end;
 
 procedure TFrm_Cidade.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Cidade','Gravar inclus�o ou edi��o','cidade: '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
+  if not Verif_senha('Cidade','Gravar inclusão ou edição','cidade: '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
   DM_Tabelas.ZQCidade.Post;
   desativacidade;
   DBGCid.SetFocus;
@@ -190,7 +190,7 @@ end;
 
 procedure TFrm_Cidade.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Cidade','Cancelar inclus�o ou edi��o','cidade: '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
+  if not Verif_senha('Cidade','Cancelar inclusão ou edição','cidade: '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
   DM_Tabelas.ZQCidade.Cancel;
   desativacidade;
   DBGCid.SetFocus;
@@ -198,7 +198,7 @@ end;
 
 procedure TFrm_Cidade.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Cidade','Inclus�o','') Then Exit;
+  if not Verif_senha('Cidade','Inclusão','') Then Exit;
   DM_Tabelas.ZQCidade.Insert;
   ativacidade;
   DBECidNome.SetFocus;
@@ -207,7 +207,7 @@ end;
 
 procedure TFrm_Cidade.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Cidade','Edi��o','cidade: '+DM_Tabelas.ZQCidade.FieldByName('idcidade').Text+' - '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
+  if not Verif_senha('Cidade','Edição','cidade: '+DM_Tabelas.ZQCidade.FieldByName('idcidade').Text+' - '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
   DM_Tabelas.ZQCidade.Edit;
   ativacidade;
   DBECidNome.SetFocus;
@@ -216,7 +216,7 @@ end;
 
 procedure TFrm_Cidade.BtExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Cidade','Exclus�o','cidade: '+DM_Tabelas.ZQCidade.FieldByName('idcidade').Text+' - '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
+  if not Verif_senha('Cidade','Exclusão','cidade: '+DM_Tabelas.ZQCidade.FieldByName('idcidade').Text+' - '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
   if DM_Tabelas.ZQCidade.RecordCount>0 Then
     DM_Tabelas.ZQCidade.Delete;
 

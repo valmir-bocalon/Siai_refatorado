@@ -1,4 +1,4 @@
-unit Relparticipante2;
+﻿unit Relparticipante2;
 
 interface
 
@@ -83,7 +83,7 @@ end;
 procedure TFrmRelparticipante2.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

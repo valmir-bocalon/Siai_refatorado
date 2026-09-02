@@ -1,4 +1,4 @@
-unit zerar;
+﻿unit zerar;
 
 interface
 
@@ -660,7 +660,7 @@ begin
                 ZQQuitacao.first;
                 if ZQQuitacao.RecordCount>0 then
                 begin
-                  msg.Caption:='Quita��o                    ';
+                  msg.Caption:='Quitação                    ';
                   application.ProcessMessages;
 
                   while not ZQQuitacao.eof do
@@ -684,7 +684,7 @@ begin
                 ZQComprador_cessao.first;
                 if ZQComprador_cessao.RecordCount>0 then
                 begin
-                  msg.Caption:='Comprador Cess�o         ';
+                  msg.Caption:='Comprador Cessão         ';
                   application.ProcessMessages;
 
                   while not ZQComprador_cessao.eof do
@@ -756,7 +756,7 @@ begin
             ZQCompr_conjuge.first;
             if ZQCompr_conjuge.RecordCount>0 then
             begin
-              msg.Caption:='Conjug�                                ';
+              msg.Caption:='Cônjuge                                ';
               application.ProcessMessages;
 
               while not ZQCompr_conjuge.Eof do
@@ -775,7 +775,7 @@ begin
 
             {if ZQConta_bancaria.RecordCount>0 then
             begin
-              msg.Caption:='Conta Banc�ria                                ';
+              msg.Caption:='Conta Bancária                                ';
               application.ProcessMessages;
               ZQConta_bancaria.First;
               while not ZQConta_bancaria.Eof do

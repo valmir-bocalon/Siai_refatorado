@@ -1,4 +1,4 @@
-unit HORLABEL2;
+﻿unit HORLABEL2;
 
 interface
 
@@ -47,9 +47,9 @@ procedure TfrmHorLabels2.FormCreate(Sender: TObject);
 begin
   EnsureRuntimeFields(Self);
   {
-    N�s temos uma ordem de TQRMemo e n�s nomeamos cada elemento para o  
-    memo existentes no relat�rio.  Isto nos permite fixar a propridade do memo
-    a tempo de des�gnio e nos d� um modo f�cil para refer�ncia
+    Nºs temos uma ordem de TQRMemo e nós nomeamos cada elemento para o
+    memo existentes no relatório.  Isto nos permite fixar a propridade do memo
+    a tempo de desígnio e nos dá um modo fácil para referência
     os memo a runtime.
   }
 
@@ -131,13 +131,13 @@ begin
     begin
       for nIdx := 0 to LabelCnt do
       begin
-        { Acrescente texto ao memo.  N�s n�o estamos usando Componentes de Dados do Quick Report
-        porque n�s estamos fazendo nosso pr�prio dataset navega��o.}
+        { Acrescente texto ao memo.  Nºs não estamos usando Componentes de Dados do Quick Report
+        porque nós estamos fazendo nosso próprio dataset navegação.}
 
       { Adicionando os campos no memo }
         if not EOF then
         begin
-          { fun��o para adiconar campos n�o em brancos no memo}
+          { função para adiconar campos não em brancos no memo}
 //          AddIfNotBlank(memos[nIdx], copy(Table1DESCRICAO.AsString,1,40));
           memos[nIdx].Lines.Add(''); // joga uma linha em branco fica mais para baixo
 
@@ -150,7 +150,7 @@ begin
           for i := 0 to High(Linhas) do
             memos[nIdx].Lines.Add(Linhas[i]);
 
-          // ENDERE�O
+          // ENDEREÇO
           Linhas := QuebrarTexto(frmMain2.CDS_etqendereco.Value, 40, 2);
           for i := 0 to High(Linhas) do
             memos[nIdx].Lines.Add(Linhas[i]);
@@ -167,10 +167,10 @@ begin
           memos[nIdx].Lines.Add(frmMain2.CDS_etqcep.Value);
         end;
         {
-          Se n�s n�o estamos no �ltimo label para esta Band e n�s n�o estamos no
-          fim do dataset, n�s achamos o pr�ximo registro.  N�s n�o fazemos a busca
-          no �ltimo label o Relat�rio far� isto automaticamente e se n�s
-          fizermos, n�s saltaremos todo 4� registro.
+          Se nós não estamos no Último label para esta Band e nós não estamos no
+          fim do dataset, nós achamos o próximo registro.  Nºs não fazemos a busca
+          no Último label o Relatório fará isto automaticamente e se nós
+          fizermos, nós saltaremos todo 4ª registro.
         }
         if (nIdx < LabelCnt) and (not EOF) then
           Next

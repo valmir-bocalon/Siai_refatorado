@@ -1,4 +1,4 @@
-unit QuadroResumo;
+﻿unit QuadroResumo;
 
 interface
 
@@ -287,7 +287,7 @@ begin
         varlinha := varlinha + ' Bc.'+DM_Tabelas.CDSPagEntradabanco.Value;
         varlinha := varlinha + ' Ag.'+DM_Tabelas.CDSPagEntradaagencia.Value;
         varlinha := varlinha + ' Cc.'+DM_Tabelas.CDSPagEntradaconta.Value;
-        varlinha := varlinha + ' n� '+DM_Tabelas.CDSPagEntradanumero.Value;
+        varlinha := varlinha + ' nº '+DM_Tabelas.CDSPagEntradanumero.Value;
       end;
       DM_Tabelas.CDSPagEntrada.Next;
       IF not DM_Tabelas.CDSPagEntrada.Eof Then
@@ -334,7 +334,7 @@ begin
           varlinha := varlinha + ' Bc.'+cheque.FieldByName('banco').Value;
           varlinha := varlinha + ' Ag.'+cheque.FieldByName('agencia').Value;
           varlinha := varlinha + ' Cc.'+cheque.FieldByName('conta').Value;
-          varlinha := varlinha + ' n� '+cheque.FieldByName('numero').Value;
+          varlinha := varlinha + ' nº '+cheque.FieldByName('numero').Value;
         end;
         recebimento.Next;
         IF not recebimento.Eof Then
@@ -453,7 +453,7 @@ begin
           varlinha := varlinha + ' Bc.'+chequebanco.Value;
           varlinha := varlinha + ' Ag.'+chequeagencia.Value;
           varlinha := varlinha + ' Cc.'+chequeconta.Value;
-          varlinha := varlinha + ' n� '+chequenumero.Value;
+          varlinha := varlinha + ' nº '+chequenumero.Value;
         end;
         recebimento.Next;
         IF not recebimento.Eof Then
@@ -506,7 +506,7 @@ texto:string;
 begin
   if (not empty(DM_Tabelas.ZQVenda.FieldByName('linha').Value)) and (DM_Tabelas.ZQVenda.FieldByName('linha').Value<>'0') then
   begin
-    texto:='Im�vel distante '+alltrim(DM_Tabelas.ZQVenda.FieldByName('linha').Value)+' m em linha reta e '+alltrim(DM_Tabelas.ZQVenda.FieldByName('curva').Value)+' m em curva da '+alltrim(DM_Tabelas.ZQVenda.FieldByName('esquina').Value);
+    texto:='Imóvel distante '+alltrim(DM_Tabelas.ZQVenda.FieldByName('linha').Value)+' m em linha reta e '+alltrim(DM_Tabelas.ZQVenda.FieldByName('curva').Value)+' m em curva da '+alltrim(DM_Tabelas.ZQVenda.FieldByName('esquina').Value);
     RLLabel57.Lines.Clear;
     RLLabel57.Lines.Add(texto);
     RLLabel57.Visible:=true;
@@ -530,7 +530,7 @@ end;
 procedure TFrm_QuadroResumo.RLBand7BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  if (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').Value='Comunh�o Universal de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').Value='COMUNH�O UNIVERSAL DE BENS') then
+  if (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').Value='Comunhão Universal de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').Value='COMUNHáO UNIVERSAL DE BENS') then
   begin
     RLLabel51.Visible:=true;
     RLDBText56.Visible:=true;

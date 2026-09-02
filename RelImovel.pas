@@ -1,4 +1,4 @@
-unit RelImovel;
+﻿unit RelImovel;
 
 interface
 
@@ -221,7 +221,7 @@ begin
     if FCBS.Checked Then
       ZQImov.Filter := 'disponivel='+quotedstr('SIM')
     else
-      ZQImov.Filter := 'disponivel='+quotedstr('N�O');
+      ZQImov.Filter := 'disponivel='+quotedstr('NºO');
     ZQImov.Filtered := True;
   end;
   if CBObs.Checked=false then

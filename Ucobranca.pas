@@ -1,4 +1,4 @@
-unit Ucobranca;
+﻿unit Ucobranca;
 
 interface
 
@@ -160,13 +160,13 @@ end;
 procedure Tfrmcobranca.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
-  If CDSCobrancadias_atraso.Value > 0 then // condi��o
+  If CDSCobrancadias_atraso.Value > 0 then // condição
      Dbgrid1.Canvas.Font.Color:= clRed // coloque aqui a cor desejada
   else
      Dbgrid1.Canvas.Font.Color:= clGreen; // coloque aqui a cor desejada
   Dbgrid1.DefaultDrawDataCell(Rect, dbgrid1.columns[datacol].field, State);
 inherited;
-  ShowScrollBar(DBGrid1.Handle,SB_VERT,True); //for�a a mostragem barra Vertical
+  ShowScrollBar(DBGrid1.Handle,SB_VERT,True); //força a mostragem barra Vertical
 end;
 
 procedure Tfrmcobranca.dxButton1Click(Sender: TObject);
@@ -290,7 +290,7 @@ begin
   Frm_RelUCobranca:=nil;
   if Frm_RelUCobranca=nil then
      Frm_RelUCobranca:= TFrm_RelUCobranca.Create(Application);
-  Frm_RelUCobranca.RLLabel2.Caption:='Data Base:'+datetostr(database.Date)+'   -  Per�odo de :'+datetostr(inicial.Date)+' � '+datetostr(final.Date);
+  Frm_RelUCobranca.RLLabel2.Caption:='Data Base:'+datetostr(database.Date)+'   -  Período de :'+datetostr(inicial.Date)+' até '+datetostr(final.Date);
   Frm_RelUCobranca.RLReport1.PreviewModal;
   Frm_RelUCobranca:=nil;
 end;

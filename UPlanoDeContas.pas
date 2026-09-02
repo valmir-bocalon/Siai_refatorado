@@ -1,4 +1,4 @@
-unit UPlanoDeContas;
+﻿unit UPlanoDeContas;
 
 interface
 
@@ -172,7 +172,7 @@ end;
 
 procedure TFrmCad_PlanodeContas.DXBGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Plano de Contas','Confirma��o de Inclus�o ou Edi��o  (Bot�o GRAVAR)','C�d. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
+  if not Verif_senha('Plano de Contas','Confirmação de Inclusão ou Edição  (Botão GRAVAR)','Cód. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
   DM_tabelas.ZQPlanoDeContas.Post;
   DM_tabelas.ZQPlanoDeContas.Refresh;
   Desativar_campos;
@@ -181,7 +181,7 @@ end;
 
 procedure TFrmCad_PlanodeContas.DXBCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Plano de Contas','Cancelamento de Inclus�o ou Edi��o (Bot�o CANCELAR) ','C�d. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
+  if not Verif_senha('Plano de Contas','Cancelamento de Inclusão ou Edição (Botão CANCELAR) ','Cód. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
   DM_tabelas.ZQPlanoDeContas.Cancel;
   Desativar_campos;
   DBGPlanoConta.setfocus;
@@ -197,7 +197,7 @@ end;
 
 procedure TFrmCad_PlanodeContas.DXBEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Plano de Contas','Editar Conta Cont�bil','C�d. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
+  if not Verif_senha('Plano de Contas','Editar Conta Contábil','Cód. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
   DM_tabelas.ZQPlanoDeContas.Edit;
   Ativar_campos;
   DBEcodContabil.SetFocus;
@@ -205,7 +205,7 @@ end;
 
 procedure TFrmCad_PlanodeContas.DXBExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Plano de Contas','Excluir Conta Cont�bil','C�d. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
+  if not Verif_senha('Plano de Contas','Excluir Conta Contábil','Cód. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
   if DM_tabelas.ZQPlanoDeContas.RecordCount>0 then begin
     DM_tabelas.ZQPlanoDeContas.Delete;
   end;

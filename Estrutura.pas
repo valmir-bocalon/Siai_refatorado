@@ -1,4 +1,4 @@
-unit Estrutura;
+﻿unit Estrutura;
 
 interface
 
@@ -367,7 +367,7 @@ Begin
   Altera('MODIFY','cheque_rec','agencia','varchar(6) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL'); // 22/10/08
   Altera('ADD','contabxrec','tipobaixa','varchar(15)');                             // 28/04/10
 
-  showmessage('Ao sair desta tela, o sistema ser� fechado para que as atualiza��es sejam concideradas,'+ chr(13) +'execute novamente o sistema para poder trabalhar normalmente...');
+  showmessage('Ao sair desta tela, o sistema será fechado para que as atualizações sejam consideradas,'+ chr(13) +'execute novamente o sistema para poder trabalhar normalmente...');
 End;
 
 

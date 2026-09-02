@@ -313,7 +313,7 @@ begin
   If ((Screen.Width <> 1280 ) or ( Screen.Height <> 768)) then
   begin
 {    if (messageDlg('Para uma boa utilização recomenda-se resolção de video de 1280 X 768. ' +
-                    #13#13 + ' Deseja Alterar suas confirações de vídeo agora ?',
+                    #13#13 + ' Deseja Alterar suas configurações de vídeo agora ?',
        mtConfirmation, [mbYes, mbNo], 0)=mrYes) then}
     begin
       // Vairavel que pega o valor original de inicialização ex: 1280 X 720... etc...
@@ -585,6 +585,15 @@ begin
   DM_Tabelas.ZQConfiguracoes.Open;
   DM_Tabelas.ZQEmpresa.Open;
 
+  { O DFM refatorado pode carregar os JOINs desta consulta corrompidos.
+    Reconstroi o UPDATE antes da execucao, sem alterar sua finalidade. }
+  ZQErro_Baixa.Close;
+  ZQErro_Baixa.SQL.Clear;
+  ZQErro_Baixa.SQL.Add('UPDATE receb_baixa AS RB');
+  ZQErro_Baixa.SQL.Add('JOIN recbxhist AS RH ON RH.refer = RB.refbaixa');
+  ZQErro_Baixa.SQL.Add('JOIN recebimento AS RE ON RH.idrecib = RE.idrecebimento');
+  ZQErro_Baixa.SQL.Add('SET RE.saldo = 0');
+  ZQErro_Baixa.SQL.Add('WHERE RE.saldo > 0 AND RE.tip <> ''P''');
   ZQErro_Baixa.ExecSQL;
 
   if not Verif_senha(' Principal','Entrar no sistema','') Then Close;
@@ -610,24 +619,18 @@ begin
     +chr(13)+chr(13)+'Providencie uma atualização URGENTE, para evitar danos ao banco de dados!!')
   end;
 
-
-                          DM_Tabelas.ZQCorretor.Open;
-                          DM_Tabelas.ZQVendedor.Open;
-                          DM_Tabelas.ZQQuadras.Open;
-                          DM_Tabelas.ZQVenda.Open;
-                          DM_Tabelas.ZQContaBancaria.Open;
-                          DM_Tabelas.ZQEspecial.Open;
-                          DM_Tabelas.ZQTipodoc.Open;
-                          DM_Tabelas.ZQLoteamento.Open;
-                          DM_Tabelas.ZQRemes_Receb.Open;
-
-
-
+  DM_Tabelas.ZQCorretor.Open;
+  DM_Tabelas.ZQVendedor.Open;
+  DM_Tabelas.ZQQuadras.Open;
+  DM_Tabelas.ZQVenda.Open;
+  DM_Tabelas.ZQContaBancaria.Open;
+  DM_Tabelas.ZQEspecial.Open;
+  DM_Tabelas.ZQTipodoc.Open;
+  DM_Tabelas.ZQLoteamento.Open;
+  DM_Tabelas.ZQRemes_Receb.Open;
 
   //chama resolução de tela
    PTela(Sender);
-
-
 
   Panel1.Visible:=true;
   Application.ProcessMessages;

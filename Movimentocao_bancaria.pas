@@ -1,4 +1,4 @@
-unit Movimentocao_bancaria;
+﻿unit Movimentocao_bancaria;
 
 interface
 
@@ -325,7 +325,7 @@ end;
 
 procedure TFrm_MovimentoBancario.DXBIncluirClick(Sender: TObject);
 begin
-  if not senha('BANCO - Movimenta��o','Incluir Conta Banc�ria','') then exit;
+  if not senha('BANCO - Movimentação','Incluir Conta Bancária','') then exit;
   DM_tabelas.ZQMovBancaria.Insert;
   Ativar_Campos;
   CXBDefiniContaBancaria.Enabled := false;
@@ -338,7 +338,7 @@ end;
 
 procedure TFrm_MovimentoBancario.DXBEditarClick(Sender: TObject);
 begin
-  if not senha('BANCO - Movimenta��o','Editar Conta Banc�ria','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lan�. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
+  if not senha('BANCO - Movimentação','Editar Conta Bancária','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lanç. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
   DM_tabelas.ZQMovBancaria.Edit;
   Ativar_Campos;
   DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Value := DM_tabelas.ZQConta_Bancariacod_banco.Value;
@@ -352,7 +352,7 @@ Var
   Varrec : integer;
   varaltera : boolean;
 begin
-  if not senha('BANCO - Movimenta��o','Confirmar Inclus�o ou Edi��o (Bot�o GRAVAR)','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lan�. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
+  if not senha('BANCO - Movimentação','Confirmar Inclusão ou Edição (Botão GRAVAR)','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lanç. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
   if DM_Tabelas.ZQMovBancaria.State in [DsEdit] Then
     varaltera := True
   else
@@ -379,7 +379,7 @@ end;
 
 procedure TFrm_MovimentoBancario.DXBCancelarClick(Sender: TObject);
 begin
-  if not senha('BANCO - Movimenta��o','Cancelamento de Inclus�o ou Edi��o (Bot�o CANCELAR)','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lan�. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
+  if not senha('BANCO - Movimentação','Cancelamento de Inclusão ou Edição (Botão CANCELAR)','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lanç. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
   DM_tabelas.ZQMovBancaria.Cancel;
   Desativar_campos;
   DBGMovBancaria.setfocus;
@@ -435,7 +435,7 @@ begin
   DM_tabelas.ZQMovBancaria.last;
   DBGMovBancaria.Visible := True;
   FPAchaBanco.Visible := False;
-  L_DescricaoBanco.Caption := 'C�d.: '+DM_tabelas.ZQConta_Bancariacod_banco.Text+'  Ag�ncia: '+DM_tabelas.ZQConta_BancariaAgencia.Value+'  Conta: '+DM_tabelas.ZQConta_Bancariaconta.Value+'  '+DM_tabelas.ZQConta_Bancarianome_banco.Value;
+  L_DescricaoBanco.Caption := 'Cód.: '+DM_tabelas.ZQConta_Bancariacod_banco.Text+'  Agência: '+DM_tabelas.ZQConta_BancariaAgencia.Value+'  Conta: '+DM_tabelas.ZQConta_Bancariaconta.Value+'  '+DM_tabelas.ZQConta_Bancarianome_banco.Value;
   LCorrentista.Caption := 'Correntista: '+DM_TAbelas.ZQConta_Bancarianome_titular.Value;
   VarContaAtiva := DM_tabelas.ZQConta_Bancariacod_banco.Value;
   DXBIncluir.Enabled := True;
@@ -562,7 +562,7 @@ end;
 
 procedure TFrm_MovimentoBancario.DXBRelatoriosClick(Sender: TObject);
 begin
-  if not senha('BANCO - Movimenta��o','Menu de Relat�rio','') then exit;
+  if not senha('BANCO - Movimentação','Menu de Relatório','') then exit;
   FrmRelMovBanco.showmodal;
 end;
 
@@ -584,7 +584,7 @@ procedure TFrm_MovimentoBancario.DXBExcluirClick(Sender: TObject);
 Var
   Varrec : integer;
 begin
-  if not senha('BANCO - Movimenta��o','Exclus�o de um registro da movimenta��o','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lan�. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
+  if not senha('BANCO - Movimentação','Exclusão de um registro da movimentação','Conta: '+DM_tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Text+'  Lanç. em: '+DM_tabelas.ZQMovBancaria.FieldByName('dt_lanc').Text+'  Valor: '+DM_tabelas.ZQMovBancaria.FieldByName('vr_lanc').Text) then exit;
   if DM_Tabelas.ZQMovBancaria.RecordCount >0 Then Begin
     varrec := DM_Tabelas.ZQMovBancaria.RecNo;
     DM_tabelas.ZQMovBancaria.Delete;
@@ -602,7 +602,7 @@ begin
     StrToDate(DBEDataLanc.Text);
     except
     on EConvertError do
-    ShowMessage ('Data Inv�lida!');
+    ShowMessage ('Data Inválida!');
     end;
   end;
 end;

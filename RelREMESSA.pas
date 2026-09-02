@@ -1,4 +1,4 @@
-unit RelREMESSA;
+﻿unit RelREMESSA;
 
 interface
 
@@ -210,7 +210,7 @@ var
 posi:integer;
 ext:string;
 begin
-  //simula pressionamento dos bot�es
+  //simula pressionamento dos botões
   posi:=pos('.',CDSRemessnomearq.Value);
   inc(posi);
   ext:=uppercase(copy(CDSRemessnomearq.Value,posi,3));

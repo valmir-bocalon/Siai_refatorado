@@ -1,4 +1,4 @@
-unit DigSenha;
+﻿unit DigSenha;
 
 interface
 
@@ -60,7 +60,7 @@ procedure TFrm_DigSenha.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
 inherited;
   if Msg.Result = HTCLIENT then
-    Msg.Result := HTCAPTION; // Permite arrastar o formul�rio ao clicar na �rea do cliente
+    Msg.Result := HTCAPTION; // Permite arrastar o formulário ao clicar na Área do cliente
 end;
 
 procedure TFrm_DigSenha.EUsuarioExit(Sender: TObject);
@@ -72,7 +72,7 @@ begin
   DM_Tabelas.ZQUsuTemp.SQL.Add('where apelido = '+quotedstr(EUsuario.Text));
   DM_Tabelas.ZQUsuTemp.Open;
   if DM_Tabelas.ZQUsuTemp.RecordCount=0 Then Begin
-    showmessage('Usu�rio n�o cadastrado...');
+    showmessage('Usuário não cadastrado...');
     EUsuario.Text := '';
     EUsuario.SetFocus;
   end;
@@ -96,7 +96,7 @@ begin
   if Button = mbLeft then
   begin
     ReleaseCapture; // Libera o foco do mouse
-    SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0); // Simula o clique na barra de t�tulo
+    SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0); // Simula o clique na barra de título
   end;
 end;
 
@@ -120,7 +120,7 @@ begin
       end
       else
       begin
-        showmessage('Voc� n�o est� autorizado a executar este procedimento!!!!');
+        showmessage('Você não está autorizado a executar este procedimento!!!!');
       end;
       Close;
     end;

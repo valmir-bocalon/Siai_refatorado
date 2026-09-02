@@ -1,4 +1,4 @@
-unit RelReceb03;
+﻿unit RelReceb03;
 
 interface
 
@@ -680,7 +680,7 @@ end;
 procedure TFrmRelReceb03.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 
 end;
 

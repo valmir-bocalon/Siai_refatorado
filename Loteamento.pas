@@ -227,15 +227,15 @@ Var
   varx : integer;
   vary : Double;
 begin
-//  if not Verif_senha('Loteamento','Gravar inclus�o ou edi��o','Loteamento: '+DM_Tabelas.ZQLoteamentoidloteamento.Text+' - '+DM_Tabelas.ZQLoteamentomatriculaloteamento.Value) Then Exit;
+//  if not Verif_senha('Loteamento','Gravar inclusão ou edição','Loteamento: '+DM_Tabelas.ZQLoteamentoidloteamento.Text+' - '+DM_Tabelas.ZQLoteamentomatriculaloteamento.Value) Then Exit;
 //  if empty(DM_Tabelas.ZQLoteamentomatriculaloteamento.Value) Then Begin
-//    Showmessage('A matricula do loteamento n�o pode ficar em branco!!!...');
+//    Showmessage('A matricula do loteamento não pode ficar em branco!!!...');
 //    Pag_Loteamento.PageIndex := 0;
 //    DBEMatricula.SetFocus;
 //    exit;
 //  end;
   if DM_Tabelas.ZQLoteamento.FieldByName('cidade_idcidade').AsLargeInt=0 Then Begin
-    Showmessage('A cidade do loteamento n�o pode ficar em branco!!!...');
+    Showmessage('A cidade do loteamento não pode ficar em branco!!!...');
     Pag_Loteamento.PageIndex := 0;
     EUsuCidade.SetFocus;
     exit;
@@ -247,7 +247,7 @@ begin
     DM_Tabelas.CDSIncorp.Next;
   end;
   if vary<100 Then Begin
-    Showmessage('A soma do % de participa��o deve ser igual � 100!!!...');
+    Showmessage('A soma do % de participação deve ser igual a 100!!!...');
     Pag_Loteamento.PageIndex := 1;
     DBEPercent.SetFocus;
     exit;
@@ -283,14 +283,14 @@ end;
 
 procedure TFrm_Loteamento.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Loteamento','Cancelar inclus�o ou edi��o','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
+  if not Verif_senha('Loteamento','Cancelar inclusão ou edição','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
   DM_Tabelas.ZQLoteamento.Cancel;
   desativar_campos;
 end;
 
 procedure TFrm_Loteamento.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Loteamento','Inclus�o','') Then Exit;
+  if not Verif_senha('Loteamento','Inclusão','') Then Exit;
   DM_Tabelas.CDSQuadrasTemp.Close;
   DM_Tabelas.CDSQuadrasTemp.CreateDataSet;
   DM_Tabelas.CDSIncorp.Close;
@@ -304,7 +304,7 @@ end;
 
 procedure TFrm_Loteamento.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Loteamento','Edi��o','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
+  if not Verif_senha('Loteamento','Edição','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
   ativar_campos;
   if Pag_Loteamento.PageIndex = 0 then
     DBENomeloteamento.SetFocus
@@ -315,7 +315,7 @@ end;
 
 procedure TFrm_Loteamento.BTExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Loteamento','Exclus�o','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
+  if not Verif_senha('Loteamento','Exclusão','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
   DM_tabelas.ZQQuadras.First;
   While not DM_TAbelas.ZQQuadras.Eof do
     DM_Tabelas.ZQQuadras.Delete;
@@ -330,7 +330,7 @@ end;
 
 procedure TFrm_Loteamento.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Loteamento','Relat�rio','') Then Exit;
+  if not Verif_senha('Loteamento','Relatório','') Then Exit;
   Frm_Loteamento.FormStyle:=fsNormal;
   if Frm_RelLoteamento=nil then
      Frm_RelLoteamento   := TFrm_RelLoteamento.Create(Application);

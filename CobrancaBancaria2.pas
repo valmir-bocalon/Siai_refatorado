@@ -1,4 +1,4 @@
-unit CobrancaBancaria2;
+﻿unit CobrancaBancaria2;
 
 interface
 
@@ -256,7 +256,7 @@ begin
   VarPath := copy(SaveDialog1.FileName,tam2+1,11);
   if trim(VarPath)<>'remessa.rem' then
   begin
-    showmessage('O nome do Arquivo tem quer ser remessa.rem');
+    showmessage('O nome do Arquivo tem que ser remessa.rem');
     exit;
   end;
 
@@ -267,7 +267,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
   if empty(trim(VarPath)) then
   begin
-    showmessage('O nome do Arquivo n�o poder ser em branco, tem quer ser remessa.rem');
+    showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
     exit;
   end;
 
@@ -333,25 +333,25 @@ begin
     
   varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
   Rewrite(f); //abre o arquivo para escrita
-  Write(f,'0'); // Identifica��o do Registro
-  Write(f,'1'); // Identifica�o d arquivo remessa
+  Write(f,'0'); // Identificação do Registro
+  Write(f,'1'); // Identificação d arquivo remessa
   Write(f,'REMESSA');  // literal remessa
-  Write(f,'01'); // codigo de servi�o
-  Write(f,'COBRANCA'); // literal do servi�o
+  Write(f,'01'); // codigo de serviço
+  Write(f,'COBRANCA'); // literal do serviço
   Write(f,espacos(7));
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia').Value,4,false,' ')); // agencia
   Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia_v').value,1,1)); // dig. verificador agencia
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta').Value,8,true,' ')); // codigo do cedente conta
   Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta_v').Value,1,1)); // dig. verificador conta
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('convenio').Value,6,false,'0')); // convenio
-  Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz�o social da empresa
+  Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  razão social da empresa
 
 //  Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentocod_no_banco.Value),20)); //  codigo da empresa no banco (banco fornece)
 
-  Write(f,'756'); // numero do bradesco na camara da compensa��o
+  Write(f,'756'); // numero do bradesco na camara da compensação
   Write(f,'BANCOOBCED     '); //  Nome do banco por extenso//
-  Write(f,varhoje); // date de hoje
-  Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa2').Value,7));  //  n� sequencial de remessa
+  Write(f,varhoje); // data de hoje
+  Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa2').Value,7));  //  nº sequencial de remessa
   Write(f,espacos(287)); // branco
   Writeln(f,'000001');
   FrmRelRecebimento.CDS_MarcaTit.First;
@@ -375,7 +375,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
     else Begin
 
       if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
@@ -389,7 +389,7 @@ begin
 //      ZQRemesRec.Insert;
 //      ZQRemesRecremessa.Value := DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
 //      ZQRemesRecidrec.Value := FrmRelRecebimento.CDS_MarcaTitIdreceb.Value;
-//      ZQRemesRecnossonumero.value :�=varnossnum;
+//      ZQRemesRecnossonumero.value :=varnossnum;
 //      ZQRemesRec.Post;
       inc(varregistro);
       Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
@@ -456,7 +456,7 @@ begin
       ZQRemesRec.Filtered:=false;
       VarDif :=FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value;
 
-      Write(f,'1'); // Identifica��o do Registro
+      Write(f,'1'); // Identificação do Registro
       if length(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)=14 Then
         Write(f,'01')   // tipo cpf
       else
@@ -471,13 +471,13 @@ begin
        //carne
       if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
       begin
-        if empty(VarDif) then // coluna 38 at� 62
+        if empty(VarDif) then // coluna 38 até 62
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
         end
         else
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
           Write(f,VarDif);
         end;
       end
@@ -485,40 +485,40 @@ begin
       begin
         inc(carne);
         ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-        if empty(VarDif) then // coluna 38 at� 62
+        if empty(VarDif) then // coluna 38 até 62
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
         end
         else
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
           Write(f,VarDif);
         end;
       end;
-      Write(f,varnossnum); //N� bancario para cobrana com e em registro
+      Write(f,varnossnum); //Nº bancario para cobrana com e em registro
       Write(f,'0000   ');  //  zero
 
       Write(f,' '); //Indicador de Sacador
-      Write(f,'   '); //Prefixo do t�tulo
-      Write(f,'000'); //Varia��o
-      Write(f,'0'); //Conta Cau��o
-      Write(f,'000000'); //C�digo de Responsabilidade + DV
-      Write(f,'000000'); //N�mero do border�
+      Write(f,'   '); //Prefixo do título
+      Write(f,'000'); //Variação
+      Write(f,'0'); //Conta Caução
+      Write(f,'000000'); //Código de Responsabilidade + DV
+      Write(f,'000000'); //Número do borderô
       Write(f,'00000'); //filter
       Write(f,'01'); //Carteira/Modalidade
       Write(f,'00'); //Comando/Movimento
-      Write(f,vardoc); //Seu N�mero
+      Write(f,vardoc); //Seu Número
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento
       Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
-      Write(f,'756'); // numero do banco na camara da compensa��o
+      Write(f,'756'); // numero do banco na camara da compensação
  //     Write(f,Formatar(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value,4,false,' ')); // agencia
 //      Write(f,copy(FrmRelRecebimento.CDSEmpreendimenton_agencia_v.value,1,1)); // dig. verificador agencia
       Write(f,'00000'); // Agencia depositaria
-      Write(f,'01'); //Esp�cie do T�tulo
-      Write(f,'0'); //Aceite do T�tulo
+      Write(f,'01'); //Espécie do Título
+      Write(f,'0'); //Aceite do Título
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao      
-      Write(f,'00'); //Primeira instru��o codificada
-      Write(f,'00'); //Segunda instru��o
+      Write(f,'00'); //Primeira instrução codificada
+      Write(f,'00'); //Segunda instrução
       Write(f,varmora); // Mora por dia de atraso
       Write(f,'000000'); // Taxa de multa
       Write(f,'0'); // Filter
@@ -538,17 +538,17 @@ begin
       Write(f,copy(charrem(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8)) ;
       Write(f,copy(charrem(FrmRelRecebimento.CDS_MarcaTitnomecidade.Value)+espacos(15),1,15)) ;
       Write(f,copy(charrem(FrmRelRecebimento.CDS_MarcaTituf.Value)+espacos(2),1,2)) ;
-      Write(f,COPY('SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(40),1,40));  // decomposi��o
+      Write(f,COPY('SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(40),1,40));  // decomposição
       Write(f,'00');  // Protesto
       Write(f,' ');  //  Filler
-      Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+      Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
 {      tam:=length(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text);
       tam:=37+tam;
       tam:=49-tam;
 
       VarDif:='';
-      Write(f,'   '); // codigo do banco a ser debitado na camara de compensa��o
-//      Write(f,'237'); // codigo do banco a ser debitado na camara de compensa��o
+      Write(f,'   '); // codigo do banco a ser debitado na camara de compensação
+//      Write(f,'237'); // codigo do banco a ser debitado na camara de compensação
       Write(f,'2'); // cobrar multa
       Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),4));  // % de multa a ser considerado
 
@@ -556,24 +556,24 @@ begin
       if CBBancoemite.Checked Then
         Write(f,'1')  //   banco emite e registra o beleto
       else
-        Write(f,'2');  //   n�s emitimos o boleto e o banco registra o beleto
-      Write(f,'N');  //  N�o registra na cobran�a. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
-//      Write(f,inttostrZero(0,10));  // Identifica��o da opera��o do banco
-      Write(f,espacos(10));  //  Identifica��o da opera��o do banco
+        Write(f,'2');  //   nós emitimos o boleto e o banco registra o beleto
+      Write(f,'N');  //  Não registra na cobrança. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
+//      Write(f,inttostrZero(0,10));  // Identificação da operação do banco
+      Write(f,espacos(10));  //  Identificação da operação do banco
       Write(f,' ');  //  Indicador rateio credito
       Write(f,' ');  //  cod. endereco de aviso do sacado
       Write(f,'  ');  //  Brancos              coluna 107
       Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  //  codigo de ocorrencia
-      Write(f,vardoc);  //  n� do documento      coluna 111
+      Write(f,vardoc);  //  nº do documento      coluna 111
 
 //      Write(f,inttostrZero(truncar(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
       Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
-      Write(f,'000');  // Banco encarregado da cobran�a
+      Write(f,'000');  // Banco encarregado da cobrança
       Write(f,'00000'); // Agencia depositaria
       Write(f,'01');  // Especie de Titulo  01 = duplicata
-      Write(f,'N');  //  identifica��o - sempre N             coluna 150
+      Write(f,'N');  //  identificação - sempre N             coluna 150
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao
-      Write(f,'0000'); //  1� e 2� instru��o
+      Write(f,'0000'); //  1ª e 2ª instrução
       Write(f,varmora); // Mora por dia de atraso
       Write(f,'000000'); //copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,1,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,4,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,9,2));  // Limite para desconto
       Write(f,'0000000000000');  //  Valor do desconto
@@ -587,10 +587,10 @@ begin
       Write(f,varcpfcnpj);  // cpf/cnpj
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+espacos(40),1,40));  // nome do sacado  coluna 235
       Write(f,copy(varendereco+espacos(40),1,40));  // Endereco   275 a 314
-      Write(f,espacos(12)); // 1� mensagem 315 a 326
-//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1� mensagem 315 a 326
+      Write(f,espacos(12)); // 1ª mensagem 315 a 326
+//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1ª mensagem 315 a 326
       Write(f,copy(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8));  // cep
-      Write(f,COPY('SR. CAIXA, N�O RECEBER AP�S 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposi��o}
+      Write(f,COPY('SR. CAIXA, NºO RECEBER APÓS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposição}
 
 
 
@@ -604,12 +604,12 @@ begin
         Write(f,'2');  //  Tipo de Registro
         Write(f,varmens1+varmens2+varmens3+varmens4);  //  mensagens 80 cacacteres cada
         Write(f,espacos(45));  //  reserva   -  filler
-        Write(f,DM_Tabelas.ZQContaBancariacarteira.Value);  // C�digo da carteira
+        Write(f,DM_Tabelas.ZQContaBancariacarteira.Value);  // Código da carteira
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value),5));  // codigo da agencia cedente, sem o digito
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentoconta.Value),7)); // conta corrente
         Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.Value,1,1)); // digito da conta
-        Write(f,varnossnum); //N� bancario para cobrana com e em registro
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+        Write(f,varnossnum); //Nº bancario para cobrana com e em registro
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
       end;}
     end;
     FrmRelRecebimento.CDS_MarcaTit.Next;
@@ -625,9 +625,9 @@ begin
   zqcarne.Close;
   //TRAILLER
   inc(varregistro);
-  Write(f,'9');  // identifica��o do registro
+  Write(f,'9');  // identificação do registro
   Write(f,espacos(393));   // branco
-  Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+  Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
   Closefile(f); //fecha o handle de arquivo
   Gauge1.Visible := False;
 
@@ -663,7 +663,7 @@ begin
   DM_Tabelas.ZQRemes_Receb_atualiza.close;
   Gauge1.Progress:=0;
   Gauge1.Visible := false;
-  showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);
+  showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
 end;
 
 
@@ -734,20 +734,20 @@ begin
   
   varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
   Rewrite(f); //abre o arquivo para escrita
-  Write(f,'0'); // Identifica��o do Registro
-  Write(f,'1'); // Identifica�o d arquivo remessa
+  Write(f,'0'); // Identificação do Registro
+  Write(f,'1'); // Identificação d arquivo remessa
   Write(f,'REMESSA');  // literal remessa
-  Write(f,'01'); // codigo de servi�o
-  Write(f,'COBRANCA       '); // literal do servi�o
+  Write(f,'01'); // codigo de serviço
+  Write(f,'COBRANCA       '); // literal do serviço
   Write(f,inttostrZero(strtofloat(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia').Value),4));
-  Write(f,'00'); // codigo de servi�o
+  Write(f,'00'); // codigo de serviço
   Write(f,inttostrZero(strtofloat(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta').Value),5)); // conta corrente
   Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta_v').Value,1,1)); // digito da conta
-  Write(f,'        '); // codigo de servi�o
-  Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('nometitular').Value+espacos(30),1,30)); //  raz�o social da empresa
-  Write(f,'341'); // numero do bradesco na camara da compensa��o
-  Write(f,'BANCO ITAU SA  '); // numero do bradesco na camara da compensa��o
-  Write(f,varhoje); // date de hoje
+  Write(f,'        '); // codigo de serviço
+  Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('nometitular').Value+espacos(30),1,30)); //  razão social da empresa
+  Write(f,'341'); // numero do bradesco na camara da compensação
+  Write(f,'BANCO ITAU SA  '); // numero do bradesco na camara da compensação
+  Write(f,varhoje); // data de hoje
   Write(f,espacos(294)); // branco
   Writeln(f,'000001');
 
@@ -757,7 +757,7 @@ begin
   while not FrmRelRecebimento.CDS_MarcaTit.Eof do begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-       showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+       showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
     else Begin
       if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
         varmora := inttostrZero(DM_Tabelas.ZQContaBancaria.FieldByName('taxadiaria').Value*100,13)
@@ -772,7 +772,7 @@ begin
       inc(varregistro);
       Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
       vardatamora := datetostr(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+1);
-      Write(f,'1'); // Identifica��o do Registro
+      Write(f,'1'); // Identificação do Registro
       if length(tiramascara(DM_Tabelas.ZQEmpresa.FieldByName('cnpj').Value))=11 then
          Write(f,'01')   // tipo cpf
       else
@@ -780,27 +780,27 @@ begin
       DM_Tabelas.ZQEmpresa.FieldByName('cnpj').Value;
       Write(f,inttostrZero(strtofloat(tiramascara(DM_Tabelas.ZQEmpresa.FieldByName('cnpj').Value)),14));  // cpf/cnpj
       Write(f,inttostrZero(strtofloat(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia').Value),4));
-      Write(f,'00'); // codigo de servi�o
+      Write(f,'00'); // codigo de serviço
       Write(f,inttostrZero(strtofloat(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta').Value),5)); // conta corrente
       Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta_v').Value,1,1)); // digito da conta
       Write(f,espacos(4)); // Complemento de registro
-      Write(f,'0000'); // codigo de servi�o
+      Write(f,'0000'); // codigo de serviço
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitidreceb.Text+espacos(25),1,25)); // Nosso numero "idrecebimento"
       Write(f,inttostrZero(FrmRelRecebimento.CDS_MarcaTitidreceb.Value,8)); // Nosso numero
       Write(f,'0000000000000'); // Quantidade de moeda
-      Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('carteira').Value);  // n� na carteira
+      Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('carteira').Value);  // nº na carteira
       Write(f,espacos(21)); // uso do banco
       Write(f,'I'); // uso do banco
       Write(f,copy(CBIdentOcorr.Text,1,2));  //  codigo de ocorrencia
-      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitordem.Value+space(10),1,10)); // N� do documento
+      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitordem.Value+space(10),1,10)); // Nº do documento
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento
       Write(f,inttostrZero(FrmRelRecebimento.CDS_MarcaTitValor.Value*100,13));   //  Valor do titulo
-      Write(f,'341'); // n� do banco na camara de compensa��o
+      Write(f,'341'); // nº do banco na camara de compensação
       Write(f,'00000'); // agencia onde o titulo sera cobrado
       Write(f,'01'); // especie   DUPLICATA MERCANTIL
-      Write(f,'A'); // Identifica��o do titulo Aceito ou N�o aceito
+      Write(f,'A'); // Identificação do titulo Aceito ou Não aceito
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao
-      Write(f,'1893'); // Instru��o 1 e 2
+      Write(f,'1893'); // Instrução 1 e 2
       Write(f,varmora); // Mora por dia de atraso
       Write(f,'000000'); // data limite para concessao de desconto
       Write(f,'0000000000000'); // valor do desconto a ser concedido
@@ -823,17 +823,17 @@ begin
       Write(f,copy(vardatamora,1,2)+ copy(vardatamora,4,2)+ copy(vardatamora,9,2));  // data de mora
       Write(f,'90');  // quantidades de dias
       Write(f,' ');  // complemento do registro
-      Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+      Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     end;
     FrmRelRecebimento.CDS_MarcaTit.Next;
   end;
   inc(varregistro);
-  Write(f,'9');  // identifica��o do registro
+  Write(f,'9');  // identificação do registro
   Write(f,espacos(393));   // branco
-  Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+  Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
   Closefile(f); //fecha o handle de arquivo
   Gauge1.Visible := False;
-  showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);
+  showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   Close;
 End;
 
@@ -880,7 +880,7 @@ begin
     VarPath := copy(SaveDialog1.FileName,tam2+1,11);
     if trim(VarPath)<>'remessa.rem' then
     begin
-      showmessage('O nome do Arquivo tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo tem que ser remessa.rem');
       exit;
     end;
 
@@ -892,7 +892,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo n�o poder ser em branco, tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -968,19 +968,19 @@ begin
 
     varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
     Rewrite(f); //abre o arquivo para escrita
-    Write(f,'0'); // Identifica��o do Registro
-    Write(f,'1'); // Identifica�o d arquivo remessa
+    Write(f,'0'); // Identificação do Registro
+    Write(f,'1'); // Identificação d arquivo remessa
     Write(f,'REMESSA');  // literal remessa
-    Write(f,'01'); // codigo de servi�o
-    Write(f,'COBRANCA       '); // literal do servi�o
+    Write(f,'01'); // codigo de serviço
+    Write(f,'COBRANCA       '); // literal do serviço
     Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentocod_no_banco.Value),20)); //  codigo da empresa no banco (banco fornece)
-    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz�o social da empresa
-    Write(f,'237'); // numero do bradesco na camara da compensa��o
+    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  razão social da empresa
+    Write(f,'237'); // numero do bradesco na camara da compensação
     Write(f,'BRADESCO       '); //  Nome do banco por extenso//
-    Write(f,varhoje); // date de hoje
+    Write(f,varhoje); // data de hoje
     Write(f,espacos(8));  //  branco
-    Write(f,'MX'); // Identifica��o de ocorrencia  01 = Remessa
-    Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Value,7));  //  n� sequencial de remessa
+    Write(f,'MX'); // Identificação de ocorrencia  01 = Remessa
+    Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Value,7));  //  nº sequencial de remessa
     Write(f,espacos(277)); // branco
     Writeln(f,'000001');
 
@@ -1011,7 +1011,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
        if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-          showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+          showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
       else Begin
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
           varmora := inttostrZero(DM_Tabelas.ZQContaBancaria.FieldByName('taxadiaria').Value*100,13)
@@ -1024,7 +1024,7 @@ begin
 //      ZQRemesRec.Insert;
 //      ZQRemesRecremessa.Value := DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
 //      ZQRemesRecidrec.Value := FrmRelRecebimento.CDS_MarcaTitIdreceb.Value;
-//      ZQRemesRecnossonumero.value :�=varnossnum;
+//      ZQRemesRecnossonumero.value :=varnossnum;
 //      ZQRemesRec.Post;
         inc(varregistro);
         Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
@@ -1045,7 +1045,7 @@ begin
         if (not empty(FrmRelRecebimento.CDS_MarcaTitnumboleto.Value)) and (rgnosso.Checked=true) then
         begin
           randomize;
-          num := Round(random(999)); // 999 � o limite do numero randomico
+          num := Round(random(999)); // 999 é o limite do numero randomico
           codcli:=num+strtoint(inttostr(eita)+FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
         end
         else
@@ -1117,10 +1117,10 @@ begin
         numeroremessa:=ZQRemesRec.FieldByName('remessa').Value;
 
 
-        Write(f,'1'); // Identifica��o do Registro
+        Write(f,'1'); // Identificação do Registro
         Write(f,espacos(19));  //   optei por branco
         Write(f,'0');  //  zero
-        Write(f,FrmRelRecebimento.CDSEmpreendimentocarteira.Value);  // C�digo da carteira
+        Write(f,FrmRelRecebimento.CDSEmpreendimentocarteira.Value);  // Código da carteira
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value),5));  // codigo da agencia cedente, sem o digito
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentoconta.Value),7)); // conta corrente
         Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.Value,1,1)); // digito da conta
@@ -1131,15 +1131,15 @@ begin
          //carne
         if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
         begin
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-//           Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,25));  // uso da empresa, n� de controle da empresa;
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+//           Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,25));  // uso da empresa, nº de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
-  //       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
+  //       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end
@@ -1147,46 +1147,46 @@ begin
         begin
           inc(carne);
           ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-//           Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,25));  // uso da empresa, n� de controle da empresa;
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+//           Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,25));  // uso da empresa, nº de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
-  //         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
+  //         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(25),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end;
         VarDif:='';
-        Write(f,'   '); // codigo do banco a ser debitado na camara de compensa��o  63 a 65
-//        Write(f,'237'); // codigo do banco a ser debitado na camara de compensa��o 63  a 65
+        Write(f,'   '); // codigo do banco a ser debitado na camara de compensação  63 a 65
+//        Write(f,'237'); // codigo do banco a ser debitado na camara de compensação 63  a 65
         Write(f,'2'); // cobrar multa
         Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),4));  // % de multa a ser considerado
-        Write(f,varnossnum); //N� bancario para cobrana com e em registro
+        Write(f,varnossnum); //Nº bancario para cobrana com e em registro
         Write(f,inttostrZero(0,10));  // Valor do desconto bonif. / dia
         if CBBancoemite.Checked Then
           Write(f,'1')  //   banco emite e registra o beleto coluna 93
         else
-          Write(f,'2');  //   n�s emitimos o boleto e o banco registra o beleto coluna 93
-        Write(f,'N');  //  N�o registra na cobran�a. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
-//      Write(f,inttostrZero(0,10));  // Identifica��o da opera��o do banco
-        Write(f,espacos(10));  //  Identifica��o da opera��o do banco
+          Write(f,'2');  //   nós emitimos o boleto e o banco registra o beleto coluna 93
+        Write(f,'N');  //  Não registra na cobrança. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
+//      Write(f,inttostrZero(0,10));  // Identificação da operação do banco
+        Write(f,espacos(10));  //  Identificação da operação do banco
         Write(f,' ');  //  Indicador rateio credito
         Write(f,' ');  //  cod. endereco de aviso do sacado
         Write(f,'  ');  //  Brancos              coluna 107
         Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  //  codigo de ocorrencia
-        Write(f,vardoc);  //  n� do documento      coluna 111
+        Write(f,vardoc);  //  nº do documento      coluna 111
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento
 //        Write(f,inttostrZero(truncar(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
         Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
-        Write(f,'000');  // Banco encarregado da cobran�a
+        Write(f,'000');  // Banco encarregado da cobrança
         Write(f,'00000'); // Agencia depositaria
         Write(f,'01');  // Especie de Titulo  01 = duplicata
-        Write(f,'N');  //  identifica��o - sempre N             coluna 150
+        Write(f,'N');  //  identificação - sempre N             coluna 150
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao
-        Write(f,'0000'); //  1� e 2� instru��o   protesto
+        Write(f,'0000'); //  1ª e 2ª instrução   protesto
         Write(f,varmora); // Mora por dia de atraso
         Write(f,'000000'); //copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,1,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,4,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,9,2));  // Limite para desconto
         Write(f,'0000000000000');  //  Valor do desconto
@@ -1200,17 +1200,17 @@ begin
         Write(f,varcpfcnpj);  // cpf/cnpj         221 a 234
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+espacos(40),1,40));  // nome do sacado  coluna 235
         Write(f,copy(varendereco+espacos(40),1,40));  // Endereco   275 a 314
-        Write(f,espacos(12)); // 1� mensagem 315 a 326
+        Write(f,espacos(12)); // 1ª mensagem 315 a 326
       // coloquei aqui para sair a quadra e o lote
-//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1� mensagem 315 a 326
+//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1ª mensagem 315 a 326
         Write(f,copy(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8));  // cep
         // tony pediu para tirar o numero da parcela 25/11/2013
         if CBParcelas.Checked=true then
-           Write(f,COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60))  // decomposi��o
+           Write(f,COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60))  // decomposição
         else
-           Write(f,COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60));  // decomposi��o
+           Write(f,COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60));  // decomposição
 
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
 
        // varmens1 := COPY('APOS O VENCIMENTO, PAGAVEL SOMENTE NO BANCO BRADESCO.'+espacos(80),1,80);//copy(DM_Tabelas.ZQBol_menlinha1.Value+espacos(80),1,80);
 
@@ -1238,12 +1238,12 @@ begin
 
 
           Write(f,espacos(45));  //  reserva   -  filler
-          Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('carteira').Value);  // C�digo da carteira
+          Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('carteira').Value);  // Código da carteira
           Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value),5));  // codigo da agencia cedente, sem o digito
           Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentoconta.Value),7)); // conta corrente
           Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.Value,1,1)); // digito da conta
-          Write(f,varnossnum); //N� bancario para cobrana com e em registro
-          Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+          Write(f,varnossnum); //Nº bancario para cobrana com e em registro
+          Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
         end;
       end;
       FrmRelRecebimento.CDS_MarcaTit.Next;
@@ -1263,13 +1263,13 @@ begin
     zqcarne.Close;
 
     inc(varregistro);
-    Write(f,'9');  // identifica��o do registro
+    Write(f,'9');  // identificação do registro
     Write(f,espacos(393));   // branco
-    Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+    Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     Closefile(f); //fecha o handle de arquivo
-    showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);    
+    showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
-  //Emiss�o dos Boletos
+  //Emissão dos Boletos
   if CBBancoemite.Checked=false then
   begin
     FrmRelRecebimento.CDS_MarcaTit.First;
@@ -1285,7 +1285,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente');
+             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
           end
           else
           begin
@@ -1346,7 +1346,7 @@ begin
             if (not empty(FrmRelRecebimento.CDS_MarcaTitnumboleto.Value)) and (rgnosso.Checked=true) then
             begin
               randomize;
-              num := Round(random(999)); // 999 � o limite do numero randomico
+              num := Round(random(999)); // 999 é o limite do numero randomico
               codcli:=num+strtoint(inttostr(eita)+FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
             end
             else
@@ -1401,7 +1401,7 @@ begin
               RLBTitulo1.Instrucoes.Text := 'COBRAR MULTA DE '+DM_Tabelas.ZQConfiguracoes.FieldByName('Multa').Text+'% SOBRE O VALOR DA PARCELA'+#13+' N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+'  Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
            else
               RLBTitulo1.Instrucoes.Text := 'COBRAR MULTA DE '+DM_Tabelas.ZQConfiguracoes.FieldByName('Multa').Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 60 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-//            RLBTitulo1.Instrucoes.Text := trim('N�O RECEBER AP�S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo1.Instrucoes.Text := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo1.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -1445,7 +1445,7 @@ begin
             RLBTitulo1.Cedente.Nome := trim(CadempRAZ_EMP.Value);
             //dados do sacado
             RLBTitulo1.Sacado.Nome := Trim(CadcliRAZAO.Value);
-            if cadclitip_pessoa.Value='JUR�DICA' then
+            if cadclitip_pessoa.Value='JURÍDICA' then
             begin
               RLBTitulo1.Sacado.NumeroCPFCGC:=charrem(trim(CadcliCGC.value));
               RLBTitulo1.Sacado.TipoInscricao := tiPessoaJuridica;
@@ -1569,7 +1569,7 @@ begin
     VarPath := copy(SaveDialog1.FileName,tam2+1,11);
     if trim(VarPath)<>'remessa.rem' then
     begin
-      showmessage('O nome do Arquivo tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo tem que ser remessa.rem');
       exit;
     end;
 
@@ -1581,7 +1581,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo n�o poder ser em branco, tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -1653,25 +1653,25 @@ begin
 
     varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
     Rewrite(f); //abre o arquivo para escrita
-    Write(f,'0'); // Identifica��o do Registro
-    Write(f,'1'); // Identifica�o d arquivo remessa
+    Write(f,'0'); // Identificação do Registro
+    Write(f,'1'); // Identificação d arquivo remessa
     if CBTipoArq.Checked=false Then
        Write(f,'REMESSA')  // literal remessa
     else
        Write(f,'TESTE  ');  // literal remessa
-    Write(f,'01'); // codigo de servi�o
-    Write(f,'COBRANCA'); // literal do servi�o
+    Write(f,'01'); // codigo de serviço
+    Write(f,'COBRANCA'); // literal do serviço
     Write(f,space(7));
     Write(f,alltrim(strzero(strtoint(FrmRelRecebimento.CDSEmpreendimenton_agencia.value),4)));
     Write(f,copy(FrmRelRecebimento.CDSEmpreendimenton_agencia_v.value,1,1));
     Write(f,strzero(strtoint(FrmRelRecebimento.CDSEmpreendimentoconta.value),8));
     Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.value,1,1));
     Write(f,'000000');
-    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz�o social da empresa
-    Write(f,'001'); // numero do brasil na camara da compensa��o
+    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  razão social da empresa
+    Write(f,'001'); // numero do brasil na camara da compensação
     Write(f,'BANCODOBRASIL  '); //  Nome do banco por extenso//
-    Write(f,varhoje); // date de hoje
-    Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Value,7));  //  n� sequencial de remessa
+    Write(f,varhoje); // data de hoje
+    Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Value,7));  //  nº sequencial de remessa
     Write(f,espacos(22));  //  branco
     Write(f,FrmRelRecebimento.CDSEmpreendimentoconvenio.Value); // convenio 7 digitos
     Write(f,espacos(258)); // branco
@@ -1702,7 +1702,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
         if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
       else
       Begin
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
@@ -1717,7 +1717,7 @@ begin
 //      ZQRemesRec.Insert;
 //      ZQRemesRecremessa.Value := DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
 //      ZQRemesRecidrec.Value := FrmRelRecebimento.CDS_MarcaTitIdreceb.Value;
-//      ZQRemesRecnossonumero.value :�=varnossnum;
+//      ZQRemesRecnossonumero.value :=varnossnum;
 //      ZQRemesRec.Post;
 
        Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
@@ -1803,7 +1803,7 @@ begin
 
         numeroremessa:=ZQRemesRec.FieldByName('remessa').Value;
 
-        Write(f,'7'); // Identifica��o do Registro
+        Write(f,'7'); // Identificação do Registro
         if length(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').Value))=11 Then
            Write(f,'01')   // tipo cpf
         else
@@ -1828,13 +1828,13 @@ begin
          //carne
         if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
         begin
-          if empty(VarDif) then // coluna 39 at� 63
+          if empty(VarDif) then // coluna 39 até 63
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end
@@ -1842,27 +1842,27 @@ begin
         begin
           inc(carne);
           ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-          if empty(VarDif) then // coluna 39 at� 63
+          if empty(VarDif) then // coluna 39 até 63
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end;
         VarDif:='';
-        Write(f,varnossonumero);//N� bancario para cobrana com e em registro
+        Write(f,varnossonumero);//Nº bancario para cobrana com e em registro
         Write(f,'0000');
         Write(f,espacos(7));
-//        Write(f,'019');  // varia��o da carteira  92 a 94
-        Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('variacao').value);  // varia��o da carteira  92 a 94
+//        Write(f,'019');  // variação da carteira  92 a 94
+        Write(f,DM_Tabelas.ZQContaBancaria.FieldByName('variacao').value);  // variação da carteira  92 a 94
         Write(f,'0000000');
         Write(f,espacos(5)); //102 a 106
-        Write(f,COPY(FrmRelRecebimento.CDSEmpreendimentocarteira.Value,2,2));  // C�digo da carteira 107 a 108
+        Write(f,COPY(FrmRelRecebimento.CDSEmpreendimentocarteira.Value,2,2));  // Código da carteira 107 a 108
         Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  // codigo de ocorrencia 109 a 110
-        Write(f,vardoc);  //  n� do documento // Seu N�mero/N�mero do T�tulo Atribu�do pelo Cedente 111 a 120
+        Write(f,vardoc);  //  nº do documento // Seu Número/Número do Título Atribuído pelo Cedente 111 a 120
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento 121 a 126
         Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo 127  a 139
         Write(f,'001');
@@ -1870,7 +1870,7 @@ begin
         Write(f,'01'); // duplicata mercantil 148 a 149
         Write(f,'N'); // aceite 150 a 150
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao 151 a 156
-        Write(f,'0000'); //  1� e 2� instru��o 157 a 160
+        Write(f,'0000'); //  1ª e 2ª instrução 157 a 160
         Write(f,varmora); // Mora por dia de atraso   161 a 173
         Write(f,'000000'); //copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,1,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,4,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,9,2));  // Limite para desconto
         Write(f,'0000000000000');  //  Valor do desconto
@@ -1898,15 +1898,15 @@ begin
         // tony pediu para tirar o numero da parcela 25/11/2013
 
 {        if CBParcelas.Checked=true then
-           Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40))  // decomposi��o
+           Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40))  // decomposição
         else
-           Write(f,COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposi��o
+           Write(f,COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposição
  }
 
-        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposi��o
+        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposição
         Write(f,espacos(3)); //392 a 394
         //inc(varregistro);
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
         inc(varregistro);
 
         if FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value>0 then
@@ -1915,10 +1915,10 @@ begin
            Write(f,'2'); // cobrar multa (1-valor  2-percentual  9-sem multa)
            data:=FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
 
-           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobran�a da Multa
+           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobrança da Multa
            Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),12));  // % de multa a ser considerado
            Write(f,espacos(372));
-           Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+           Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
            inc(varregistro);
         end;
       end;
@@ -1939,16 +1939,16 @@ begin
     zqcarne.Close;
 
 //    inc(varregistro);
-    Write(f,'9');  // identifica��o do registro
+    Write(f,'9');  // identificação do registro
     Write(f,espacos(393));   // branco
-    Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+    Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     Closefile(f); //fecha o handle de arquivo
     
-    showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);    
+    showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
 
   
-  //Emiss�o dos Boletos
+  //Emissão dos Boletos
   if CBBancoemite.Checked=false then
   begin
     FrmRelRecebimento.CDS_MarcaTit.First;
@@ -1967,7 +1967,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente');
+             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
           end
           else
           begin
@@ -2068,7 +2068,7 @@ begin
             RLBTitulo2.DataVencimento  := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value;
             RLBTitulo2.NumeroDocumento := Trim(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value);
            // tony pediu para trocar a mensagem no dia 28/11/2012  
-//            RLBTitulo2.Instrucoes.Text := trim('N�O RECEBER AP�S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo2.Instrucoes.Text := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo2.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
             RLBTitulo2.Instrucoes.Text := 'COBRAR MULTA DE '+DM_Tabelas.ZQConfiguracoes.FieldByName('Multa').Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 60 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
@@ -2112,7 +2112,7 @@ begin
             RLBTitulo2.Cedente.Nome := trim(CadempRAZ_EMP.Value);
             //dados do sacado
             RLBTitulo2.Sacado.Nome := Trim(CadcliRAZAO.Value);
-            if cadclitip_pessoa.Value='JUR�DICA' then
+            if cadclitip_pessoa.Value='JURÍDICA' then
             begin
               RLBTitulo2.Sacado.NumeroCPFCGC:=charrem(trim(CadcliCGC.value));
               RLBTitulo2.Sacado.TipoInscricao := tiPessoaJuridica;
@@ -2313,7 +2313,7 @@ begin
     VarPath := copy(SaveDialog1.FileName,tam2+1,11);
     if trim(VarPath)<>'remessa.rem' then
     begin
-      showmessage('O nome do Arquivo tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo tem que ser remessa.rem');
       exit;
     end;
 
@@ -2325,7 +2325,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo n�o poder ser em branco, tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -2398,20 +2398,20 @@ begin
 
     varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
     Rewrite(f); //abre o arquivo para escrita
-    Write(f,'0'); // Identifica��o do Registro
-    Write(f,'1'); // Identifica�o d arquivo remessa
+    Write(f,'0'); // Identificação do Registro
+    Write(f,'1'); // Identificação d arquivo remessa
     if CBTipoArq.Checked=false Then
        Write(f,'REMESSA')  // literal remessa
     else
        Write(f,'TESTE  ');  // literal remessa
-    Write(f,'01'); // codigo de servi�o
-    Write(f,'COBRANCA'); // literal do servi�o
+    Write(f,'01'); // codigo de serviço
+    Write(f,'COBRANCA'); // literal do serviço
     Write(f,space(7));
     Write(f,DM_tabelas.ZQContaBancaria.FieldByName('cod_transmissao').Value); // codigo de transmissao);
-    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz�o social da empresa
-    Write(f,'033'); // numero do santander na camara da compensa��o
+    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  razão social da empresa
+    Write(f,'033'); // numero do santander na camara da compensação
     Write(f,'SANTANDER      '); //  Nome do banco por extenso//
-    Write(f,varhoje); // date de hoje
+    Write(f,varhoje); // data de hoje
     Write(f,'0000000000000000');
     Write(f,space(275));
     Write(f,'000');
@@ -2425,7 +2425,7 @@ begin
     Write(f,'000000');
 
 
-    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  n� sequencial de remessa
+    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  nº sequencial de remessa
     Write(f,espacos(22));  //  branco
     Write(f,FrmRelRecebimento.CDSEmpreendimentoconvenio.Value); // convenio 7 digitos
     Write(f,espacos(258)); // branco
@@ -2457,7 +2457,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
         if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
       else
       Begin     // 161 a 173
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
@@ -2477,7 +2477,7 @@ begin
 //      ZQRemesRec.Insert;
 //      ZQRemesRecremessa.Value := DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
 //      ZQRemesRecidrec.Value := FrmRelRecebimento.CDS_MarcaTitIdreceb.Value;
-//      ZQRemesRecnossonumero.value :�=varnossnum;
+//      ZQRemesRecnossonumero.value :=varnossnum;
 //      ZQRemesRec.Post;
 
        Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
@@ -2578,13 +2578,13 @@ begin
 
         if length(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').Value))=11 then
         begin
-          Write(f,'1'); // Identifica��o do Registro
+          Write(f,'1'); // Identificação do Registro
           Write(f,'01');  //   cnpj do cedente
           Write(f,inttostrZero(strtofloat(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').Value)),14));
         end
         else
         begin
-          Write(f,'1'); // Identifica��o do Registro
+          Write(f,'1'); // Identificação do Registro
           Write(f,'02');  //   cnpj do cedente
           Write(f,inttostrZero(strtofloat(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').Value)),14));
         end;
@@ -2595,13 +2595,13 @@ begin
          //carne
         if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
         begin
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end
@@ -2609,42 +2609,42 @@ begin
         begin
           inc(carne);
           ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end;
         VarDif:='';
-        Write(f,varnossonumero);//N� bancario para cobrana com e em registro
+        Write(f,varnossonumero);//Nº bancario para cobrana com e em registro
         Write(f,'000000 ');
 
 
         if FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value>0 then
         begin
-           Write(f,'4');  //Informa��o de multa = 4, sen�o houver informar zero    coluna 78
+           Write(f,'4');  //Informação de multa = 4, senão houver informar zero    coluna 78
            Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),4));  // % de multa a ser considerado
            data:=FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
            Write(f,'000000000000000');
            Write(f,space(4));
-          // Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobran�a da Multa
-           Write(f,'000000');  // Data de Inicio da Cobran�a da Multa -  devido o netbank do santander entende que se colocar a a data aqui, vai contar apartir dela
+          // Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobrança da Multa
+           Write(f,'000000');  // Data de Inicio da Cobrança da Multa -  devido o netbank do santander entende que se colocar a a data aqui, vai contar apartir dela
         end
         else
         begin
-          Write(f,'0'); //Informa��o de multa = 4, sen�o houver informar zero coluna 78
+          Write(f,'0'); //Informação de multa = 4, senão houver informar zero coluna 78
           Write(f,'0000');  // % de multa a ser considerado
           Write(f,'000000000000000');
           Write(f,space(4));
-          Write(f,'000000');  // Data de Inicio da Cobran�a da Multa
+          Write(f,'000000');  // Data de Inicio da Cobrança da Multa
         end;
-        Write(f,COPY(FrmRelRecebimento.CDSEmpreendimentocarteira.Value,3,1));  // C�digo da carteira  1- emitido pelo banco 5- emitido pelo cliente coluna 108
+        Write(f,COPY(FrmRelRecebimento.CDSEmpreendimentocarteira.Value,3,1));  // Código da carteira  1- emitido pelo banco 5- emitido pelo cliente coluna 108
         Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  //  codigo de ocorrencia 109 a 110
-        Write(f,vardoc);  //  n� do documento // Seu N�mero/N�mero do T�tulo Atribu�do pelo Cedente 111 a 120
+        Write(f,vardoc);  //  nº do documento // Seu Número/Número do Título Atribuído pelo Cedente 111 a 120
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento 121 a 126
         Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo 127  a 139
         totvr:=totvr+ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2);
@@ -2684,25 +2684,25 @@ begin
         Write(f,space(31)); //352 - 382
         Write(f,'I'+DM_tabelas.ZQContaBancaria.FieldByName('complemento').Value); // complemento 383 - 385
         Write(f,space(6));
-        Write(f,'00'); // 392-393  N�mero de dias para protesto. Quando posi��es 157/158 ou 159/160 for igual a 06.
+        Write(f,'00'); // 392-393  Número de dias para protesto. Quando posições 157/158 ou 159/160 for igual a 06.
         Write(f,space(1)); //394
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
 
 
         // detalhe do movimento   opcional
         inc(totlin);
         inc(varregistro);
-        Write(f,'2'); // Identifica��o do Registro
+        Write(f,'2'); // Identificação do Registro
         Write(f, space(16));
         Write(f,DM_tabelas.ZQContaBancaria.FieldByName('cod_transmissao').Value); // codigo de transmissao
         Write(f, space(10));
         Write(f, '01');
         varmens1 := 'APOS VENCTO, PAGAVEL NO SANTANDER - '+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-        Write(f,COPY(varmens1,1,50));  // decomposi��o
+        Write(f,COPY(varmens1,1,50));  // decomposição
         Write(f, space(283));
         Write(f,'I'+DM_tabelas.ZQContaBancaria.FieldByName('complemento').Value); // complemento 383 - 385
         Write(f, space(9));//386 394
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
         inc(varregistro);
 
 
@@ -2726,11 +2726,11 @@ begin
         varmens4 := copy(' '+DM_Tabelas.ZQBol_menlinha4.Value,1,40);
 
         // tony pediu para tirar o numero da parcela 25/11/2013
-//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposi��o
-        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposi��o
+//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposição
+        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposição
         Write(f,espacos(3)); //392 a 394
         //inc(varregistro);
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
         inc(varregistro);
 
         if FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value>0 then
@@ -2739,10 +2739,10 @@ begin
            Write(f,'2'); // cobrar multa (1-valor  2-percentual  9-sem multa)
            data:=FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
 
-           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobran�a da Multa
+           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobrança da Multa
            Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),12));  // % de multa a ser considerado
            Write(f,espacos(372));
-           Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+           Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
            inc(varregistro);
         end;}
       end;
@@ -2765,18 +2765,18 @@ begin
 
     //    inc(varregistro);
     inc(totlin);
-    Write(f,'9');  // identifica��o do registro
+    Write(f,'9');  // identificação do registro
     Write(f,inttostrZero(totlin,6));
     Write(f,inttostrZero(ExRound(totvr,2)*100,13));   //  Total Valor do titulo
     Write(f,repl('0',374));   // zeros
-    Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+    Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     Closefile(f); //fecha o handle de arquivo
 
-    showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);    
+    showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
 
   
-  //Emiss�o dos Boletos
+  //Emissão dos Boletos
   if CBBancoemite.Checked=false then
   begin
     FrmRelRecebimento.CDS_MarcaTit.First;
@@ -2795,7 +2795,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente');
+             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
           end
           else
           begin
@@ -2908,7 +2908,7 @@ begin
             RLBTitulo2.DataVencimento  := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value;
             RLBTitulo2.NumeroDocumento := Trim(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value);
            // tony pediu para trocar a mensagem no dia 28/11/2012  
-//            RLBTitulo2.Instrucoes.Text := trim('N�O RECEBER AP�S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo2.Instrucoes.Text := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo2.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
             RLBTitulo2.Instrucoes.Text := 'COBRAR MULTA DE '+DM_Tabelas.ZQConfiguracoes.FieldByName('Multa').Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 60 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
@@ -2952,7 +2952,7 @@ begin
             RLBTitulo2.Cedente.Nome := trim(CadempRAZ_EMP.Value);
             //dados do sacado
             RLBTitulo2.Sacado.Nome := Trim(CadcliRAZAO.Value);
-            if cadclitip_pessoa.Value='JUR�DICA' then
+            if cadclitip_pessoa.Value='JURÍDICA' then
             begin
               RLBTitulo2.Sacado.NumeroCPFCGC:=charrem(trim(CadcliCGC.value));
               RLBTitulo2.Sacado.TipoInscricao := tiPessoaJuridica;
@@ -3082,7 +3082,7 @@ begin
     VarPath := copy(SaveDialog1.FileName,tam2+1,11);
     if trim(VarPath)<>'remessa.rem' then
     begin
-      showmessage('O nome do Arquivo tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo tem que ser remessa.rem');
       exit;
     end;
 
@@ -3094,7 +3094,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo n�o poder ser em branco, tem quer ser remessa.rem');
+      showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -3167,14 +3167,14 @@ begin
 
     varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
     Rewrite(f); //abre o arquivo para escrita
-    Write(f,'0'); // Identifica��o do Registro
-    Write(f,'1'); // Identifica�o d arquivo remessa
+    Write(f,'0'); // Identificação do Registro
+    Write(f,'1'); // Identificação d arquivo remessa
     if CBTipoArq.Checked=false Then
        Write(f,'REMESSA')  // literal remessa
     else
        Write(f,'TESTE  ');  // literal remessa
-    Write(f,'01'); // codigo de servi�o
-    Write(f,'COBRANCA       '); // literal do servi�o
+    Write(f,'01'); // codigo de serviço
+    Write(f,'COBRANCA       '); // literal do serviço
 //    Write(f,space(7));
     Write(f,'0');
     Write(f,alltrim(strzero(strtoint(FrmRelRecebimento.CDSEmpreendimenton_agencia.value),4)));
@@ -3185,16 +3185,16 @@ begin
     Write(f,FrmRelRecebimento.CDSEmpreendimenton_agencia.value+FrmRelRecebimento.CDSEmpreendimentoconta.value+FrmRelRecebimento.CDSEmpreendimentoconta_v.value);
 //    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.value,1,1));
     Write(f,space(2));
-    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+space(30),1,30)); //  raz�o social da empresa
-    Write(f,'399'); // numero do brasil na camara da compensa��o
+    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+space(30),1,30)); //  razão social da empresa
+    Write(f,'399'); // numero do brasil na camara da compensação
     Write(f,'HSBC           '); //  Nome do banco por extenso//
-    Write(f,varhoje); // date de hoje
-    Write(f,'01600'); // densidade de grava��o
-    Write(f,'BPI'); // Unidade de densidade de grava��o
+    Write(f,varhoje); // data de hoje
+    Write(f,'01600'); // densidade de gravação
+    Write(f,'BPI'); // Unidade de densidade de gravação
     Write(f,space(2));
-    Write(f,'LANCV08'); // Unidade de densidade de grava��o
+    Write(f,'LANCV08'); // Unidade de densidade de gravação
     Write(f,space(277));
-//    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  n� sequencial de remessa
+//    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  nº sequencial de remessa
 //    Write(f,espacos(22));  //  branco
   //  Write(f,FrmRelRecebimento.CDSEmpreendimentoconvenio.Value); // convenio 7 digitos
 //    Write(f,espacos(258)); // branco
@@ -3225,7 +3225,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
         if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente')
+           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
       else
       Begin
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').Value = 'F' Then
@@ -3241,7 +3241,7 @@ begin
 //      ZQRemesRec.Insert;
 //      ZQRemesRecremessa.Value := DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
 //      ZQRemesRecidrec.Value := FrmRelRecebimento.CDS_MarcaTitIdreceb.Value;
-//      ZQRemesRecnossonumero.value :�=varnossnum;
+//      ZQRemesRecnossonumero.value :=varnossnum;
 //      ZQRemesRec.Post;
 
        Gauge1.Progress := FrmRelRecebimento.CDS_MarcaTit.RecNo;
@@ -3358,7 +3358,7 @@ begin
 
         numeroremessa:=ZQRemesRec.FieldByName('remessa').Value;
 
-        Write(f,'1'); // Identifica��o do Registro
+        Write(f,'1'); // Identificação do Registro
         if length(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').Value))=11 Then
            Write(f,'01')   // tipo cpf
         else
@@ -3384,13 +3384,13 @@ begin
          //carne
         if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
         begin
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end
@@ -3398,39 +3398,39 @@ begin
         begin
           inc(carne);
           ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-          if empty(VarDif) then // coluna 38 at� 62
+          if empty(VarDif) then // coluna 38 até 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, nº de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n� de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, nº de controle da empresa;
             Write(f,VarDif);
           end;
         end;
         VarDif:='';
         if CBBancoemite.Checked=false then
-           Write(f,varnossonumero) //N� bancario para cobrana com e em registro    63 a 73
+           Write(f,varnossonumero) //Nº bancario para cobrana com e em registro    63 a 73
         else
-           Write(f,'00000000000');//N� bancario para cobrana com e em registro    63 a 73
+           Write(f,'00000000000');//Nº bancario para cobrana com e em registro    63 a 73
 
         Write(f,'0000000000000000000000000000000000'); // da 74 a 107
 
-//        Write(f,DM_Tabelas.ZQContaBancariavariacao.value);  // varia��o da carteira  108 a 108
+//        Write(f,DM_Tabelas.ZQContaBancariavariacao.value);  // variação da carteira  108 a 108
         if not empty(FrmRelRecebimento.CDSEmpreendimentocarteira.Value) then
-            Write(f,alltrim(COPY(inttostr(strtoint(FrmRelRecebimento.CDSEmpreendimentocarteira.Value)),1,1)))  // C�digo da carteira 108 a 108
+            Write(f,alltrim(COPY(inttostr(strtoint(FrmRelRecebimento.CDSEmpreendimentocarteira.Value)),1,1)))  // Código da carteira 108 a 108
         else
-            Write(f,'1');  // C�digo da carteira 108 a 108
+            Write(f,'1');  // Código da carteira 108 a 108
         Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  // codigo de ocorrencia 109 a 110
-        Write(f,vardoc);  //  n� do documento // Seu N�mero/N�mero do T�tulo Atribu�do pelo Cedente 111 a 120
+        Write(f,vardoc);  //  nº do documento // Seu Número/Número do Título Atribuído pelo Cedente 111 a 120
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento 121 a 126
         Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo 127  a 139
         Write(f,'399');
         Write(f,'00000');
-        Write(f,'09'); // 01-DP-duplicata mercantil 09-CE-Cobran�a Escritural 148 a 149
+        Write(f,'09'); // 01-DP-duplicata mercantil 09-CE-Cobrança Escritural 148 a 149
         Write(f,'N'); // aceite 150 a 150
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao 151 a 156
-        Write(f,'1500'); //  1� e 2� instru��o 157 a 160
+        Write(f,'1500'); //  1ª e 2ª instrução 157 a 160
         Write(f,varmora); // Mora por dia de atraso   161 a 173
         Write(f,'000000'); //copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,1,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,4,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,9,2));  // Limite para desconto
         Write(f,'0000000000000');  //  Valor do desconto   180 a 192
@@ -3442,10 +3442,10 @@ begin
            Write(f,'2'); // cobrar multa (1-valor  2-percentual  9-sem multa)
            data:=FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
 
-           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobran�a da Multa
+           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobrança da Multa
            Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),12));  // % de multa a ser considerado
            Write(f,espacos(372));
-           Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+           Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
            inc(varregistro);
         end;
         }
@@ -3481,12 +3481,12 @@ begin
         varmens4 := copy(' '+DM_Tabelas.ZQBol_men.FieldByName('linha4').Value,1,40);
 
         // tony pediu para tirar o numero da parcela 25/11/2013
-//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposi��o
+//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposição
 
-//        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposi��o
+//        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposição
   //      Write(f,espacos(3)); //392 a 394
         //inc(varregistro);
-        Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial 395 a 400
         inc(varregistro);
 
 
@@ -3508,16 +3508,16 @@ begin
     zqcarne.Close;
 
 //    inc(varregistro);
-    Write(f,'9');  // identifica��o do registro
+    Write(f,'9');  // identificação do registro
     Write(f,espacos(393));   // branco
-    Writeln(f,inttostrZero(varregistro,6)); //  n� seguencial
+    Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     Closefile(f); //fecha o handle de arquivo
 
-    showmessage('Relat�rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat�rio foi gravado em '+VARARQ);
+    showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
 
 
-  //Emiss�o dos Boletos
+  //Emissão dos Boletos
   if CBBancoemite.Checked=false then
   begin
     FrmRelRecebimento.CDS_MarcaTit.First;
@@ -3536,7 +3536,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n�o ser� anexada a cobran�a bancaria,'+chr(13)+'pois est� com o cadastro incompleto da documenta��o do cliente');
+             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
           end
           else
           begin
@@ -3637,7 +3637,7 @@ begin
             RLBTitulo2.DataVencimento  := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value;
             RLBTitulo2.NumeroDocumento := Trim(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value);
            // tony pediu para trocar a mensagem no dia 28/11/2012
-//            RLBTitulo2.Instrucoes.Text := trim('N�O RECEBER AP�S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo2.Instrucoes.Text := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo2.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
             RLBTitulo2.Instrucoes.Text := 'COBRAR MULTA DE '+DM_Tabelas.ZQConfiguracoes.FieldByName('Multa').Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 60 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
@@ -3681,7 +3681,7 @@ begin
             RLBTitulo2.Cedente.Nome := trim(CadempRAZ_EMP.Value);
             //dados do sacado
             RLBTitulo2.Sacado.Nome := Trim(CadcliRAZAO.Value);
-            if cadclitip_pessoa.Value='JUR�DICA' then
+            if cadclitip_pessoa.Value='JURÍDICA' then
             begin
               RLBTitulo2.Sacado.NumeroCPFCGC:=charrem(trim(CadcliCGC.value));
               RLBTitulo2.Sacado.TipoInscricao := tiPessoaJuridica;
@@ -3818,7 +3818,7 @@ begin
  FrmRelRecebimento.CDSEmpreendimento.First;
  FrmRelRecebimento.CDS_MarcaTit.First;
   if copy(FrmRelRecebimento.XDEVencimentoInicio.DateText,1,2)='00' Then Begin
-    showmessage('A data de vencimento n�o foi informada...  Arquivo n�o ser� gerado....');
+    showmessage('A data de vencimento não foi informada...  Arquivo não será gerado....');
     close;
     exit;
   end;
@@ -3837,7 +3837,7 @@ begin
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='SANTANDER_400' Then santander_400
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='HSBC_400' Then hsbc_400
 
-        else showmessage('Este banco n�o esta configurado para gerar arquivo magn�tico...');
+        else showmessage('Este banco não esta configurado para gerar arquivo magnético...');
       end;
 //    end;
     FrmRelRecebimento.CDSEmpreendimento.Next;
@@ -3896,7 +3896,7 @@ begin
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').Value='BANCOOB_400' Then BANCOOB_400
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').Value='BRASIL_400' Then BRASIL_400
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').Value='SANTANDER_400' Then santander_400
-  else showmessage('Este banco n�o esta configurado para gerar arquivo magn�tico...');
+  else showmessage('Este banco não esta configurado para gerar arquivo magnético...');
 //  XBRelat.Enabled := true;
 //  XBRelat.SetFocus;
 end;

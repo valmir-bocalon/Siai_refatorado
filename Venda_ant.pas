@@ -1,4 +1,4 @@
-unit Venda;
+﻿unit Venda;
 
 interface
 
@@ -463,7 +463,7 @@ begin
     exit;
   end;
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').Value<DM_Tabelas.ZQVenda.FieldByName('valorvenal').Value Then Begin
-    Showmessage('O valor de VENDA n�o deve ser menor que o valor venal...');
+    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
     Pag_Venda.PageIndex := 1;
     DBEVrvenda.SetFocus;
     exit;
@@ -488,7 +488,7 @@ begin
   end;
   DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').Value,[]);
   DM_Tabelas.ZQImovel.Edit;
-  DM_Tabelas.ZQimovel.FieldByName('disponivel').Value := 'N�O';
+  DM_Tabelas.ZQimovel.FieldByName('disponivel').Value := 'NºO';
   DM_Tabelas.ZQImovel.Post;
   DM_Tabelas.ZQComprador.First;
   while not DM_Tabelas.ZQComprador.Eof do
@@ -1268,7 +1268,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').Value<DM_Tabelas.ZQVenda.FieldByName('valorvenal').Value Then
-    Showmessage('O valor de venda � menor que o valor venal...');
+    Showmessage('O valor de venda é menor que o valor venal...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);
@@ -1442,7 +1442,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').Value;
-      DM_Tabelas.CDSAsscargo.Value :='Respons�vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;

@@ -1,4 +1,4 @@
-unit Relloteamento01;
+﻿unit Relloteamento01;
 
 interface
 
@@ -108,7 +108,7 @@ procedure TFrm_Relloteamento01.RLBand5BeforePrint(Sender: TObject;
 begin
   RLLabel15.Caption := '';
   if XConta.Value>0 Then
-  RLLabel15.Caption := Transform(strtofloat(XConta.Text),'###,###,##0')+'  Im�veis';
+  RLLabel15.Caption := Transform(strtofloat(XConta.Text),'###,###,##0')+'  Imóveis';
 end;
 
 procedure TFrm_Relloteamento01.RLReport1AfterPrint(Sender: TObject);
@@ -132,7 +132,7 @@ begin
     if Frm_Relloteamento.FCBS.Checked Then
       Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('SIM')
     else
-      Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('N�O');
+      Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('NºO');
     Frm_Relloteamento.ZQImov.Filtered := True;
   end;
   Frm_Relloteamento.ZQImov.RecordCount;
@@ -141,7 +141,7 @@ end;
 procedure TFrm_Relloteamento01.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

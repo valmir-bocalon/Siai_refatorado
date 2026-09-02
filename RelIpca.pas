@@ -1,4 +1,4 @@
-unit RelIpca;
+﻿unit RelIpca;
 
 interface
 
@@ -61,7 +61,7 @@ end;
 procedure TFrm_Relipca.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

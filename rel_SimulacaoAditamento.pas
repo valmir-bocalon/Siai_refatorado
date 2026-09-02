@@ -1,4 +1,4 @@
-unit rel_SimulacaoAditamento;
+﻿unit rel_SimulacaoAditamento;
 
 interface
 
@@ -84,7 +84,7 @@ uses Tabelas, Funcoes, principal, Venda, usimulaAditamento, uRuntimeFields;
 procedure Tfrm_SimulacaoAditamento.RLBand6BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure Tfrm_SimulacaoAditamento.RLBand7BeforePrint(Sender: TObject;

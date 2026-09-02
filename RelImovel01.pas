@@ -1,4 +1,4 @@
-unit RelImovel01;
+﻿unit RelImovel01;
 
 interface
 
@@ -114,7 +114,7 @@ procedure TFrm_RelImovel01.RLBand5BeforePrint(Sender: TObject;
 begin
   RLLabel15.Caption := '';
   if XConta.Value>0 Then
-  RLLabel15.Caption := Transform(strtofloat(XConta.Text),'###,###,##0')+'  Im�veis';
+  RLLabel15.Caption := Transform(strtofloat(XConta.Text),'###,###,##0')+'  Imóveis';
 
 end;
 
@@ -127,7 +127,7 @@ end;
 procedure TFrm_RelImovel01.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

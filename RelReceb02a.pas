@@ -1,4 +1,4 @@
-unit RelReceb02a;
+﻿unit RelReceb02a;
 
 interface
 
@@ -84,7 +84,7 @@ begin
   RLBand4.Visible := False;
   if FrmRelRecebimento.CBVerbaixa.Text = 'Sim' Then
     RLBand4.Visible := True;
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;    
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

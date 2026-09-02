@@ -1,4 +1,4 @@
-unit Cad_Etiqueta;
+﻿unit Cad_Etiqueta;
 
 interface
 
@@ -188,7 +188,7 @@ end;
 
 procedure TFrmCad_Etiqueta.DXBGravarClick(Sender: TObject);
 begin
-  if not senha('Etiqueta','Grava��o da Inclus�o ou Edi��o (Bot�o GRAVAR) ','C�d.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
+  if not senha('Etiqueta','Gravação da Inclusão ou Edição (Botão GRAVAR) ','Cód.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
   DM_TAbelas.ZQEtiqueta.Post;
   Desativar_Campos;
   DBGEtiqueta.SetFocus;
@@ -196,7 +196,7 @@ end;
 
 procedure TFrmCad_Etiqueta.DXBCancelarClick(Sender: TObject);
 begin
-  if not senha('Etiqueta','Cancelamento da Inclus�o ou Edi��o (Bot�o CANCELAR) ','Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
+  if not senha('Etiqueta','Cancelamento da Inclusão ou Edição (Botão CANCELAR) ','Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
   DM_TAbelas.ZQEtiqueta.Cancel;
   Desativar_Campos;
   DBGEtiqueta.SetFocus;
@@ -204,7 +204,7 @@ end;
 
 procedure TFrmCad_Etiqueta.DXBIncluirClick(Sender: TObject);
 begin
-  if not senha('Etiqueta','Inclus�o de um novo registro (Bot�o INCLUIR) ','') then exit;
+  if not senha('Etiqueta','Inclusão de um novo registro (Botão INCLUIR) ','') then exit;
   DM_TAbelas.ZQEtiqueta.Insert;
   Ativar_Campos;
   CheckBox1.Checked := True;
@@ -220,7 +220,7 @@ end;
 
 procedure TFrmCad_Etiqueta.DXBEditarClick(Sender: TObject);
 begin
-  if not senha('Etiqueta','Edit��o do registro da etiqueta (Bot�o EDITAR) ','C�d.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
+  if not senha('Etiqueta','Edição do registro da etiqueta (Botão EDITAR) ','Cód.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text) then exit;
   DM_TAbelas.ZQEtiqueta.Edit;
   Ativar_Campos;
   DBEDesc.SetFocus;
@@ -228,7 +228,7 @@ end;
 
 procedure TFrmCad_Etiqueta.DXBExcluirClick(Sender: TObject);
 begin
-  if (not senha('Etiqueta','Exclus�o do registro da etiqueta (Bot�o EXCLUIR)','C�d.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text)) and (DM_TAbelas.ZQEtiqueta.RecordCount>0) then exit;
+  if (not senha('Etiqueta','Exclusão do registro da etiqueta (Botão EXCLUIR)','Cód.:'+DM_Tabelas.ZQEtiquetaidetiqueta.Text+'  Descr.: '+DM_Tabelas.ZQEtiquetadescricao.Text)) and (DM_TAbelas.ZQEtiqueta.RecordCount>0) then exit;
   DM_TAbelas.ZQEtiqueta.Delete;
 end;
 

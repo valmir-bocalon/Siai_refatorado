@@ -1,4 +1,4 @@
-unit RelReceb02_diaria;
+﻿unit RelReceb02_diaria;
 
 interface
 
@@ -109,7 +109,7 @@ end;
 procedure TFrmRelReceb02_diaria.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

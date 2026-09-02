@@ -1,4 +1,4 @@
-unit UFrmRelMovBanco;
+﻿unit UFrmRelMovBanco;
 
 interface
 
@@ -134,7 +134,7 @@ var
   varregi : integer;
 begin
   if XDEInicial.Date <= 0 then begin
-    showmessage('a data n�o pode ficar em branco....');
+    showmessage('a data não pode ficar em branco....');
     XDEInicial.SetFocus;
     exit
   end;
@@ -354,7 +354,7 @@ end;
 procedure TFrmRelMovBanco.CBTodasContasClick(Sender: TObject);
 begin
 if CBTodasContas.Checked then
-  if not senha('BANCO - Movimenta��o','Agrupar todas as contas no relat�rio de extrato por Plano de Contas','') then
+  if not senha('BANCO - Movimentação','Agrupar todas as contas no relatório de extrato por Plano de Contas','') then
     CBTodasContas.Checked := False;
 
 end;

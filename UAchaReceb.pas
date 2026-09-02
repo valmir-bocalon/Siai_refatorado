@@ -1,4 +1,4 @@
-unit UAchaReceb;
+﻿unit UAchaReceb;
 
 interface
 
@@ -58,25 +58,25 @@ begin
       if not pesqlan(EDesc.Text) Then
         if not pesqRef(EDesc.Text) Then
          if not pesqCli(EDesc.Text) Then
-            Label3.Caption := 'Nada foi encontrado com esta descri��o....';
+            Label3.Caption := 'Nada foi encontrado com esta descrição....';
   if RBLan.Checked Then
     if not pesqlan(EDesc.Text) Then
       if not pesqdoc(EDesc.Text) Then
         if not pesqRef(EDesc.Text) Then
          if not pesqCli(EDesc.Text) Then
-            Label3.Caption := 'Nada foi encontrado com esta descri��o....';
+            Label3.Caption := 'Nada foi encontrado com esta descrição....';
   if RBRef.Checked Then
     if not pesqRef(EDesc.Text) Then
       if not pesqlan(EDesc.Text) Then
         if not pesqdoc(EDesc.Text) Then
          if not pesqCli(EDesc.Text) Then
-            Label3.Caption := 'Nada foi encontrado com esta descri��o....';
+            Label3.Caption := 'Nada foi encontrado com esta descrição....';
   if RBCli.Checked Then
     if not pesqCli(EDesc.Text) Then
       if not pesqRef(EDesc.Text) Then
         if not pesqlan(EDesc.Text) Then
           if not pesqdoc(EDesc.Text) Then
-            Label3.Caption := 'Nada foi encontrado com esta descri��o....';
+            Label3.Caption := 'Nada foi encontrado com esta descrição....';
 //  FrmCad_recebimento.botoes_setas;
 
 end;
@@ -126,7 +126,7 @@ End;
 
 Function TFrmAchaReceb.pesqRef(texto : string) : boolean;
 Begin
-  Label3.Caption := 'Pesquisando por Refer�ncia...';
+  Label3.Caption := 'Pesquisando por Referência...';
   result := True;
   if DM_Tabelas.ZQRecebimento.Locate('refbaixa',Texto,[loPartialKey]) then Begin
     RBRef.Checked := True;
@@ -137,7 +137,7 @@ End;
 
 Function TFrmAchaReceb.pesqLan(texto : string) : boolean;
 Begin
-  Label3.Caption := 'Pesquisando por Lan�amento...';
+  Label3.Caption := 'Pesquisando por Lançamento...';
   result := True;
   if DM_Tabelas.ZQRecebimento.Locate('IdRecebimento',Texto,[loPartialKey]) then Begin
     RBlan.Checked := true;

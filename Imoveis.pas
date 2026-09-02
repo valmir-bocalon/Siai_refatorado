@@ -1,4 +1,4 @@
-unit Imoveis;
+﻿unit Imoveis;
 
 interface
 
@@ -284,7 +284,7 @@ end;
 
 procedure TFrm_Imoveis.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Gravar inclus�o ou edi��o','Im�vel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
+  if not Verif_senha('Imóvel','Gravar inclusão ou edição','Imóvel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
   DM_tabelas.ZQImovel.Post;
   DesativaCampos;
   botoes;
@@ -292,7 +292,7 @@ end;
 
 procedure TFrm_Imoveis.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Cancelar inclus�o ou edi��o','Im�vel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
+  if not Verif_senha('Imóvel','Cancelar inclusão ou edição','Imóvel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
   DM_tabelas.ZQImovel.Cancel;
   DesativaCampos;
   botoes;
@@ -305,7 +305,7 @@ end;
 
 procedure TFrm_Imoveis.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Incluir','') Then Exit;
+  if not Verif_senha('Imóvel','Incluir','') Then Exit;
   DM_tabelas.ZQImovel.Insert;
   AtivaCampos;
   Pag_Imovel.PageIndex := 0;
@@ -315,7 +315,7 @@ End;
 
 procedure TFrm_Imoveis.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Editar','Im�vel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
+  if not Verif_senha('Imóvel','Editar','Imóvel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
   DM_tabelas.ZQImovel.Edit;
   AtivaCampos;
   if Pag_Imovel.PageIndex = 0 Then
@@ -327,7 +327,7 @@ end;
 
 procedure TFrm_Imoveis.BTExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Excluir','Im�vel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
+  if not Verif_senha('Imóvel','Excluir','Imóvel: '+DM_Tabelas.ZQimovel.FieldByName('idimovel').Text+' - Qd.'+DM_Tabelas.ZQimovel.FieldByName('quadra').AsString+' - Lt.'+DM_Tabelas.ZQimovel.FieldByName('lote').AsString) Then Exit;
   if DM_Tabelas.ZQImovel.RecordCount>0 Then
     DM_tabelas.ZQImovel.Delete;
   botoes;
@@ -350,7 +350,7 @@ end;
 
 procedure TFrm_Imoveis.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Im�vel','Relat�rio','') Then Exit;
+  if not Verif_senha('Imóvel','Relatório','') Then Exit;
 //  Frm_RelImovel.Top := Frm_Imoveis.Top+105;
 //  Frm_RelImovel.Left := Frm_Imoveis.Left-5+(Frm_Imoveis.Width-Frm_RelImovel.Width);
   if Frm_RelImovel=nil then

@@ -1,4 +1,4 @@
-unit Resumo_quita;
+﻿unit Resumo_quita;
 
 interface
 
@@ -263,7 +263,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').AsString;
-      DM_Tabelas.CDSAsscargo.Value :='Respons�vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -328,7 +328,7 @@ end;
 procedure TFrmResumo_quita.QRBand1BeforePrint(Sender: TQRCustomBand;
   var PrintBand: Boolean);
 begin
-  QRLabel40.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  QRLabel40.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 procedure TFrmResumo_quita.QRBand7BeforePrint(Sender: TQRCustomBand;

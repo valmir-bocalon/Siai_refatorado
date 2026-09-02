@@ -1,4 +1,4 @@
-
+﻿
 
 unit RecebBaixa;
 
@@ -2068,7 +2068,7 @@ begin
       begin
         if (CDSParcelasVenci.Value<>CDSParcelasData_Quitacao.Value) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento s?aceita pagamento a vista!!!');
+          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2077,7 +2077,7 @@ begin
       begin
         if (datetostr(CDSParcelasVenci.Value)<>JDEntrada.DateText) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento s?aceita pagamento a vista!!!');
+          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2240,7 +2240,7 @@ begin
   Begin
     if empty(Econtabil.text) Then
     Begin
-      showmessage('O Descrição contabil nao pode ficar em branco....');
+      showmessage('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -2283,23 +2283,23 @@ procedure TFrmRecebBaixa.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento ja foi lan?do anteriormente... corriga a numeração.....');
+      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque ja foi lan?do anteriormente... corriga a numeração.....');
+      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.AsString),VarDoc)>0) Then Begin
-      showmessage('Este cheque ja foi lan?do nesta inclus?... corriga a numeração.....');
+      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo N?do cheque deve ser preenchido...');
+      showmessage('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}
@@ -3427,7 +3427,7 @@ begin
   end
   else
   begin
-    Label15.Caption:='Dt. 1?agto........';
+    Label15.Caption:='Dt. 1º agto........';
   end;
   //JDEntrada.SetFocus;
   DBGBaixando.SetFocus;
@@ -3783,14 +3783,14 @@ begin
   begin
      GroupBox2.Visible:=true;
      DBGrid1.SetFocus;
-     DBGrid1.SelectedIndex:=0; // setfocus na 1?coluna
+     DBGrid1.SelectedIndex:=0; // setfocus na 1ª coluna
      DBGrid1.Options := DBGrid1.Options + [dgEditing];
   end
   else
   begin
      GroupBox3.Visible:=true;
      DBGrid3.SetFocus;
-     DBGrid3.SelectedIndex:=0; // setfocus na 1?coluna
+     DBGrid3.SelectedIndex:=0; // setfocus na 1ª coluna
      DBGrid3.Options := DBGrid3.Options + [dgEditing];
   end;
 

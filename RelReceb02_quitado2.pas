@@ -1,4 +1,4 @@
-unit RelReceb02_quitado2;
+﻿unit RelReceb02_quitado2;
 
 interface
 
@@ -154,7 +154,7 @@ end;
 procedure TFrmRelReceb02_quitado2.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
   DM_Tabelas.ZQLoteamento.close;
   DM_Tabelas.ZQLoteamento.SQL.Clear;
   DM_Tabelas.ZQLoteamento.SQL.Add('select * from loteamento');

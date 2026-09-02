@@ -1,4 +1,4 @@
-
+﻿
 
 unit Transferencia_Financeiro;
 
@@ -521,7 +521,7 @@ Var
 begin
   if empty(CBTipobaixa.Text) then
   begin
-    showmessage('Selecione o tipo de opera��o !');
+    showmessage('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     exit;
   end;  
@@ -558,7 +558,7 @@ begin
 
   while not CDSParcelas.Eof do begin
     inc(contador);
-    if (CBTipobaixa.Text<>'SUBSTITUI��O')  then
+    if (CBTipobaixa.Text<>'SUBSTITUIÇÃO')  then
     begin
       DM_tabelas.ZQReceb_Baixa.Insert;
       DM_tabelas.ZQreceb_baixa.FieldByName('Vr_rec').Value := CDSParcelasVrParc.Value;
@@ -624,7 +624,7 @@ begin
       varsomarepasse := varsomarepasse + CDSParcelasVrParc.Value;
     if DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').Value = 'S' Then
     Begin
-      if (CBTipobaixa.Text<>'SUBSTITUI��O') then
+      if (CBTipobaixa.Text<>'SUBSTITUIÇÃO') then
       begin
         if empty(varnumordem1) Then
         Begin
@@ -665,7 +665,7 @@ begin
         DM_tabelas.ZQRecebimento.FieldByName('sq').Value := contador;        
         DM_tabelas.ZQRecebimento.Post;
       end
-      else if (CBTipobaixa.Text='SUBSTITUI��O')  then
+      else if (CBTipobaixa.Text='SUBSTITUIÇÃO')  then
       begin
         if empty(varnumordem1) Then
         Begin
@@ -712,7 +712,7 @@ begin
     end;
     if DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').Value='S' Then
     Begin
-      if (CBTipobaixa.Text<>'SUBSTITUI��O')then
+      if (CBTipobaixa.Text<>'SUBSTITUIÇÃO')then
       begin
         DM_tabelas.ZQCaixa.Insert;
         DM_tabelas.ZQCaixa.FieldByName('plano_contas_codigo').Value := CDSParcelascodContabil.Value;
@@ -764,7 +764,7 @@ begin
     end;
     IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').Value = 'S' Then
     Begin
-      if (CBTipobaixa.Text<>'SUBSTITUI��O') then
+      if (CBTipobaixa.Text<>'SUBSTITUIÇÃO') then
       begin
         DM_tabelas.ZQCheque.Insert;
         DM_tabelas.ZQCheque.FieldByName('Banco').Value := CdSParcelasBanco.Value;
@@ -781,7 +781,7 @@ begin
         DM_tabelas.ZQCheque.FieldByName('sq').Value := contador;        
         DM_tabelas.ZQCheque.Post;
       end
-      else if (CBTipobaixa.Text='SUBSTITUI��O') then
+      else if (CBTipobaixa.Text='SUBSTITUIÇÃO') then
       begin
         DM_tabelas.ZQCheque.Insert;
         DM_tabelas.ZQCheque.FieldByName('Banco').Value := CdSParcelasBanco.Value;
@@ -800,7 +800,7 @@ begin
       end;
     end;
     if DM_tabelas.ZQTipoDoc.FieldByName('lancabanco').Value = 'S' Then Begin
-      if (CBTipobaixa.Text<>'SUBSTITUI��O') then
+      if (CBTipobaixa.Text<>'SUBSTITUIÇÃO') then
       begin
         DM_Tabelas.ZQMovBancaria.Insert;
         DM_Tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Value := DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Value;
@@ -822,7 +822,7 @@ begin
         DM_Tabelas.ZQMovBancaria.Post;
         //      CalcSaldo('','',False);
       end
-      else if (CBTipobaixa.Text='SUBSTITUI��O') then
+      else if (CBTipobaixa.Text='SUBSTITUIÇÃO') then
       begin
         DM_Tabelas.ZQMovBancaria.Insert;
         DM_Tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Value := DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Value;
@@ -901,7 +901,7 @@ begin
 //    varx := varx + DM_Tabelas.ZQReBxHidescon.Value;
     ZQRecBai.FieldByName('saldo').Value := truncar(ZQRecBai.FieldByName('saldo').Value - varx,2);
     ZQRecBai.FieldByName('RefBaixa').Value := DM_tabelas.ZQCobaRe.FieldByName('cotagem').Value;
-    if (CBTipobaixa.Text='SUBSTITUI��O') then
+    if (CBTipobaixa.Text='SUBSTITUIÇÃO') then
     begin
 //      ZQRecBaisubstituicao.Value:='S';
       ZQRecBai.FieldByName('somar').Value:='N';
@@ -991,7 +991,7 @@ begin
    // imprime o recibo
   //  FrmImpRecibo.showmodal;
 ///
-{  if perguntaSN('Gerar Recibo de Quita��o ?','S') Then Begin
+{  if perguntaSN('Gerar Recibo de Quitação ?','S') Then Begin
     FrmRelRecibodeQuita.ZQForma.SQL.Clear;
     FrmRelRecibodeQuita.ZQForma.SQL.Add('Select * from receb_baixa where refbaixa='+QuotedStr(DM_tabelas.ZQCobaRecotagem.Text));
     FrmRelRecibodeQuita.ZQForma.Open;
@@ -1025,7 +1025,7 @@ begin
     DM_tabelas.ZQTipodoc.Locate('tipodoc',DBCBTipDoc.Text,[]);
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').Value='S' Then Begin
       if (datetostr(CDSParcelasVenci.Value)<>datetostr(JDEntrada.Date)) and ((CDSParcelasTipDoc.Value<>'DP')) Then BEgin
-        showmessage('Este tipo de documento s?aceita pagamento a vista!!!');
+        showmessage('Este tipo de documento só aceita pagamento a vista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -1146,7 +1146,7 @@ procedure TFrmtransferencia.EContabilExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
     if empty(Econtabil.text) Then Begin
-      showmessage('O Descri��o cont?il n? pode ficar em branco....');
+      showmessage('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -1172,23 +1172,23 @@ procedure TFrmtransferencia.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento ja foi lan?do anteriormente... corriga a numera��o.....');
+      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque ja foi lan?do anteriormente... corriga a numera��o.....');
+      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.AsString),VarDoc)>0) Then Begin
-      showmessage('Este cheque ja foi lan?do nesta inclus?... corriga a numera��o.....');
+      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo N?do cheque deve ser preenchido...');
+      showmessage('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}

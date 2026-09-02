@@ -1,4 +1,4 @@
-unit RelVenda02;
+﻿unit RelVenda02;
 
 interface
 
@@ -347,7 +347,7 @@ begin
     vixi:=vixi+Frm_RelVenda.ZQEntradaValor.value+Frm_RelVenda.baixaVr_rec.value;}
 
 
-    // para nao somar a substitui��o, basta Habilitar a linha de baixo
+    // para nao somar a substituição, basta Habilitar a linha de baixo
 //  if Frm_RelVenda.ZQEntradasubstituicao.Value<>'S' then
      vixi:=vixi+ExRound(Frm_RelVenda.ZQEntrada.FieldByName('Valor').AsFloat,2);
 
@@ -627,7 +627,7 @@ end;
 procedure TFrm_RelVenda02.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

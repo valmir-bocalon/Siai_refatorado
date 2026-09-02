@@ -1,4 +1,4 @@
-unit UFrmRelMovBanco01;
+﻿unit UFrmRelMovBanco01;
 
 interface
 
@@ -73,12 +73,12 @@ begin
   QRSLimite.Enabled := false;
   QRDBab1.Caption := 'Conta: '+DM_tabelas.ZQConta_Bancariaconta.Value+'   Agencia: '+DM_tabelas.ZQConta_BancariaAgencia.Value+'  Banco: '+DM_tabelas.ZQConta_Bancarianome_banco.Value;
   if FrmRelMovBanco.RGOrdem.ItemIndex = 0 then begin
-    QRDBab2.Caption := 'Per�odo de '+datetostr(FrmRelMovBanco.XDEInicial.Date)+' � '+datetostr(FrmRelMovBanco.XDEFinal.Date)+' da data de lan�amento';
+    QRDBab2.Caption := 'Período de '+datetostr(FrmRelMovBanco.XDEInicial.Date)+' até '+datetostr(FrmRelMovBanco.XDEFinal.Date)+' da data de lançamento';
     QRDData.DataField := 'Dt_lanc';
   end
   else
   begin
-    QRDBab2.Caption := 'Per�odo de '+datetostr(FrmRelMovBanco.XDEInicial.Date)+' � '+datetostr(FrmRelMovBanco.XDEFinal.Date)+' da data de Compensa��o';
+    QRDBab2.Caption := 'Período de '+datetostr(FrmRelMovBanco.XDEInicial.Date)+' até '+datetostr(FrmRelMovBanco.XDEFinal.Date)+' da data de Compensação';
     QRDData.DataField := 'Dt_conciliado';
   end;
   if FrmRelMovBanco.CBSomalimite.Checked then Begin
@@ -140,7 +140,7 @@ procedure TFrmRelMovBanco01.QRBand1BeforePrint(Sender: TQRCustomBand;
 begin
   DM_tabelas.ZQEmpresa.Open;
   DM_tabelas.ZQEmpresa.First;
-  QRLabel12.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  QRLabel12.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

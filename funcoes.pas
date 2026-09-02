@@ -15,7 +15,7 @@ function QuebrarTexto(Texto: String; TamLinha, MaxLinhas: Integer): TArray<strin
 function RemoveLetras(Const Texto:String):String;
 function GetMotherboardSerialNumber: string;
 procedure CloneDataSet(Source: TDataSet; Dest: TClientDataSet);
- // pagina��o dbgrid
+ // paginação dbgrid
 function paginaDbgrid(const ZQuery: TZQuery; pagesize, pagenumber : Integer; Tabela,filtro,ordem: String): TZQuery;
 function RemoveNumeros(Const Texto:String):String;
 function WinExecAndWait32(FileName: String; WorkDir: String; Visibility: integer): integer;
@@ -33,8 +33,8 @@ Function SemMascara(documento : string) : string;
 Function Acha_loteamento(varloteamento: string): boolean;
 Function Acha_Cidade(varcidade: string): boolean;
 Function Verif_senha(Vargrupo,vardescricao,varhistorico: string): boolean;
-Function Verif_doc(Dados: string; vermens: boolean ): boolean;  { Verifica se o CNPJ ou CPF � valido }
-Function Empty( Dados: string ): boolean;  // verifica se uma variavel string est� vazia
+Function Verif_doc(Dados: string; vermens: boolean ): boolean;  { Verifica se o CNPJ ou CPF é válido }
+Function Empty( Dados: string ): boolean;  // verifica se uma variavel string está vazia
 function AllTrim( Dados: string ): string; //  Retira os espacos em branco da direita
 Function SysComputerName: string; // Retorna o nome do computador
 Function atualizar_estrutra : boolean;
@@ -87,7 +87,7 @@ function pergunta(texto,resp : string) :string; // pergunta string, nome do aqui
 function CHARREM(Texto     : string): string;
 // Remove caracteres de uma string deixando apenas numeros
 Function RemoveChar(Const Texto:String):String;
-//Removendo espa�os/caracteres de uma string
+//Removendo espaços/caracteres de uma string
 function TrimChar(texto: string; delchar: char): string;
 // formatar linha de boleto
 function Formatar(Texto : string; TamanhoDesejado : integer; AcrescentarADireita : boolean = true; CaracterAcrescentar : char = ' ') : string;
@@ -221,7 +221,7 @@ begin
     try
       // Cria o objeto WMI
       FSWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
-      // Conecta ao servi�o WMI
+      // Conecta ao serviço WMI
       FWMIService := FSWbemLocator.ConnectServer('.', 'root\CIMV2', '', '');
       // Executa a consulta WMI
       FWbemObjectSet := FWMIService.ExecQuery('SELECT SerialNumber FROM Win32_BaseBoard', 'WQL', 0);
@@ -229,7 +229,7 @@ begin
       oEnum := IUnknown(FWbemObjectSet._NewEnum) as IEnumVariant;
       if oEnum.Next(1, FWbemObject, iValue) = 0 then
       begin
-        // Obt�m o valor do SerialNumber
+        // Obtém o valor do SerialNumber
         Result := FWbemObject.SerialNumber;
       end;
     finally
@@ -246,7 +246,7 @@ procedure CloneDataSet(Source: TDataSet; Dest: TClientDataSet);
 var
   I: Integer;
 begin
-  // Define a estrutura do ClientDataSet igual � do dataset de origem
+  // Define a estrutura do ClientDataSet igual à do dataset de origem
   Dest.FieldDefs.Clear;
   Dest.FieldDefs.Assign(Source.FieldDefs);
   Dest.CreateDataSet;
@@ -273,12 +273,12 @@ begin
   end;
 end;
 
-// pagina��o de dbgrid
+// paginação de dbgrid
 function paginaDbgrid(const ZQuery: TZQuery; pagesize, pagenumber : Integer; Tabela,filtro,ordem: String): TZQuery;
 var
   SQL: string;
 begin
-  // Verificar se PageSize e PageNumber s�o v�lidos
+  // Verificar se PageSize e PageNumber são válidos
   if (PageSize <= 0) or (PageNumber <= 0) then
     raise Exception.Create('PageSize e PageNumber devem ser maiores que zero.');
   if (filtro<>emptystr) and (ordem<>emptystr) then
@@ -349,7 +349,7 @@ function CalendarioLunar(day, month, year : Integer):string;
                    'Lua Crescente (aumentando para cheia)',
                    'Cheia (claridade total)',
                    'Para Quarto Minguante (decrescente da cheia)',
-                   'Quarto Minguante (diminui��o do total)',
+                   'Quarto Minguante (diminuição do total)',
                    'Para Lua Nova ');
    months: array [1..12] of string = ('Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Otu', 'Nov', 'Dez');
 
@@ -381,8 +381,8 @@ function CalendarioLunar(day, month, year : Integer):string;
 
    date := IntToStr(day)+ months[month]+IntToStr(year);
 
-//   Result := 'Fase da lua em '+date+ ' � '+status+ ', claridade = '+IntToStr(light)+'%';
-   Result := 'Fase da lua �: '+status+ ', claridade = '+IntToStr(light)+'%';
+//   Result := 'Fase da lua em '+date+ ' é '+status+ ', claridade = '+IntToStr(light)+'%';
+   Result := 'Fase da lua é: '+status+ ', claridade = '+IntToStr(light)+'%';
  end;
 
 
@@ -397,7 +397,7 @@ function EstacaoDoAno(Data: TDate): String;
     else if (Mes >= '0922') and (Mes < '1221') then
        Result := 'Primavera'
     else
-       Result := 'Ver�o';
+       Result := 'Verão';
  end;
 
 function RemoveAcentos(Str:String): String;
@@ -597,7 +597,7 @@ Begin
   end;
 End;
 
-Function Verif_doc(Dados: string; vermens: boolean ): boolean;  { Verifica se o CNPJ ou CPF � valido }
+Function Verif_doc(Dados: string; vermens: boolean ): boolean;  { Verifica se o CNPJ ou CPF é válido }
 var
   Check, varsemmasc : string;
   Resto, Digito, Digito1, Digito2, varx, varcont : integer;
@@ -784,7 +784,7 @@ function StrIsInteger(const S: string): boolean;
  tamanho, x : integer;
  l, p : string;
 begin
-  p := s;                            // Esta fun��o verifica de uma
+  p := s;                            // Esta função verifica de uma
   tamanho := length(p);
   Result := True;                    // string tem apenas caracteres
   for x := 1 to tamanho do           // numericos.
@@ -828,7 +828,7 @@ begin
   end;
   {if date<DM_Tabelas.ZQEmpresadia.Value Then
   Begin
-    Showmessage('Data do computador est� incorreta, acerte a data antes de usar o sistema...');
+    Showmessage('Data do computador está incorreta, acerte a data antes de usar o sistema...');
     Result := False;
     exit;
   end;}
@@ -938,7 +938,7 @@ Begin
     end;
     IF DM_Tabelas.ZQAchaParticip.RecordCount=0 Then
     begin
-      showmessage('Participante nao Encontrado(a).');
+      showmessage('Participante não encontrado.');
       exit;
     end;
     if (Frm_AchaParticipante.Label1.Caption = 'F') or (DM_tabelas.ZQAchaParticip.RecordCount=0)  Then
@@ -1091,7 +1091,7 @@ function StrIsNumero(const S: string): boolean;
  tamanho, x : integer;
  l, p : string;
 begin
-  p := s;                            // Esta fun��o verifica de uma
+  p := s;                            // Esta função verifica de uma
   tamanho := length(p);
   Result := True;                    // string tem apenas caracteres
   for x := 1 to tamanho do           // numericos.
@@ -1210,8 +1210,8 @@ Begin
     end;
     if strtoint(valpartes[varx])=1 Then
     case varx of
-      1 : valpartesext[varx] :=  valpartesext[varx] +' Bilh�o';
-      2 : valpartesext[varx] :=  valpartesext[varx] +' Milh�o';
+      1 : valpartesext[varx] :=  valpartesext[varx] +' Bilhão';
+      2 : valpartesext[varx] :=  valpartesext[varx] +' Milhão';
       3 : valpartesext[varx] :=  valpartesext[varx] +' Mil';
       5 : valpartesext[varx] :=  valpartesext[varx] +' Centavo';
     end;
@@ -1240,7 +1240,7 @@ Function Extenso(Valor : Extended): String;
 var
 Centavos, Centena, Milhar, Milhao, Bilhao, Texto : string;
 const
-Unidades: array [1..9] of string = ('um', 'dois', 'tr�s', 'quatro',
+Unidades: array [1..9] of string = ('um', 'dois', 'três', 'quatro',
 'cinco',
 'seis', 'sete', 'oito',
 'nove');
@@ -1344,7 +1344,7 @@ Begin
   case Varnum of
     1: varext := '01 (Uma)';
     2: varext := '02 (Duas)';
-    3: varext := '03 (Tr�s)';
+    3: varext := '03 (Três)';
     4: varext := '04 (Quatro)';
     5: varext := '05 (Cinco)';
     6: varext := '06 (Seis)';
@@ -1817,7 +1817,7 @@ begin
   result := S;
 end;
 
-//Removendo espa�os/caracteres de uma string
+//Removendo espaços/caracteres de uma string
 function TrimChar(texto: string; delchar: char): string;
 var
 S: string;
@@ -1902,7 +1902,7 @@ Var Data: TDateTime;
 begin
   if DataAtual < DataVenc then
   begin
-    Result := 'A data data atual nao pode ser menor que a data inicial';
+    Result := 'A data atual não pode ser menor que a data inicial';
   end
   else
   begin

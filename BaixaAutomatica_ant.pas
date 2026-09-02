@@ -1,4 +1,4 @@
-unit BaixaAutomatica;
+﻿unit BaixaAutomatica;
 
 interface
 
@@ -183,7 +183,7 @@ begin
     if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
     begin
   //  if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-      //showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele n�o pode mais ser baixado!!!!');
+      //showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
       showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
       DM_TAbelas.ZQRemesRec.Open;
       DM_TAbelas.ZQBancRemes2.First;
@@ -375,7 +375,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 39.');
+                showmessage('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -511,7 +511,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 38.');
+                showmessage('Código do Recebimento em Branco. Coluna 38.');
               end;
             end;
           end;
@@ -647,7 +647,7 @@ begin
               end
               else
               begin
-                showmessage('C�digo do Recebimento em Branco. Coluna 39.');
+                showmessage('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -772,7 +772,7 @@ Var
 begin
   DXBProcessar.Enabled:=false;
   processou:='S';
-  if not Verif_senha('Recebimento','Processa baixa autom�tica','') then exit;
+  if not Verif_senha('Recebimento','Processa baixa automática','') then exit;
   DM_TAbelas.ZQBancRemes2.Open;
   for varx := length(OpenDialog1.FileName) to 1 do
     if copy(OpenDialog1.FileName,varx,1)='/' Then
@@ -786,7 +786,7 @@ begin
   if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
   begin
 //  if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-    //showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele n�o pode mais ser baixado!!!!');
+    //showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
     showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+' prosseguindo...');
 //    exit;
   end
@@ -895,7 +895,7 @@ begin
           DM_tabelas.ZQreceb_baixa.FieldByName('Desc_Vr').Value  := CDSArqRetornovrdesconto.Value;
           DM_tabelas.ZQreceb_baixa.FieldByName('RefBaixa').Value := DM_tabelas.ZQCobaRe.FieldByName('cotagem').Value;
           DM_tabelas.ZQreceb_baixa.FieldByName('Codcontabil').Value := DM_Tabelas.ZQConfiguracoes.FieldByName('bxautoplc').Value;
-          DM_tabelas.ZQreceb_baixa.FieldByName('obsebx').Value := 'Baixa Autom�tica';
+          DM_tabelas.ZQreceb_baixa.FieldByName('obsebx').Value := 'Baixa Automática';
           DM_tabelas.ZQReceb_Baixa.FieldByName('valor_parcela').Value := CDSArqRetornovrtit.Value;
           DM_tabelas.ZQReceb_Baixa.Post;
           DM_tabelas.ZQTipodoc.Locate('tipodoc',DM_Tabelas.ZQConfiguracoes.FieldByName('bxautodoc').Value,[]);
@@ -905,7 +905,7 @@ begin
             ZQReceb.Edit;
             if empty(ZQReceb.FieldByName('numboleto').value) then
                ZQReceb.FieldByName('numboleto').value:=CDSArqRetornonossonumero.Value;
-            ZQReceb.FieldByName('Observ').Value := 'Baixa Autom�tica';
+            ZQReceb.FieldByName('Observ').Value := 'Baixa Automática';
                 // 21/05/2014
             if (CDSArqRetornovrdesconto.Value=0) and (abs(CDSArqRetornovrarq.Value)<ZQReceb.FieldByName('saldo').Value) then
             begin
@@ -933,7 +933,7 @@ begin
           DM_tabelas.ZQCaixa.FieldByName('credeb').Value := 'C';
           DM_tabelas.ZQCaixa.FieldByName('vinculo').Value := 'R'+DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text;
           DM_tabelas.ZQCaixa.FieldByName('contracodigo').Value :=ZQReceb.FieldByName('cliente').Value;
-          DM_tabelas.ZQCaixa.FieldByName('obs').Value := 'Baixa Autom�tica';
+          DM_tabelas.ZQCaixa.FieldByName('obs').Value := 'Baixa Automática';
           IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').Value = 'S' Then Begin
               DM_tabelas.ZQCaixa.FieldByName('obs').Value :=DM_tabelas.ZQCaixa.FieldByName('obs').Value + ' Vencimento em: '+datetostr(CDSArqRetornodtvenci.Value);
           end;

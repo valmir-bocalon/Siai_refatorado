@@ -1,4 +1,4 @@
-unit Acerto_parcelas_reajuste;
+﻿unit Acerto_parcelas_reajuste;
 
 interface
 
@@ -611,7 +611,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote n�o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -1216,7 +1216,7 @@ begin
         ZQRecebimento.SQL.Add(' Select * from Recebimento where ((numboleto is null) or (numboleto='''')) and (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') and (idloteamento in ('+varloteamento+')'+') and (quadralote in ('+varquadra+')'+')  order by DT_Vencimento');
     ZQRecebimento.open;
   end;
-  showmessage('Atualiza��o completada !');
+  showmessage('Atualização completada !');
 {      varquadra := '';
       ZQRecebtmp2.First;
       barra2.Position:=0;
@@ -1316,7 +1316,7 @@ begin
   ZQEntrada.close;
   ZQParcela.close;
   ql:='';
-  // at� aqui
+  // até aqui
 
   dxButton13.Enabled:=false;
   dxButton14.Enabled:=false;

@@ -1,4 +1,4 @@
-unit RelLOTEAMENTO;
+﻿unit RelLOTEAMENTO;
 
 interface
 
@@ -217,7 +217,7 @@ begin
         if FCBS.Checked Then
           ZQImov.Filter := 'disponivel='+quotedstr('SIM')
         else
-          ZQImov.Filter := 'disponivel='+quotedstr('N�O');
+          ZQImov.Filter := 'disponivel='+quotedstr('NºO');
         ZQImov.Filtered := True;
       end;
       ZQImov.RecordCount;

@@ -1,4 +1,4 @@
-unit UCompromisso;
+﻿unit UCompromisso;
 
 interface
 
@@ -74,7 +74,7 @@ begin
    cdata:=datetoStr(Proximodiautil(strtodate(Cdata)+1));
    IF ChkLBx.Items.Count > 0 then
    begin
-      If Messagedlg('Existem compromissos n�o cumpridos,Deseja transferir para o pr�ximo dia util ?',
+      If Messagedlg('Existem compromissos não cumpridos,Deseja transferir para o próximo dia útil ?',
       mtConfirmation,[mbYes,mbNo],0)= mrYes then
       begin
          ChkLBx.ItemIndex:=0;

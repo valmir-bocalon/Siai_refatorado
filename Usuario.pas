@@ -1,4 +1,4 @@
-unit Usuario;
+﻿unit Usuario;
 
 interface
 
@@ -148,7 +148,7 @@ end;
 procedure TFrm_Usuario.Esenha2Exit(Sender: TObject);
 begin
   if Esenha2.Text <> DM_Tabelas.ZQUsuario.FieldByName('senha').AsString Then Begin
-    showmessage('Senha n�o confere...  Confirme a senha!!');
+    showmessage('Senha não confere...  Confirme a senha!!');
     DBEUsuSenha.SetFocus;
   end;
 end;
@@ -236,7 +236,7 @@ end;
 
 procedure TFrm_Usuario.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usu�rio','Gravar inclus�o ou edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usuário','Gravar inclusão ou edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
     DM_Tabelas.ZQUsuario.Post;
   desativausuario;
   DBGUsuario.SetFocus;
@@ -245,7 +245,7 @@ end;
 
 procedure TFrm_Usuario.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usu�rio','Cancelar inclus�o ou edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usuário','Cancelar inclusão ou edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
   DM_Tabelas.ZQUsuario.Cancel;
   desativausuario;
   DBGUsuario.SetFocus;
@@ -253,7 +253,7 @@ end;
 
 procedure TFrm_Usuario.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Usu�rio','inclus�o','') Then Exit;
+  if not Verif_senha('Usuário','inclusão','') Then Exit;
   Pag_Usuario.PageIndex := 0;
   DM_Tabelas.ZQUsuario.Insert;
   ativausuario;
@@ -262,7 +262,7 @@ end;
 
 procedure TFrm_Usuario.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usu�rio','Edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usuário','Edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
   DM_Tabelas.ZQUsuario.Edit;
   ativausuario;
   if Pag_Usuario.PageIndex = 0 then
@@ -273,7 +273,7 @@ end;
 
 procedure TFrm_Usuario.BTExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Usu�rio','Exclus�o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usuário','Exclusão','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
   DM_Tabelas.ZQUsuario.Delete;
 end;
 

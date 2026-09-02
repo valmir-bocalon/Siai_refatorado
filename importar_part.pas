@@ -1,4 +1,4 @@
-unit importar_part;
+﻿unit importar_part;
 
 interface
 
@@ -512,7 +512,7 @@ begin
        ZQCompr_conjuge.first;
        if ZQCompr_conjuge.RecordCount>0 then
        begin
-         msg.Caption:='Conjug�                                ';
+         msg.Caption:='Cônjuge                                ';
          application.ProcessMessages;
          ProgressBar2.Position:=0;
          ProgressBar2.Max:=ZQCompr_conjuge.RecordCount;

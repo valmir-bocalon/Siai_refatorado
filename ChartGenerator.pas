@@ -1,4 +1,4 @@
-unit ChartGenerator;
+﻿unit ChartGenerator;
 
 interface
 
@@ -814,7 +814,7 @@ begin
     Exit;
   if not SelecionarImpressoraPadraoWindows(NomeImpressora) then
   begin
-    MessageDlg('Nao foi possivel imprimir o grafico: nenhuma impressora valida esta disponivel.', mtWarning, [mbOK], 0);
+    MessageDlg('Não foi possível imprimir o grafico: nenhuma impressora valida esta disponivel.', mtWarning, [mbOK], 0);
     Exit;
   end;
   Bmp := TBitmap.Create;
@@ -894,7 +894,7 @@ begin
       except
         on E: Exception do
           if E is EPrinter then
-            MessageDlg('Nao foi possivel imprimir o grafico porque a impressora padrao nao esta disponivel.', mtWarning, [mbOK], 0)
+            MessageDlg('Não foi possível imprimir o grafico porque a impressora padrao nao esta disponivel.', mtWarning, [mbOK], 0)
           else
             raise;
       end;

@@ -1,4 +1,4 @@
-unit UFrmVisualizar;
+﻿unit UFrmVisualizar;
 
 interface
 
@@ -76,7 +76,7 @@ begin
   try
     frmvisualizar.FormStyle:=fsNormal;
     QRPreview1.ZoomToWidth;
-//    if Pergunta('Confirma a Impress�o ?')='S'then
+//    if Pergunta('Confirma a Impressão ?')='S'then
        QRPreview1.QRPrinter.Print;
   finally
     frmvisualizar.FormStyle:=fsStayOnTop;

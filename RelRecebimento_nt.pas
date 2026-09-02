@@ -1,4 +1,4 @@
-unit RelRecebimento_nt;
+﻿unit RelRecebimento_nt;
 
 interface
 
@@ -1040,7 +1040,7 @@ begin
       ZROQReceb.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
       ZROQReceb.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZROQReceb.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' � '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' até '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
@@ -1048,7 +1048,7 @@ begin
       ZROQReceb.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' � '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' até '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and RB.DT_Rec between :dt5 and :dt6');
@@ -1056,7 +1056,7 @@ begin
       ZROQReceb.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' � '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' até '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and RB.vencimento between :dt7 and :dt8');
@@ -1064,12 +1064,12 @@ begin
       ZROQReceb.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Refer�ncia de '+XDERefInicio.DateText+' � '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' até '+XDERefFinal.DateText;
     end;
     ZROQReceb.SQL.Add(' group by RB.tipdoc ');
     ZROQReceb.Open;
 //    if not empty(vrtexto) Then
-//      FRM_Recebi03.RLLabel2.Caption := 'Per�odo de : '+vrtexto;
+//      FRM_Recebi03.RLLabel2.Caption := 'Período de : '+vrtexto;
 //    FRM_Recebi03.XNumEdit1.Value := 0;
     while not ZROQReceb.Eof do begin
       CDSTipoDoc.Insert;
@@ -1123,7 +1123,7 @@ begin
       FRM_Recebi03.XNumEdit2.Value := 0;
       FRM_Recebi03.XNumEdit3.Value := 0;
       if not empty(vrtexto) Then
-        FRM_Recebi03.RLLabel2.Caption := 'Per�odo de : '+vrtexto;
+        FRM_Recebi03.RLLabel2.Caption := 'Período de : '+vrtexto;
       FRM_Recebi03.XNumEdit1.Value := 0;
       ZROQReceb.First;
       while not ZROQReceb.Eof do begin
@@ -1197,7 +1197,7 @@ begin
         end
         else
         begin
-          showmessage('Nada Encontrado para o Relat�rio');
+          showmessage('Nada Encontrado para o Relatório');
           QReceb1.close;
           exit;
         end;
@@ -1244,7 +1244,7 @@ begin
       FRM_Recebi04.XNumEdit2.Value := 0;
       FRM_Recebi04.XNumEdit3.Value := 0;
       if not empty(vrtexto) Then
-        FRM_Recebi04.RLLabel2.Caption := 'Per�odo de : '+vrtexto;
+        FRM_Recebi04.RLLabel2.Caption := 'Período de : '+vrtexto;
       FRM_Recebi04.XNumEdit1.Value := 0;
       if dxbx.ItemIndex=1 then
       begin
@@ -1344,11 +1344,11 @@ begin
   end;
   vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
   if not empty(XDEVencimentoInicio.Text) Then
-    vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' � '+XDEVencimentoFinal.Text;
+    vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' até '+XDEVencimentoFinal.Text;
   if not empty(XDEEntradaInicio.Text) Then
-    vartitulo := vartitulo + ', com Emiss�o de '+XDEEntradaInicio.Text+' � '+XDEEntradaFinal.Text;
+    vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' até '+XDEEntradaFinal.Text;
   if not empty(XDEBaixasInicio.Text) Then
-    vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' � '+XDEBaixasFinal.Text;
+    vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' até '+XDEBaixasFinal.Text;
   vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
   ZQTempReceber.SQL.Clear;
   ZQTempReceber.SQL.Add('select * from (recebimento as RE join participante as CL on idpaticipante=cliente)');
@@ -1492,7 +1492,7 @@ begin
       CDSDetalmascara.Value := ZQTempReceber.FieldByName('planomascara').Value;
       CDSDetalvalor.Value := ZQTempReceber.FieldByName('Valor').Value;
       CDSDetaldata.Value := ZQTempReceber.FieldByName('Dt_Vencimento').Value;
-      CDSDetaldetalhe.Value := 'Lan�: '+ZQTempReceber.FieldByName('idrecebimento').Text+'  Participante: '+ZQTempReceber.FieldByName('nome_parte').Value+'      Adversa: '+ZQTempReceber.FieldByName('adversanome').Value+chr(13);
+      CDSDetaldetalhe.Value := 'Lanç: '+ZQTempReceber.FieldByName('idrecebimento').Text+'  Participante: '+ZQTempReceber.FieldByName('nome_parte').Value+'      Adversa: '+ZQTempReceber.FieldByName('adversanome').Value+chr(13);
       CDSDetaldetalhe.Value := CDSDetaldetalhe.Value + ZQTempReceber.FieldByName('Observ').Value;
       ZQTempReceber.Next;
     end;
@@ -1629,7 +1629,7 @@ begin
         XDEEntradaFinal.DateValue := ZQVen1.FieldByName('datavenda').Value;
     end
     else
-      Showmessage('Esta Quadra e lote n�o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

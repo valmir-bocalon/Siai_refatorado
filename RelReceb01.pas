@@ -1,4 +1,4 @@
-unit RelReceb01;
+﻿unit RelReceb01;
 
 interface
 
@@ -115,7 +115,7 @@ end;
 procedure TFrmRelReceb01.QRBand1BeforePrint(Sender: TQRCustomBand;
   var PrintBand: Boolean);
 begin
-  QRLabel12.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
+  QRLabel12.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 

@@ -1,4 +1,4 @@
-
+﻿
 
 unit quitacao;
 
@@ -761,13 +761,13 @@ begin
 
   if empty(CBTipobaixa.Text) then
   begin
-    showmessage('Selecione o tipo de opera��o !');
+    showmessage('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     exit;
   end;  
   if empty(EMNovostit.Text) then
   begin
-    showmessage('Digite o Hist�rico da Quita��o !');
+    showmessage('Digite o Histórico da Quitação !');
     EMNovostit.SetFocus;
     exit;
   end;
@@ -806,7 +806,7 @@ begin
   begin
     BarraVertical.Progress:=CDSParcelas.RecNo * 100 div CDSParcelas.RecordCount;
     inc(contador);
-    if (CBTipobaixa.Text<>'QUITA��O')  then
+    if (CBTipobaixa.Text<>'QUITAÇÃO')  then
     begin
       DM_tabelas.ZQReceb_Baixa.Insert;
       DM_tabelas.ZQreceb_baixa.FieldByName('Vr_rec').Value := (CDSParcelasVrParc.Value+CDSParcelasjuros.Value)-CDSParcelasdesconto.Value;
@@ -874,7 +874,7 @@ begin
       varsomarepasse := varsomarepasse + CDSParcelasVrParc.Value;
    // if DM_tabelas.ZQTipodocreceb_receb.Value = 'S' Then
    // Begin
-      if (CBTipobaixa.Text<>'QUITA��O') then
+      if (CBTipobaixa.Text<>'QUITAÇÃO') then
       begin
         if empty(varnumordem1) Then
         Begin
@@ -917,7 +917,7 @@ begin
         DM_tabelas.ZQRecebimento.FieldByName('sq').Value := contador;
         DM_tabelas.ZQRecebimento.Post;
       end
-      else if (CBTipobaixa.Text='QUITA��O')  then
+      else if (CBTipobaixa.Text='QUITAÇÃO')  then
       begin
         if empty(varnumordem1) Then
         Begin
@@ -967,7 +967,7 @@ begin
     //end;
     if DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').Value='S' Then
     Begin
-      if (CBTipobaixa.Text<>'QUITA��O')then
+      if (CBTipobaixa.Text<>'QUITAÇÃO')then
       begin
         DM_tabelas.ZQCaixa.Insert;
         DM_tabelas.ZQCaixa.FieldByName('plano_contas_codigo').Value := CDSParcelascodContabil.Value;
@@ -1020,7 +1020,7 @@ begin
     end;
     IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').Value = 'S' Then
     Begin
-      if (CBTipobaixa.Text<>'QUITA��O') then
+      if (CBTipobaixa.Text<>'QUITAÇÃO') then
       begin
         DM_tabelas.ZQCheque.Insert;
         DM_tabelas.ZQCheque.FieldByName('Banco').Value := CdSParcelasBanco.Value;
@@ -1038,7 +1038,7 @@ begin
         DM_tabelas.ZQCheque.FieldByName('sq').Value := contador;
         DM_tabelas.ZQCheque.Post;
       end
-      else if (CBTipobaixa.Text='QUITA��O') then
+      else if (CBTipobaixa.Text='QUITAÇÃO') then
       begin
         DM_tabelas.ZQCheque.Insert;
         DM_tabelas.ZQCheque.FieldByName('Banco').Value := CdSParcelasBanco.Value;
@@ -1059,7 +1059,7 @@ begin
       end;
     end;
     if DM_tabelas.ZQTipoDoc.FieldByName('lancabanco').Value = 'S' Then Begin
-      if (CBTipobaixa.Text<>'QUITA��O') then
+      if (CBTipobaixa.Text<>'QUITAÇÃO') then
       begin
         DM_Tabelas.ZQMovBancaria.Insert;
         DM_Tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Value := DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Value;
@@ -1081,7 +1081,7 @@ begin
         DM_Tabelas.ZQMovBancaria.Post;
         //      CalcSaldo('','',False);
       end
-      else if (CBTipobaixa.Text='QUITA��O') then
+      else if (CBTipobaixa.Text='QUITAÇÃO') then
       begin
         DM_Tabelas.ZQMovBancaria.Insert;
         DM_Tabelas.ZQMovBancaria.FieldByName('conta_bancaria_cod_banco').Value := DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Value;
@@ -1108,7 +1108,7 @@ begin
     CDSParcelas.Next;
   end;
   CDSParcelas.EnableControls;
-  // hist�rico do QUITA��O 06/08/2010
+  // histórico do QUITAÇÃO 06/08/2010
   CDSParcelas.Prior;
   zqQUITACAO.close;
   zqQUITACAO.Open;
@@ -1120,7 +1120,7 @@ begin
   zqQUITACAO.post;
   zqQUITACAO.close;
   CDSParcelas.Last;
-  // at� aqui
+  // até aqui
 
   BarraVertical.Progress:=0;
 //  BarraVertical.Visible:=false;
@@ -1342,7 +1342,7 @@ begin
 
 
 
-  // altera��o do valor de venda 28/08/2010
+  // alteração do valor de venda 28/08/2010
   ZqRecBai.First;
   posi:=pos('-',ql);
   dec(posi);
@@ -1374,7 +1374,7 @@ begin
   ZQEntrada.close;
   ZQParcela.close;
   ql:='';
-  // at� aqui
+  // até aqui
 
 
   DBGBaixando.Refresh;
@@ -1408,7 +1408,7 @@ begin
 
   //  FrmImpRecibo.showmodal;
 ///
-{  if perguntaSN('Gerar Recibo de Quita��o ?','S') Then Begin
+{  if perguntaSN('Gerar Recibo de Quitação ?','S') Then Begin
     FrmRelRecibodeQuita.ZQForma.SQL.Clear;
     FrmRelRecibodeQuita.ZQForma.SQL.Add('Select * from receb_baixa where refbaixa='+DM_tabelas.ZQCobaRecotagem.Text);
     FrmRelRecibodeQuita.ZQForma.Open;
@@ -1447,7 +1447,7 @@ begin
     DM_tabelas.ZQTipodoc.Locate('tipodoc',DBCBTipDoc.Text,[]);
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').Value='S' Then Begin
       if (datetostr(CDSParcelasVenci.Value)<>vecto1.Datetext) and ((CDSParcelasTipDoc.Value<>'DP')) Then BEgin
-        showmessage('Este tipo de documento s� aceita pagamento a vista!!!');
+        showmessage('Este tipo de documento só aceita pagamento a vista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -1569,7 +1569,7 @@ procedure TFrmquitacao.EContabilExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
     if empty(Econtabil.text) Then Begin
-      showmessage('O Descri��o cont�bil n�o pode ficar em branco....');
+      showmessage('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -1595,23 +1595,23 @@ procedure TFrmquitacao.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento ja foi lan�ado anteriormente... corriga a numera��o.....');
+      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque ja foi lan�ado anteriormente... corriga a numera��o.....');
+      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.Value),VarDoc)>0) Then Begin
-      showmessage('Este cheque ja foi lan�ado nesta inclus�o... corriga a numera��o.....');
+      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo N� do cheque deve ser preenchido...');
+      showmessage('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}

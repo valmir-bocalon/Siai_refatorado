@@ -1,4 +1,4 @@
-unit UFrmContasBancarias;
+﻿unit UFrmContasBancarias;
 
 interface
 
@@ -272,7 +272,7 @@ Begin
   end
   else Begin
     RBVariavel.Checked := True;
-    Label19.Caption :='% p/ Calculo do Vlr. Mora Di�ria';
+    Label19.Caption :='% p/ Calculo do Vlr. Mora Diária';
   end;
 //  Label20.Caption := INTTOSTR(DM_Tabelas.ZQRemes_Receb.RecordCount);
   botoes_setas;
@@ -436,14 +436,14 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Conta Banc�ria','Confirma��o de Inclus�o ou Edi��o  (Bot�o GRAVAR)','') then exit;
+  if not Verif_senha('Conta Bancária','Confirmação de Inclusão ou Edição  (Botão GRAVAR)','') then exit;
   if RBFixo.Checked = True Then Begin
     DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString := 'F';
     Label19.Caption := 'Valor. Fixo';
   end
   else Begin
     DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString := 'V';
-    Label19.Caption :='% p/ Calculo do Vlr. Mora Di�ria';
+    Label19.Caption :='% p/ Calculo do Vlr. Mora Diária';
   end;
   DM_tabelas.ZQContaBancaria.Post;
 
@@ -464,7 +464,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBCancelarClick(Sender: TObject);
 begin
-   if not Verif_senha('Conta Banc�ria','Cancelamento de Inclus�o ou Edi��o (Bot�o CANCELAR) ','') then exit;
+   if not Verif_senha('Conta Bancária','Cancelamento de Inclusão ou Edição (Botão CANCELAR) ','') then exit;
    DM_tabelas.ZQContaBancaria.Cancel;
    Desativar_campos;
 end;
@@ -476,7 +476,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Conta Banc�ria','Incluir Conta Banc�ria','') then exit;
+  if not Verif_senha('Conta Bancária','Incluir Conta Bancária','') then exit;
   Ativar_Campos;
   DM_tabelas.ZQContaBancaria.Insert;
   PagContaBanco.PageIndex := 0;
@@ -485,7 +485,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBEditarClick(Sender: TObject);
 begin
-   if not Verif_senha('Conta Banc�ria','Editar Conta Banc�ria','C�d. interno: '+DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
+   if not Verif_senha('Conta Bancária','Editar Conta Bancária','Cód. interno: '+DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
    Ativar_campos;
    DM_tabelas.ZQContaBancaria.Edit;
    if PagContaBanco.PageIndex = 0 Then
@@ -499,7 +499,7 @@ var
   varcod : string;
 begin
   if PagContaBanco.PageIndex = 0 Then Begin
-    if not Verif_senha('Conta Banc�ria','Excluir Conta Banc�ria','C�d.: '+ DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
+    if not Verif_senha('Conta Bancária','Excluir Conta Bancária','Cód.: '+ DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
     if DM_tabelas.ZQContaBancaria.RecordCount>0 then begin
       varcod := DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text;
       DM_tabelas.ZQContaBancaria.SQL.Clear;
@@ -527,7 +527,7 @@ begin
     end;
   end;
   if PagContaBanco.PageIndex = 1 Then Begin
-    if not Verif_senha('Conta Banc�ria','Excluir Remessa',' n� da remessa '+DM_tabelas.ZQBancRemes.FieldByName('remessa').Text+' da conta '+DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
+    if not Verif_senha('Conta Bancária','Excluir Remessa',' nº da remessa '+DM_tabelas.ZQBancRemes.FieldByName('remessa').Text+' da conta '+DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
     DM_Tabelas.ZQRemesRec.SQL.Clear;
     DM_Tabelas.ZQRemesRec.SQL.Add('delete from remessa_receb where remessa='+quotedstr(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Text));
     DM_Tabelas.ZQRemesRec.ExecSQL;
@@ -578,7 +578,7 @@ begin
   end
   else
   begin
-    if not Verif_senha('Conta Banc�ria','Mostrar Senhas','C�d. Conta: '+ DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
+    if not Verif_senha('Conta Bancária','Mostrar Senhas','Cód. Conta: '+ DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
     DBESenhainterna.Visible := True;
     DBESenhaBancaria.Visible := True;
     IF DM_tabelas.ZQContaBancaria.State in [dsEdit, dsInsert] then Begin
@@ -605,7 +605,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBGravarespecialClick(Sender: TObject);
 begin
-  if not Verif_senha('BANCO - Hist. Lim. Especial','Confirma��o de Inclus�o ou Edi��o','Conta: '+ DM_tabelas.ZQEspecial.FieldByName('Conta_Bancaria_cod_banco').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('data_valida').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('valor').Text) then exit;
+  if not Verif_senha('BANCO - Hist. Lim. Especial','Confirmação de Inclusão ou Edição','Conta: '+ DM_tabelas.ZQEspecial.FieldByName('Conta_Bancaria_cod_banco').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('data_valida').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('valor').Text) then exit;
   DM_tabelas.ZQEspecial.FieldByName('Conta_Bancaria_cod_banco').AsInteger := DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsLargeInt;
   DM_tabelas.ZQEspecial.Post;
   DM_tabelas.ZQEspecial.Refresh;
@@ -615,7 +615,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DXBCancelarEspecialClick(Sender: TObject);
 begin
-  if not Verif_senha('BANCO - Hist. Lim. Especial','Cancelamento de Inclus�o ou Edi��o','Conta: '+ DM_tabelas.ZQEspecial.FieldByName('Conta_Bancaria_cod_banco').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('data_valida').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('valor').Text) then exit;
+  if not Verif_senha('BANCO - Hist. Lim. Especial','Cancelamento de Inclusão ou Edição','Conta: '+ DM_tabelas.ZQEspecial.FieldByName('Conta_Bancaria_cod_banco').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('data_valida').Text+'  '+DM_tabelas.ZQEspecial.FieldByName('valor').Text) then exit;
   DM_tabelas.ZQEspecial.Cancel;
   desativar_campos;
 end;
@@ -678,7 +678,7 @@ begin
       DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString := 'F';
     end
     else Begin
-      Label19.Caption :='% p/ Calculo do Vlr. Mora Di�ria';
+      Label19.Caption :='% p/ Calculo do Vlr. Mora Diária';
       DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString := 'V';
     end;
   end;
@@ -725,7 +725,7 @@ procedure TFrmCad_ContasBancarias.dxButtonREMESSAClick(Sender: TObject);
 var
 rg:TBookMark;
 begin
-  if not Verif_senha('Conta Banc�ria','Remessas','') Then Exit;
+  if not Verif_senha('Conta Bancária','Remessas','') Then Exit;
 //  Frm_RelREMESSA.Top := Frm_RelREMESSA.Top+105;
   //Frm_RelREMESSA.Left := Frm_RelREMESSA.Left-5+(Frm_RelREMESSA.Width-Frm_RelREMESSA.Width);
   numero.Caption:=DM_Tabelas.ZQBancRemes.FieldByName('gerado').Text+DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString;
@@ -817,7 +817,7 @@ end;
 
 procedure TFrmCad_ContasBancarias.DBEdit8Enter(Sender: TObject);
 begin
-  if not Verif_senha('Conta Banc�ria','Nosso N�mero','') then exit;
+  if not Verif_senha('Conta Bancária','Nosso Número','') then exit;
 end;
 
 
