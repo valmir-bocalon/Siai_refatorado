@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, ZConnection, ZDataset, SysUtils, Math,
-  Dialogs, GraphUtil, DB, Printers, ExtCtrls;
+  Dialogs, DB, Printers, ExtCtrls;
 
 type
   TChartType = (ctBar, ctLine, ctPie);
@@ -50,9 +50,6 @@ procedure PrintPaintBoxChart(PaintBox: TPaintBox; const Title: string = '';
 
 implementation
 
-uses
-  UPrinterUtils;
-
 const
   DEFAULT_MARGIN = 40;
   COLOR_PALETTE: array[0..11] of TColor = (
@@ -60,6 +57,25 @@ const
     $0C58BC5, $08BC5C5, $0C090C5, $0F9CEA4,
     $0677C52, $05C758B, $0340044, $0171717
   );
+
+function SelecionarImpressoraPadraoWindows(out ANome: string): Boolean;
+begin
+  ANome := '';
+  Result := False;
+  try
+    Printer.Refresh;
+    if Printer.Printers.Count = 0 then
+      Exit;
+    if (Printer.PrinterIndex < 0) or
+       (Printer.PrinterIndex >= Printer.Printers.Count) then
+      Printer.PrinterIndex := 0;
+    ANome := Printer.Printers[Printer.PrinterIndex];
+    Result := Trim(ANome) <> '';
+  except
+    ANome := '';
+    Result := False;
+  end;
+end;
 
 function FormatYValue(Value: Double): string;
 var
@@ -272,8 +288,15 @@ var
   begin
     if (SeriesIndex >= 0) and (SeriesIndex <= High(Series)) and
        (DataIndex >= 0) and (DataIndex <= High(Series[SeriesIndex].Data)) then
-      Result := ShadeSeriesColor(Series[SeriesIndex].Color,
-        MonthColorIndex(Series[SeriesIndex].Data[DataIndex].XValue, DataIndex))
+    begin
+      { Barras usam a cor da serie sem variacao por mes. As linhas mantem
+        a variacao de tonalidade para diferenciar periodos. }
+      if ChartType = ctBar then
+        Result := Series[SeriesIndex].Color
+      else
+        Result := ShadeSeriesColor(Series[SeriesIndex].Color,
+          MonthColorIndex(Series[SeriesIndex].Data[DataIndex].XValue, DataIndex));
+    end
     else
       Result := COLOR_PALETTE[(DataIndex + (SeriesIndex * 5)) mod Length(COLOR_PALETTE)];
   end;
@@ -907,8 +930,6 @@ begin
 end;
 
 end.
-
-
 
 
 

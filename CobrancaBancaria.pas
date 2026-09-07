@@ -8,7 +8,7 @@ uses
   DBCtrls, DB, Gauges, XDBEdit, DBClient, ImgList, IniFiles,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, RLSaveDialog, RLFilters,
   RLPDFFilter, RLBoleto, dxCore2, ExtCtrls, System.ImageList, ACBrBoleto,ACBrBoletoConversao,
-  ACBrBoletoFCFortesFr, ACBrBase;
+  ACBrBase, ACBrBoletoFCFortesFr;
 
 type
   TFrmCobrancaBancaria = class(TForm)

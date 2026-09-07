@@ -119,6 +119,15 @@ type
   private
     { Private declarations }
 
+    FPaintBoxGrafico1: TPaintBox;
+    FPaintBoxGrafico2: TPaintBox;
+    FPaintBoxGrafico3: TPaintBox;
+    procedure CriarGraficosRuntime;
+    procedure PintarGrafico1(Sender: TObject);
+    procedure PintarGrafico2(Sender: TObject);
+    procedure PintarGrafico3(Sender: TObject);
+    procedure InvalidarGraficosRuntime;
+
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -129,13 +138,91 @@ var
 
 implementation
 
-uses Tabelas, Principal,Funcoes , uRuntimeFields;
+uses Tabelas, Principal,Funcoes , uRuntimeFields, ChartGenerator;
 
 {$R *.dfm}
 
+procedure TFrmDash.CriarGraficosRuntime;
+  procedure CriarPaintBox(Chart: TDBChart; var PaintBox: TPaintBox;
+    PaintHandler: TNotifyEvent);
+  begin
+    if PaintBox <> nil then
+      Exit;
+    if (Chart = nil) or (Chart.Parent = nil) then
+      Exit;
+    PaintBox := TPaintBox.Create(Self);
+    PaintBox.Parent := Chart.Parent;
+    PaintBox.SetBounds(Chart.Left, Chart.Top, Chart.Width, Chart.Height);
+    PaintBox.Anchors := Chart.Anchors;
+    PaintBox.OnPaint := PaintHandler;
+    Chart.Visible := False;
+    PaintBox.BringToFront;
+  end;
+begin
+  CriarPaintBox(DBChart1, FPaintBoxGrafico1, PintarGrafico1);
+  CriarPaintBox(DBChart2, FPaintBoxGrafico2, PintarGrafico2);
+  CriarPaintBox(DBChart3, FPaintBoxGrafico3, PintarGrafico3);
+end;
+
+procedure TFrmDash.PintarGrafico1(Sender: TObject);
+var
+  Series: TChartSeriesArray;
+begin
+  if FPaintBoxGrafico1 = nil then
+    Exit;
+  LoadChartSeriesFromDataSet(CDSResult, 'Texto',
+    ['Total', 'Disponivel', 'Nao Disponivel'],
+    ['TotalLotes', 'total_disponivel', 'Total_nao_disponivel'],
+    [clBlue, clLime, clRed], Series);
+  GenerateMultiSeriesChart(FPaintBoxGrafico1.Canvas, Series, ctBar,
+    FPaintBoxGrafico1.ClientWidth, FPaintBoxGrafico1.ClientHeight,
+    'Lotes', clWhite, True, True, True, False);
+end;
+
+procedure TFrmDash.PintarGrafico2(Sender: TObject);
+var
+  Series: TChartSeriesArray;
+begin
+  if FPaintBoxGrafico2 = nil then
+    Exit;
+  LoadChartSeriesFromDataSet(CDSResultT, 'texto',
+    ['Total', 'Abertos', 'Atrasados', 'Baixados'],
+    ['TotalParcela', 'aberto', 'atrasado', 'baixado'],
+    [clBlue, clLime, clRed, clOlive], Series);
+  GenerateMultiSeriesChart(FPaintBoxGrafico2.Canvas, Series, ctBar,
+    FPaintBoxGrafico2.ClientWidth, FPaintBoxGrafico2.ClientHeight,
+    'Total de Parcelas Valores', clWhite, True, True, True, False);
+end;
+
+procedure TFrmDash.PintarGrafico3(Sender: TObject);
+var
+  Series: TChartSeriesArray;
+begin
+  if FPaintBoxGrafico3 = nil then
+    Exit;
+  LoadChartSeriesFromDataSet(CDSResultP, 'texto',
+    ['Total', 'Abertos', 'Atrasados', 'Baixados'],
+    ['TotalParcela', 'aberto', 'atrasado', 'baixado'],
+    [clBlue, clLime, clRed, clOlive], Series);
+  GenerateMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctBar,
+    FPaintBoxGrafico3.ClientWidth, FPaintBoxGrafico3.ClientHeight,
+    'Total de Parcelas', clWhite, True, True, True, False);
+end;
+
+procedure TFrmDash.InvalidarGraficosRuntime;
+begin
+  if FPaintBoxGrafico1 <> nil then
+    FPaintBoxGrafico1.Invalidate;
+  if FPaintBoxGrafico2 <> nil then
+    FPaintBoxGrafico2.Invalidate;
+  if FPaintBoxGrafico3 <> nil then
+    FPaintBoxGrafico3.Invalidate;
+end;
+
 procedure TFrmDash.dxButton1Click(Sender: TObject);
 begin
-  DBChart3.Print;
+  if FPaintBoxGrafico3 <> nil then
+    PrintPaintBoxChart(FPaintBoxGrafico3, 'Total de Parcelas', True);
 end;
 
 procedure TFrmDash.dxButton3Click(Sender: TObject);
@@ -315,16 +402,25 @@ begin
    CDSResultT.Post;
 
 
+   InvalidarGraficosRuntime;
 end;
 procedure TFrmDash.dxButton5Click(Sender: TObject);
 begin
-  DBChart1.Print;
+  if FPaintBoxGrafico1 <> nil then
+    PrintPaintBoxChart(FPaintBoxGrafico1, 'Lotes', True);
 end;
 
 procedure TFrmDash.dxButton7Click(Sender: TObject);
+var
+  Captura: TBitmap;
 begin
-  Image1.Picture.Assign(CapturaTela);
-  Image1.Picture.SaveToFile(ExtractFilePath(Application.ExeName)+'Dashboard.jpg');
+  Captura := CapturaTela;
+  try
+    Image1.Picture.Assign(Captura);
+    Image1.Picture.SaveToFile(ExtractFilePath(Application.ExeName)+'Dashboard.jpg');
+  finally
+    Captura.Free;
+  end;
   showmessage('O printe foi gravado na pasta do sistema com nome "Dashboard.jpg"');
 end;
 
@@ -358,6 +454,7 @@ procedure TFrmDash.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  CriarGraficosRuntime;
 end;
 
 end.
