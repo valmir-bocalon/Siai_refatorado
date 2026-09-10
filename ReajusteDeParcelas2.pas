@@ -758,7 +758,12 @@ begin
 //  FrmAchaReceb.showmodal;
   FrmPesqRecebimento2.Top := Frm_ReajusteDeParcelas2.Top+100;
   FrmPesqRecebimento2.Left := Frm_ReajusteDeParcelas2.Left;
-  FrmPesqRecebimento2.showmodal;
+  FrmPesqRecebimento2Target := Self;
+  try
+    FrmPesqRecebimento2.showmodal;
+  finally
+    FrmPesqRecebimento2Target := nil;
+  end;
   DBGReceb.SetFocus;
 
 end;

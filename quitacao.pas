@@ -1918,7 +1918,11 @@ Begin
            vartipo := vartipo + quotedstr(DM_Tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString)+',';
         DM_Tabelas.ZQTipodoc.Next;
       end;
-      vartipo := copy(vartipo,1,length(vartipo)-1);
+      // Evita gerar IN () quando nenhum tipo de documento de cheque estiver configurado.
+      if vartipo = '' then
+        vartipo := quotedstr('')
+      else
+        vartipo := copy(vartipo,1,length(vartipo)-1);
 
 
 
@@ -2032,7 +2036,11 @@ Begin
            vartipo := vartipo + quotedstr(DM_Tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString)+',';
         DM_Tabelas.ZQTipodoc.Next;
       end;
-      vartipo := copy(vartipo,1,length(vartipo)-1);
+      // Evita gerar IN () quando nenhum tipo de documento de cheque estiver configurado.
+      if vartipo = '' then
+        vartipo := quotedstr('')
+      else
+        vartipo := copy(vartipo,1,length(vartipo)-1);
 
 
 

@@ -87,6 +87,10 @@ procedure TFrmRelReajuste2.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
   RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
+  { O relatorio deve usar os campos calculados do dataset do relatorio,
+    e nao o nome antigo gravado no titulo. }
+  RLDBText2.DataField := 'nome_loteamento';
+  RLDBText18.DataField := 'adversanome';
 end;
 
 procedure TFrmRelReajuste2.RLGroup1BeforePrint(Sender: TObject;
@@ -96,10 +100,10 @@ begin
     begin
       case FrmRelRecebimento.RGOrdem.ItemIndex of
         0:FrmRelReajuste2.RLLabel16.Caption:='Vencimento: '+FrmRelRecebimento.ZQRecebimento.FieldByName('Dt_Vencimento').Text;
-        1:FrmRelReajuste2.RLLabel16.Caption:='Comprador: '+FrmRelRecebimento.ZQRecebimento.FieldByName('nomeadversa').Text;
+        1:FrmRelReajuste2.RLLabel16.Caption:='Comprador: '+FrmRelRecebimento.ZQRecebimento.FieldByName('adversanome').Text;
         2:FrmRelReajuste2.RLLabel16.Caption:='Quadra-Lote: '+FrmRelRecebimento.ZQRecebimento.FieldByName('quadralote').Text;
         3:FrmRelReajuste2.RLLabel16.Caption:='Tipo Documento: '+FrmRelRecebimento.ZQRecebimento.FieldByName('TipDoc').Text;
-        4:FrmRelReajuste2.RLLabel16.Caption:='Loteamento: '+FrmRelRecebimento.ZQRecebimento.FieldByName('idloteamento').Text;
+        4:FrmRelReajuste2.RLLabel16.Caption:='Loteamento: '+FrmRelRecebimento.ZQRecebimento.FieldByName('nome_loteamento').Text;
       end;
     end;
 end;

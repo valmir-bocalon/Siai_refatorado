@@ -1967,8 +1967,14 @@ begin
 
 
          // coloquei 28/11/2011
+        { Use uma tabela temporaria da conexao. Isso evita conflito com
+          objetos persistentes antigos chamados relquitados. }
+        ZQquitados.Close;
         ZQquitados.SQL.Clear;
-        ZQquitados.SQL.Add('CREATE OR REPLACE VIEW `'+varschemata+'`.`relquitados` AS ');
+        ZQquitados.SQL.Add('DROP TEMPORARY TABLE IF EXISTS `'+varschemata+'`.`relquitados`');
+        ZQquitados.ExecSQL;
+        ZQquitados.SQL.Clear;
+        ZQquitados.SQL.Add('CREATE TEMPORARY TABLE `'+varschemata+'`.`relquitados` AS ');
         ZQquitados.SQL.Add(' Select v.idvenda,v.datavenda,v.multa as mult,v.mora as mor,v.imovel,v.valorvenda,v.forma_reajuste,v.tabela_Price,v.Escriturado,v.marca,v.codigo_contrato_ref,v.Perc_comissao,v.vlr_comissao,i.idimovel,i.loteamento_idloteamento,');
         ZQquitados.SQL.Add(' i.quadra,i.lote,i.lado,i.medidafrente,i.medidafundo,i.medidaesquerda,i.medidadedireita,i.area,i.confrontofrente,i.confrontofundo,i.confrontodireita,i.confrontoesquerda,i.esquinanome,');
         ZQquitados.SQL.Add(' i.esquinalinha,i.esquinacurva,i.valorvenal,i.Obervacaoloteamento,i.cornomapa,i.disponivel,i.matri,i.matricula,i.proposta,i.valorCusto,r.idrecebimento,r.documento,r.cliente,r.usuario,');
@@ -2441,7 +2447,7 @@ begin
             ZQrelquitados.SQL.Add('  join venda as vd on rb.venda_idvenda=vd.idvenda join loteamento as lt on rb.idloteamento=lt.idloteamento');
            // ZQrelquitados.SQL.Add('  join  participante as pt on rb.adversa=pt.idpaticipante');
 
-            ZQquitados.SQL.Add(' join comprador as c on c.venda_idvenda=rb.venda_idvenda join participante as pt on pt.idpaticipante=c.paticipante_idpaticipante ');
+            ZQrelquitados.SQL.Add(' join comprador as c on c.venda_idvenda=rb.venda_idvenda join participante as pt on pt.idpaticipante=c.paticipante_idpaticipante ');
 
 //           ZQrelquitados.SQL.Add('   where rb.saldo=0 and vd.datavenda between :dt1 and :dt2 ');
             ZQrelquitados.SQL.Add('   where vd.datavenda between :dt1 and :dt2 ');
@@ -2650,8 +2656,12 @@ begin
         begin
           ZQTemp3.close;
           ZQTemp3.SQL.Clear;
-          //    ZQTemp3.SQL.Add('DROP VIEW IF EXISTS `'+varschemata+'`.`relmensal`;');
-          ZQTemp3.SQL.Add('CREATE OR REPLACE VIEW `'+varschemata+'`.`tempmensal` AS ');
+          { Use uma tabela temporaria para nao depender de uma VIEW ou tabela
+            persistente deixada por uma execucao anterior. }
+          ZQTemp3.SQL.Add('DROP TEMPORARY TABLE IF EXISTS `'+varschemata+'`.`tempmensal`');
+          ZQTemp3.ExecSQL;
+          ZQTemp3.SQL.Clear;
+          ZQTemp3.SQL.Add('CREATE TEMPORARY TABLE `'+varschemata+'`.`tempmensal` AS ');
           ZQTemp3.SQL.Add(' ( select *,month(datavenda) as Mes, case month(datavenda)');
           ZQTemp3.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
           ZQTemp3.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');

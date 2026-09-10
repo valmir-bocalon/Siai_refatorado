@@ -132,12 +132,50 @@ type
 
 var
   FrmPesqRecebimento2: TFrmPesqRecebimento2;
+  FrmPesqRecebimento2Target: TForm;
   limite,totreg:integer;
 implementation
 
 uses Tabelas, Cad_Recebimento, Funcoes,  ReajusteDeParcelas, uRuntimeFields;
 
 {$R *.dfm}
+
+function PesquisaReajusteTarget: TForm;
+begin
+  Result := FrmPesqRecebimento2Target;
+  if (Result = nil) and (Frm_ReajusteDeParcelas <> nil) then
+    Result := Frm_ReajusteDeParcelas;
+end;
+
+function PesquisaReajusteDataSet: TDataSet;
+var
+  LTarget: TForm;
+begin
+  Result := nil;
+  LTarget := PesquisaReajusteTarget;
+  if LTarget <> nil then
+    Result := LTarget.FindComponent('ZQRecebimento') as TDataSet;
+end;
+
+function PesquisaReajusteQuery: TZQuery;
+var
+  LTarget: TForm;
+begin
+  Result := nil;
+  LTarget := PesquisaReajusteTarget;
+  if LTarget <> nil then
+    Result := LTarget.FindComponent('ZQRecebimento') as TZQuery;
+end;
+
+function PesquisaReajusteCheckBox: TCheckBox;
+var
+  LTarget: TForm;
+begin
+  Result := nil;
+  LTarget := PesquisaReajusteTarget;
+  if LTarget <> nil then
+    Result := LTarget.FindComponent('CBDesconsidera') as TCheckBox;
+end;
 
 procedure TFrmPesqRecebimento2.FormShow(Sender: TObject);
 begin
@@ -228,11 +266,18 @@ end;
 
 procedure TFrmPesqRecebimento2.DBGrid1KeyPress(Sender: TObject;
   var Key: Char);
+var
+  LQuery: TZQuery;
+  LCheckBox: TCheckBox;
 begin
   if (Key = #13) and (ZQTempCliReceb.RecordCount>0) Then Begin
+    LQuery := PesquisaReajusteQuery;
+    LCheckBox := PesquisaReajusteCheckBox;
+    if LQuery = nil then
+      Exit;
 
-    Frm_ReajusteDeParcelas.ZQRecebimento.close;
-    Frm_ReajusteDeParcelas.ZQRecebimento.SQL.clear;
+    LQuery.Close;
+    LQuery.SQL.Clear;
 {  ZQRecebimento.SQL.Add(' Select * from Recebimento where TipDoc=''BO'' and saldo>''0'' and DT_Vencimento >= :dt and DT_Vencimento <= :dt2 order by DT_Vencimento');
   ZQRecebimento.ParamByName('dt').AsDate:=strtodate('01/'+lmes.caption+'/'+xano.text);
   ZQRecebimento.ParamByName('dt2').AsDate:=strtodate(ms+'/'+lmes.caption+'/'+xano.text);}
@@ -243,18 +288,18 @@ begin
      ZQRecebimento.SQL.Add(' Select * from Recebimento where (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') and (Proximo_reajuste='+quotedstr(lmes.caption+'/'+xano.text)+') order by DT_Vencimento');}
 
 
-    if Frm_ReajusteDeParcelas.CBDesconsidera.Checked=false then
-        Frm_ReajusteDeParcelas.ZQRecebimento.SQL.Add(' Select * from Recebimento where ((numboleto is null) or (numboleto='''')) and (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') order by DT_Vencimento')
+    if (LCheckBox <> nil) and not LCheckBox.Checked then
+        LQuery.SQL.Add(' Select * from Recebimento where ((numboleto is null) or (numboleto='''')) and (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') order by DT_Vencimento')
     else
-        Frm_ReajusteDeParcelas.ZQRecebimento.SQL.Add(' Select * from Recebimento where (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') order by DT_Vencimento');
+        LQuery.SQL.Add(' Select * from Recebimento where (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') order by DT_Vencimento');
 
-    Frm_ReajusteDeParcelas.ZQRecebimento.Open;
+    LQuery.Open;
 
-    Frm_ReajusteDeParcelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
+    LQuery.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
 {    Frm_ReajusteDeParcelas.ZQRecebimento.Filtered:=false;
     Frm_ReajusteDeParcelas.ZQRecebimento.Filter:='idrecebimento='+ZQTempCliRecebidrecebimento.text;
     Frm_ReajusteDeParcelas.ZQRecebimento.Filtered:=true;}
-    Frm_ReajusteDeParcelas.ZQRecebimento.RecordCount;
+    LQuery.RecordCount;
     Close;
   end;
 end;
@@ -263,6 +308,11 @@ procedure TFrmPesqRecebimento2.DBGrid1DrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
 begin
+  if not ZQTempCliReceb.Active or ZQTempCliReceb.IsEmpty then
+  begin
+    DBGrid1.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+    Exit;
+  end;
   if DBECod.Text = ZQTempCliReceb.FieldByName('idrecebimento').Text Then Begin
     DBGrid1.Canvas.Brush.Color := $006CFFFF;
     DBGrid1.Canvas.Font.Color := $00A80000;
@@ -274,6 +324,8 @@ end;
 
 procedure TFrmPesqRecebimento2.Edit2KeyPress(Sender: TObject;
   var Key: Char);
+var
+  LDataSet: TDataSet;
 begin
   if Key = #13 then
   begin
@@ -285,8 +337,10 @@ begin
     //  LReg.Caption := inttostr(ZQCheque.RecordCount);
     if (ZQCheque.Active) and (ZQCheque.RecordCount>0) Then
     begin
+      LDataSet := PesquisaReajusteDataSet;
       ZQTempCliReceb.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
-      Frm_ReajusteDeParcelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
+      if LDataSet <> nil then
+        LDataSet.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
       DBGrid2.Visible:=true;
       DBGrid2.SetFocus;
     end
@@ -301,12 +355,16 @@ end;
 
 procedure TFrmPesqRecebimento2.Edit2KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  LDataSet: TDataSet;
 begin
-  if Key = VK_F2 then
+  if (Key = VK_F2) and ZQCheque.Active and not ZQCheque.IsEmpty then
   begin
+    LDataSet := PesquisaReajusteDataSet;
     zqcheque.Next;
     ZQTempCliReceb.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
-    Frm_ReajusteDeParcelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);        
+    if LDataSet <> nil then
+      LDataSet.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
   end;
 end;
 
@@ -318,11 +376,16 @@ end;
 
 procedure TFrmPesqRecebimento2.DBGrid2KeyPress(Sender: TObject;
   var Key: Char);
+var
+  LDataSet: TDataSet;
 begin
-  if (Key = #13) and (ZQTempCliReceb.RecordCount>0) Then
+  if (Key = #13) and ZQCheque.Active and not ZQCheque.IsEmpty and
+     (ZQTempCliReceb.RecordCount>0) Then
   Begin
 //    ZQTempCliReceb.Locate('idrecebimento',zqchequeidrecebimento.Value,[]);
-    Frm_ReajusteDeParcelas.ZQRecebimento.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
+    LDataSet := PesquisaReajusteDataSet;
+    if LDataSet <> nil then
+      LDataSet.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
 //    dbgrid1.setfocus;
     dbgrid2.Visible:=false;
     Close;

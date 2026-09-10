@@ -1444,6 +1444,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure GBEscClienteExit(Sender: TObject);
     procedure ZQBaixaCalcFields(DataSet: TDataSet);
+    procedure ZQRecebimentoCalcFields(DataSet: TDataSet);
     procedure EClienteExit(Sender: TObject);
     procedure DBGrid3KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -1466,7 +1467,9 @@ type
     procedure RGQuadraLoteClick(Sender: TObject);
     procedure xquadraLoteExit(Sender: TObject);
   private
-   { Private declarations }
+    { Private declarations }
+
+    procedure PrepararLookupsReajuste;
 
     procedure AfterConstruction; override;
   public
@@ -1518,6 +1521,58 @@ begin
   Result.EndUpdate;
 end;
 
+procedure TFrmRelRecebimento.PrepararLookupsReajuste;
+begin
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+end;
+
+procedure TFrmRelRecebimento.ZQRecebimentoCalcFields(DataSet: TDataSet);
+var
+  LChave: TField;
+  LDestino: TField;
+  LOrigem: TField;
+  LValor: Variant;
+begin
+  if (DataSet = nil) or (DM_Tabelas = nil) then
+    Exit;
+
+  LChave := DataSet.FindField('adversa');
+  LDestino := DataSet.FindField('adversanome');
+  if LDestino <> nil then
+  begin
+    LDestino.Clear;
+    if (LChave <> nil) and (not LChave.IsNull) and
+       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+    begin
+      LValor := DM_Tabelas.ZqParticipante.Lookup(
+        'idpaticipante', LChave.AsLargeInt, 'nome_parte');
+      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+        LDestino.AsString := VarToStr(LValor);
+    end;
+    if LDestino.AsString = '' then
+    begin
+      LOrigem := DataSet.FindField('nomeadversa');
+      if (LOrigem <> nil) and (not LOrigem.IsNull) then
+        LDestino.AsString := LOrigem.AsString;
+    end;
+  end;
+
+  LChave := DataSet.FindField('idloteamento');
+  LDestino := DataSet.FindField('nome_loteamento');
+  if (LDestino <> nil) and (LChave <> nil) and (not LChave.IsNull) and
+     (LChave.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
+  begin
+    LDestino.Clear;
+    LValor := DM_Tabelas.ZQLoteamento.Lookup(
+      'idloteamento', LChave.AsLargeInt, 'apelido');
+    if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+      LDestino.AsString := VarToStr(LValor);
+  end;
+end;
+
 procedure TFrmRelRecebimento.FormShow(Sender: TObject);
 Var
   VarPath : string;
@@ -1525,6 +1580,7 @@ Var
   Task : Itask;
   I:integer;
 begin
+  PrepararLookupsReajuste;
   xquadraLote.Lines.Clear;
   VarPath := ExtractFilePath( Application.ExeName );
   ArqIni2 := tIniFile.Create(varpath+'siai.Ini');
@@ -2186,6 +2242,8 @@ begin
     ZQRecebimento.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
     ZQRecebimento.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
     ZQRecebimento.open;
+    PrepararLookupsReajuste;
+    ZQRecebimento.First;
     if RGFormato.ItemIndex=6 then
     begin
       case RGOrdem.ItemIndex of
@@ -4435,6 +4493,9 @@ end;
 procedure TFrmRelRecebimento.AfterConstruction;
 begin
   inherited AfterConstruction;
+  { O hook de campos em tempo de execucao preserva este evento e aplica os
+    demais lookups depois dele. }
+  ZQRecebimento.OnCalcFields := ZQRecebimentoCalcFields;
   EnsureRuntimeFields(Self);
 end;
 
@@ -5501,9 +5562,9 @@ initialization
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentorecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentonumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentoidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentovenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentoquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQRecebimento', 'ZQRecebimentonumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

@@ -1581,7 +1581,11 @@ Begin
         DM_Tabelas.ZQTipodoc.Next;
       end;
       DM_TAbelas.ZQTipodoc.EnableControls;
-      vartipo := copy(vartipo,1,length(vartipo)-1);
+      // Evita gerar IN () quando nenhum tipo de documento de cheque estiver configurado.
+      if vartipo = '' then
+        vartipo := quotedstr('')
+      else
+        vartipo := copy(vartipo,1,length(vartipo)-1);
 
 
 

@@ -670,6 +670,12 @@ type
   private
     { Private declarations }
 
+    FClosing: Boolean;
+    FPreviousRecebimentoSQL: string;
+    FPreviousRecebimentoId: Int64;
+    FPreviousRecebimentoActive: Boolean;
+    procedure EnsureLookupDataSets;
+
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -705,18 +711,36 @@ procedure MovimentaObject(Sender:TObject;Button:TMouseButton;Shift:TShiftState;X
      Formulario.Left:=MousePosMov.X-X-3; 
      Formulario.Top:=MousePosMov.Y-Y-3; 
      Application.ProcessMessages;
-   end; 
- end; 
+ end;
+ end;
 
+procedure TFrmaditamento.EnsureLookupDataSets;
+begin
+  if FClosing then
+    Exit;
+
+  { Os campos de lookup do grid sao criados em runtime. Eles precisam dos
+    datasets de referencia ativos antes da abertura de ZQRecBai. }
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+end;
 
 procedure TFrmaditamento.Atualiza_tela;
 Var
-  Varreg, varmarc, varvenc : integer;
+  varmarc, varvenc : integer;
+  CurrentId: Int64;
 Begin
-  if ZQRecBai.active=false then
-     ZQRecBai.open;
+  if FClosing then
+    Exit;
+  EnsureLookupDataSets;
+  if not ZQRecBai.Active then
+    ZQRecBai.Open;
+  if not ZQRecBai.Active or ZQRecBai.IsEmpty then
+    Exit;
 
-  Varreg := ZQRecBai.RecNo;
+  CurrentId := ZQRecBai.FieldByName('idrecebimento').AsLargeInt;
   ZQRecBai.First;
   XNEAberto.Value := 0;
   xreajuste.Text:='  /    ';
@@ -731,50 +755,55 @@ Begin
   ProgressBar1.Max:=ZQRecBai.RecordCount;
   ProgressBar1.Position:=0;
   ProgressBar1.Visible:=true;
-  DS_RecBai.DataSet:=nil;
-
-
-  ZQRecBai.first;
   ZQRecBai.DisableControls;
-  while not ZQRecBai.Eof do
-  begin
-    application.ProcessMessages;
-    ProgressBar1.Position:=ZQRecBai.RecNo;
-    application.ProcessMessages;
-    XNEAberto.Value := XNEAberto.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
-    xreajuste.Text:=ZQRecBai.FieldByName('Proximo_Reajuste').AsString;
-    if ZQRecBai.FieldByName('marcar').AsString = '0' Then Begin
-      XNEMarcado.Value := XNEMarcado.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
-      XNEJuros.Value := XNEJuros.Value + (ZQRecBai.FieldByName('saldocorrig').AsFloat-ZQRecBai.FieldByName('saldo').AsFloat);
-      inc(varmarc);
+  try
+    ZQRecBai.First;
+    while not ZQRecBai.Eof do
+    begin
+      ProgressBar1.Position:=ZQRecBai.RecNo;
+      XNEAberto.Value := XNEAberto.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
+      xreajuste.Text:=ZQRecBai.FieldByName('Proximo_Reajuste').AsString;
+      if ZQRecBai.FieldByName('marcar').AsString = '0' Then Begin
+        XNEMarcado.Value := XNEMarcado.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
+        XNEJuros.Value := XNEJuros.Value + (ZQRecBai.FieldByName('saldocorrig').AsFloat-ZQRecBai.FieldByName('saldo').AsFloat);
+        inc(varmarc);
+      end;
+      if ZQRecBai.FieldByName('Dt_Vencimento').AsDateTime <=date Then Begin
+        XNEVencido.Value := XNEVencido.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
+        inc(varvenc);
+      end;
+      ZQRecBai.Next;
     end;
-    if ZQRecBai.FieldByName('Dt_Vencimento').AsDateTime <=date Then Begin
-      XNEVencido.Value := XNEVencido.Value + ZQRecBai.FieldByName('saldocorrig').AsFloat;
-      inc(varvenc);
-    end;
-    ZQRecBai.Next;
+  finally
+    ZQRecBai.EnableControls;
   end;
-  ZQRecBai.EnableControls;
-  DS_RecBai.DataSet:=ZQRecBai;
   ProgressBar1.Position:=0;
   ProgressBar1.Visible:=false;
 
 
-  application.ProcessMessages;
   Label31.Caption := inttostr(varmarc);
   Label33.Caption := inttostr(varvenc);
   XNERecebido.Value := XNEMarcado.Value;
-  ZQRecBai.RecNo := Varreg;
+  if not ZQRecBai.Locate('idrecebimento', CurrentId, []) then
+    ZQRecBai.First;
 End;
 
 procedure TFrmaditamento.DXBFecharClick(Sender: TObject);
 begin
-  elote.clear;
   Close;
 end;
 
 procedure TFrmaditamento.FormShow(Sender: TObject);
 begin
+  FClosing := False;
+  FPreviousRecebimentoSQL := DM_Tabelas.ZQRecebimento.SQL.Text;
+  FPreviousRecebimentoActive := DM_Tabelas.ZQRecebimento.Active;
+  FPreviousRecebimentoId := 0;
+  if FPreviousRecebimentoActive and
+     (DM_Tabelas.ZQRecebimento.FindField('idrecebimento') <> nil) and
+     not DM_Tabelas.ZQRecebimento.IsEmpty then
+    FPreviousRecebimentoId := DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
+  EnsureLookupDataSets;
   contador:=0;
   Timer1.Enabled:=true;
 
@@ -911,21 +940,25 @@ procedure TFrmaditamento.DBGBaixandoDrawColumnCell(Sender: TObject;
   State: TGridDrawState);
 
 begin
-  if ZQRecBai.active=true then
+  if FClosing or not ZQRecBai.Active then
+    Exit;
+
+  { Sempre restaure as cores antes de desenhar a celula seguinte. Sem isso,
+    a pintura customizada do primeiro registro vaza para os demais. }
+  DBGBaixando.Canvas.Brush.Color := DBGBaixando.Color;
+  DBGBaixando.Canvas.Font.Color := DBGBaixando.Font.Color;
+  if DBEidreg.Text = ZQRecBai.FieldByName('idrecebimento').Text Then Begin
+    DBGBaixando.Canvas.Brush.Color := $006CFFFF;
+    DBGBaixando.Canvas.Font.Color := $00A80000;
+  end;
+  DBGBaixando.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+  if Column.Field = ZQRecBai.FieldByName('marcar') then
   begin
-    if DBEidreg.Text = ZQRecBai.FieldByName('idrecebimento').Text Then Begin
-      DBGBaixando.Canvas.Brush.Color := $006CFFFF;
-      DBGBaixando.Canvas.Font.Color := $00A80000;
-    end;
-    DBGBaixando.DefaultDrawDataCell(Rect, DBGBaixando.columns[datacol].field, State);
-    if Column.Field = ZQRecBai.FieldByName('marcar') then
-    begin
-      DBGBaixando.Canvas.FillRect(Rect);
-      if ZQRecBai.FieldByName('marcar').AsString = '0' then
-        ImageList1.Draw(DBGBaixando.Canvas, Rect.Left + 10, Rect.Top + 1, 0)
-      else
-        ImageList1.Draw(DBGBaixando.Canvas, Rect.Left + 10, Rect.Top + 1, 1);
-    end;
+    DBGBaixando.Canvas.FillRect(Rect);
+    if ZQRecBai.FieldByName('marcar').AsString = '0' then
+      ImageList1.Draw(DBGBaixando.Canvas, Rect.Left + 10, Rect.Top + 1, 0)
+    else
+      ImageList1.Draw(DBGBaixando.Canvas, Rect.Left + 10, Rect.Top + 1, 1);
   end;
 end;
 
@@ -2460,6 +2493,9 @@ procedure TFrmaditamento.filtrabaixa;
 var
   vartipo : string;
 Begin
+  if FClosing then
+    Exit;
+  EnsureLookupDataSets;
   Label37.Visible:=true;
   pini.Visible:=true;
   Label38.Visible:=true;
@@ -2884,7 +2920,14 @@ end;
 procedure TFrmaditamento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+  if FClosing then
+  begin
+    Action := caFree;
+    Exit;
+  end;
+  FClosing := True;
   Timer1.Enabled:=false;
+  DS_RecBai.DataSet := nil;
   dm_tabelas.ZQLoteamento.close;
   JDEntrada.Enabled := False;
   JDBaixa.Enabled   := False;
@@ -2900,20 +2943,25 @@ begin
   DM_tabelas.ZQCheque.close;
   DM_Tabelas.ZQMovBancaria.close;
 
-  panel1.Visible:=true;
-  application.ProcessMessages;
-
   DM_tabelas.ZQRecebimento.Close;
-  DM_tabelas.ZQRecebimento.SQL.Clear;
-  DM_Tabelas.ZQRecebimento.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
-  DM_Tabelas.ZQRecebimento.SQL.Add('        custodaparcela,origem,adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,nomeadversa,Reajustado,Data_reajuste,');
-  DM_Tabelas.ZQRecebimento.SQL.Add('        somar,Proximo_Reajuste,Parcelas_fixas,observ_estorno,tip,juros,descontos,Data_Quitacao,sld_antes_reajuste,Percentual_reajuste,juridico,data_juridico,');
-  DM_Tabelas.ZQRecebimento.SQL.Add('        dt_nao_pagou_no_mes,descricao_juridico,multa,mora ');
-  DM_tabelas.ZQRecebimento.SQL.Add(' from Recebimento where quadralote='+quotedstr(Elote.text)+ ' order by DT_Vencimento');
-  DM_tabelas.ZQRecebimento.open;
-  DM_tabelas.ZQRecebimento.last;
-  panel1.Visible:=false;
-  application.ProcessMessages;
+  if FPreviousRecebimentoActive and (Trim(FPreviousRecebimentoSQL) <> '') then
+  begin
+    DM_Tabelas.ZQRecebimento.SQL.Text := FPreviousRecebimentoSQL;
+    DM_Tabelas.ZQRecebimento.Open;
+    if (FPreviousRecebimentoId <> 0) and
+       (DM_Tabelas.ZQRecebimento.FindField('idrecebimento') <> nil) then
+      DM_Tabelas.ZQRecebimento.Locate('idrecebimento', FPreviousRecebimentoId, []);
+  end
+  else if Trim(Elote.Text) <> '' then
+  begin
+    DM_tabelas.ZQRecebimento.SQL.Clear;
+    DM_Tabelas.ZQRecebimento.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
+    DM_Tabelas.ZQRecebimento.SQL.Add('        custodaparcela,origem,adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,nomeadversa,Reajustado,Data_reajuste,');
+    DM_Tabelas.ZQRecebimento.SQL.Add('        somar,Proximo_Reajuste,Parcelas_fixas,observ_estorno,tip,juros,descontos,Data_Quitacao,sld_antes_reajuste,Percentual_reajuste,juridico,data_juridico,');
+    DM_Tabelas.ZQRecebimento.SQL.Add('        dt_nao_pagou_no_mes,descricao_juridico,multa,mora ');
+    DM_tabelas.ZQRecebimento.SQL.Add(' from Recebimento where quadralote='+quotedstr(Elote.text)+ ' order by DT_Vencimento');
+    DM_tabelas.ZQRecebimento.Open;
+  end;
   Frmaditamento:=nil;
   Action:=CaFree;
 
@@ -2924,7 +2972,9 @@ var
   vardI, vardT : Tdate;
   varsal : Double;
 begin
-    if (ZQRecBai.FieldByName('saldo').AsFloat>0) and (ZQRecBai.FieldByName('recpag').AsString='R') and (CBSaldoCorrigido.Checked)  Then Begin
+  if FClosing or not DataSet.Active then
+    Exit;
+  if (ZQRecBai.FieldByName('saldo').AsFloat>0) and (ZQRecBai.FieldByName('recpag').AsString='R') and (CBSaldoCorrigido.Checked)  Then Begin
     varsal := ZQRecBai.FieldByName('Valor').AsFloat;
     ZQRecebBxTemp.Close;
     ZQRecebBxTemp.SQL.Clear;
@@ -2939,7 +2989,7 @@ begin
     ZQRecebBxTemp.First;
 
     vardI := ZQRecBai.FieldByName('Dt_Vencimento').AsDateTime;
-    vardT := strtodate(Frmaditamento.JDEntrada.Datetext);
+    vardT := strtodate(JDEntrada.Datetext);
     ZQRecebBxTemp.DisableControls;
     while (not ZQRecebBxTemp.Eof) and (vardT>=ZQRecebBxTemp.FieldByName('dataref').AsDateTime) do begin
       varsal := Calcjuros(vardI,ZQRecebBxTemp.FieldByName('dataref').AsDateTime,varsal,XNJuros.Value);
@@ -3764,7 +3814,10 @@ initialization
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBaiadversa', 'adversa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBairecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBainumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBainomeadversa', 'nomeadversa', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  { ZQRecBai ja traz nomeadversa gravado em recebimento. Nao o transforme
+    em lookup calculado: quando adversa estiver nula ou sem cadastro, o
+    lookup limparia o nome historico do titulo. }
+  RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBainomeadversa', 'nomeadversa', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBaiidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBaivenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmaditamento, 'ZQRecBai', 'ZQRecBaiquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

@@ -106,7 +106,10 @@ begin
     frm_SimulacaoAditamento.RLReport1.PreviewModal;
   finally
     FreeAndNil(frm_SimulacaoAditamento);
-    CdsAditamento.First;
+    if not CdsAditamento.Active then
+      CdsAditamento.Open;
+    if CdsAditamento.Active then
+      CdsAditamento.First;
     CdsAditamento.EnableControls;
   end;
 end;

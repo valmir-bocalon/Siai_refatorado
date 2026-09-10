@@ -694,6 +694,9 @@ type
     procedure PintarGrafico2(Sender: TObject);
     procedure PintarGrafico3(Sender: TObject);
     procedure InvalidarGraficosRuntime;
+    procedure PrepararLookupsCobranca;
+    procedure PreencherLookupsCobranca;
+    procedure AtualizarCamposCobranca;
 
     procedure AfterConstruction; override;
   public
@@ -1251,11 +1254,121 @@ end;
 
 
 
+procedure TFrmCad_Recebimento.PrepararLookupsCobranca;
+begin
+  { A cobrança usa campos calculados que dependem destes dois lookups.
+    Abra-os somente neste fluxo, sem alterar o estado global das demais telas. }
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+end;
+
+procedure TFrmCad_Recebimento.PreencherLookupsCobranca;
+var
+  LChave: TField;
+  LDestino: TField;
+  LOrigem: TField;
+  LValor: Variant;
+begin
+  if (not ZQRecebimento.Active) or (DM_Tabelas = nil) then
+    Exit;
+  { Este método escreve campos calculados. Nunca tente alterar o registro
+    enquanto o dataset estiver apenas em modo de consulta. }
+  if not (ZQRecebimento.State in [dsEdit, dsInsert, dsCalcFields]) then
+    Exit;
+
+  { Estes campos pertencem somente ao dataset local da aba Cobranca.
+    O preenchimento explicito evita que o grid e o relatorio dependam da
+    ordem em que o registro foi acessado para recalcular os lookups. }
+  LChave := ZQRecebimento.FindField('adversa');
+  LDestino := ZQRecebimento.FindField('adversanome');
+  if LDestino <> nil then
+  begin
+    LDestino.Clear;
+    if (LChave <> nil) and (not LChave.IsNull) and
+       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+    begin
+      LValor := DM_Tabelas.ZqParticipante.Lookup(
+        'idpaticipante', LChave.AsLargeInt, 'nome_parte');
+      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+        LDestino.AsString := VarToStr(LValor);
+    end;
+    { Titulos antigos podem ter o ID do participante inconsistente, mas
+      ainda conservar o nome gravado no proprio recebimento. }
+    if LDestino.AsString = '' then
+    begin
+      LOrigem := ZQRecebimento.FindField('nomeadversa');
+      if (LOrigem <> nil) and (not LOrigem.IsNull) then
+        LDestino.AsString := LOrigem.AsString;
+    end;
+  end;
+
+  LDestino := ZQRecebimento.FindField('CPF');
+  if LDestino <> nil then
+  begin
+    LDestino.Clear;
+    if (LChave <> nil) and (not LChave.IsNull) and
+       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+    begin
+      LValor := DM_Tabelas.ZqParticipante.Lookup(
+        'idpaticipante', LChave.AsLargeInt, 'doc1');
+      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+        LDestino.AsString := VarToStr(LValor);
+    end;
+  end;
+
+  LChave := ZQRecebimento.FindField('idloteamento');
+  LDestino := ZQRecebimento.FindField('nome_loteamento');
+  if LDestino <> nil then
+  begin
+    LDestino.Clear;
+    if (LChave <> nil) and (not LChave.IsNull) and
+       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
+    begin
+      LValor := DM_Tabelas.ZQLoteamento.Lookup(
+        'idloteamento', LChave.AsLargeInt, 'apelido');
+      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+        LDestino.AsString := VarToStr(LValor);
+    end;
+  end;
+end;
+
+procedure TFrmCad_Recebimento.AtualizarCamposCobranca;
+var
+  LIdRecebimento: Int64;
+  LNomeLoteamento: string;
+  LComprador: string;
+  LCPF: string;
+begin
+  if (not ZQRecebimento.Active) or ZQRecebimento.IsEmpty then
+    Exit;
+
+  LIdRecebimento := ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
+  ZQRecebimento.DisableControls;
+  try
+    ZQRecebimento.First;
+    while not ZQRecebimento.Eof do
+    begin
+      { A leitura força o OnCalcFields a preencher os lookups para cada
+        registro, sem alterar os dados da tabela. }
+      LNomeLoteamento := ZQRecebimento.FieldByName('nome_loteamento').AsString;
+      LComprador := ZQRecebimento.FieldByName('adversanome').AsString;
+      LCPF := ZQRecebimento.FieldByName('CPF').AsString;
+      ZQRecebimento.Next;
+    end;
+  finally
+    ZQRecebimento.EnableControls;
+  end;
+  ZQRecebimento.Locate('idrecebimento', LIdRecebimento, []);
+end;
+
 procedure TFrmCad_Recebimento.Atualiza_DBcobranca;
 var
 zmora:double;
 Zdias:integer;
 Begin
+  PrepararLookupsCobranca;
   nparcelas.Value:=0;
   vencidos.Value:=0;
   Xmulta.Value:=0;
@@ -2807,13 +2920,13 @@ begin
   ZQRecebimento.FieldByName('Multa_Contrato').AsFloat:=ExRound(ExRound((ZQRecebimento.FieldByName('saldo').AsFloat*ZQVenda_cobr.FieldByName('Multa').AsFloat),2)/100,2);
   ZQRecebimento.FieldByName('parcela_corrigida').AsFloat:=ZQRecebimento.FieldByName('saldo').AsFloat+ZQRecebimento.FieldByName('Multa_Contrato').AsFloat+ZQRecebimento.FieldByName('mora_dia').AsFloat;
 
+  PreencherLookupsCobranca;
 
 end;
 
 procedure TFrmCad_Recebimento.DBcobrancaMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  atualiza_DBcobranca;
 end;
 
 procedure TFrmCad_Recebimento.DBcobrancaDrawColumnCell(Sender: TObject;
@@ -2834,14 +2947,13 @@ begin
     DBcobranca.Options:=DBcobranca.Options-[dgMultiSelect];
   end;
   Atualiza_DBcobranca;
+  AtualizarCamposCobranca;
+  DBcobranca.Invalidate;
 end;
 
 procedure TFrmCad_Recebimento.DBcobrancaKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_UP) OR ( Key = VK_DOWN) OR (Key = VK_PRIOR) or (Key = VK_NEXT) OR (Key = VK_END) or (Key = VK_HOME) then
-      Atualiza_DBcobranca;
-
 end;
 
 procedure TFrmCad_Recebimento.fpgEnter(Sender: TObject);
@@ -3525,6 +3637,7 @@ begin
   FrmPesqCobranca.showmodal;
   ZQRecebimento.close;
   ZQRecebimento.SQL.Clear;
+  PrepararLookupsCobranca;
   // 27/08/2012 tony pediu pra mudar
 //  ZQRecebimento.SQL.Add('Select *  from Recebimento where quadralote='+quotedstr(FrmPesqCobranca.ZQTempCliRecebquadralote.Value)+' and adversa='+quotedstr(FrmPesqCobranca.ZQTempCliRecebadversa.Text)+' and Dt_Vencimento< :dt and saldo>0 order by nomeadversa,DT_Vencimento ');
   if FrmPesqCobranca.RGFiltro.ItemIndex=0 then
@@ -3580,6 +3693,8 @@ begin
   //  ZQRecebimento.Locate('adversa',FrmPesqCobranca.ZQTempCliRecebadversa.Value,[]);
 
   end;
+
+  AtualizarCamposCobranca;
 
   ZQRecebimento_bancario.close;
   ZQRecebimento_bancario.SQL.Clear;
@@ -3711,6 +3826,8 @@ end;
 
 procedure TFrmCad_Recebimento.dxButton10Click(Sender: TObject);
 begin
+  PrepararLookupsCobranca;
+  AtualizarCamposCobranca;
   if FrmRelCobranca2=nil then
      FrmRelCobranca2:=TFrmRelCobranca2.Create(application);
   FrmRelCobranca2.RLReport1.DataSource:=FrmCad_Recebimento.DS_Recebimento;
@@ -4003,11 +4120,14 @@ initialization
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQEntrada', 'ZQEntradacliente', 'cliente', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TFrmCad_Recebimento, 'ZQRecebimento', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  { Estes tres campos sao calculados localmente para que a cobrança possa
+    preservar o valor alternativo gravado no titulo quando o ID do lookup
+    antigo nao possuir mais correspondencia. }
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoDias', 'Dias', TIntegerField, fkCalculated, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoEndereco', 'Endereco', TWideStringField, fkLookup, 50, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'endereco', True);
-  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoCPF', 'CPF', TWideStringField, fkLookup, 18, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'doc1', True);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoCPF', 'CPF', TWideStringField, fkCalculated, 18, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentofone', 'fone', TWideStringField, fkLookup, 15, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'Fone1', True);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentofone2', 'fone2', TWideStringField, fkLookup, 15, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'fone2', True);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentofone3', 'fone3', TWideStringField, fkLookup, 15, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'fone3', True);
