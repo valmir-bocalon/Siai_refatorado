@@ -81,14 +81,6 @@ begin
   if FrmRelRecebimento.CBObsLanc.Checked Then Begin
     RLBand3.Height := 32;
   end;
-  if not empty(FrmRelRecebimento.ZQTempReceber2.FieldByName('nomeempreend').AsString) then
-  begin
-    RLDBText2.DataField:='nomeempreend';
-  end
-  else
-  begin
-    RLDBText2.DataField:='nome_parte';
-  end;
   RLBand3.Color  := clWhite;
   if FrmRelRecebimento.ZQTempReceber2.recno mod 2 = 0 then
     RLBand3.Color  := $00EAEAEA;
@@ -118,6 +110,8 @@ procedure TFrmRelReceb02_total.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  { O nome SQL permanece disponivel tambem no primeiro registro. }
+  RLDBText2.DataField := 'apelido_loteamento';
 end;
 
 end.

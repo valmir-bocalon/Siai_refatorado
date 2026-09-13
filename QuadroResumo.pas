@@ -272,6 +272,35 @@ uses tabelas, funcoes, Venda, principal, uRuntimeFields;
 
 {$R *.dfm}
 
+type
+  { Os campos de lookup sao calculados em memoria. Recalcule o buffer atual
+    sem colocar o dataset em modo de edicao antes de iniciar a impressao. }
+  TDataSetCalcFieldsAccess = class(TDataSet);
+
+procedure RecalcularCampoCalculado(ADataSet: TDataSet;
+  ARepeticoes: Integer = 1);
+var
+  I: Integer;
+begin
+  if (ADataSet = nil) or (not ADataSet.Active) or ADataSet.IsEmpty then
+    Exit;
+
+  for I := 1 to ARepeticoes do
+    TDataSetCalcFieldsAccess(ADataSet).GetCalcFields(ADataSet.ActiveBuffer);
+end;
+
+procedure RecalcularDadosQuadro;
+begin
+  if DM_Tabelas = nil then
+    Exit;
+
+  RecalcularCampoCalculado(DM_Tabelas.ZQVenda);
+  { ZQCompr_Dados possui um lookup usado pela propria calc-field
+    cidadeestadonatual. A segunda passagem atualiza esse campo depois que o
+    lookup naturalidade foi resolvido. }
+  RecalcularCampoCalculado(DM_Tabelas.ZQCompr_Dados, 2);
+end;
+
 procedure TFrm_QuadroResumo.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
@@ -283,6 +312,7 @@ procedure TFrm_QuadroResumo.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 var nm: integer;
 begin
+  RecalcularDadosQuadro;
   nm:=strtoint(Frm_Venda.Vias.Text);
   DM_Tabelas.ZQEmpresa.Filtered:=false;
   DM_Tabelas.ZQEmpresa.Filter:='codigo='+quotedstr(DM_Tabelas.ZQVenda.FieldByName('codloteamento').text);
@@ -315,6 +345,7 @@ var
   vrrec,entrada:double;
   ant,ant2,ant3,tam,tam1,tam2,tam3,tam4,tam5,tam6,tam7,tam8,tam9,tam10,tam11,posi,posi2,vez,tvez:integer;
 begin
+  RecalcularDadosQuadro;
 {  RLDraw2.Height:=RLDraw2.Height+rlmemo2.Lines.Count+5;
   RLDraw2.Repaint;
   RLDraw2.Refresh;}
@@ -825,6 +856,7 @@ procedure TFrm_QuadroResumo.RLBand2BeforePrint(Sender: TObject;
 var
 texto:string;  
 begin
+  RecalcularDadosQuadro;
   if (not empty(DM_Tabelas.ZQVenda.FieldByName('linha').AsString)) and (DM_Tabelas.ZQVenda.FieldByName('linha').AsString<>'0') then
   begin
     texto:='Imóvel distante '+alltrim(DM_Tabelas.ZQVenda.FieldByName('linha').AsString)+' m em linha reta e '+alltrim(DM_Tabelas.ZQVenda.FieldByName('curva').AsString)+' m em curva da '+alltrim(DM_Tabelas.ZQVenda.FieldByName('esquina').AsString);
@@ -898,6 +930,7 @@ end;
 procedure TFrm_QuadroResumo.RLBand6BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
+  RecalcularDadosQuadro;
 
  if (DM_Tabelas.ZQCompr_Dados.FieldByName('tipopessoa').AsString='F') or (DM_Tabelas.ZQCompr_Dados.FieldByName('tipopessoa').AsString='I') then
  begin

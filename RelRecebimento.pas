@@ -1470,6 +1470,7 @@ type
     { Private declarations }
 
     procedure PrepararLookupsReajuste;
+    procedure PrepararNomesTempReceber;
 
     procedure AfterConstruction; override;
   public
@@ -1519,6 +1520,33 @@ begin
   end;
   DM_TAbelas.ZQLoteamento.EnableControls;
   Result.EndUpdate;
+end;
+
+procedure TFrmRelRecebimento.PrepararNomesTempReceber;
+var
+  LCampo: TWideStringField;
+begin
+  { Campos SQL independentes dos buffers calculados dos lookups. As subconsultas
+    preservam a quantidade de titulos e os filtros da consulta principal. }
+  ZQTempReceber.SQL.Add(' ,(select L.apelido from loteamento L');
+  ZQTempReceber.SQL.Add('   where L.idloteamento = RE.idloteamento) as nomeempreend_relatorio');
+  ZQTempReceber.SQL.Add(' ,COALESCE((select P.nome_parte from participante P');
+  ZQTempReceber.SQL.Add('   where P.idpaticipante = RE.adversa), RE.nomeadversa) as adversanome_relatorio');
+
+  if ZQTempReceber.FindField('nomeempreend_relatorio') = nil then
+  begin
+    LCampo := TWideStringField.Create(ZQTempReceber);
+    LCampo.FieldName := 'nomeempreend_relatorio';
+    LCampo.Size := 100;
+    LCampo.DataSet := ZQTempReceber;
+  end;
+  if ZQTempReceber.FindField('adversanome_relatorio') = nil then
+  begin
+    LCampo := TWideStringField.Create(ZQTempReceber);
+    LCampo.FieldName := 'adversanome_relatorio';
+    LCampo.Size := 140;
+    LCampo.DataSet := ZQTempReceber;
+  end;
 end;
 
 procedure TFrmRelRecebimento.PrepararLookupsReajuste;
@@ -1577,6 +1605,7 @@ procedure TFrmRelRecebimento.FormShow(Sender: TObject);
 Var
   VarPath : string;
   ArqIni2 : tIniFile;
+  ListaTemporaria: TStrings;
   Task : Itask;
   I:integer;
 begin
@@ -1584,7 +1613,11 @@ begin
   xquadraLote.Lines.Clear;
   VarPath := ExtractFilePath( Application.ExeName );
   ArqIni2 := tIniFile.Create(varpath+'siai.Ini');
-  varschemata := ArqIni2.ReadString('BANCO_DE_DADOS','SCHEMATA', varschemata );
+  try
+    varschemata := ArqIni2.ReadString('BANCO_DE_DADOS','SCHEMATA', varschemata );
+  finally
+    ArqIni2.Free;
+  end;
 
 
   if (RGFormato.ItemIndex = 4) or (RGFormato.ItemIndex = 2) Then
@@ -1601,7 +1634,12 @@ begin
   CLBDoc.Sorted := False;
   DM_tabelas.ZQTipodoc.First;
   CLBEmpree.Clear;
-  CLBEmpree.Items:= ListaEmpree;
+  ListaTemporaria := ListaEmpree;
+  try
+    CLBEmpree.Items.Assign(ListaTemporaria);
+  finally
+    ListaTemporaria.Free;
+  end;
 
   //CLBEmpree.Sorted:=true;
 
@@ -1613,7 +1651,12 @@ begin
 
   DM_Tabelas.ZQincorp_loteame.open;
   CLBDoc.Clear;
-  CLBDoc.Items := ListaDoc;
+  ListaTemporaria := ListaDoc;
+  try
+    CLBDoc.Items.Assign(ListaTemporaria);
+  finally
+    ListaTemporaria.Free;
+  end;
   CLBDoc.Sorted := True;
   i:=0;
   for i := 0 to CLBDoc.Items.Count -1 do
@@ -2011,6 +2054,7 @@ begin
     ZQTempReceber.SQL.Add('       pa.idpaticipante,pa.nome_parte,pa.doc1,pa.doc2,pa.endereco,pa.bairro,pa.cidade,pa.cep,pa.ende_cob,pa.bairro_cob,pa.cidade_cob,pa.cep_cob,pa.Fone1,pa.fone2,');
     ZQTempReceber.SQL.Add('       pa.fone3,pa.tipopessoa,pa.aniversario,pa.nacionalidade,pa.email,pa.naturalidade,pa.localdetrab,pa.profissao,pa.estadocivil,pa.renda,pa.observacao,pa.codpaginc,');
     ZQTempReceber.SQL.Add('       pa.codrecinc,pa.codpagBx,pa.codrecBx,pa.fone4,pa.complemento,pa.complemento_cob,pa.cadastrado ');
+    PrepararNomesTempReceber;
     if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
     begin
         ZQTempReceber.SQL.Add('   ,H.idrecbxhist,H.refer,H.idrecib,H.valor,H.descon,H.juros,H.percent_usado,H.data,H.sq,H.valor_parcela,');
@@ -2122,6 +2166,7 @@ begin
     ZQTempReceber.SQL.Add('       pa.idpaticipante,pa.nome_parte,pa.doc1,pa.doc2,pa.endereco,pa.bairro,pa.cidade,pa.cep,pa.ende_cob,pa.bairro_cob,pa.cidade_cob,pa.cep_cob,pa.Fone1,pa.fone2,');
     ZQTempReceber.SQL.Add('       pa.fone3,pa.tipopessoa,pa.aniversario,pa.nacionalidade,pa.email,pa.naturalidade,pa.localdetrab,pa.profissao,pa.estadocivil,pa.renda,pa.observacao,pa.codpaginc,');
     ZQTempReceber.SQL.Add('       pa.codrecinc,pa.codpagBx,pa.codrecBx,pa.fone4,pa.complemento,pa.complemento_cob,pa.cadastrado ');
+    PrepararNomesTempReceber;
     if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
     begin
         ZQTempReceber.SQL.Add('   ,H.idrecbxhist,H.refer,H.idrecib,H.valor,H.descon,H.juros,H.percent_usado,H.data,H.sq,H.valor_parcela,');
@@ -3348,6 +3393,7 @@ begin
   ZQTempReceber.SQL.Add('       pa.idpaticipante,pa.nome_parte,pa.doc1,pa.doc2,pa.endereco,pa.bairro,pa.cidade,pa.cep,pa.ende_cob,pa.bairro_cob,pa.cidade_cob,pa.cep_cob,pa.Fone1,pa.fone2,');
   ZQTempReceber.SQL.Add('       pa.fone3,pa.tipopessoa,pa.aniversario,pa.nacionalidade,pa.email,pa.naturalidade,pa.localdetrab,pa.profissao,pa.estadocivil,pa.renda,pa.observacao,pa.codpaginc,');
   ZQTempReceber.SQL.Add('       pa.codrecinc,pa.codpagBx,pa.codrecBx,pa.fone4,pa.complemento,pa.complemento_cob,pa.cadastrado ');
+  PrepararNomesTempReceber;
   if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
   begin
       ZQTempReceber.SQL.Add('   ,H.idrecbxhist,H.refer,H.idrecib,H.valor,H.descon,H.juros,H.percent_usado,H.data,H.sq,H.valor_parcela,');
@@ -3422,16 +3468,17 @@ begin
 
    if cbmensal.Checked=true then
    begin
+    ZQmensal.Close;
     ZQmensal.SQL.Clear;
-//    ZQmensal.SQL.Add('DROP VIEW IF EXISTS `'+varschemata+'`.`relmensal`;');
-    ZQmensal.SQL.Add('CREATE OR REPLACE VIEW `'+varschemata+'`.`relmensal2` AS ');
-    ZQmensal.SQL.Add(' ( select month(re.dt_vencimento) as Mes, case month(re.dt_vencimento)');
+    ZQmensal.SQL.Add(' select month(re.dt_vencimento) as Mes, case month(re.dt_vencimento)');
     ZQmensal.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQmensal.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQmensal.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
     ZQmensal.SQL.Add(' when 10 then ''Outubro'' when 11 then ''Novembro'' when 12 then ''Dezembro''');
     ZQmensal.SQL.Add(' end AS MESDESC, CASE when  re.valor then re.valor end as vr_rel, re.idloteamento, re.recpag, re.tipdoc, re.quadralote, re.valor, re.DT_Entrada, re.DT_Vencimento, ');
-    ZQmensal.SQL.Add(' year(re.dt_vencimento) as Ano from recebimento as RE where re.saldo>0 and RE.TIPDOC in ('+varDoc+')');
+    ZQmensal.SQL.Add(' year(re.dt_vencimento) as Ano from recebimento as RE where re.saldo>0');
+    if not empty(varDoc) then
+      ZQmensal.SQL.Add(' and RE.TIPDOC in ('+varDoc+')');
     if not empty(VarEmpree) then
        ZQmensal.SQL.Add(' and re.idloteamento in ('+VarEmpree+')');
     if RGContas.ItemIndex = 0 Then
@@ -3457,11 +3504,13 @@ begin
       Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
 
-    ZQmensal.SQL.Add(' order by ano,mes )');
-    ZQmensal.ExecSQL;
+    { A consulta derivada dispensa criar ou substituir objetos no banco. }
     ZQrelatorio2.close;
     ZQrelatorio2.SQL.clear;
-    ZQrelatorio2.SQL.Add('select *,sum(vr_rel) as valorpago, sum(valor) as valorpagojuros from relmensal2 group by mes,ano order by ano,mes');
+    ZQrelatorio2.SQL.Add('select M.*,sum(M.vr_rel) as valorpago, sum(M.valor) as valorpagojuros from (');
+    ZQrelatorio2.SQL.Add(ZQmensal.SQL.Text);
+    ZQrelatorio2.SQL.Add(') as M group by M.mes,M.ano order by M.ano,M.mes');
+    ZQrelatorio2.Params.Assign(ZQmensal.Params);
     ZQrelatorio2.open;
 
     FrmRelReceb02_mensal_ab:=nil;
@@ -3600,54 +3649,63 @@ begin
     if not empty(XDERefInicio.Text) Then
       vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
      vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
+     ZQTempReceber2.Close;
      ZQTempReceber2.SQL.Clear;
-     ZQTempReceber2.SQL.Add('select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,');
-     ZQTempReceber2.SQL.Add('       RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,adversa,recpag,numordem,idloteamento,');
-     ZQTempReceber2.SQL.Add('       venda_idvenda,quadralote,numboleto,Substituicao,nomeadversa,data_juridico,dt_nao_pagou_no_mes,descricao_juridico,juridico,');
-     ZQTempReceber2.SQL.Add('       sq,somar,Reajustado,Data_reajuste,Proximo_Reajuste,Parcelas_fixas ');
+     ZQTempReceber2.SQL.Add('select RE.idrecebimento,RE.documento,RE.cliente,RE.usuario,RE.Dt_Entrada,RE.Dt_Vencimento,RE.Valor,RE.Observ,RE.VrDoc,RE.ordem,RE.TipDoc,RE.saldo,RE.marcar,');
+     ZQTempReceber2.SQL.Add('       RE.RefBaixa,RE.refvinda,RE.contabil,RE.empresa,RE.custodaparcela,RE.origem,RE.adversa,RE.recpag,RE.numordem,RE.idloteamento,');
+     ZQTempReceber2.SQL.Add('       RE.venda_idvenda,RE.quadralote,RE.numboleto,RE.Substituicao,RE.nomeadversa,RE.data_juridico,RE.dt_nao_pagou_no_mes,RE.descricao_juridico,RE.juridico,');
+     ZQTempReceber2.SQL.Add('       RE.sq,RE.somar,RE.Reajustado,RE.Data_reajuste,RE.Proximo_Reajuste,RE.Parcelas_fixas ');
+     { Retorne todos os campos fisicos registrados no dataset compartilhado.
+       As subconsultas nao acrescentam linhas nem alteram os totais. }
+     ZQTempReceber2.SQL.Add(' ,(select L.apelido from loteamento L');
+     ZQTempReceber2.SQL.Add('   where L.idloteamento = RE.idloteamento) as apelido_loteamento');
+     ZQTempReceber2.SQL.Add(' ,(select COALESCE(NULLIF(L.nomeloteamento, ''''), L.apelido) from loteamento L');
+     ZQTempReceber2.SQL.Add('   where L.idloteamento = RE.idloteamento) as nome_loteamento');
+     ZQTempReceber2.SQL.Add(' ,COALESCE((select NULLIF(P.nome_parte, '''') from participante P');
+     ZQTempReceber2.SQL.Add('   where P.idpaticipante = RE.adversa), NULLIF(RE.nomeadversa, ''''), '''') as comprador_relatorio');
     if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
      begin
         ZQTempReceber2.SQL.Add('   ,H.idrecbxhist,H.refer,H.idrecib,H.valor,H.descon,H.juros,H.percent_usado,H.data,H.sq,H.valor_parcela,');
         ZQTempReceber2.SQL.Add('   BX.idreceb_baixa,BX.Dt_rec,BX.Vr_rec,BX.TipDoc,BX.Docum,BX.Juros_Vr,BX.Desc_Vr,BX.RefBaixa,BX.obsebx,BX.Codcontabil,BX.dataref,BX.vencimento,BX.substituicao,BX.vr_ab,BX.sq,BX.valor_parcela ');
      end;
 
-     ZQTempReceber2.SQL.Add(',sum(valor) as tvr, sum(saldo) as tsld from recebimento ');
+     ZQTempReceber2.SQL.Add(',sum(RE.valor) as tvr, sum(RE.saldo) as tsld from recebimento as RE ');
     if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
-         ZQTempReceber2.SQL.Add('join recbxhist as H  ON idrecebimento=H.idrecib join receb_baixa as BX ON BX.refbaixa=H.refer');
-//     ZQTempReceber2.SQL.Add(' where 1 = 1 ');
+         ZQTempReceber2.SQL.Add('join recbxhist as H ON RE.idrecebimento=H.idrecib join receb_baixa as BX ON BX.refbaixa=H.refer');
+     ZQTempReceber2.SQL.Add(' where 1 = 1 ');
      if not empty(vardocumento) Then
         ZQTempReceber2.SQL.Add(vardocumento);
      if RGFormato.ItemIndex <> 3 Then
      Begin
         if RGContas.ItemIndex = 0 Then
-           ZQTempReceber2.SQL.Add(' where recpag ='+quotedstr('R'))
+           ZQTempReceber2.SQL.Add(' and RE.recpag ='+quotedstr('R'))
         else
-           ZQTempReceber2.SQL.Add(' and recpag ='+quotedstr('P'));
+           ZQTempReceber2.SQL.Add(' and RE.recpag ='+quotedstr('P'));
      end;
     // 13/12/2010
      if CBDesconsidera.Checked Then
-       ZQTempReceber2.SQL.Add(' and ( Numboleto is null or Numboleto='+quotedstr('')+') ');
+       ZQTempReceber2.SQL.Add(' and ( RE.Numboleto is null or RE.Numboleto='+quotedstr('')+') ');
 
      if not empty(VarEmpree) then
-        ZQTempReceber2.SQL.Add(' and idloteamento in ('+VarEmpree+')');
+        ZQTempReceber2.SQL.Add(' and RE.idloteamento in ('+VarEmpree+')');
        // coloquei aqui no dia 15/06/2010
      if not empty(varquadra) then
-        ZQTempReceber2.SQL.Add(' and quadralote in ('+varquadra+')');
+        ZQTempReceber2.SQL.Add(' and RE.quadralote in ('+varquadra+')');
      if not empty(varDoc) Then
         ZQTempReceber2.SQL.Add(' and RE.TIPDOC in ('+varDoc+')');
      if CBSaldo.ItemIndex = 1 Then
-        ZQTempReceber2.SQL.Add(' and (saldo < valor or saldo is null)');
+        ZQTempReceber2.SQL.Add(' and (RE.saldo < RE.valor or RE.saldo is null)');
      if CBSaldo.ItemIndex = 2 Then
-        ZQTempReceber2.SQL.Add(' and saldo > 0');
+        ZQTempReceber2.SQL.Add(' and RE.saldo > 0');
      if  not empty(copy(XDEEntradaInicio.Text,1,2)) Then
      Begin
-       ZQTempReceber2.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
+       ZQTempReceber2.SQL.Add(' and RE.DT_Entrada between :dt1 and :dt2');
        ZQTempReceber2.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
        ZQTempReceber2.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
      end;
      if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then
      Begin
-       ZQTempReceber2.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
+       ZQTempReceber2.SQL.Add(' and RE.DT_Vencimento between :dt3 and :dt4');
        ZQTempReceber2.ParamByName('dt3').AsDate:=strtodate(XDEVencimentoInicio.DateText);
        ZQTempReceber2.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
      end;
@@ -3666,10 +3724,10 @@ begin
 
      // 24/11/2010
      if CBDesconsidera.Checked Then
-        ZQTempReceber2.SQL.Add(' and not exists (select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec=idrecebimento)');
+        ZQTempReceber2.SQL.Add(' and not exists (select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec=RE.idrecebimento)');
      //
 
-     ZQTempReceber2.SQL.Add(' group by idloteamento');
+     ZQTempReceber2.SQL.Add(' group by RE.idloteamento');
 
      ZQTempReceber2.SQL.Add(' ORDER BY '+VarOrdem);
      ZQTempReceber2.Open;
@@ -3788,7 +3846,10 @@ begin
       ZQTempReceber2.SQL.Add(' R.nomeadversa,R.data_juridico,R.dt_nao_pagou_no_mes,');
       ZQTempReceber2.SQL.Add(' R.descricao_juridico,R.juridico,R.sq,R.somar,');
       ZQTempReceber2.SQL.Add(' R.Reajustado,R.Data_reajuste,R.Proximo_Reajuste,R.Parcelas_fixas,');
-      ZQTempReceber2.SQL.Add(' L.apelido as apelido_loteamento ');
+      ZQTempReceber2.SQL.Add(' L.apelido as apelido_loteamento,');
+      ZQTempReceber2.SQL.Add(' COALESCE(NULLIF(L.nomeloteamento, ''''), L.apelido) as nome_loteamento,');
+      ZQTempReceber2.SQL.Add(' COALESCE(MAX(NULLIF(P.nome_parte, '''')),');
+      ZQTempReceber2.SQL.Add(' MAX(NULLIF(R.nomeadversa, '''')), '''') as comprador_relatorio ');
 
         if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
       begin
@@ -3803,6 +3864,7 @@ begin
       ZQTempReceber2.SQL.Add(' ,sum(R.valor) as tvr, sum(R.saldo) as tsld ');
       ZQTempReceber2.SQL.Add(' from recebimento R ');
       ZQTempReceber2.SQL.Add(' join loteamento L on L.idloteamento = R.idloteamento ');
+      ZQTempReceber2.SQL.Add(' left join participante P on P.idpaticipante = R.adversa ');
 
       if  (not empty(copy(XDEBaixasInicio.Text,1,2))) or (not empty(copy(XDERefInicio.Text,1,2))) Then
       begin
@@ -3873,8 +3935,9 @@ begin
         ZQTempReceber2.SQL.Add(' and not exists (select 1 from remessa_receb RR where RR.idrec = R.idrecebimento)');
       if CBEmpre.Checked then
       begin
-        ZQTempReceber2.SQL.Add(' group by L.apelido, R.quadralote ');
-        ZQTempReceber2.SQL.Add(' order by L.apelido, '+VarOrdem);
+        ZQTempReceber2.SQL.Add(' group by COALESCE(NULLIF(L.nomeloteamento, ''''), L.apelido),');
+        ZQTempReceber2.SQL.Add(' L.apelido, R.quadralote ');
+        ZQTempReceber2.SQL.Add(' order by COALESCE(NULLIF(L.nomeloteamento, ''''), L.apelido), '+VarOrdem);
       end
       else
       begin
@@ -3883,6 +3946,7 @@ begin
       end;
 
       ZQTempReceber2.Open;
+      ZQTempReceber2.First;
 
 
 
@@ -5164,6 +5228,8 @@ initialization
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQTempReceber2', 'ZQTempReceber2tsld', 'tsld', TFloatField, fkData, 0, 0, False, '', '###,###,##0.00', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQTempReceber2', 'ZQTempReceber2nomeadversa', 'nomeadversa', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQTempReceber2', 'ZQTempReceber2apelido_loteamento', 'apelido_loteamento', TWideStringField, fkData, 50, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmRelRecebimento, 'ZQTempReceber2', 'ZQTempReceber2nome_loteamento', 'nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmRelRecebimento, 'ZQTempReceber2', 'ZQTempReceber2comprador_relatorio', 'comprador_relatorio', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TFrmRelRecebimento, 'ZQmensal', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQmensal', 'ZQmensalidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmRelRecebimento, 'ZQmensal', 'ZQmensalrecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);

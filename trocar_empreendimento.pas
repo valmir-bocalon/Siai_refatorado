@@ -367,6 +367,21 @@ uses tabelas, Funcoes, AchaLoteVenda, RelVenda, QuadroResumo, AchaVenda,
 
 {$R *.dfm}
 
+type
+  { A tela reutiliza a ZQVenda do data module. Recalcule os lookups no
+    registro atual para que o primeiro e o ultimo registro ja sejam exibidos. }
+  TDataSetCalcFieldsAccess = class(TDataSet);
+
+procedure RecalcularVendaAtual;
+begin
+  if (DM_Tabelas = nil) or
+     (not DM_Tabelas.ZQVenda.Active) or
+     DM_Tabelas.ZQVenda.IsEmpty then
+    Exit;
+  TDataSetCalcFieldsAccess(DM_Tabelas.ZQVenda).GetCalcFields(
+    DM_Tabelas.ZQVenda.ActiveBuffer);
+end;
+
 
 procedure TFrm_Trocar_Empre.FormShow(Sender: TObject);
 begin
@@ -386,6 +401,7 @@ begin
      DM_Tabelas.ZQVenda.open;
   if DM_Tabelas.ZQComprador.Active=false then
      DM_Tabelas.ZQComprador.open;
+  RecalcularVendaAtual;
   ncompr:=0;
   
   JDEntrada.DateText:=datetostr(date);
@@ -514,6 +530,8 @@ end;
 procedure TFrm_Trocar_Empre.BtPrimeiroClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.First;
+  RecalcularVendaAtual;
+  Botoes;
   DBGVenda.SetFocus;
 end;
 
@@ -521,18 +539,24 @@ end;
 procedure TFrm_Trocar_Empre.BTAnteriorClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Prior;
+  RecalcularVendaAtual;
+  Botoes;
   DBGVenda.SetFocus;
 end;
 
 procedure TFrm_Trocar_Empre.BtProximoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Next;
+  RecalcularVendaAtual;
+  Botoes;
   DBGVenda.SetFocus;
 end;
 
 procedure TFrm_Trocar_Empre.BtUltimoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Last;
+  RecalcularVendaAtual;
+  Botoes;
   DBGVenda.SetFocus;
 end;
 
@@ -1133,17 +1157,20 @@ end;
 procedure TFrm_Trocar_Empre.DBGVendaKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  RecalcularVendaAtual;
   Botoes;
 end;
 
 procedure TFrm_Trocar_Empre.DBGVendaMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  RecalcularVendaAtual;
   Botoes;
 end;
 
 procedure TFrm_Trocar_Empre.DBGVendaEnter(Sender: TObject);
 begin
+  RecalcularVendaAtual;
   Botoes;
 end;
 

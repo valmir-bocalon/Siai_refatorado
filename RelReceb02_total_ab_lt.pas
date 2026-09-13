@@ -59,7 +59,6 @@ type
     procedure RLBand1BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     { Private declarations }
-
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -122,11 +121,14 @@ begin
   RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
-
 procedure TFrmRelReceb02_total_ab_lt.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  { Use os nomes retornados pela consulta, sem recalcular lookups ao imprimir. }
+  RLGroup1.DataFields := 'nome_loteamento';
+  RLDBText7.DataField := 'nome_loteamento';
+  RLDBText6.DataField := 'comprador_relatorio';
 end;
 
 end.

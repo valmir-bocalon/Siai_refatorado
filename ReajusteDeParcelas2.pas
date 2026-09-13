@@ -9,6 +9,9 @@ uses
   ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi, ImgList, ExtCtrls,
   ComCtrls, dxCore2, System.ImageList;
 
+const
+  WM_ATUALIZAR_GRID_REAJUSTE2 = WM_APP + 171;
+
 type
   TFrm_ReajusteDeParcelas2 = class(TForm)
     XBanner4: TXBanner;
@@ -24,39 +27,6 @@ type
     DS_quadraLote: TDataSource;
     DS_Adversatemp: TDataSource;
     ZQAdvsersatemp: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     CDSAdversaTemp2: TClientDataSet;
     CDSAdversaTemp2CodAdversa: TIntegerField;
     CDSAdversaTemp2nomeadversa: TWideStringField;
@@ -70,70 +40,6 @@ type
     ZQVen1: TZQuery;
     DS_TempReceber: TDataSource;
     ZQTempReceber: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     GroupBox2: TGroupBox;
     XBanner8: TXBanner;
     XBanner9: TXBanner;
@@ -158,142 +64,18 @@ type
     lmes: TLabel;
     DS_Recebimento: TDataSource;
     ZQRecebimento: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DBGrid2: TDBGrid;
     DataZQRecebtmp: TDataSource;
     DBid: TDBEdit;
     ListBox1: TListBox;
-
-
     dxButton3: TdxButton;
     DS_Entrada: TDataSource;
     ZQEntrada: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DS_Parcela: TDataSource;
     ZQParcela: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ZQVenda: TZQuery;
-
-
-
-
-
     DS_Venda: TDataSource;
     ZQEmpree: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DS_Empree: TDataSource;
     CDSLoteamento: TClientDataSet;
     DataCDSLoteamento: TDataSource;
@@ -308,8 +90,6 @@ type
     Eloteamento: TEdit;
     dxButton14: TdxButton;
     dxButton13: TdxButton;
-
-
     CBDesconsidera: TCheckBox;
     ImageList1: TImageList;
     dxButton4: TdxButton;
@@ -320,12 +100,7 @@ type
     DataZQRecebtmp2: TDataSource;
     barra2: TProgressBar;
     cbconferencia: TCheckBox;
-
     lbreg: TLabel;
-
-
-
-
     ZQRecebtmp: TClientDataSet;
     ZQRecebtmpsaldocalc: TFloatField;
     ZQRecebtmpidrecebimento: TLargeintField;
@@ -405,14 +180,6 @@ type
     ZQRecebtmp2Parcelas_fixas: TStringField;
     ZQRecebtmp2data_reajuste: TDateField;
     CBBalao: TCheckBox;
-
-
-
-
-
-
-
-
     ZQRecebtmp2Reajustado: TStringField;
     ZQRecebtmp2sld_antes_reajuste: TFloatField;
     ZQRecebtmp2Percentual_reajuste: TFloatField;
@@ -438,6 +205,7 @@ type
     procedure dxButton2Click(Sender: TObject);
     procedure DBGRecebDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure ZQRecebimentoCalcFields(DataSet: TDataSet);
     procedure dxButton1Click(Sender: TObject);
     procedure xmesExit(Sender: TObject);
     procedure dxButton13Click(Sender: TObject);
@@ -465,6 +233,13 @@ type
   private
     { Private declarations }
 
+    procedure PrepararLookupsReajuste2;
+    procedure AtualizarLookupsReajuste2;
+    function NomeCompradorReajuste2: string;
+    function NomeLoteamentoReajuste2: string;
+    procedure WMAtualizarGridReajuste2(var Msg: TMessage); message WM_ATUALIZAR_GRID_REAJUSTE2;
+    procedure PrepararConsultaRecebimentoAntesDeAbrir(DataSet: TDataSet);
+
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -475,7 +250,8 @@ var
 
 implementation
 
-uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2,relajuste, AchaIpca, uRuntimeFields;
+uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2,relajuste,
+  AchaIpca, uRuntimeFields, uRecebimentoNomes;
 
 {$R *.dfm}
 
@@ -526,13 +302,13 @@ begin
             Frm_ReajusteDeParcelas2.ZQRecebtmpadversa.Value          :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('adversa').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmprecpag.Value           :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('recpag').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmpnumordem.Value         :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('numordem').AsInteger;
-            Frm_ReajusteDeParcelas2.ZQRecebtmpadversanome.Value      :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('adversanome').AsString;
+            Frm_ReajusteDeParcelas2.ZQRecebtmpadversanome.Value      :=Frm_ReajusteDeParcelas2.NomeCompradorReajuste2;
             Frm_ReajusteDeParcelas2.ZQRecebtmpidloteamento.Value     :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('idloteamento').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmpvenda_idvenda.Value    :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('venda_idvenda').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmpquadralote.Value       :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('quadralote').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmpnomeadversa.Value      :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('nomeadversa').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmpParcelas_fixas.Value   :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('Parcelas_fixas').AsString;
-            Frm_ReajusteDeParcelas2.ZQRecebtmpnome_loteamento.Value  :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('nome_loteamento').AsString;
+            Frm_ReajusteDeParcelas2.ZQRecebtmpnome_loteamento.Value  :=Frm_ReajusteDeParcelas2.NomeLoteamentoReajuste2;
             Frm_ReajusteDeParcelas2.ZQRecebtmpdata_reajuste.Value    :=date;
             Frm_ReajusteDeParcelas2.ZQRecebtmp.Post;
 
@@ -553,13 +329,13 @@ begin
             Frm_ReajusteDeParcelas2.ZQRecebtmp2adversa.Value         :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('adversa').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2recpag.Value          :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('recpag').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2numordem.Value        :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('numordem').AsInteger;
-            Frm_ReajusteDeParcelas2.ZQRecebtmp2adversanome.Value     :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('adversanome').AsString;
+            Frm_ReajusteDeParcelas2.ZQRecebtmp2adversanome.Value     :=Frm_ReajusteDeParcelas2.NomeCompradorReajuste2;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2idloteamento.Value    :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('idloteamento').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2venda_idvenda.Value   :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('venda_idvenda').AsInteger;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2quadralote.Value      :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('quadralote').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2nomeadversa.Value     :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('nomeadversa').AsString;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2Parcelas_fixas.Value  :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('Parcelas_fixas').AsString;
-            Frm_ReajusteDeParcelas2.ZQRecebtmp2nome_loteamento.Value :=Frm_ReajusteDeParcelas2.ZQRecebimento.FieldByName('nome_loteamento').AsString;
+            Frm_ReajusteDeParcelas2.ZQRecebtmp2nome_loteamento.Value :=Frm_ReajusteDeParcelas2.NomeLoteamentoReajuste2;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2data_reajuste.Value   :=date;
             Frm_ReajusteDeParcelas2.ZQRecebtmp2.Post;
 
@@ -619,12 +395,143 @@ begin
   end;
 end;
 
+procedure TFrm_ReajusteDeParcelas2.PrepararLookupsReajuste2;
+begin
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+end;
+
+procedure TFrm_ReajusteDeParcelas2.ZQRecebimentoCalcFields(
+  DataSet: TDataSet);
+var
+  LChave: TField;
+  LDestino: TField;
+  LOrigem: TField;
+  LValor: Variant;
+begin
+  if (DataSet = nil) or
+     not (DataSet.State in [dsCalcFields, dsEdit, dsInsert]) then
+    Exit;
+
+  if (DataSet = nil) or (DM_Tabelas = nil) then
+    Exit;
+
+  LChave := DataSet.FindField('adversa');
+  LDestino := DataSet.FindField('adversanome');
+  if (LDestino <> nil) and (LDestino.FieldKind = fkCalculated) then
+  begin
+    LDestino.Clear;
+    if (LChave <> nil) and (not LChave.IsNull) and
+       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+    begin
+      LValor := DM_Tabelas.ZqParticipante.Lookup(
+        'idpaticipante', LChave.AsLargeInt, 'nome_parte');
+      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+        LDestino.AsString := VarToStr(LValor);
+    end;
+    if LDestino.AsString = '' then
+    begin
+      LOrigem := DataSet.FindField('nomeadversa');
+      if (LOrigem <> nil) and (not LOrigem.IsNull) then
+        LDestino.AsString := LOrigem.AsString;
+    end;
+  end;
+
+  LChave := DataSet.FindField('idloteamento');
+  LDestino := DataSet.FindField('nome_loteamento');
+  if (LDestino <> nil) and (LDestino.FieldKind = fkCalculated) and
+     (LChave <> nil) and (not LChave.IsNull) and
+     (LChave.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
+  begin
+    LDestino.Clear;
+    LValor := DM_Tabelas.ZQLoteamento.Lookup(
+      'idloteamento', LChave.AsLargeInt, 'apelido');
+    if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+      LDestino.AsString := VarToStr(LValor);
+  end;
+end;
+
+function TFrm_ReajusteDeParcelas2.NomeCompradorReajuste2: string;
+var
+  LField: TField;
+  LValor: Variant;
+begin
+  Result := '';
+  if not ZQRecebimento.Active then
+    Exit;
+
+  LField := ZQRecebimento.FindField('adversanome');
+  if LField <> nil then
+    Result := LField.AsString;
+  if Result <> '' then
+    Exit;
+
+  LField := ZQRecebimento.FindField('adversa');
+  if (LField <> nil) and (not LField.IsNull) and
+     (LField.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+  begin
+    LValor := DM_Tabelas.ZqParticipante.Lookup(
+      'idpaticipante', LField.AsLargeInt, 'nome_parte');
+    if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+      Result := VarToStr(LValor);
+  end;
+  if Result = '' then
+  begin
+    LField := ZQRecebimento.FindField('nomeadversa');
+    if (LField <> nil) and not LField.IsNull then
+      Result := LField.AsString;
+  end;
+end;
+
+function TFrm_ReajusteDeParcelas2.NomeLoteamentoReajuste2: string;
+var
+  LField: TField;
+  LValor: Variant;
+begin
+  Result := '';
+  if not ZQRecebimento.Active then
+    Exit;
+
+  LField := ZQRecebimento.FindField('nome_loteamento');
+  if LField <> nil then
+    Result := LField.AsString;
+  if Result <> '' then
+    Exit;
+
+  LField := ZQRecebimento.FindField('idloteamento');
+  if (LField <> nil) and (not LField.IsNull) and
+     (LField.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
+  begin
+    LValor := DM_Tabelas.ZQLoteamento.Lookup(
+      'idloteamento', LField.AsLargeInt, 'apelido');
+    if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+      Result := VarToStr(LValor);
+  end;
+end;
+
+procedure TFrm_ReajusteDeParcelas2.AtualizarLookupsReajuste2;
+var
+  LValor: string;
+begin
+  if (not ZQRecebimento.Active) or ZQRecebimento.IsEmpty then
+    Exit;
+
+  { Materialize apenas o registro atual. Percorrer toda a consulta aqui
+    deixa a abertura da tela bloqueada em bases com muitos titulos. }
+  LValor := ZQRecebimento.FieldByName('adversanome').AsString;
+  LValor := ZQRecebimento.FieldByName('nome_loteamento').AsString;
+  DBGReceb.Invalidate;
+end;
+
 procedure TFrm_ReajusteDeParcelas2.FormShow(Sender: TObject);
 var
 mmes,ms,xdata:string;
 ds:Tdatetime;
 
 begin
+  PrepararLookupsReajuste2;
   ms:=mesano(date);
   ms:=UltimoDiaDoMes(ms);
   xdata:=ms+copy(datetostr(date),3,10);
@@ -703,8 +610,24 @@ begin
   ZQRecebtmp2.close;
   ZQRecebtmp2.createdataset;
 
+  ZQRecebimento.First;
+  AtualizarLookupsReajuste2;
+  DBGReceb.Refresh;
+  DBGReceb.Repaint;
 
 end;
+
+procedure TFrm_ReajusteDeParcelas2.WMAtualizarGridReajuste2(
+  var Msg: TMessage);
+begin
+  if (csDestroying in ComponentState) or (not ZQRecebimento.Active) then
+    Exit;
+  ZQRecebimento.First;
+  AtualizarLookupsReajuste2;
+  DBGReceb.Refresh;
+  DBGReceb.Repaint;
+end;
+
 procedure TFrm_ReajusteDeParcelas2.botoes_setas;
 Begin
   DXBPrimeiro.Enabled := True;
@@ -973,6 +896,10 @@ end;
 procedure TFrm_ReajusteDeParcelas2.DBGRecebDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
+var
+  LNomeComprador: string;
+  LChave: TField;
+  LValor: Variant;
 begin
   if ZQRecebimento.FieldByName('saldo').AsFloat <=0 Then
     DBGReceb.Canvas.Brush.Color:= $00FFEEDD; // coloque aqui a cor desejada
@@ -999,6 +926,33 @@ begin
         ImageList1.Draw(DBGReceb.Canvas, Rect.Left + 10, Rect.Top + 1, 0)
       else
         ImageList1.Draw(DBGReceb.Canvas, Rect.Left + 10, Rect.Top + 1, 1);
+    end;
+  end;
+
+  { O primeiro registro pode ser pintado antes da materializacao do lookup.
+    Desenhe somente a coluna do comprador pela mesma chave, sem editar o
+    dataset e preservando a pintura da linha. }
+  if SameText(Column.FieldName, 'adversanome') then
+  begin
+    LNomeComprador := Column.Field.AsString;
+    if (LNomeComprador = '') and DM_Tabelas.ZqParticipante.Active then
+    begin
+      LChave := ZQRecebimento.FindField('adversa');
+      if (LChave <> nil) and (not LChave.IsNull) and
+         (LChave.AsLargeInt <> 0) then
+      begin
+        LValor := DM_Tabelas.ZqParticipante.Lookup(
+          'idpaticipante', LChave.AsLargeInt, 'nome_parte');
+        if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
+          LNomeComprador := VarToStr(LValor);
+      end;
+    end;
+    if LNomeComprador <> '' then
+    begin
+      DBGReceb.Canvas.Brush.Style := bsClear;
+      DBGReceb.Canvas.TextRect(Rect, Rect.Left + 2, Rect.Top + 2,
+        LNomeComprador);
+      DBGReceb.Canvas.Brush.Style := bsSolid;
     end;
   end;
   
@@ -2499,9 +2453,20 @@ begin
 end;
 
 
+procedure TFrm_ReajusteDeParcelas2.PrepararConsultaRecebimentoAntesDeAbrir(
+  DataSet: TDataSet);
+begin
+  PrepararConsultaRecebimentoComNomes(DataSet);
+end;
+
 procedure TFrm_ReajusteDeParcelas2.AfterConstruction;
 begin
   inherited AfterConstruction;
+  ZQRecebimento.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  ZQTempReceber.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  PrepararConsultaRecebimentoComNomes(ZQRecebimento);
+  PrepararConsultaRecebimentoComNomes(ZQTempReceber);
+  ZQRecebimento.OnCalcFields := ZQRecebimentoCalcFields;
   EnsureRuntimeFields(Self);
 end;
 
@@ -2602,7 +2567,7 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebercodpagBx', 'codpagBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebercodrecBx', 'codrecBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberplanomascara', 'planomascara', TWideStringField, fkLookup, 0, 0, False, '', '', '', '', 0, 'contabil', 'DM_Tabelas.ZQPlanoDeContas', 'codigo', 'mascara', True);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberfone4', 'fone4', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebercomplemento', 'complemento', TWideStringField, fkData, 30, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -2610,7 +2575,7 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebercadastrado', 'cadastrado', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebervenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebernumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempReceberSubstituicao', 'Substituicao', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQTempReceber', 'ZQTempRecebernomeadversa', 'nomeadversa', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -2641,9 +2606,9 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentorecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentonumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentoidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentovenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentoquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas2, 'ZQRecebimento', 'ZQRecebimentonumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

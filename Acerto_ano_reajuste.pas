@@ -460,6 +460,7 @@ type
   private
     { Private declarations }
 
+    procedure PrepararConsultaRecebimentoAntesDeAbrir(DataSet: TDataSet);
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -470,7 +471,8 @@ var
 
 implementation
 
-uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2, uRuntimeFields;
+uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2,
+  uRuntimeFields, uRecebimentoNomes;
 
 {$R *.dfm}
 
@@ -622,6 +624,13 @@ mmes,ms,xdata:string;
 ds:Tdatetime;
 
 begin
+  { Os campos de comprador e loteamento sao calculados por lookup. Abra as
+    fontes antes de abrir a consulta principal para o primeiro registro. }
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+
   ms:=mesano(date);
   ms:=UltimoDiaDoMes(ms);
   xdata:=ms+copy(datetostr(date),3,10);
@@ -1407,9 +1416,19 @@ begin
 end;
 
 
+procedure TFrm_Acerto_ano.PrepararConsultaRecebimentoAntesDeAbrir(
+  DataSet: TDataSet);
+begin
+  PrepararConsultaRecebimentoComNomes(DataSet);
+end;
+
 procedure TFrm_Acerto_ano.AfterConstruction;
 begin
   inherited AfterConstruction;
+  ZQRecebimento.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  ZQTempReceber.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  PrepararConsultaRecebimentoComNomes(ZQRecebimento);
+  PrepararConsultaRecebimentoComNomes(ZQTempReceber);
   EnsureRuntimeFields(Self);
 end;
 
@@ -1527,7 +1546,7 @@ initialization
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebercodpagBx', 'codpagBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebercodrecBx', 'codrecBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberplanomascara', 'planomascara', TWideStringField, fkLookup, 0, 0, False, '', '', '', '', 0, 'contabil', 'DM_Tabelas.ZQPlanoDeContas', 'codigo', 'mascara', True);
-  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberfone4', 'fone4', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebercomplemento', 'complemento', TWideStringField, fkData, 30, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -1535,7 +1554,7 @@ initialization
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebercadastrado', 'cadastrado', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebervenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebernumboleto', 'numboleto', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempReceberSubstituicao', 'Substituicao', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQTempReceber', 'ZQTempRecebernomeadversa', 'nomeadversa', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -1563,9 +1582,9 @@ initialization
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentorecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentonumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentoidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentovenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentoquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Acerto_ano, 'ZQRecebimento', 'ZQRecebimentonumboleto', 'numboleto', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);

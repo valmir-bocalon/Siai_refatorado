@@ -21,7 +21,8 @@ procedure RegisterRuntimeField(
   const ADisplayLabel, ADisplayFormat, AEditFormat, AEditMask: string;
   ADisplayWidth: Integer;
   const AKeyFields, ALookupDataSetName, ALookupKeyFields, ALookupResultField: string;
-  ALookup: Boolean);
+  ALookup: Boolean;
+  ANativeLookup: Boolean = False);
 procedure EnsureRuntimeFields(AOwner: TComponent);
 
 implementation
@@ -62,6 +63,7 @@ type
     LookupKeyFields: string;
     LookupResultField: string;
     Lookup: Boolean;
+    NativeLookup: Boolean;
   end;
 
   TDataSetSpec = class
@@ -341,8 +343,6 @@ var
 begin
   if (FDataSet = nil) or (not FDataSet.Active) or FDataSet.IsEmpty then
     Exit;
-  if FDataSet.Eof and not FDataSet.Bof then
-    Exit;
   for LSetting in FSettings do
   begin
     if not LSetting.Lookup then
@@ -437,18 +437,23 @@ var
   LFieldClass: TFieldClass;
   LSetting: TFieldSetting;
   LLookup: Boolean;
+  LNativeLookup: Boolean;
   LLookupDataSet: TDataSet;
+  LNewField: Boolean;
 begin
   if (AOwner = nil) or (ADataSet = nil) or (AFieldSpec = nil) then
     Exit;
   LLookup := AFieldSpec.Lookup or (AFieldSpec.FieldKind = fkLookup);
+  LNativeLookup := LLookup and AFieldSpec.NativeLookup;
   LLookupDataSet := ResolveLookupDataSet(AOwner, AFieldSpec.LookupDataSetName);
   LSetting := EnsureDataSetHook(ADataSet).FindOrAddSetting(AFieldSpec.FieldName);
   LSetting.KeyFields := AFieldSpec.KeyFields;
   LSetting.LookupDataSetName := AFieldSpec.LookupDataSetName;
   LSetting.LookupKeyFields := AFieldSpec.LookupKeyFields;
   LSetting.LookupResultField := AFieldSpec.LookupResultField;
-  LSetting.Lookup := LLookup;
+  { Lookups nativos sao resolvidos pelo proprio dataset. Somente os
+    campos calculados continuam no hook para nao sobrescrever o valor. }
+  LSetting.Lookup := LLookup and not LNativeLookup;
   LSetting.DisplayLabel := AFieldSpec.DisplayLabel;
   LSetting.DisplayFormat := AFieldSpec.DisplayFormat;
   LSetting.EditFormat := AFieldSpec.EditFormat;
@@ -456,14 +461,17 @@ begin
   LSetting.DisplayWidth := AFieldSpec.DisplayWidth;
   LSetting.HasDisplayWidth := AFieldSpec.DisplayWidth > 0;
   LField := ADataSet.FindField(AFieldSpec.FieldName);
-  if LField = nil then
+  LNewField := LField = nil;
+  if LNewField then
   begin
     LFieldClass := ResolveRuntimeFieldClass(ADataSet, AFieldSpec.FieldName, AFieldSpec.FieldClass);
     LField := LFieldClass.Create(AOwner);
     try
       if (AFieldSpec.ComponentName <> '') and (AOwner.FindComponent(AFieldSpec.ComponentName) = nil) then
         LField.Name := AFieldSpec.ComponentName;
-      if LLookup then
+      if LNativeLookup then
+        LField.FieldKind := fkLookup
+      else if LLookup then
         LField.FieldKind := fkCalculated
       else
         LField.FieldKind := AFieldSpec.FieldKind;
@@ -479,21 +487,30 @@ begin
       TrySetStrProp(LField, 'DisplayFormat', AFieldSpec.DisplayFormat);
       TrySetStrProp(LField, 'EditFormat', AFieldSpec.EditFormat);
       TrySetStrProp(LField, 'EditMask', AFieldSpec.EditMask);
-      if LLookup then
-      begin
-        TrySetStrProp(LField, 'KeyFields', AFieldSpec.KeyFields);
-        TrySetStrProp(LField, 'LookupKeyFields', AFieldSpec.LookupKeyFields);
-        TrySetStrProp(LField, 'LookupResultField', AFieldSpec.LookupResultField);
-        if (LLookupDataSet <> nil) and IsPublishedProp(LField, 'LookupDataSet') then
-          SetObjectProp(LField, 'LookupDataSet', LLookupDataSet);
-        if IsPublishedProp(LField, 'Lookup') then
-          SetOrdProp(LField, 'Lookup', 1);
-      end;
-      LField.DataSet := ADataSet;
     except
       LField.Free;
       raise;
     end;
+  end;
+  try
+    if LNativeLookup then
+      LField.FieldKind := fkLookup;
+    if LLookup then
+    begin
+      TrySetStrProp(LField, 'KeyFields', AFieldSpec.KeyFields);
+      TrySetStrProp(LField, 'LookupKeyFields', AFieldSpec.LookupKeyFields);
+      TrySetStrProp(LField, 'LookupResultField', AFieldSpec.LookupResultField);
+      if (LLookupDataSet <> nil) and IsPublishedProp(LField, 'LookupDataSet') then
+        SetObjectProp(LField, 'LookupDataSet', LLookupDataSet);
+      if IsPublishedProp(LField, 'Lookup') then
+        SetOrdProp(LField, 'Lookup', 1);
+    end;
+    if LNewField then
+      LField.DataSet := ADataSet;
+  except
+    if LNewField then
+      LField.Free;
+    raise;
   end;
 end;
 
@@ -573,7 +590,8 @@ procedure RegisterRuntimeField(
   const ADisplayLabel, ADisplayFormat, AEditFormat, AEditMask: string;
   ADisplayWidth: Integer;
   const AKeyFields, ALookupDataSetName, ALookupKeyFields, ALookupResultField: string;
-  ALookup: Boolean);
+  ALookup: Boolean;
+  ANativeLookup: Boolean);
 var
   LDataSet: TDataSetSpec;
   LField: TFieldSpec;
@@ -607,6 +625,7 @@ begin
   LField.LookupKeyFields := ALookupKeyFields;
   LField.LookupResultField := ALookupResultField;
   LField.Lookup := ALookup;
+  LField.NativeLookup := ANativeLookup;
 end;
 
 procedure EnsureRuntimeFields(AOwner: TComponent);

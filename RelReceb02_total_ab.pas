@@ -120,6 +120,7 @@ procedure TFrmRelReceb02_total_ab.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  RLDBText18.DataField := 'comprador_relatorio';
 end;
 
 end.

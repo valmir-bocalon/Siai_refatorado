@@ -680,7 +680,13 @@ end;
 procedure TFrmRecebBaixa_subst.DBGBaixandoMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if DBGBaixando.SelectedField.fieldname = 'marcar' Then Begin
+  { Depois de gravar a substituicao, a grade pode receber um clique antes de
+    ter uma coluna/campo selecionado. Nao acessar SelectedField nesse estado. }
+  if (DBGBaixando = nil) or (DBGBaixando.SelectedField = nil) or
+     (ZQRecBai = nil) or (not ZQRecBai.Active) or ZQRecBai.IsEmpty then
+    Exit;
+
+  if SameText(DBGBaixando.SelectedField.FieldName, 'marcar') Then Begin
     ZQRecBai.Edit;
     if  ZQRecBai.FieldByName('marcar').AsString = '0' Then
       ZQRecBai.FieldByName('marcar').AsString := '1'

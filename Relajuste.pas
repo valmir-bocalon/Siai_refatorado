@@ -81,6 +81,10 @@ procedure TFrmRelReajuste.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
   RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
+  { Mantenha o relatorio ligado aos campos calculados dos ClientDataSets
+    preenchidos pela tela ReajusteDeParcelas2. }
+  RLDBText2.DataField := 'nome_loteamento';
+  RLDBText18.DataField := 'adversanome';
 end;
 
 

@@ -409,6 +409,7 @@ type
   private
     { Private declarations }
 
+    procedure PrepararConsultaRecebimentoAntesDeAbrir(DataSet: TDataSet);
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -419,7 +420,8 @@ var
 
 implementation
 
-uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2, uRuntimeFields;
+uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2,
+  uRuntimeFields, uRecebimentoNomes;
 
 {$R *.dfm}
 
@@ -471,6 +473,7 @@ begin
             Frm_ProximoReajusteDeParcelas.ZQRecebtmpquadralote.Value:=Frm_ProximoReajusteDeParcelas.ZQRecebimento.FieldByName('quadralote').AsString;
             Frm_ProximoReajusteDeParcelas.ZQRecebtmpnomeadversa.Value:=Frm_ProximoReajusteDeParcelas.ZQRecebimento.FieldByName('nomeadversa').AsString;
             Frm_ProximoReajusteDeParcelas.ZQRecebtmpParcelas_fixas.Value:=Frm_ProximoReajusteDeParcelas.ZQRecebimento.FieldByName('Parcelas_fixas').AsString;
+            Frm_ProximoReajusteDeParcelas.ZQRecebtmpproximo_reajuste.Value:=Frm_ProximoReajusteDeParcelas.ZQRecebimento.FieldByName('Proximo_Reajuste').AsString;
             Frm_ProximoReajusteDeParcelas.ZQRecebtmp.Post;
             Frm_ProximoReajusteDeParcelas.ZQRecebimento.Next;
           end;
@@ -1117,10 +1120,22 @@ begin
 end;
 
 
+procedure TFrm_ProximoReajusteDeParcelas.PrepararConsultaRecebimentoAntesDeAbrir(
+  DataSet: TDataSet);
+begin
+  PrepararConsultaRecebimentoComNomes(DataSet);
+end;
+
 procedure TFrm_ProximoReajusteDeParcelas.AfterConstruction;
 begin
   inherited AfterConstruction;
+  ZQRecebimento.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  ZQTempReceber.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  PrepararConsultaRecebimentoComNomes(ZQRecebimento);
+  PrepararConsultaRecebimentoComNomes(ZQTempReceber);
   EnsureRuntimeFields(Self);
+  if ZQRecebimento.FindField('adversanome') <> nil then
+    ZQRecebimento.FieldByName('adversanome').ReadOnly := True;
 end;
 
 initialization
@@ -1237,7 +1252,7 @@ initialization
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercodpagBx', 'codpagBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercodrecBx', 'codrecBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberplanomascara', 'planomascara', TWideStringField, fkLookup, 0, 0, False, '', '', '', '', 0, 'contabil', 'DM_Tabelas.ZQPlanoDeContas', 'codigo', 'mascara', True);
-  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberfone4', 'fone4', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercomplemento', 'complemento', TWideStringField, fkData, 30, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -1245,7 +1260,7 @@ initialization
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercadastrado', 'cadastrado', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebervenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernumboleto', 'numboleto', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberSubstituicao', 'Substituicao', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeadversa', 'nomeadversa', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -1268,9 +1283,9 @@ initialization
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoadversa', 'adversa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentovenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentosq', 'sq', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ProximoReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoData_reajuste', 'Data_reajuste', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

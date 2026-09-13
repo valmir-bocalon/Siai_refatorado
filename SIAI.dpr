@@ -164,7 +164,8 @@ uses
   UnPdf in 'UnPdf.pas' {FrmVisualizarPdf},
   RelReceb02_total_ab in 'RelReceb02_total_ab.pas' {FrmRelReceb02_total_ab},
   Aditamento in 'Aditamento.pas' {Frmaditamento},
-  Relparticipante_ficha in 'Relparticipante_ficha.pas' {FrmRelparticipante_ficha};
+  Relparticipante_ficha in 'Relparticipante_ficha.pas' {FrmRelparticipante_ficha},
+  CessaoRecebimentos in 'CessaoRecebimentos.pas';
 
 {$R *.res}
 var
@@ -191,58 +192,58 @@ begin
       {$ELSE}
       ReportMemoryLeaksOnShutdown := False;
       {$ENDIF}
-  Application.Initialize;
-  if Classes.GetClass('TRLReport') = nil then
-    Classes.RegisterClass(TRLReport);
-  Application.Title := 'Gerenciamento de Loteamento';
-  Application.CreateForm(TFrm_principal, Frm_principal);
-  Application.CreateForm(TDM_Tabelas, DM_Tabelas);
-  EnsureLoteamentoNomeCidadeField(DM_Tabelas);
-  EnsureImovelLoteamentoField(DM_Tabelas);
-  EnsureCorretorLookupFields(DM_Tabelas);
-  EnsureContaBancariaLookupFields(DM_Tabelas);
-  EnsureVendaLookupFields(DM_Tabelas);
-  EnsureCompradorLookupFields(DM_Tabelas);
-  EnsureRecebimentoCalculatedFields(DM_Tabelas);
-  EnsureRecebimentoTempAggregateField(DM_Tabelas);
-  EnsureRecebBxTempCalculatedFields(DM_Tabelas);
-  EnsureDivididoLookupFields(DM_Tabelas);
-  EnsureRecebimentoLookupFields(DM_Tabelas);
-  EnsureEmpresaLookupFields(DM_Tabelas);
-  EnsureParticipanteLookupFields(DM_Tabelas);
-  EnsureResponsavelLookupFields(DM_Tabelas);
-  EnsureIncorpLoteamentoLookupFields(DM_Tabelas);
-  EnsureRelVendaPartiFields(DM_Tabelas);
-  EnsureRuntimeFields(DM_Tabelas);
+      Application.Initialize;
+      if Classes.GetClass('TRLReport') = nil then
+        Classes.RegisterClass(TRLReport);
+      Application.Title := 'Gerenciamento de Loteamento';
+      Application.CreateForm(TFrm_principal, Frm_principal);
+      Application.CreateForm(TDM_Tabelas, DM_Tabelas);
+      EnsureLoteamentoNomeCidadeField(DM_Tabelas);
+      EnsureImovelLoteamentoField(DM_Tabelas);
+      EnsureCorretorLookupFields(DM_Tabelas);
+      EnsureContaBancariaLookupFields(DM_Tabelas);
+      EnsureVendaLookupFields(DM_Tabelas);
+      EnsureCompradorLookupFields(DM_Tabelas);
+      EnsureRecebimentoCalculatedFields(DM_Tabelas);
+      EnsureRecebimentoTempAggregateField(DM_Tabelas);
+      EnsureRecebBxTempCalculatedFields(DM_Tabelas);
+      EnsureDivididoLookupFields(DM_Tabelas);
+      EnsureRecebimentoLookupFields(DM_Tabelas);
+      EnsureEmpresaLookupFields(DM_Tabelas);
+      EnsureParticipanteLookupFields(DM_Tabelas);
+      EnsureResponsavelLookupFields(DM_Tabelas);
+      EnsureIncorpLoteamentoLookupFields(DM_Tabelas);
+      EnsureRelVendaPartiFields(DM_Tabelas);
+      EnsureRuntimeFields(DM_Tabelas);
 
-  Application.CreateForm(TFrm_Funcoes, Frm_Funcoes);
-  Application.CreateForm(TFrm_DigSenha, Frm_DigSenha);
-  Application.CreateForm(TFrm_NovaSenha, Frm_NovaSenha);
-  Application.CreateForm(TFrm_AchaIpca, Frm_AchaIpca);
-  Application.CreateForm(TFrmContraSenha, FrmContraSenha);
-  Application.CreateForm(TFrm_AchaParticipante, Frm_AchaParticipante);
-  Application.CreateForm(TFrm_Achaloteamento, Frm_Achaloteamento);
-  Application.CreateForm(TFrm_AchaImovel, Frm_AchaImovel);
-  Application.CreateForm(TFrm_AchaCorretor, Frm_AchaCorretor);
-  Application.CreateForm(TFrm_AchaPlanoDeContas, Frm_AchaPlanoDeContas);
-  Application.CreateForm(TFrm_Configuracoes, Frm_Configuracoes);
-  Application.CreateForm(TFrmPesqRecebimento_bx, FrmPesqRecebimento_bx);
-  Application.CreateForm(TFrm_Acha_Contabancaria, Frm_Acha_Contabancaria);
-  Application.CreateForm(TFrm_NumRemessa, Frm_NumRemessa);
-  Application.CreateForm(TFrm_AchaLoteVenda, Frm_AchaLoteVenda);
-  Application.CreateForm(TFrm_AchaVenda, Frm_AchaVenda);
-  Application.CreateForm(TFormMensagem, FormMensagem);
-  Application.CreateForm(TFrmPerguntaSIMNAO, FrmPerguntaSIMNAO);
-  Application.CreateForm(TFrmPergunta, FrmPergunta);
-  Application.CreateForm(TFrm_Achaimoveis, Frm_Achaimoveis);
-  Application.CreateForm(TFrm_Achavendas, Frm_Achavendas);
-  Application.CreateForm(TFrm_AchaCidade, Frm_AchaCidade);
-  Application.CreateForm(TFrmPesqRecebimento2, FrmPesqRecebimento2);
-  Application.CreateForm(TFrmPesqEndereco, FrmPesqEndereco);
-  Application.CreateForm(TFrmPesqCobranca, FrmPesqCobranca);
-  Application.CreateForm(TFrmPesqRecebimento, FrmPesqRecebimento);
-  Application.CreateForm(TFrm_AchaIgpm, Frm_AchaIgpm);
-  Application.Run;
+      Application.CreateForm(TFrm_Funcoes, Frm_Funcoes);
+      Application.CreateForm(TFrm_DigSenha, Frm_DigSenha);
+      Application.CreateForm(TFrm_NovaSenha, Frm_NovaSenha);
+      Application.CreateForm(TFrm_AchaIpca, Frm_AchaIpca);
+      Application.CreateForm(TFrmContraSenha, FrmContraSenha);
+      Application.CreateForm(TFrm_AchaParticipante, Frm_AchaParticipante);
+      Application.CreateForm(TFrm_Achaloteamento, Frm_Achaloteamento);
+      Application.CreateForm(TFrm_AchaImovel, Frm_AchaImovel);
+      Application.CreateForm(TFrm_AchaCorretor, Frm_AchaCorretor);
+      Application.CreateForm(TFrm_AchaPlanoDeContas, Frm_AchaPlanoDeContas);
+      Application.CreateForm(TFrm_Configuracoes, Frm_Configuracoes);
+      Application.CreateForm(TFrmPesqRecebimento_bx, FrmPesqRecebimento_bx);
+      Application.CreateForm(TFrm_Acha_Contabancaria, Frm_Acha_Contabancaria);
+      Application.CreateForm(TFrm_NumRemessa, Frm_NumRemessa);
+      Application.CreateForm(TFrm_AchaLoteVenda, Frm_AchaLoteVenda);
+      Application.CreateForm(TFrm_AchaVenda, Frm_AchaVenda);
+      Application.CreateForm(TFormMensagem, FormMensagem);
+      Application.CreateForm(TFrmPerguntaSIMNAO, FrmPerguntaSIMNAO);
+      Application.CreateForm(TFrmPergunta, FrmPergunta);
+      Application.CreateForm(TFrm_Achaimoveis, Frm_Achaimoveis);
+      Application.CreateForm(TFrm_Achavendas, Frm_Achavendas);
+      Application.CreateForm(TFrm_AchaCidade, Frm_AchaCidade);
+      Application.CreateForm(TFrmPesqRecebimento2, FrmPesqRecebimento2);
+      Application.CreateForm(TFrmPesqEndereco, FrmPesqEndereco);
+      Application.CreateForm(TFrmPesqCobranca, FrmPesqCobranca);
+      Application.CreateForm(TFrmPesqRecebimento, FrmPesqRecebimento);
+      Application.CreateForm(TFrm_AchaIgpm, Frm_AchaIgpm);
+      Application.Run;
     end
     Else
     begin

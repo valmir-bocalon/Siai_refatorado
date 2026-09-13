@@ -583,6 +583,8 @@ type
     procedure DXBPesquisarClick(Sender: TObject);
     procedure DXBRelatoriosClick(Sender: TObject);
     procedure botoes_setas;
+    procedure PrepararLookupsRecebimento;
+    procedure AtualizarLookupsRecebimento;
     procedure ECliente1Exit(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure Atualiza_Telas;
@@ -715,6 +717,19 @@ uses tabelas, Funcoes, Inc_Recebimento, RecebBaixa, UAchaReceb,
   ReajusteDeParcelas2, PesqCobranca, RelCobranca, RecebBaixa_subst,
   RelCobranca2, Uobs_estorno, trocar_lote, Uparcelanaopaga, Balao, Ucobranca,
   trocar_empreendimento, zerarNossoNumero, uRuntimeFields, ChartGenerator;
+
+type
+  { A API publica de TDataSet nao expoe GetCalcFields, mas este metodo e o
+    ciclo seguro que coloca o dataset em dsCalcFields antes de preencher os
+    campos calculados. }
+  TDataSetCalcFieldsAccess = class(TDataSet);
+
+procedure RecalcularCamposAtuais(ADataSet: TDataSet);
+begin
+  if (ADataSet = nil) or (not ADataSet.Active) or ADataSet.IsEmpty then
+    Exit;
+  TDataSetCalcFieldsAccess(ADataSet).GetCalcFields(ADataSet.ActiveBuffer);
+end;
 
 {$R *.dfm}
 
@@ -849,6 +864,12 @@ begin
     DM_Tabelas.ZQCheque.open;
   end;
 
+  { Os campos nomecli, adversanome e nome_loteamento são calculados a
+    partir destes dois datasets. Eles precisam estar abertos antes do
+    primeiro posicionamento do grid para que First/Last também calculem o
+    registro atual. }
+  PrepararLookupsRecebimento;
+
   if DM_tabelas.ZQRecebimento.Active=false then
   begin
     DM_tabelas.ZQRecebimento.Close;
@@ -879,6 +900,7 @@ begin
   ZQGerou.Open;
 
   DM_Tabelas.ZQRecebimento.Last;
+  AtualizarLookupsRecebimento;
   DBGReceb.SetFocus;
   botoes_setas;
   Pag_Receb.PageIndex := 0;
@@ -978,6 +1000,7 @@ End;
 procedure TFrmCad_Recebimento.DXBPrimeiroClick(Sender: TObject);
 begin
   DM_tabelas.ZQRecebimento.First;
+  AtualizarLookupsRecebimento;
   botoes_setas;
   DBGReceb.SetFocus;
 end;
@@ -985,6 +1008,7 @@ end;
 procedure TFrmCad_Recebimento.DXBAnteriorClick(Sender: TObject);
 begin
   DM_tabelas.ZQRecebimento.Prior;
+  AtualizarLookupsRecebimento;
   botoes_setas;
   DBGReceb.SetFocus;
 end;
@@ -992,6 +1016,7 @@ end;
 procedure TFrmCad_Recebimento.DXBProximoClick(Sender: TObject);
 begin
   DM_tabelas.ZQRecebimento.Next;
+  AtualizarLookupsRecebimento;
   botoes_setas;
   DBGReceb.SetFocus;  
 end;
@@ -999,6 +1024,7 @@ end;
 procedure TFrmCad_Recebimento.DXBUltimoClick(Sender: TObject);
 begin
   DM_tabelas.ZQRecebimento.Last;
+  AtualizarLookupsRecebimento;
   botoes_setas;
   DBGReceb.SetFocus;
 end;
@@ -1137,6 +1163,41 @@ Begin
   end;
 //  Atualiza_Telas;
 End;
+
+procedure TFrmCad_Recebimento.PrepararLookupsRecebimento;
+begin
+  if DM_Tabelas = nil then
+    Exit;
+
+  { Não altere SQL nem feche datasets que possam estar sendo usados por
+    outras telas. Apenas abra os lookups quando a tela financeira precisar
+    deles. }
+  if not DM_Tabelas.ZqParticipante.Active then
+    DM_Tabelas.ZqParticipante.Open;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
+end;
+
+procedure TFrmCad_Recebimento.AtualizarLookupsRecebimento;
+var
+  LNomeCliente: string;
+  LNomeComprador: string;
+begin
+  if (DM_Tabelas = nil) or
+     (not DM_Tabelas.ZQRecebimento.Active) or
+     DM_Tabelas.ZQRecebimento.IsEmpty then
+    Exit;
+
+  PrepararLookupsRecebimento;
+
+  LNomeCliente := DM_Tabelas.ZQRecebimento.FieldByName('nomecli').AsString;
+  LNomeComprador := DM_Tabelas.ZQRecebimento.FieldByName('adversanome').AsString;
+
+  ECliente.Text := LNomeCliente;
+  EAdversa.Text := LNomeComprador;
+
+  DBGReceb.Invalidate;
+end;
 
 procedure TFrmCad_Recebimento.ECliente1Exit(Sender: TObject);
 begin
@@ -1350,8 +1411,9 @@ begin
     ZQRecebimento.First;
     while not ZQRecebimento.Eof do
     begin
-      { A leitura força o OnCalcFields a preencher os lookups para cada
-        registro, sem alterar os dados da tabela. }
+      { Recalcula o buffer atual no ciclo correto do dataset, sem colocar o
+        registro em edicao nem gravar qualquer valor na tabela. }
+      RecalcularCamposAtuais(ZQRecebimento);
       LNomeLoteamento := ZQRecebimento.FieldByName('nome_loteamento').AsString;
       LComprador := ZQRecebimento.FieldByName('adversanome').AsString;
       LCPF := ZQRecebimento.FieldByName('CPF').AsString;
@@ -1524,6 +1586,7 @@ procedure TFrmCad_Recebimento.DBGRecebKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   botoes_setas;
+  AtualizarLookupsRecebimento;
   IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString = 'S' Then
     GBCheque.Visible := True
   else
@@ -1544,6 +1607,7 @@ procedure TFrmCad_Recebimento.DBGRecebMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   botoes_setas;
+  AtualizarLookupsRecebimento;
     IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString = 'S' Then
     GBCheque.Visible := True
   else
@@ -1990,6 +2054,7 @@ end;
 procedure TFrmCad_Recebimento.DBGRecebEnter(Sender: TObject);
 begin
   botoes_setas;
+  AtualizarLookupsRecebimento;
   IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString = 'S' Then
     GBCheque.Visible := True
   else
@@ -2894,6 +2959,13 @@ procedure TFrmCad_Recebimento.ZQRecebimentoCalcFields(DataSet: TDataSet);
 var
 zmora:double;
 begin
+  { O evento de campos calculados só pode preencher campos calculados.
+    Se algum código solicitar o cálculo fora do ciclo interno do dataset,
+    não tente escrever no registro em modo dsBrowse. }
+  if (DataSet = nil) or
+     not (DataSet.State in [dsCalcFields, dsEdit, dsInsert]) then
+    Exit;
+
   zmora:=0;
 
   // 03/09/2025

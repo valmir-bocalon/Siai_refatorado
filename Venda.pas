@@ -4311,11 +4311,14 @@ begin
    ZQtot_parcelas.open;
 
    DM_Tabelas.ZQEmpresa.open;
-   if FrmResumo_quita=nil then
-      FrmResumo_quita:=TFrmResumo_quita.Create(Application);
-//   FrmResumo_quita.QRResumo_quita.OnPreview:=Frm_principal.Prev;
-   FrmResumo_quita.QRResumo_quita.PreviewModal;
-   FrmResumo_quita:=nil;
+   try
+     if FrmResumo_quita=nil then
+        FrmResumo_quita:=TFrmResumo_quita.Create(nil);
+//    FrmResumo_quita.QRResumo_quita.OnPreview:=Frm_principal.Prev;
+     FrmResumo_quita.QRResumo_quita.PreviewModal;
+   finally
+     FreeAndNil(FrmResumo_quita);
+   end;
   finally
     DM_Tabelas.CDSPagParcelavalor.DisplayFormat:='###,###,##0.000000';
     DM_Tabelas.CDSPagEntradavalor.DisplayFormat:='###,###,##0.000000';

@@ -417,6 +417,9 @@ begin
 //  ZQContratos.open;
   pagina.ActivePageIndex := 0;
   desativa_campos;
+  { A abertura nao passa pelos botoes de navegacao. Atualize o primeiro
+    registro depois que Participante, Responsaveis e Conjuge estiverem ativos. }
+  botoes;
   DBGPart.SetFocus;
 //
 end;
@@ -2048,14 +2051,14 @@ initialization
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesendereco', 'endereco', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesbairro', 'bairro', TWideStringField, fkData, 50, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantescidade', 'cidade', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidade', 'nomecidade', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestado', 'nomeestado', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidade', 'nomecidade', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True, True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestado', 'nomeestado', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True, True);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantescep', 'cep', TWideStringField, fkData, 10, 0, False, '', '', '', '00\.000\-999;1;_', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesende_cob', 'ende_cob', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesbairro_cob', 'bairro_cob', TWideStringField, fkData, 50, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantescidade_cob', 'cidade_cob', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidadecob', 'nomecidadecob', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade_cob', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestadocob', 'nomeestadocob', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade_cob', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidadecob', 'nomecidadecob', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade_cob', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True, True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestadocob', 'nomeestadocob', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade_cob', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True, True);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantescep_cob', 'cep_cob', TWideStringField, fkData, 10, 0, False, '', '', '', '00\.000\-999;1;_', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesFone1', 'Fone1', TWideStringField, fkData, 14, 0, False, '', '', '', '\(99\)9999\-9999;1;_', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesfone2', 'fone2', TWideStringField, fkData, 14, 0, False, '', '', '', '\(99\)9999\-9999;1;_', 0, '', '', '', '', False);
@@ -2087,8 +2090,8 @@ initialization
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesjudicial', 'judicial', TWideStringField, fkData, 3, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesxquadra', 'xquadra', TWideStringField, fkData, 15, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesxlote', 'xlote', TWideStringField, fkData, 5, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestadonatural', 'nomeestadonatural', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'naturalidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True);
-  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidadenatural', 'nomecidadenatural', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'naturalidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomeestadonatural', 'nomeestadonatural', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'naturalidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'estado', True, True);
+  RegisterRuntimeField(TFrm_Participante, 'ZqParticipantes', 'ZqParticipantesnomecidadenatural', 'nomecidadenatural', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'naturalidade', 'DM_Tabelas.ZQCidade', 'idcidade', 'nomecid', True, True);
   RegisterRuntimeDataSet(TFrm_Participante, 'ZQContratos', False);
   RegisterRuntimeField(TFrm_Participante, 'ZQContratos', 'ZQContratosidpaticipante', 'idpaticipante', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_Participante, 'ZQContratos', 'ZQContratosnome_parte', 'nome_parte', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);

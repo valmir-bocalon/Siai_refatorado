@@ -152,9 +152,9 @@ begin
     RLDBMemo2.Visible := True;
     RLBand3.Height := 32;
   end;
-  if not empty(FrmRelRecebimento.ZQTempReceber.FieldByName('nomeempreend').AsString) then
+  if not empty(FrmRelRecebimento.ZQTempReceber.FieldByName('nomeempreend_relatorio').AsString) then
   begin
-    RLDBText2.DataField:='nomeempreend';
+    RLDBText2.DataField:='nomeempreend_relatorio';
   end
   else
   begin
@@ -205,6 +205,9 @@ procedure TFrmRelReceb02.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  RLDBText2.DataField := 'nomeempreend_relatorio';
+  RLDBText18.DataField := 'adversanome_relatorio';
+  RLDBText22.DataField := 'nomeempreend_relatorio';
 end;
 
 end.

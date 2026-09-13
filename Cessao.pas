@@ -73,226 +73,22 @@ type
     EloteTemp: TEdit;
     ZQcomprador_cessao: TZQuery;
     DS_comprador_cessao: TDataSource;
-
-
-
-
-
-
-
-
     Zpart: TZQuery;
     Datazpart: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ZQatualizar: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     Dataatualizar: TDataSource;
     ZQRecebimento_historico_cessao: TZQuery;
     DS_ZQRecebimento_historico: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ZQNossoNumero: TZQuery;
     DataZQNossoNumero: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DS_Remes_Receb: TDataSource;
     ZQRemes_Receb: TZQuery;
-
-
-
-
-
-
-
-
-
-
     bar1: TProgressBar;
     recebimento_historico_excluidos: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     Datarecebimento_historico_excluidos: TDataSource;
-
-
-
     DBEDAta: TXDBDateEdit;
     Label6: TLabel;
     JDEntrada: TXDateEdit;
-
-
-
-
-
-
     Label78: TLabel;
     Epercentual: TFnpNumericEdit;
     BtRelatorio: TdxButton;
@@ -356,7 +152,22 @@ var
 implementation
 
 uses tabelas, Funcoes, AchaLoteVenda, RelVenda, QuadroResumo, AchaVenda,
-  Loteamento, uRuntimeFields;
+  Loteamento, uRuntimeFields, CessaoRecebimentos;
+
+type
+  { GetCalcFields e o ciclo nativo que recalcula os lookups no buffer atual
+    sem colocar o dataset em modo de edicao. }
+  TDataSetCalcFieldsAccess = class(TDataSet);
+
+procedure RecalcularVendaAtual;
+begin
+  if (DM_Tabelas = nil) or
+     (not DM_Tabelas.ZQVenda.Active) or
+     DM_Tabelas.ZQVenda.IsEmpty then
+    Exit;
+  TDataSetCalcFieldsAccess(DM_Tabelas.ZQVenda).GetCalcFields(
+    DM_Tabelas.ZQVenda.ActiveBuffer);
+end;
 
 {$R *.dfm}
 
@@ -384,6 +195,7 @@ begin
   JDEntrada.DateText:=datetostr(date);
   Pag_Venda.PageIndex := 0;
   DesativaCampos;
+  RecalcularVendaAtual;
   DBGVenda.SetFocus;
 end;
 
@@ -401,6 +213,7 @@ Begin
     BTProximo.Enabled := False;
     BtUltimo.Enabled := False;
   end;
+  RecalcularVendaAtual;
   Atualiza;
 End;
 
@@ -507,6 +320,7 @@ end;
 procedure TFrm_Cessao.BtPrimeiroClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.First;
+  RecalcularVendaAtual;
   DBGVenda.SetFocus;
 end;
 
@@ -514,18 +328,21 @@ end;
 procedure TFrm_Cessao.BTAnteriorClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Prior;
+  RecalcularVendaAtual;
   DBGVenda.SetFocus;
 end;
 
 procedure TFrm_Cessao.BtProximoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Next;
+  RecalcularVendaAtual;
   DBGVenda.SetFocus;
 end;
 
 procedure TFrm_Cessao.BtUltimoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQVenda.Last;
+  RecalcularVendaAtual;
   DBGVenda.SetFocus;
 end;
 
@@ -580,6 +397,10 @@ begin
     Ecorretor.SetFocus;
     exit;
   end;
+
+  // preparar cessao novos ids    11/09/2026
+  PrepararCessaoRecebimentos(DM_Tabelas.zconeccao);
+
   DM_Tabelas.ZQVenda.Post;
   bmLocal := DM_Tabelas.ZQVenda.GetBookMark;
   DM_Tabelas.ZQVenda.refresh;
@@ -737,69 +558,151 @@ begin
 
   DM_Tabelas.CDSCompradorTemp.First;
 
-  //copia a dados de uma tabela para outra
-  ZQRecebimento_historico_cessao.SQL.Clear;
-  ZQRecebimento_historico_cessao.SQL.Add('Insert Into recebimento_historico_cessao (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas)' );
+  DM_Tabelas.ZQRecebimento.Close;
+  //cessao novos ids    11/09/2026
+  DM_Tabelas.zconeccao.StartTransaction;
+  try
+    //copia a dados de uma tabela para outra
+    ZQRecebimento_historico_cessao.SQL.Clear;
+    ZQRecebimento_historico_cessao.SQL.Add('Insert Into recebimento_historico_cessao (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas)' );
 
-  ZQRecebimento_historico_cessao.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
-  ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas from recebimento ' );
-  ZQRecebimento_historico_cessao.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
-  ZQRecebimento_historico_cessao.ParamByName('dt').AsDate:=strtodate(JDEntrada.DateText);
-//  ZQRecebimento_historico_cessao.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
-  ZQRecebimento_historico_cessao.ExecSQL;
-  ZQRecebimento_historico_cessao.Close;
+    ZQRecebimento_historico_cessao.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
+    ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas from recebimento ' );
+    ZQRecebimento_historico_cessao.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt.ToString+'-%'));
+    ZQRecebimento_historico_cessao.ParamByName('dt').AsDate:=strtodate(JDEntrada.DateText);
+  //  ZQRecebimento_historico_cessao.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+    ZQRecebimento_historico_cessao.ExecSQL;
+    ZQRecebimento_historico_cessao.Close;
 
 
-  recebimento_historico_excluidos.SQL.Clear;
-  recebimento_historico_excluidos.SQL.Add('Insert Into recebimento_historico_excluidos (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
-  recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
-  recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar)' );
+    recebimento_historico_excluidos.SQL.Clear;
+    recebimento_historico_excluidos.SQL.Add('Insert Into recebimento_historico_excluidos (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+    recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+    recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar)' );
 
-  recebimento_historico_excluidos.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
-  recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
-  recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar from recebimento ' );
-//  recebimento_historico_excluidos.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
-  recebimento_historico_excluidos.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
-//  recebimento_historico_excluidos.ParamByName('dt').AsDate:=JDEntrada.Date;
-  recebimento_historico_excluidos.ExecSQL;
-  recebimento_historico_excluidos.Close;
+    recebimento_historico_excluidos.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+    recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+    recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar from recebimento ' );
+  //  recebimento_historico_excluidos.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+    recebimento_historico_excluidos.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt.ToString+'-%'));
+  //  recebimento_historico_excluidos.ParamByName('dt').AsDate:=JDEntrada.Date;
+    recebimento_historico_excluidos.ExecSQL;
+    recebimento_historico_excluidos.Close;
 
-  // seleciona o comprador que ira as parcelas
-  DM_Tabelas.CDSCompradorTemp.First;
-  if DM_Tabelas.CDSCompradorTemp.recordcount>1 then
-  begin
-    DM_Tabelas.CDSCompradorTemp.Filtered:=false;
-    DM_Tabelas.CDSCompradorTemp.Filter:='marcar=''true''';
-    DM_Tabelas.CDSCompradorTemp.Filtered:=true;
+    // seleciona o comprador que ira as parcelas
+    DM_Tabelas.CDSCompradorTemp.First;
+    if DM_Tabelas.CDSCompradorTemp.recordcount>1 then
+    begin
+      DM_Tabelas.CDSCompradorTemp.Filtered:=false;
+      DM_Tabelas.CDSCompradorTemp.Filter:='marcar=''true''';
+      DM_Tabelas.CDSCompradorTemp.Filtered:=true;
+    end;
+
+  {  DM_Tabelas.ZQRecebimento.SQL.Clear;
+    DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
+    DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+    DM_Tabelas.ZQRecebimento.ExecSQL;
+
+    DM_Tabelas.ZQRecebimento.SQL.Clear;
+    DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
+    DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+    DM_Tabelas.ZQRecebimento.ExecSQL;
+   }
+   // Tony pediu no dia 11/04/2012 para ser como segue, por isso foi inibido como era acima
+
+
+    DM_Tabelas.ZQRecebimento.SQL.Clear;
+    DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
+    DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt.ToString+'-%'));
+    DM_Tabelas.ZQRecebimento.ExecSQL;
+
+    DM_Tabelas.ZQRecebimento.SQL.Clear;
+    DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
+    DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt.ToString+'-%'));
+    DM_Tabelas.ZQRecebimento.ExecSQL;
+
+    // As parcelas copiadas ja possuem o comprador novo. cessao novos ids    11/09/2026
+    RenumerarRecebimentosCessao(DM_Tabelas.zconeccao, DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt, StrToDate(JDEntrada.DateText));
+
+    DM_Tabelas.zconeccao.Commit;
+  except
+    if DM_Tabelas.zconeccao.InTransaction then
+      DM_Tabelas.zconeccao.Rollback;
+    DM_Tabelas.CDSCompradorTemp.Filtered := False;
+    Panel1.Visible := False;
+    raise;
   end;
 
-{  DM_Tabelas.ZQRecebimento.SQL.Clear;
-  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
-  DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
-  DM_Tabelas.ZQRecebimento.ExecSQL;
 
-  DM_Tabelas.ZQRecebimento.SQL.Clear;
-  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
-  DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
-  DM_Tabelas.ZQRecebimento.ExecSQL;
- }
- // Tony pediu no dia 11/04/2012 para ser como segue, por isso foi inibido como era acima
-
-
-  DM_Tabelas.ZQRecebimento.SQL.Clear;
-  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
-  DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
-  DM_Tabelas.ZQRecebimento.ExecSQL;
-
-  DM_Tabelas.ZQRecebimento.SQL.Clear;
-  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
-  DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
-  DM_Tabelas.ZQRecebimento.ExecSQL;
+//
+//  //copia a dados de uma tabela para outra
+//  ZQRecebimento_historico_cessao.SQL.Clear;
+//  ZQRecebimento_historico_cessao.SQL.Add('Insert Into recebimento_historico_cessao (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas)' );
+//
+//  ZQRecebimento_historico_cessao.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar,nomeadversa,Reajustado,' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' Data_reajuste,Proximo_Reajuste,Parcelas_fixas from recebimento ' );
+//  ZQRecebimento_historico_cessao.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
+//  ZQRecebimento_historico_cessao.ParamByName('dt').AsDate:=strtodate(JDEntrada.DateText);
+////  ZQRecebimento_historico_cessao.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+//  ZQRecebimento_historico_cessao.ExecSQL;
+//  ZQRecebimento_historico_cessao.Close;
+//
+//
+//  recebimento_historico_excluidos.SQL.Clear;
+//  recebimento_historico_excluidos.SQL.Add('Insert Into recebimento_historico_excluidos (idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+//  recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+//  recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar)' );
+//
+//  recebimento_historico_excluidos.SQL.Add(' Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,' );
+//  recebimento_historico_excluidos.SQL.Add(' Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,custodaparcela,origem,' );
+//  recebimento_historico_excluidos.SQL.Add(' adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,somar from recebimento ' );
+////  recebimento_historico_excluidos.SQL.Add(' Where  DT_Vencimento>= :dt and documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+//  recebimento_historico_excluidos.SQL.Add(' Where  documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
+////  recebimento_historico_excluidos.ParamByName('dt').AsDate:=JDEntrada.Date;
+//  recebimento_historico_excluidos.ExecSQL;
+//  recebimento_historico_excluidos.Close;
+//
+//  // seleciona o comprador que ira as parcelas
+//  DM_Tabelas.CDSCompradorTemp.First;
+//  if DM_Tabelas.CDSCompradorTemp.recordcount>1 then
+//  begin
+//    DM_Tabelas.CDSCompradorTemp.Filtered:=false;
+//    DM_Tabelas.CDSCompradorTemp.Filter:='marcar=''true''';
+//    DM_Tabelas.CDSCompradorTemp.Filtered:=true;
+//  end;
+//
+//{  DM_Tabelas.ZQRecebimento.SQL.Clear;
+//  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
+//  DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+//  DM_Tabelas.ZQRecebimento.ExecSQL;
+//
+//  DM_Tabelas.ZQRecebimento.SQL.Clear;
+//  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
+//  DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(DM_Tabelas.ZQVendaidvenda.text+'-%'));
+//  DM_Tabelas.ZQRecebimento.ExecSQL;
+// }
+// // Tony pediu no dia 11/04/2012 para ser como segue, por isso foi inibido como era acima
+//
+//
+//  DM_Tabelas.ZQRecebimento.SQL.Clear;
+//  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set adversa='+quotedstr(DM_Tabelas.CDSCompradorTempcodparticipante.Text));
+//  DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
+//  DM_Tabelas.ZQRecebimento.ExecSQL;
+//
+//  DM_Tabelas.ZQRecebimento.SQL.Clear;
+//  DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set nomeadversa='+quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value));
+//  DM_Tabelas.ZQRecebimento.SQL.Add(' Where saldo>0 and documento like'+quotedstr(DM_Tabelas.ZQVenda.FieldByName('idvenda').text+'-%'));
+//  DM_Tabelas.ZQRecebimento.ExecSQL;
 
   // ate aqui
 
@@ -916,10 +819,14 @@ begin
       while not DM_Tabelas.ZQRecebimento.Eof do
       begin
         bar1.Position:=DM_Tabelas.ZQRecebimento.RecNo;
-        ZQRemes_Receb.close;
-        ZQRemes_Receb.SQL.Clear;
-        ZQRemes_Receb.SQL.Add('delete FROM remessa_receb where idrec='+quotedstr(DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').Text));
-        ZQRemes_Receb.ExecSQL;
+//        ZQRemes_Receb.close;
+//        ZQRemes_Receb.SQL.Clear;
+//        ZQRemes_Receb.SQL.Add('delete FROM remessa_receb where idrec='+quotedstr(DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').Text));
+//        ZQRemes_Receb.ExecSQL;
+
+        // A resposta SIM remove remessas atuais e anteriores, mas preserva o mapa.  cessao novos ids    11/09/2026
+        ExcluirRemessasDaParcela(DM_Tabelas.zconeccao, DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').AsLargeInt);
+
         DM_Tabelas.ZQRecebimento.Next;
       end;
       DM_Tabelas.ZQRecebimento.EnableControls;

@@ -102,6 +102,8 @@ type
     QRXMLSSFilter1: TQRXMLSSFilter;
     procedure QRResumo_quitaBeforePrint(Sender: TCustomQuickRep;
       var PrintReport: Boolean);
+    procedure QRBand2BeforePrint(Sender: TQRCustomBand;
+      var PrintBand: Boolean);
     procedure QRBand3BeforePrint(Sender: TQRCustomBand;
       var PrintBand: Boolean);
     procedure QRBand4BeforePrint(Sender: TQRCustomBand;
@@ -114,6 +116,7 @@ type
   private
     { Private declarations }
 
+    procedure ConfigurarCamposImovel;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -124,16 +127,71 @@ var
 
 implementation
 
-uses Tabelas, funcoes,Venda, principal, uRuntimeFields;
+uses Tabelas, funcoes,Venda, principal, DB;
 
 {$R *.dfm}
+
+type
+  { Recalcula os lookups da venda no buffer atual sem alterar o estado do
+    dataset. O relatorio e preparado depois que a venda e filtrada. }
+  TDataSetCalcFieldsAccess = class(TDataSet);
+
+procedure RecalcularDadosQuitacao;
+begin
+  if (DM_Tabelas = nil) or
+     (not DM_Tabelas.ZQVenda.Active) or
+     DM_Tabelas.ZQVenda.IsEmpty then
+    Exit;
+
+  TDataSetCalcFieldsAccess(DM_Tabelas.ZQVenda).GetCalcFields(
+    DM_Tabelas.ZQVenda.ActiveBuffer);
+end;
+
+procedure TFrmResumo_quita.ConfigurarCamposImovel;
+var
+  LField: TField;
+begin
+  if (DM_Tabelas = nil) or
+     (not DM_Tabelas.ZQvnd_quadro.Active) or
+     DM_Tabelas.ZQvnd_quadro.IsEmpty then
+    Exit;
+
+  { A banda e preparada somente depois que a consulta mestre-detalhe foi
+    posicionada. Assim os tres TQRDBText leem o registro da venda atual. }
+  LField := DM_Tabelas.ZQvnd_quadro.FindField('apelido');
+  if (LField <> nil) and (Trim(LField.AsString) <> '') then
+  begin
+    QRDBText1.DataSet := DM_Tabelas.ZQvnd_quadro;
+    QRDBText1.DataField := 'apelido';
+  end
+  else if DM_Tabelas.ZQvnd_quadro.FindField('nomeloteamento') <> nil then
+  begin
+    QRDBText1.DataSet := DM_Tabelas.ZQvnd_quadro;
+    QRDBText1.DataField := 'nomeloteamento';
+  end;
+
+  if DM_Tabelas.ZQvnd_quadro.FindField('quadra') <> nil then
+  begin
+    QRDBText2.DataSet := DM_Tabelas.ZQvnd_quadro;
+    QRDBText2.DataField := 'quadra';
+  end;
+  if DM_Tabelas.ZQvnd_quadro.FindField('lote') <> nil then
+  begin
+    QRDBText3.DataSet := DM_Tabelas.ZQvnd_quadro;
+    QRDBText3.DataField := 'lote';
+  end;
+end;
 
 procedure TFrmResumo_quita.QRResumo_quitaBeforePrint(
   Sender: TCustomQuickRep; var PrintReport: Boolean);
 begin
+  RecalcularDadosQuitacao;
   DM_Tabelas.ZQEmpresa.Open;
   DM_Tabelas.ZQEmpresa.First;
+  if DM_Tabelas.ZQvnd_quadro.Active then
+    DM_Tabelas.ZQvnd_quadro.Close;
   DM_Tabelas.ZQvnd_quadro.Open;
+  ConfigurarCamposImovel;
 
   DM_TAbelas.ZQCompr_Dados.Open;
   DM_TAbelas.ZQCompr_Dados.Refresh;
@@ -146,6 +204,7 @@ begin
      DM_Tabelas.ZQLoteamento.Open;
   DM_Tabelas.ZQLoteamento.Locate('idloteamento',DM_Tabelas.ZQVenda.FieldByName('codloteamento').AsInteger,[]);
   DM_Tabelas.ZQCidade.Open;
+  RecalcularDadosQuitacao;
 
   DM_TAbelas.CDSAss1.Close;
   DM_TAbelas.CDSAss1.CreateDataSet;
@@ -300,6 +359,12 @@ begin
 
 end;
 
+procedure TFrmResumo_quita.QRBand2BeforePrint(Sender: TQRCustomBand;
+  var PrintBand: Boolean);
+begin
+  ConfigurarCamposImovel;
+end;
+
 procedure TFrmResumo_quita.QRBand4BeforePrint(Sender: TQRCustomBand;
   var PrintBand: Boolean);
 begin
@@ -341,7 +406,7 @@ end;
 procedure TFrmResumo_quita.AfterConstruction;
 begin
   inherited AfterConstruction;
-  EnsureRuntimeFields(Self);
+  QRBand2.BeforePrint := QRBand2BeforePrint;
 end;
 
 end.

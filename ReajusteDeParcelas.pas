@@ -411,6 +411,7 @@ type
     procedure PrepararLookupsReajuste;
     procedure AtualizarLookupsReajuste;
     procedure WMAtualizarGridReajuste(var Msg: TMessage); message WM_ATUALIZAR_GRID_REAJUSTE;
+    procedure PrepararConsultaRecebimentoAntesDeAbrir(DataSet: TDataSet);
 
     procedure AfterConstruction; override;
   public
@@ -422,7 +423,8 @@ var
 
 implementation
 
-uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2, AchaIpca, uRuntimeFields;
+uses tabelas, PesqRecebimento,funcoes, AchaIgpm, PesqRecebimento2, AchaIpca,
+  uRuntimeFields, uRecebimentoNomes;
 
 {$R *.dfm}
 
@@ -556,6 +558,10 @@ var
   LOrigem: TField;
   LValor: Variant;
 begin
+  if (DataSet = nil) or
+     not (DataSet.State in [dsCalcFields, dsEdit, dsInsert]) then
+    Exit;
+
   if (DataSet = nil) or (DM_Tabelas = nil) then
     Exit;
 
@@ -564,11 +570,9 @@ begin
   if LDestino <> nil then
   begin
     LDestino.Clear;
-    if (LChave <> nil) and (not LChave.IsNull) and
-       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+    if (LChave <> nil) and (not LChave.IsNull) and (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
     begin
-      LValor := DM_Tabelas.ZqParticipante.Lookup(
-        'idpaticipante', LChave.AsLargeInt, 'nome_parte');
+      LValor := DM_Tabelas.ZqParticipante.Lookup('idpaticipante', LChave.AsLargeInt, 'nome_parte');
       if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
         LDestino.AsString := VarToStr(LValor);
     end;
@@ -586,8 +590,7 @@ begin
      (LChave.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
   begin
     LDestino.Clear;
-    LValor := DM_Tabelas.ZQLoteamento.Lookup(
-      'idloteamento', LChave.AsLargeInt, 'apelido');
+    LValor := DM_Tabelas.ZQLoteamento.Lookup('idloteamento', LChave.AsLargeInt, 'apelido');
     if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
       LDestino.AsString := VarToStr(LValor);
   end;
@@ -595,30 +598,15 @@ end;
 
 procedure TFrm_ReajusteDeParcelas.AtualizarLookupsReajuste;
 var
-  LBookmark: TBookmark;
   LValor: string;
 begin
   if (not ZQRecebimento.Active) or ZQRecebimento.IsEmpty then
     Exit;
 
-  LBookmark := ZQRecebimento.GetBookmark;
-  ZQRecebimento.DisableControls;
-  try
-    ZQRecebimento.First;
-    while not ZQRecebimento.Eof do
-    begin
-      { A leitura materializa os campos calculados antes de o grid ser
-        pintado, sem colocar o dataset em modo de edicao. }
-      LValor := ZQRecebimento.FieldByName('adversanome').AsString;
-      LValor := ZQRecebimento.FieldByName('nome_loteamento').AsString;
-      ZQRecebimento.Next;
-    end;
-    if ZQRecebimento.BookmarkValid(LBookmark) then
-      ZQRecebimento.GotoBookmark(LBookmark);
-  finally
-    ZQRecebimento.FreeBookmark(LBookmark);
-    ZQRecebimento.EnableControls;
-  end;
+  { Materialize apenas o registro atual. Percorrer toda a consulta aqui
+    deixa a abertura da tela bloqueada em bases com muitos titulos. }
+  LValor := ZQRecebimento.FieldByName('adversanome').AsString;
+  LValor := ZQRecebimento.FieldByName('nome_loteamento').AsString;
   DBGReceb.Invalidate;
 end;
 
@@ -709,7 +697,6 @@ begin
   AtualizarLookupsReajuste;
   DBGReceb.Refresh;
   DBGReceb.Repaint;
-  PostMessage(Handle, WM_ATUALIZAR_GRID_REAJUSTE, 0, 0);
 
 
 end;
@@ -2213,9 +2200,19 @@ begin
 end;
 
 
+procedure TFrm_ReajusteDeParcelas.PrepararConsultaRecebimentoAntesDeAbrir(
+  DataSet: TDataSet);
+begin
+  PrepararConsultaRecebimentoComNomes(DataSet);
+end;
+
 procedure TFrm_ReajusteDeParcelas.AfterConstruction;
 begin
   inherited AfterConstruction;
+  ZQRecebimento.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  ZQTempReceber.BeforeOpen := PrepararConsultaRecebimentoAntesDeAbrir;
+  PrepararConsultaRecebimentoComNomes(ZQRecebimento);
+  PrepararConsultaRecebimentoComNomes(ZQTempReceber);
   { O hook de campos em tempo de execucao preserva este evento e aplica os
     demais lookups depois dele. }
   ZQRecebimento.OnCalcFields := ZQRecebimentoCalcFields;
@@ -2319,7 +2316,7 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercodpagBx', 'codpagBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercodrecBx', 'codrecBx', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberplanomascara', 'planomascara', TWideStringField, fkLookup, 0, 0, False, '', '', '', '', 0, 'contabil', 'DM_Tabelas.ZQPlanoDeContas', 'codigo', 'mascara', True);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberfone4', 'fone4', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercomplemento', 'complemento', TWideStringField, fkData, 30, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -2327,7 +2324,7 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebercadastrado', 'cadastrado', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebervenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeempreend', 'nomeempreend', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempReceberSubstituicao', 'Substituicao', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQTempReceber', 'ZQTempRecebernomeadversa', 'nomeadversa', TWideStringField, fkData, 140, 0, False, '', '', '', '', 0, '', '', '', '', False);
@@ -2358,9 +2355,9 @@ initialization
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentorecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonome_loteamento', 'nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentovenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentoquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrm_ReajusteDeParcelas, 'ZQRecebimento', 'ZQRecebimentonumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
