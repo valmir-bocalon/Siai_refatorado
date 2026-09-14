@@ -84,48 +84,48 @@ uses Tabelas, funcoes, Principal, RelPlanoDeContas, uRuntimeFields;
 
 procedure TFrmCad_PlanodeContas.Ativar_Campos;
 Begin
-  DXBPrimeiro.Enabled := False;
-  DXBAnterior.Enabled := False;
-  DXBProximo.Enabled := False;
-  DXBUltimo.Enabled := False;
-  DXBIncluir.Enabled := False;
-  DXBEditar.Enabled := False;
-  DXBExcluir.Enabled := False;
-  DXBPesquisar.Enabled := False;
-  DXBRelatorios.Enabled := False;
-  DXBGravar.Enabled := True;
-  DXBCancelar.Enabled := True;
-  DBEDescricao.ReadOnly := False;
-  DBEcodContabil.ReadOnly := False;
+  DXBPrimeiro.Enabled       := False;
+  DXBAnterior.Enabled       := False;
+  DXBProximo.Enabled        := False;
+  DXBUltimo.Enabled         := False;
+  DXBIncluir.Enabled        := False;
+  DXBEditar.Enabled         := False;
+  DXBExcluir.Enabled        := False;
+  DXBPesquisar.Enabled      := False;
+  DXBRelatorios.Enabled     := False;
+  DXBGravar.Enabled         := True;
+  DXBCancelar.Enabled       := True;
+  DBEDescricao.ReadOnly     := False;
+  DBEcodContabil.ReadOnly   := False;
   DBCBClassificacao.Enabled := True;
-  DBCBCredDeb.Enabled := True;
-  DBCBTIPDOC.Enabled := True;
-  DBCBAtivo.Enabled := True;
-  DBCBDesp.Enabled := True;
-  DBGPlanoConta.Enabled := False;
+  DBCBCredDeb.Enabled       := True;
+  DBCBTIPDOC.Enabled        := True;
+  DBCBAtivo.Enabled         := True;
+  DBCBDesp.Enabled          := True;
+  DBGPlanoConta.Enabled     := False;
 end;
 
 Procedure TFrmCad_PlanodeContas.Desativar_campos;
 Begin
-  DXBPrimeiro.Enabled := True;
-  DXBAnterior.Enabled := True;
-  DXBProximo.Enabled := True;
-  DXBUltimo.Enabled := True;
-  DXBIncluir.Enabled := True;
-  DXBEditar.Enabled := True;
-  DXBExcluir.Enabled := True;
-  DXBPesquisar.Enabled := True;
-  DXBRelatorios.Enabled := True;
-  DXBGravar.Enabled := False;
-  DXBCancelar.Enabled := False;
-  DBEDescricao.ReadOnly := True;
-  DBEcodContabil.ReadOnly := True;
+  DXBPrimeiro.Enabled       := True;
+  DXBAnterior.Enabled       := True;
+  DXBProximo.Enabled        := True;
+  DXBUltimo.Enabled         := True;
+  DXBIncluir.Enabled        := True;
+  DXBEditar.Enabled         := True;
+  DXBExcluir.Enabled        := True;
+  DXBPesquisar.Enabled      := True;
+  DXBRelatorios.Enabled     := True;
+  DXBGravar.Enabled         := False;
+  DXBCancelar.Enabled       := False;
+  DBEDescricao.ReadOnly     := True;
+  DBEcodContabil.ReadOnly   := True;
   DBCBClassificacao.Enabled := False;
-  DBCBCredDeb.Enabled := False;
-  DBCBTIPDOC.Enabled := False;
-  DBCBAtivo.Enabled := False;
-  DBCBDesp.Enabled := False;
-  DBGPlanoConta.Enabled := True;
+  DBCBCredDeb.Enabled       := False;
+  DBCBTIPDOC.Enabled        := False;
+  DBCBAtivo.Enabled         := False;
+  DBCBDesp.Enabled          := False;
+  DBGPlanoConta.Enabled     := True;
 End;
 
 procedure TFrmCad_PlanodeContas.DXBPrimeiroClick(Sender: TObject);
@@ -133,9 +133,9 @@ begin
   DM_tabelas.ZQPlanoDeContas.First;
   DXBPrimeiro.Enabled := false;
   DXBAnterior.Enabled := false;
-  DXBProximo.Enabled := true;
-  DXBUltimo.Enabled := true;
-  DXBGravar.Enabled := False;
+  DXBProximo.Enabled  := true;
+  DXBUltimo.Enabled   := true;
+  DXBGravar.Enabled   := False;
   DXBCancelar.Enabled := false;
 end;
 
@@ -164,8 +164,8 @@ end;
 procedure TFrmCad_PlanodeContas.DXBUltimoClick(Sender: TObject);
 begin
   DM_tabelas.ZQPlanoDeContas.Last;
-  DXBProximo.Enabled := false;
-  DXBUltimo.Enabled := false;
+  DXBProximo.Enabled  := false;
+  DXBUltimo.Enabled   := false;
   DXBPrimeiro.Enabled := true;
   DXBAnterior.Enabled := true;
 end;
@@ -206,8 +206,11 @@ end;
 procedure TFrmCad_PlanodeContas.DXBExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Plano de Contas','Excluir Conta Contábil','Cód. interno: '+DM_tabelas.ZQPlanoDeContas.FieldByName('codigo').Text+'  '+DM_tabelas.ZQPlanoDeContas.FieldByName('mascara').Text) then exit;
-  if DM_tabelas.ZQPlanoDeContas.RecordCount>0 then begin
-    DM_tabelas.ZQPlanoDeContas.Delete;
+  if simnao('Confirma a exclusão do plano de contas ?','SIM') then
+  begin
+    if DM_tabelas.ZQPlanoDeContas.RecordCount>0 then begin
+      DM_tabelas.ZQPlanoDeContas.Delete;
+    end;
   end;
 end;
 

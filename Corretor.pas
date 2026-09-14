@@ -264,7 +264,8 @@ end;
 procedure TFrm_Corretor.BTExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Corretor','Excluir','Corretor: '+DM_Tabelas.ZQCorretor.FieldByName('idcorretor').Text+' - '+DM_Tabelas.ZQCorretor.FieldByName('nomecorretor').AsString) Then Exit;
-  DM_tabelas.ZQCorretor.Delete;
+  if simnao('Confirma a exclusão do corretor ?','SIM') then
+     DM_tabelas.ZQCorretor.Delete;
 end;
 
 procedure TFrm_Corretor.BTPesquisarClick(Sender: TObject);

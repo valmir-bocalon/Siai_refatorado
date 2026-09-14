@@ -217,9 +217,11 @@ end;
 procedure TFrm_Cidade.BtExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Cidade','Exclusão','cidade: '+DM_Tabelas.ZQCidade.FieldByName('idcidade').Text+' - '+DM_Tabelas.ZQCidade.FieldByName('nomecid').AsString) Then Exit;
-  if DM_Tabelas.ZQCidade.RecordCount>0 Then
-    DM_Tabelas.ZQCidade.Delete;
-
+  if simnao('Confirma a exclusão da cidade ?','SIM') then
+  begin
+    if DM_Tabelas.ZQCidade.RecordCount>0 Then
+      DM_Tabelas.ZQCidade.Delete;
+  end;
 end;
 
 procedure TFrm_Cidade.FormKeyPress(Sender: TObject; var Key: Char);

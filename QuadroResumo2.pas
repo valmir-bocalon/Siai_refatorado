@@ -907,9 +907,109 @@ begin
 
 end;
 
+function RegimeConjugeEhUniversal: Boolean;
+var
+  Regime: string;
+begin
+  Result := False;
+  if (DM_Tabelas = nil) or (not DM_Tabelas.ZQCompr_conjuge.Active) or
+    DM_Tabelas.ZQCompr_conjuge.IsEmpty then
+    Exit;
+
+  Regime := UpperCase(alltrim(
+    DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString));
+  { Compara palavras estaveis sem depender da codificacao da acentuacao. }
+  Result := (Pos('COMUN', Regime) = 1) and
+    ((Pos('UNIVERSAL', Regime) > 0) or
+     ((Pos(' DE BENS', Regime) > 0) and (Pos('PARCIAL', Regime) = 0)));
+end;
+
+function RegimeConjugeEhParcialOuEquivalente: Boolean;
+var
+  Regime: string;
+begin
+  Result := False;
+  if (DM_Tabelas = nil) or (not DM_Tabelas.ZQCompr_conjuge.Active) or
+    DM_Tabelas.ZQCompr_conjuge.IsEmpty then
+    Exit;
+
+  Regime := UpperCase(alltrim(
+    DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString));
+  Result := ((Pos('COMUN', Regime) = 1) and (Pos('PARCIAL', Regime) > 0)) or
+    (Pos('SEPAR', Regime) = 1) or (Pos('UNI', Regime) = 1);
+end;
+
 procedure TFrm_QuadroResumo2.RLBand6BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
+  function CidadeEstado(const ACidade, AUF: string): string;
+  begin
+    Result := alltrim(ACidade);
+    if not empty(AUF) then
+    begin
+      if not empty(Result) then
+        Result := Result + '/'
+      else
+        Result := '';
+      Result := Result + alltrim(AUF);
+    end;
+  end;
+  function CidadeCartorioConjuge: string;
+  var
+    CodigoCidade: Integer;
+  begin
+    Result := '';
+    if (DM_Tabelas = nil) or (not DM_Tabelas.ZQCompr_conjuge.Active) or
+      DM_Tabelas.ZQCompr_conjuge.IsEmpty or
+      DM_Tabelas.ZQCompr_conjuge.FieldByName('cidade_cart').IsNull or
+      (not DM_Tabelas.ZQCidade.Active) then
+      Exit;
+
+    CodigoCidade := DM_Tabelas.ZQCompr_conjuge.FieldByName('cidade_cart').AsInteger;
+    if CodigoCidade > 0 then
+      Result := CidadeEstado(
+        VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade', CodigoCidade, 'nomecid')),
+        VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade', CodigoCidade, 'estado')));
+  end;
+  procedure ExibirCidadeCartorioConjuge(const ACidade: string);
+  begin
+    { O campo calculado cart_cid_est pode ser avaliado antes dos lookups. }
+    RLDBText56.DataSource := nil;
+    RLDBText56.DataField := '';
+    RLDBText56.Text := ACidade;
+    RLLabel51.Visible := True;
+    RLDBText56.Visible := True;
+  end;
+var
+  CidadeComprador, UFComprador, CidadeConjuge, UFConjuge, CidadeCartorio: string;
 begin
+
+  CidadeComprador := alltrim(DM_Tabelas.ZQCompr_Dados.FieldByName('nomecid').AsString);
+  UFComprador := alltrim(DM_Tabelas.ZQCompr_Dados.FieldByName('estado').AsString);
+  if empty(CidadeComprador) and DM_Tabelas.ZQCidade.Active then
+    CidadeComprador := VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade',
+      DM_Tabelas.ZQCompr_Dados.FieldByName('naturalidade').Value, 'nomecid'));
+  if empty(UFComprador) and DM_Tabelas.ZQCidade.Active then
+    UFComprador := VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade',
+      DM_Tabelas.ZQCompr_Dados.FieldByName('naturalidade').Value, 'estado'));
+  RLDBText60.DataField := '';
+  RLDBText60.Text := CidadeEstado(CidadeComprador, UFComprador);
+
+  CidadeConjuge := '';
+  UFConjuge := '';
+  if DM_Tabelas.ZQCompr_conjuge.Active and
+    not DM_Tabelas.ZQCompr_conjuge.IsEmpty and DM_Tabelas.ZQCidade.Active then
+  begin
+    CidadeConjuge := VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade',
+      DM_Tabelas.ZQCompr_conjuge.FieldByName('natural').Value, 'nomecid'));
+    UFConjuge := VarToStr(DM_Tabelas.ZQCidade.Lookup('idcidade',
+      DM_Tabelas.ZQCompr_conjuge.FieldByName('natural').Value, 'estado'));
+  end;
+  RLDBText40.DataField := '';
+  RLDBText40.Text := CidadeEstado(CidadeConjuge, UFConjuge);
+  CidadeCartorio := CidadeCartorioConjuge;
+  if empty(CidadeCartorio) then
+    CidadeCartorio := alltrim(
+      DM_Tabelas.ZQCompr_Dados.FieldByName('cid_uf_cob').AsString);
 
  if (DM_Tabelas.ZQCompr_Dados.FieldByName('tipopessoa').AsString='F') or (DM_Tabelas.ZQCompr_Dados.FieldByName('tipopessoa').AsString='I') then
  begin
@@ -992,21 +1092,9 @@ begin
     RLDBText39.Visible:=false;
    end;
 
-   if (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='Comunhão Universal de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='COMUNHáO UNIVERSAL DE BENS') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='Comunhão de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='COMUNHáO DE BENS') then
+   if RegimeConjugeEhUniversal then
    begin
-    if empty(RLDBText56.Caption) then
-    begin
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_Dados;
-      RLDBText56.DataField:='cid_uf_cob';
-    end
-    else
-    begin
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_conjuge;
-      RLDBText56.DataField:='cart_cid_est';
-    end;
-
-    RLLabel51.Visible:=true;
-    RLDBText56.Visible:=true;
+    ExibirCidadeCartorioConjuge(CidadeCartorio);
     RLLabel50.Visible:=true;
     if empty(RLDBText57.Caption) then
     begin
@@ -1931,26 +2019,9 @@ begin
 
  end;
 
- if ((DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)')) and ((DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='Comunhão Universal de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='COMUNHáO UNIVERSAL DE BENS') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='Comunhão de Bens') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='COMUNHáO DE BENS')) then
+ if ((DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)')) and RegimeConjugeEhUniversal then
  begin
-    if empty(charrem(DM_Tabelas.ZQCompr_conjuge.FieldByName('cart_cid_est').AsString)) then
-    begin
-      RLDBText56.DataField:='';
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_Dados;
-      RLDBText56.DataField:='cid_uf_cob';
-      RLLabel51.Visible:=true;
-      RLDBText56.Visible:=true;
-
-    end
-    else
-    begin
-      RLDBText56.DataField:='';
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_conjuge;
-      RLDBText56.DataField:='cart_cid_est';
-      RLLabel51.Visible:=true;
-      RLDBText56.Visible:=true;
-
-    end;
+    ExibirCidadeCartorioConjuge(CidadeCartorio);
 
 //    RLLabel51.Visible:=true;
   //  RLDBText56.Visible:=true;
@@ -2147,23 +2218,9 @@ begin
 
  end
 
- else if ((DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel')) and ((DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='COMUNHáO PARCIAL DE BENS') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='SEPARAÇÃO DE BENS') or (DM_Tabelas.ZQCompr_conjuge.FieldByName('regime').AsString='UNIÃO ESTÁVEL')) then
+ else if ((DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel')) and RegimeConjugeEhParcialOuEquivalente then
  begin
-    if empty(RLDBText56.Caption) then
-    begin
-      RLDBText56.DataField:='';
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_Dados;
-      RLDBText56.DataField:='cid_uf_cob';
-    end
-    else
-    begin
-      RLDBText56.DataField:='';    
-      RLDBText56.DataSource:=DM_Tabelas.DS_Compr_conjuge;
-      RLDBText56.DataField:='cart_cid_est';
-    end;
-
-    RLLabel51.Visible:=true;
-    RLDBText56.Visible:=true;
+    ExibirCidadeCartorioConjuge(CidadeCartorio);
 
     if (alltrim(charrem(DM_Tabelas.ZQCompr_conjuge.FieldByName('comar_cid_est').AsString))='') and (alltrim(DM_Tabelas.ZQCompr_conjuge.FieldByName('cartorio').AsString)='') and (DM_Tabelas.ZQCompr_conjuge.FieldByName('data').AsDateTime=0) and (alltrim(DM_Tabelas.ZQCompr_conjuge.FieldByName('livro').AsString)='') and (alltrim(DM_Tabelas.ZQCompr_conjuge.FieldByName('folha').AsString)='') then
     begin

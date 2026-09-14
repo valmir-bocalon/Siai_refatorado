@@ -194,9 +194,12 @@ end;
 procedure TFrmCad_TipoDoc.DXBExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Tipo de Documento','Exclusão de Registro (Botão EXCLUSÃO)','Abrev: '+DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString+'  Descr: '+DM_tabelas.ZQTipoDoc.FieldByName('descricao').Text+' (V->R)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_receb').AsString+' (V->C)='+DM_tabelas.ZQTipoDoc.FieldByName('vend_caixa').AsString+' (R->R)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_receb').AsString+' (R->C)='+DM_tabelas.ZQTipoDoc.FieldByName('receb_caixa').AsString) then exit;
-  IF DM_tabelas.ZQTipodoc.RecordCount>1 then
-    DM_tabelas.ZQTipodoc.Delete;
-  botoes_setas;
+  if simnao('Confirma a exclusão do tipo de documento ?','SIM') then
+  begin
+    IF DM_tabelas.ZQTipodoc.RecordCount>1 then
+      DM_tabelas.ZQTipodoc.Delete;
+    botoes_setas;
+  end;
 end;
 
 procedure TFrmCad_TipoDoc.DXBPesquisarClick(Sender: TObject);

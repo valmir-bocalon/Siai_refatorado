@@ -775,7 +775,8 @@ end;
 procedure TFrm_Participante.BTExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Participante','Exluir','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
-  DM_Tabelas.ZqParticipante.Delete;
+  if simnao('Confirma a exclusão do participante ? ','SIM') then
+     DM_Tabelas.ZqParticipante.Delete;
 end;
 
 procedure TFrm_Participante.BTPesquisarClick(Sender: TObject);

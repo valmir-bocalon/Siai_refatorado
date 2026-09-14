@@ -658,13 +658,9 @@ type
     procedure DBChart2BeforeDrawChart(Sender: TObject);
     procedure tab_graficosClick(Sender: TObject);
     procedure ZQRecebimentoCalcFields(DataSet: TDataSet);
-    procedure DBcobrancaMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure DBcobrancaDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBcobrancaEnter(Sender: TObject);
-    procedure DBcobrancaKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure fpgEnter(Sender: TObject);
     procedure fpgExit(Sender: TObject);
     procedure dxButton8Click(Sender: TObject);
@@ -1223,6 +1219,8 @@ procedure TFrmCad_Recebimento.Atualiza_Telas;
 Var
   Varrefer, Varidrec : string;
 Begin
+  Varrefer := '(0)';
+  Varidrec := '(0)';
   LABEL25.CAPTION := 'R'+CHR(13)+'E'+CHR(13)+'C'+CHR(13)+'E'+CHR(13)+'B'+CHR(13)+'I'+CHR(13)+'M'+CHR(13)+'E'+CHR(13)+'N'+CHR(13)+'T'+CHR(13)+'O';
   PRecPag.Color := ClRed;
   IF DM_Tabelas.ZQRecebimento.FieldByName('recpag').AsString = 'P' Then Begin
@@ -1241,14 +1239,13 @@ Begin
   DM_tabelas.ZQReceb_Baixa.Open;
   ZQOrigem.Close;
   ZQOrigem.SQL.Clear;
-  ZQOrigem.SQL.Add('Select idrecebimento,refbaixa,refvinda from recebimento where refbaixa='+quotedstr(DM_tabelas.ZQRecebimento.FieldByName('refvinda').Text));
+  ZQOrigem.SQL.Add('select idrecebimento,documento,dt_entrada,dt_vencimento,valor,tipdoc,recpag,refbaixa,refvinda ');
+  ZQOrigem.SQL.Add('from recebimento where refbaixa='+quotedstr(DM_tabelas.ZQRecebimento.FieldByName('refvinda').Text));
   ZQOrigem.Open;
   DM_tabelas.ZQReBxHi.close;
   DM_tabelas.ZQReBxHi.SQL.Clear;
   DM_tabelas.ZQReBxHi.SQL.Add('select idrecbxhist,refer,idrecib,valor,descon,juros,percent_usado,data,sq,valor_parcela from recbxhist where idrecib='+quotedstr(DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text));
   DM_tabelas.ZQReBxHi.Open;
-
-  Varidrec:='(0)';
 
   Panel1.Visible:=true;
   Panel2.Visible:=true;
@@ -1288,21 +1285,36 @@ Begin
     DM_tabelas.ZQReBxHi.SQL.Add('select idrecbxhist,refer,idrecib,valor,descon,juros,percent_usado,data,sq,valor_parcela from recbxhist where idrecib='+DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text);
     DM_tabelas.ZQReBxHi.Open;
   end;
-  Label26.Caption := '('+inttostr(ZQGerou.RecordCount)+') Registros';
-  
   ZQVincRec.Close;
   ZQVincRec.SQL.Clear;
   ZQVincRec.SQL.Add('select  idrecebimento,documento, ordem,quadralote,refbaixa,refvinda,tipdoc,valor,saldo,dt_vencimento,recpag from recebimento where IdRecebimento in '+Varidrec+' order by idrecebimento');
   ZQVincRec.Open;
 
+  { The generated-title grid needs these display fields in the result set.
+    The previous query supplied only the internal link fields. }
+  ZQGerou.Close;
+  ZQGerou.SQL.Clear;
+  ZQGerou.SQL.Add('select R.idrecebimento,H.idrecib,R.quadralote,R.refbaixa,R.refvinda,H.refer,');
+  ZQGerou.SQL.Add('       R.ordem,coalesce(P.nome_parte,R.nomeadversa) as nomecli,R.valor ');
+  ZQGerou.SQL.Add('from recbxhist H join recebimento R on R.refvinda=H.refer ');
+  ZQGerou.SQL.Add('left join participante P on P.idpaticipante=R.cliente ');
+  ZQGerou.SQL.Add('where H.idrecib='+quotedstr(DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text)+' order by R.idrecebimento');
+  ZQGerou.Open;
+  Label26.Caption := '('+inttostr(ZQGerou.RecordCount)+') Registros';
+
   DM_TAbelas.ZQRecebBxTemp.Close;
   DM_TAbelas.ZQRecebBxTemp.SQL.Clear;
   DM_TAbelas.ZQRecebBxTemp.SQL.Add('SELECT H.idrecbxhist,H.refer,H.idrecib,H.valor,H.descon,H.juros,H.percent_usado,H.valor_parcela,H.data,');
-  DM_TAbelas.ZQRecebBxTemp.SQL.Add('       R.idrecebimento,R.documento,R.cliente,R.usuario,R.Dt_Entrada,R.Dt_Vencimento,R.Valor,R.Observ,R.VrDoc,R.ordem,R.TipDoc,R.saldo,R.marcar,R.RefBaixa,');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('       R.idrecebimento,R.documento,R.cliente,R.usuario,R.Dt_Entrada,R.Dt_Vencimento,R.Valor AS Valor_1,R.Observ,R.VrDoc,R.ordem,R.TipDoc,R.saldo,R.marcar,R.RefBaixa,');
   DM_TAbelas.ZQRecebBxTemp.SQL.Add('       R.refvinda,R.contabil,R.empresa,R.custodaparcela,R.origem,R.adversa,R.recpag,R.numordem,R.idloteamento,R.venda_idvenda,R.quadralote,R.numboleto,');
-  DM_TAbelas.ZQRecebBxTemp.SQL.Add('       B.idreceb_baixa,B.Dt_rec,B.Vr_rec,B.TipDoc,B.Docum,B.Juros_Vr,B.Desc_Vr,B.RefBaixa,B.obsebx,B.Codcontabil,B.dataref,B.vencimento,B.valor_parcela ');
-  DM_TAbelas.ZQRecebBxTemp.SQL.Add('   FROM recbxhist as H join recebimento as R ON R.idrecebimento=H.idrecib join receb_baixa as B ON B.refbaixa=H.refer where R.quadralote='+quotedstr(ZQVIncRec.FieldByName('quadralote').AsString));
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('       B.idreceb_baixa,B.Dt_rec,B.Vr_rec,B.TipDoc AS TipDoc_1,B.Docum,B.Juros_Vr,B.Desc_Vr,B.RefBaixa AS RefBaixa_1,B.obsebx,B.Codcontabil,B.dataref,B.vencimento,B.valor_parcela AS valor_parcela_1,');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('       PC.descricao AS desccontabil ');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('FROM recbxhist H join recebimento R ON R.idrecebimento=H.idrecib ');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('join receb_baixa B ON B.refbaixa=H.refer ');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('left join plano_contas PC ON PC.codigo=B.Codcontabil ');
+  DM_TAbelas.ZQRecebBxTemp.SQL.Add('where H.refer in '+Varrefer+' order by H.refer,H.idrecib,H.idrecbxhist');
   DM_TAbelas.ZQRecebBxTemp.open;
+  RecalcularCamposAtuais(DM_TAbelas.ZQRecebBxTemp);
 
 
   Label27.Caption := '('+inttostr(ZQVincRec.RecordCount)+') Registros';
@@ -2188,10 +2200,13 @@ end;
 
 procedure TFrmCad_Recebimento.DXBExcluirClick(Sender: TObject);
 begin
-  RGDElete.Visible := True;
-  RGDElete.Items.Strings[0] := 'Registro '+DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').Text;
-  RGDElete.Items.Strings[1] := 'Ordem '+DM_Tabelas.ZQRecebimento.FieldByName('numordem').Text;
-  RGDElete.SetFocus;
+  if simnao('Confirma a exclusão do registro ?','SIM') then
+  begin
+    RGDElete.Visible := True;
+    RGDElete.Items.Strings[0] := 'Registro '+DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').Text;
+    RGDElete.Items.Strings[1] := 'Ordem '+DM_Tabelas.ZQRecebimento.FieldByName('numordem').Text;
+    RGDElete.SetFocus;
+  end;
 end;
 
 
@@ -2246,12 +2261,33 @@ begin
 end;
 
 procedure TFrmCad_Recebimento.DXClick(Sender: TObject);
+var
+  LReferencia: string;
 begin
+  LReferencia := '';
+  if DM_Tabelas.ZQReBxHi.Active and (not DM_Tabelas.ZQReBxHi.IsEmpty) then
+    LReferencia := DM_Tabelas.ZQReBxHi.FieldByName('refer').AsString;
+  if Empty(LReferencia) and DM_Tabelas.ZQRecebBxTemp.Active and
+     (not DM_Tabelas.ZQRecebBxTemp.IsEmpty) then
+    LReferencia := DM_Tabelas.ZQRecebBxTemp.FieldByName('refer').AsString;
+  if Empty(LReferencia) then
+    LReferencia := DM_Tabelas.ZQRecebimento.FieldByName('RefBaixa').AsString;
+  if Empty(LReferencia) then
+    LReferencia := DM_Tabelas.ZQRecebimento.FieldByName('refvinda').AsString;
+  if Empty(LReferencia) then
+  begin
+    ShowMessage('Nao foi encontrada uma baixa para reimprimir o recibo deste titulo.');
+    Exit;
+  end;
+
   if FrmImpRecibo=nil then
      FrmImpRecibo:=TFrmImpRecibo.Create(Self);
-  FrmImpRecibo.N_Baixa.Text := DM_Tabelas.ZQRecebBxTemp.FieldByName('refer').Text;
+  FrmImpRecibo.N_Baixa.Text := LReferencia;
   FrmImpRecibo.Nomecli.Text := DM_Tabelas.ZQRecebimento.FieldByName('nomecli').AsString;
-  FrmImpRecibo.Memoobs.Text := DM_Tabelas.ZQRecebBxTemp.FieldByName('Observ').AsString;
+  if DM_Tabelas.ZQRecebBxTemp.Active and (not DM_Tabelas.ZQRecebBxTemp.IsEmpty) then
+    FrmImpRecibo.Memoobs.Text := DM_Tabelas.ZQRecebBxTemp.FieldByName('obsebx').AsString
+  else
+    FrmImpRecibo.Memoobs.Text := DM_Tabelas.ZQRecebimento.FieldByName('Observ').AsString;
   FrmImpRecibo.showmodal;
   FreeAndNil(FrmImpRecibo);
   FrmImpRecibo:=nil;
@@ -2996,11 +3032,6 @@ begin
 
 end;
 
-procedure TFrmCad_Recebimento.DBcobrancaMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-end;
-
 procedure TFrmCad_Recebimento.DBcobrancaDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
@@ -3021,11 +3052,6 @@ begin
   Atualiza_DBcobranca;
   AtualizarCamposCobranca;
   DBcobranca.Invalidate;
-end;
-
-procedure TFrmCad_Recebimento.DBcobrancaKeyUp(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
 end;
 
 procedure TFrmCad_Recebimento.fpgEnter(Sender: TObject);

@@ -192,10 +192,12 @@ end;
 procedure TFrm_igpm.BtExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('IGPM','Exclusão','Código: '+DM_Tabelas.ZQigpm.FieldByName('idIGPM').Text+' - '+DM_Tabelas.ZQigpm.FieldByName('percentual').Text) Then Exit;
-  if DM_Tabelas.ZQigpm.RecordCount>0 Then
-    DM_Tabelas.ZQigpm.Delete;
-
-end;
+  if simnao('Confirma a exclusão da tabela IGPM ?','SIM') then
+  begin
+    if DM_Tabelas.ZQigpm.RecordCount>0 Then
+      DM_Tabelas.ZQigpm.Delete;
+  end;
+ end;
 
 procedure TFrm_igpm.FormKeyPress(Sender: TObject; var Key: Char);
 begin

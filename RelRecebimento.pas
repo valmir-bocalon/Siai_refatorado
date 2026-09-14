@@ -2390,9 +2390,7 @@ begin
    if cbmensal.Checked=true then
    begin
     ZQmensal2.SQL.Clear;
-//    ZQmensal2.SQL.Add('DROP VIEW IF EXISTS `'+varschemata+'`.`relmensal`;');
-    ZQmensal2.SQL.Add('CREATE OR REPLACE VIEW `'+varschemata+'`.`relmensal` AS ');
-    ZQmensal2.SQL.Add(' ( select month(rb.dataref) as Mes, case month(rb.dataref)');
+    ZQmensal2.SQL.Add('select month(rb.dataref) as Mes, case month(rb.dataref)');
     ZQmensal2.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQmensal2.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQmensal2.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
@@ -2441,14 +2439,13 @@ begin
         vrtexto := vrtexto+' e ';
       Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
-//    ZQmensal2.SQL.Add(' group by mes,ano order by ano,mes');
-    ZQmensal2.SQL.Add(' order by ano,mes )');
-//    ZQmensal2.Open;
-  //  ZQmensal2.First;
-    ZQmensal2.ExecSQL;
+    // Keep the detail selection local; relmensal is a table in some databases.
     ZQrelatorio.close;
     ZQrelatorio.SQL.clear;
-    ZQrelatorio.SQL.Add('select *,sum(vr_rel) as valorpagojuros, sum(valor_parcela) as valorpago from relmensal group by mes,ano order by ano,mes');
+    ZQrelatorio.SQL.Add('select M.*,sum(M.vr_rel) as valorpagojuros, sum(M.valor_parcela) as valorpago from (');
+    ZQrelatorio.SQL.Add(ZQmensal2.SQL.Text);
+    ZQrelatorio.SQL.Add(') as M group by M.mes,M.ano order by M.ano,M.mes');
+    ZQrelatorio.Params.Assign(ZQmensal2.Params);
     ZQrelatorio.open;
     FrmRelReceb02_mensal:=nil;
     if FrmRelReceb02_mensal=nil then
@@ -2576,9 +2573,7 @@ begin
    if cbcarteira.Checked=true then
    begin
     ZQcarteira.SQL.Clear;
-//    ZQcarteira.SQL.Add('DROP VIEW IF EXISTS `'+varschemata+'`.`relmensal`;');
-    ZQcarteira.SQL.Add('CREATE OR REPLACE VIEW `'+varschemata+'`.`relcarteira` AS ');
-    ZQcarteira.SQL.Add(' ( select month(rb.dataref) as Mes, lt.apelido as ap, case month(rb.dataref)');
+    ZQcarteira.SQL.Add('select month(rb.dataref) as Mes, lt.apelido as ap, case month(rb.dataref)');
     ZQcarteira.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQcarteira.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQcarteira.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
@@ -2627,15 +2622,13 @@ begin
         vrtexto := vrtexto+' e ';
       Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
-//    ZQcarteira.SQL.Add(' group by mes,ano order by ano,mes');
-    ZQcarteira.SQL.Add(' order by ano,mes )');
-//    ZQcarteira.Open;
-  //  ZQcarteira.First;
-    ZQcarteira.ExecSQL;
-
+    // Keep the detail selection local; relcarteira is a table in some databases.
     ZQRelCarteira.close;
     ZQRelCarteira.SQL.clear;
-    ZQRelCarteira.SQL.Add('select *,sum(vr_rel) as valorpagojuros, sum(valor_parcela) as valorpago from relcarteira group by idloteamento,mes,ano order by idloteamento,ano,mes');
+    ZQRelCarteira.SQL.Add('select C.*,sum(C.vr_rel) as valorpagojuros, sum(C.valor_parcela) as valorpago from (');
+    ZQRelCarteira.SQL.Add(ZQcarteira.SQL.Text);
+    ZQRelCarteira.SQL.Add(') as C group by C.idloteamento,C.mes,C.ano order by C.idloteamento,C.ano,C.mes');
+    ZQRelCarteira.Params.Assign(ZQcarteira.Params);
     ZQRelCarteira.open;
 
     FrmRelReceb02_carteira:=nil;

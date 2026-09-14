@@ -98,48 +98,9 @@ type
     Label23: TLabel;
     ZQRemes_Receb: TZQuery;
     DS_Remes_Receb: TDataSource;
-
-
-
-
-
-
-
-
-
-
     ZQBancRemes: TZQuery;
-
-
-
-
-
-
-
     DS_BancRemes: TDataSource;
     ZQContaBancaria: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DS_ContaBancaria: TDataSource;
     DBEdit2: TDBEdit;
     Label24: TLabel;
@@ -147,19 +108,12 @@ type
     DBEdit3: TDBEdit;
     Label26: TLabel;
     DBEdit4: TDBEdit;
-
-
-
-
     Label27: TLabel;
     DBEdit5: TDBEdit;
     Label28: TLabel;
     DBEdit6: TDBEdit;
     Label29: TLabel;
     DBEdit7: TDBEdit;
-
-
-
     Label30: TLabel;
     XDBNumEdit1: TXDBNumEdit;
     Label31: TLabel;
@@ -168,14 +122,10 @@ type
     Label33: TLabel;
     Label34: TLabel;
     DBEdit9: TDBEdit;
-
-
     Label35: TLabel;
     Label36: TLabel;
     XDBNumEdit3: TXDBNumEdit;
     XDBDateEdit1: TXDBDateEdit;
-
-
     Label37: TLabel;
     DBEdit10: TDBEdit;
     Label38: TLabel;
@@ -233,6 +183,7 @@ type
   private
     { Private declarations }
 
+    function NomeParticipanteDaConta: string;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -263,9 +214,46 @@ Begin
   end;
 End;
 
+function TFrmCad_ContasBancarias.NomeParticipanteDaConta: string;
+var
+  LConsulta: TZQuery;
+  LIdParticipante: Int64;
+begin
+  Result := '';
+  if (not DM_Tabelas.ZQContaBancaria.Active) or
+     DM_Tabelas.ZQContaBancaria.IsEmpty then
+    Exit;
+
+  LIdParticipante :=
+    DM_Tabelas.ZQContaBancaria.FieldByName('idparticipante').AsLargeInt;
+  if LIdParticipante <= 0 then
+    Exit;
+
+  LConsulta := TZQuery.Create(nil);
+  try
+    LConsulta.Connection := DM_Tabelas.zconeccao;
+    LConsulta.SQL.Text :=
+      'select nome_parte from participante ' +
+      'where idpaticipante=:idparticipante';
+    LConsulta.ParamByName('idparticipante').AsLargeInt := LIdParticipante;
+    LConsulta.Open;
+    if not LConsulta.IsEmpty then
+      Result := LConsulta.FieldByName('nome_parte').AsString;
+  finally
+    LConsulta.Free;
+  end;
+end;
+
 procedure TFrmCad_ContasBancarias.Atualiza_pagina;
 Begin
-  Eparticipante.Text := DM_Tabelas.ZQContaBancaria.FieldByName('nomeparticip').AsString;
+  if (not DM_Tabelas.ZQContaBancaria.Active) or
+     DM_Tabelas.ZQContaBancaria.IsEmpty then
+  begin
+    Eparticipante.Clear;
+    Exit;
+  end;
+
+  Eparticipante.Text := NomeParticipanteDaConta;
   if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then Begin
     RBFixo.Checked := True;
     Label19.Caption := 'Valor. Fixo';
@@ -311,77 +299,77 @@ end;
 
 procedure TFrmCad_ContasBancarias.Ativar_campos;
 Begin
-  Eparticipante.ReadOnly := False;
-  DBGConta_Bancaria.Enabled := False;
-  DBEBanco.ReadOnly := False;
-  DBENomeBanco.ReadOnly := False;
-  XDBEJuros.ReadOnly := False;
-  DBECarteira.ReadOnly := False;
-  DBEAgencia.ReadOnly := False;
-  DBEConta.ReadOnly := False;
-  DBENAgeV.ReadOnly := False;
-  DBENContaV.ReadOnly := False;
-  DBECodnoBanco.ReadOnly := False;
-  DBEAbertura.ReadOnly := False;
-  DBENomeTit.ReadOnly := False;
-  FGBMora.Enabled := True;
-  DBCBBoleto.ReadOnly := False;
-  DBESenhainterna.ReadOnly := False;
-  DBESenhaBancaria.ReadOnly := False;
-  dbcbativa.ReadOnly := False;
-  DXBPrimeiro.Enabled := False;
-  DXBAnterior.Enabled := False;
-  DXBProximo.Enabled := False;
-  DXBUltimo.Enabled := False;
-  DXBIncluir.Enabled := False;
-  DXBEditar.Enabled := False;
-  DXBExcluir.Enabled := False;
-  DXBGravar.Enabled := True;
-  DXBCancelar.Enabled := True;
-  DXBGravarespecial.Enabled := false;
+  Eparticipante.ReadOnly      := False;
+  DBGConta_Bancaria.Enabled   := False;
+  DBEBanco.ReadOnly           := False;
+  DBENomeBanco.ReadOnly       := False;
+  XDBEJuros.ReadOnly          := False;
+  DBECarteira.ReadOnly        := False;
+  DBEAgencia.ReadOnly         := False;
+  DBEConta.ReadOnly           := False;
+  DBENAgeV.ReadOnly           := False;
+  DBENContaV.ReadOnly         := False;
+  DBECodnoBanco.ReadOnly      := False;
+  DBEAbertura.ReadOnly        := False;
+  DBENomeTit.ReadOnly         := False;
+  FGBMora.Enabled             := True;
+  DBCBBoleto.ReadOnly         := False;
+  DBESenhainterna.ReadOnly    := False;
+  DBESenhaBancaria.ReadOnly   := False;
+  dbcbativa.ReadOnly          := False;
+  DXBPrimeiro.Enabled         := False;
+  DXBAnterior.Enabled         := False;
+  DXBProximo.Enabled          := False;
+  DXBUltimo.Enabled           := False;
+  DXBIncluir.Enabled          := False;
+  DXBEditar.Enabled           := False;
+  DXBExcluir.Enabled          := False;
+  DXBGravar.Enabled           := True;
+  DXBCancelar.Enabled         := True;
+  DXBGravarespecial.Enabled   := false;
   DXBCancelarEspecial.Enabled := false;
-  DXBIncluirEspecial.Enabled := false;
-  DXBEditarEspecial.Enabled := false;
-  DXBExcluirEspecial.Enabled := false;
+  DXBIncluirEspecial.Enabled  := false;
+  DXBEditarEspecial.Enabled   := false;
+  DXBExcluirEspecial.Enabled  := false;
 End;
 
 procedure TFrmCad_ContasBancarias.Desativar_campos;
 Begin
-  Eparticipante.ReadOnly := True;
-  DBGlimiteEspecial.Enabled := True;
-  DBGConta_Bancaria.Enabled := True;
-  FGBMora.Enabled := False;
-  dbcbativa.ReadOnly := True;
-  DBECarteira.ReadOnly := True;
-  DBEBanco.ReadOnly := True;
-  XDBEJuros.ReadOnly := True;
-  DBCBBoleto.ReadOnly := True;
-  DBENomeBanco.ReadOnly := True;
-  DBEAgencia.ReadOnly := True;
-  DBENAgeV.ReadOnly := True;
-  DBENContaV.ReadOnly := True;
-  DBECodnoBanco.ReadOnly := True;
-  DBEConta.ReadOnly := True;
-  DBEAbertura.ReadOnly := True;
-  DBENomeTit.ReadOnly := True;
-  DBESenhainterna.ReadOnly := True;
-  DBESenhaBancaria.ReadOnly := True;
-  DXBGravar.Enabled := False;
-  DXBCancelar.Enabled := False;
-  DXBPrimeiro.Enabled := True;
-  DXBAnterior.Enabled := True;
-  DXBProximo.Enabled := True;
-  DXBUltimo.Enabled := True;
-  DXBIncluir.Enabled := True;
-  DXBEditar.Enabled := True;
-  DXBExcluir.Enabled := True;
-  DXBGravarespecial.Enabled := false;
+  Eparticipante.ReadOnly      := True;
+  DBGlimiteEspecial.Enabled   := True;
+  DBGConta_Bancaria.Enabled   := True;
+  FGBMora.Enabled             := False;
+  dbcbativa.ReadOnly          := True;
+  DBECarteira.ReadOnly        := True;
+  DBEBanco.ReadOnly           := True;
+  XDBEJuros.ReadOnly          := True;
+  DBCBBoleto.ReadOnly         := True;
+  DBENomeBanco.ReadOnly       := True;
+  DBEAgencia.ReadOnly         := True;
+  DBENAgeV.ReadOnly           := True;
+  DBENContaV.ReadOnly         := True;
+  DBECodnoBanco.ReadOnly      := True;
+  DBEConta.ReadOnly           := True;
+  DBEAbertura.ReadOnly        := True;
+  DBENomeTit.ReadOnly         := True;
+  DBESenhainterna.ReadOnly    := True;
+  DBESenhaBancaria.ReadOnly   := True;
+  DXBGravar.Enabled           := False;
+  DXBCancelar.Enabled         := False;
+  DXBPrimeiro.Enabled         := True;
+  DXBAnterior.Enabled         := True;
+  DXBProximo.Enabled          := True;
+  DXBUltimo.Enabled           := True;
+  DXBIncluir.Enabled          := True;
+  DXBEditar.Enabled           := True;
+  DXBExcluir.Enabled          := True;
+  DXBGravarespecial.Enabled   := false;
   DXBCancelarEspecial.Enabled := false;
-  DXBIncluirEspecial.Enabled := true;
-  DXBEditarEspecial.Enabled := true;
-  DXBExcluirEspecial.Enabled := true;
-  DBEDataValida.readOnly := true;
-  XNEvalorespecial.readOnly := true;
+  DXBIncluirEspecial.Enabled  := true;
+  DXBEditarEspecial.Enabled   := true;
+  DXBExcluirEspecial.Enabled  := true;
+  DBEDataValida.readOnly      := true;
+  XNEvalorespecial.readOnly   := true;
 End;
 
 procedure TFrmCad_ContasBancarias.DXBPrimeiroClick(Sender: TObject);
@@ -389,9 +377,9 @@ begin
   DM_tabelas.ZQContaBancaria.First;
   DXBPrimeiro.Enabled := false;
   DXBAnterior.Enabled := false;
-  DXBProximo.Enabled := true;
-  DXBUltimo.Enabled := true;
-  DXBGravar.Enabled := False;
+  DXBProximo.Enabled  := true;
+  DXBUltimo.Enabled   := true;
+  DXBGravar.Enabled   := False;
   DXBCancelar.Enabled := false;
   Filtra_limite;
   Atualiza_pagina;
@@ -500,42 +488,48 @@ var
 begin
   if PagContaBanco.PageIndex = 0 Then Begin
     if not Verif_senha('Conta Bancária','Excluir Conta Bancária','Cód.: '+ DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
-    if DM_tabelas.ZQContaBancaria.RecordCount>0 then begin
-      varcod := DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text;
-      DM_tabelas.ZQContaBancaria.SQL.Clear;
-      DM_tabelas.ZQContaBancaria.SQL.Add('delete from mov_banco where conta_bancaria_cod_banco ='+quotedstr(varcod));
-      DM_tabelas.ZQContaBancaria.ExecSQL;
-      DM_tabelas.ZQContaBancaria.SQL.Clear;
-      DM_tabelas.ZQContaBancaria.SQL.Add('select idconta_bancaria,n_banco,n_agencia,n_agencia_v,n_conta,n_conta_v,nomebanco,n_no_banco,nomeresposavel,nometitular,aberta,senha_interna,senha_conta,ativa,');
-      DM_tabelas.ZQContaBancaria.SQL.Add('       jurosemboleto,taxadiaria,valoroupercent,carteira,boleto,idparticipante,n_dif_empreed,convenio,doc_titular,n_sequencial,nosso_numero,Apelido,cod_transmissao,');
-      DM_tabelas.ZQContaBancaria.SQL.Add('       complemento,moramensal,variacao,data_maxima_desconto,Perc_descontos,layoutversaoArquivo,layoutversaoLote ');
-      DM_tabelas.ZQContaBancaria.SQL.Add('   from Conta_Bancaria');
-      DM_tabelas.ZQContaBancaria.Open;
+    if simnao('Confirma a exclusão da conta bancária ?','SIM') then
+    begin
+      if DM_tabelas.ZQContaBancaria.RecordCount>0 then begin
+        varcod := DM_tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text;
+        DM_tabelas.ZQContaBancaria.SQL.Clear;
+        DM_tabelas.ZQContaBancaria.SQL.Add('delete from mov_banco where conta_bancaria_cod_banco ='+quotedstr(varcod));
+        DM_tabelas.ZQContaBancaria.ExecSQL;
+        DM_tabelas.ZQContaBancaria.SQL.Clear;
+        DM_tabelas.ZQContaBancaria.SQL.Add('select idconta_bancaria,n_banco,n_agencia,n_agencia_v,n_conta,n_conta_v,nomebanco,n_no_banco,nomeresposavel,nometitular,aberta,senha_interna,senha_conta,ativa,');
+        DM_tabelas.ZQContaBancaria.SQL.Add('       jurosemboleto,taxadiaria,valoroupercent,carteira,boleto,idparticipante,n_dif_empreed,convenio,doc_titular,n_sequencial,nosso_numero,Apelido,cod_transmissao,');
+        DM_tabelas.ZQContaBancaria.SQL.Add('       complemento,moramensal,variacao,data_maxima_desconto,Perc_descontos,layoutversaoArquivo,layoutversaoLote ');
+        DM_tabelas.ZQContaBancaria.SQL.Add('   from Conta_Bancaria');
+        DM_tabelas.ZQContaBancaria.Open;
 
-      DM_tabelas.ZQsequencia_remessa.close;
-      DM_tabelas.ZQsequencia_remessa.SQL.Clear;
-      DM_tabelas.ZQsequencia_remessa.SQL.Add('delete from remessa_sequencia where idconta_bancaria='+quotedstr(varcod));
-      DM_tabelas.ZQsequencia_remessa.ExecSQL;
+        DM_tabelas.ZQsequencia_remessa.close;
+        DM_tabelas.ZQsequencia_remessa.SQL.Clear;
+        DM_tabelas.ZQsequencia_remessa.SQL.Add('delete from remessa_sequencia where idconta_bancaria='+quotedstr(varcod));
+        DM_tabelas.ZQsequencia_remessa.ExecSQL;
 
-      DM_tabelas.ZQsequencia_remessa.close;
-      DM_tabelas.ZQsequencia_remessa.SQL.Clear;
-      DM_tabelas.ZQsequencia_remessa.SQL.Add('select idremessa_sequencia,idconta_bancaria,sequencia from remessa_sequencia');
-      DM_tabelas.ZQsequencia_remessa.Open;
+        DM_tabelas.ZQsequencia_remessa.close;
+        DM_tabelas.ZQsequencia_remessa.SQL.Clear;
+        DM_tabelas.ZQsequencia_remessa.SQL.Add('select idremessa_sequencia,idconta_bancaria,sequencia from remessa_sequencia');
+        DM_tabelas.ZQsequencia_remessa.Open;
 
-      DM_Tabelas.ZQContaBancaria.Locate('idConta_Bancaria',varcod,[]);
-      DM_tabelas.ZQContaBancaria.Delete;
+        DM_Tabelas.ZQContaBancaria.Locate('idConta_Bancaria',varcod,[]);
+        DM_tabelas.ZQContaBancaria.Delete;
+      end;
     end;
   end;
   if PagContaBanco.PageIndex = 1 Then Begin
     if not Verif_senha('Conta Bancária','Excluir Remessa',' nº da remessa '+DM_tabelas.ZQBancRemes.FieldByName('remessa').Text+' da conta '+DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').Text) then exit;
-    DM_Tabelas.ZQRemesRec.SQL.Clear;
-    DM_Tabelas.ZQRemesRec.SQL.Add('delete from remessa_receb where remessa='+quotedstr(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Text));
-    DM_Tabelas.ZQRemesRec.ExecSQL;
-    DM_Tabelas.ZQRemesRec.SQL.Clear;
-    DM_Tabelas.ZQRemesRec.SQL.Add('Select idremessa_receb,remessa,idrec,retorno_motivo,acao,Nossonumero,ocorrencia,desc_motivo,credito,dt_ocorrencia ');
-    DM_Tabelas.ZQRemesRec.SQL.Add('  from remessa_receb');
-    DM_Tabelas.ZQRemesRec.Open;
-    DM_Tabelas.ZQBancRemes.Delete;
+    if simnao('Confirma a exclusão da remessa ?','SIM') then
+    begin
+      DM_Tabelas.ZQRemesRec.SQL.Clear;
+      DM_Tabelas.ZQRemesRec.SQL.Add('delete from remessa_receb where remessa='+quotedstr(DM_Tabelas.ZQBancRemes.FieldByName('remessa').Text));
+      DM_Tabelas.ZQRemesRec.ExecSQL;
+      DM_Tabelas.ZQRemesRec.SQL.Clear;
+      DM_Tabelas.ZQRemesRec.SQL.Add('Select idremessa_receb,remessa,idrec,retorno_motivo,acao,Nossonumero,ocorrencia,desc_motivo,credito,dt_ocorrencia ');
+      DM_Tabelas.ZQRemesRec.SQL.Add('  from remessa_receb');
+      DM_Tabelas.ZQRemesRec.Open;
+      DM_Tabelas.ZQBancRemes.Delete;
+    end;
   end;
 end;
 

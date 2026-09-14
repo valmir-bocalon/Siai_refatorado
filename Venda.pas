@@ -1137,6 +1137,27 @@ uses tabelas, Funcoes, AchaLoteVenda, RelVenda, QuadroResumo, AchaVenda,
 
 {$R *.dfm}
 
+procedure PosicionarDadosParaQuadroResumo;
+begin
+  if DM_Tabelas = nil then
+    Exit;
+
+  { A montagem dos assinantes percorre os detalhes ate EOF. O FortesReport
+    precisa recebe-los novamente no primeiro registro para imprimir os dados
+    vinculados ao comprador atual. }
+  if DM_Tabelas.ZQCompr_Dados.Active and
+    not DM_Tabelas.ZQCompr_Dados.IsEmpty then
+  begin
+    DM_Tabelas.ZQCompr_Dados.First;
+
+    if DM_Tabelas.ZQCompr_Resp_Dados.Active then
+      DM_Tabelas.ZQCompr_Resp_Dados.First;
+
+    if DM_Tabelas.ZQCompr_Conjuge.Active then
+      DM_Tabelas.ZQCompr_Conjuge.First;
+  end;
+end;
+
 function ListaVndE: TStrings;
 begin
   Result := TStringList.Create;
@@ -3778,6 +3799,7 @@ begin
   DM_TAbelas.ZQCompr_Dados.Refresh;
   DM_TAbelas.ZQCompr_Resp_Dados.Refresh;
   DM_TAbelas.ZQCompr_Conjuge.Refresh;
+  PosicionarDadosParaQuadroResumo;
   if Frm_QuadroResumo=nil then
     Frm_QuadroResumo:=TFrm_QuadroResumo.Create(Application);
   Frm_QuadroResumo.npg.Value:=strtofloat(pgn.Text);
@@ -4698,6 +4720,7 @@ begin
   DM_TAbelas.ZQCompr_Dados.Refresh;
   DM_TAbelas.ZQCompr_Resp_Dados.Refresh;
   DM_TAbelas.ZQCompr_Conjuge.Refresh;
+  PosicionarDadosParaQuadroResumo;
   if Frm_QuadroResumo2=nil then
     Frm_QuadroResumo2:=TFrm_QuadroResumo2.Create(Application);
   Frm_QuadroResumo2.npg.Value:=strtofloat(pgn.Text);

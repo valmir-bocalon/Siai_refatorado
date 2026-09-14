@@ -198,8 +198,11 @@ end;
 procedure TFrm_Price.BtExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Price','Exclusão','Código: '+DM_Tabelas.ZQprice.FieldByName('idPrice').Text+' - '+DM_Tabelas.ZQprice.FieldByName('Taxa').Text) Then Exit;
-  if DM_Tabelas.ZQPrice.RecordCount>0 Then
-    DM_Tabelas.ZQPrice.Delete;
+  if simnao('Confirma a exclusão da tabela price ?','SIM') then
+  begin
+    if DM_Tabelas.ZQPrice.RecordCount>0 Then
+      DM_Tabelas.ZQPrice.Delete;
+  end;
 
 end;
 

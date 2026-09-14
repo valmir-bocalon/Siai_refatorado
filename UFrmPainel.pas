@@ -318,9 +318,16 @@ begin
   ZQLoteamento.close;
 end;
 procedure TfrmPainel.FormShow(Sender: TObject);
+var
+  LEmpreendimentos: TStrings;
 begin
   CLBEmpree.Clear;
-  CLBEmpree.Items:= ListaEmpree;
+  LEmpreendimentos := ListaEmpree;
+  try
+    CLBEmpree.Items.Assign(LEmpreendimentos);
+  finally
+    LEmpreendimentos.Free;
+  end;
   dtinicio.date:=date;
   dtfinal.date:=date;
 end;

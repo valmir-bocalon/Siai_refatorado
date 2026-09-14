@@ -532,6 +532,8 @@ type
   private
     { Private declarations }
 
+    function ObterIdLoteamentoDaVenda(const AVendaId: Int64;
+      const AApelido: string): Int64;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -566,6 +568,50 @@ procedure MovimentaObject(Sender:TObject;Button:TMouseButton;Shift:TShiftState;X
      Application.ProcessMessages;
    end; 
  end; 
+
+function TFrmquitacao.ObterIdLoteamentoDaVenda(const AVendaId: Int64;
+  const AApelido: string): Int64;
+var
+  LConsulta: TZQuery;
+begin
+  Result := 0;
+  if DM_Tabelas = nil then
+    Exit;
+
+  LConsulta := TZQuery.Create(nil);
+  try
+    LConsulta.Connection := DM_Tabelas.zconeccao;
+
+    { The sale/imovel relationship is the canonical source for the lot. }
+    if AVendaId > 0 then
+    begin
+      LConsulta.SQL.Text :=
+        'select i.loteamento_idloteamento from venda v ' +
+        'inner join imovel i on i.idimovel=v.imovel ' +
+        'where v.idvenda=:idvenda';
+      LConsulta.ParamByName('idvenda').AsLargeInt := AVendaId;
+      LConsulta.Open;
+      if not LConsulta.IsEmpty then
+        Result := LConsulta.FieldByName('loteamento_idloteamento').AsLargeInt;
+      LConsulta.Close;
+    end;
+
+    { Keep compatibility with old titles without a sale, but never use an
+      unopened or filtered global lookup dataset as the source of the ID. }
+    if (Result = 0) and (Trim(AApelido) <> '') then
+    begin
+      LConsulta.SQL.Text :=
+        'select idloteamento from loteamento where apelido=:apelido ' +
+        'order by idloteamento limit 1';
+      LConsulta.ParamByName('apelido').AsString := Trim(AApelido);
+      LConsulta.Open;
+      if not LConsulta.IsEmpty then
+        Result := LConsulta.FieldByName('idloteamento').AsLargeInt;
+    end;
+  finally
+    LConsulta.Free;
+  end;
+end;
 
 
 procedure TFrmquitacao.Atualiza_tela;
@@ -809,7 +855,8 @@ procedure TFrmquitacao.DXBBaixaGravarClick(Sender: TObject);
 Var
   Varpago, percentbaixa, baixatot, varjuros, varx,
   varsomarepasse, varsomarepasseautomatico : Double;
-  posi,posi2,contador,varreg : Integer;
+  posi,posi2,contador,varreg,LRegistroAtual : Integer;
+  LIdLoteamento: Int64;
   ctbl,varordem, varnumordem1, varnumordem2 : string;
 begin
 
@@ -824,6 +871,32 @@ begin
     showmessage('Digite o Histórico da Quitação !');
     EMNovostit.SetFocus;
     exit;
+  end;
+
+  { Validate every generated title before writing the baixa. This prevents a
+    partial quitacao when an old record has neither a sale nor a valid lot. }
+  LRegistroAtual := CDSParcelas.RecNo;
+  CDSParcelas.DisableControls;
+  try
+    CDSParcelas.First;
+    while not CDSParcelas.Eof do
+    begin
+      LIdLoteamento := ObterIdLoteamentoDaVenda(
+        CDSParcelasvenda_idvenda.AsLargeInt,
+        CDSParcelasnomedoempreendimento.AsString);
+      if LIdLoteamento = 0 then
+      begin
+        ShowMessage('Nao foi possivel identificar o loteamento da venda ' +
+          CDSParcelasvenda_idvenda.AsString +
+          '. A quitacao nao foi gravada.');
+        Exit;
+      end;
+      CDSParcelas.Next;
+    end;
+  finally
+    if LRegistroAtual > 0 then
+      CDSParcelas.RecNo := LRegistroAtual;
+    CDSParcelas.EnableControls;
   end;
 
   DXBBaixaGravar.Enabled := False;
@@ -962,10 +1035,9 @@ begin
     else
        ctbl:=CDSParcelascodContabil.Text;
 
-    Dm_tabelas.ZQLoteamento.Filtered:=false;
-    Dm_tabelas.ZQLoteamento.Filter:='Apelido='+quotedstr(CDSParcelasnomedoempreendimento.Value);
-    Dm_tabelas.ZQLoteamento.Filtered:=true;
-       
+    LIdLoteamento := ObterIdLoteamentoDaVenda(
+      CDSParcelasvenda_idvenda.AsLargeInt,
+      CDSParcelasnomedoempreendimento.AsString);
 
     DM_tabelas.ZQRecebimento.Close;
     DM_tabelas.ZQRecebimento.SQL.Clear;
@@ -977,11 +1049,10 @@ begin
                                      quotedstr(TrocaVirgPPto(TrimChar(floattostr(CDSParcelasVrParc.Value),'.')))+','+quotedstr(TrocaVirgPPto(TrimChar(floattostr(XNERecebido.Value),'.')))+','+
                                      quotedstr(ctbl)+','+quotedstr(inttostr(DM_tabelas.ZQUsuario.FieldByName('idusuario').AsLargeInt))+','+quotedstr(varnumordem1+'-'+CDSParcelasOrdem.Value)+','+
                                      quotedstr(CDSParcelasTipDoc.Value)+','+quotedstr(EAdversa.text)+','+quotedstr(inttostr(CDSParcelasvenda_idvenda.Value))+','+quotedstr(CDSParcelasquadralote.Value)+','+
-                                     quotedstr(inttostr(Dm_tabelas.ZQLoteamento.FieldByName('idloteamento').AsLargeInt))+','+quotedstr(TrocaVirgPPto(TrimChar(floattostr(CDSParcelasVrParc.Value),'.')))+','+
+                                     quotedstr(IntToStr(LIdLoteamento))+','+quotedstr(TrocaVirgPPto(TrimChar(floattostr(CDSParcelasVrParc.Value),'.')))+','+
                                      quotedstr(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text)+','+quotedstr(EMNovostit.Text)+','+quotedstr(ZQRecBai.FieldByName('recpag').AsString)+','+quotedstr(EcodAdversa.Text)+','+quotedstr(varnumordem1)+',''Q'','+quotedstr(inttostr(contador))+','+
                                      quotedstr(CDSParcelasParcelas_fixas.Value)+','+quotedstr(CDSParcelasorigem.Value)+')');
     DM_tabelas.ZQRecebimento.ExecSQL;
-    Dm_tabelas.ZQLoteamento.Filtered:=false;
     DM_tabelas.ZQRecebimento.Close;
 
     //pegar o ultimo registro auto incremento criado
@@ -2173,6 +2244,11 @@ procedure TFrmquitacao.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   xvequta.Value:=0;
+  // Detach local grids before closing their datasets.  Closing a bound query
+  // while the form is being freed can otherwise dispatch DataChange events to
+  // controls that are already in the close sequence.
+  DS_RecBai.DataSet := nil;
+  DS_RecebBxTemp.DataSet := nil;
   dm_tabelas.ZQLoteamento.close;
   JDEntrada.Enabled := False;
   JDBaixa.Enabled   := False;
@@ -2187,7 +2263,6 @@ begin
   DM_tabelas.ZQCheque.close;
   DM_Tabelas.ZQMovBancaria.close;
   panel1.Visible:=true;
-  application.ProcessMessages;
 
 //  DM_tabelas.ZQRecebimento.Close;
 //  DM_tabelas.ZQRecebimento.SQL.Clear;
@@ -2210,7 +2285,6 @@ begin
   DM_tabelas.ZQRecebimento.last;
   qlotes.Text:='';
   panel1.Visible:=false;
-  application.ProcessMessages;
   Frmquitacao:=nil;
   Action:=CaFree;
 end;
@@ -2649,7 +2723,9 @@ initialization
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBaiadversa', 'adversa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBairecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBainumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBainomeadversa', 'nomeadversa', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  // nomeadversa is returned by every ZQRecBai query. Keeping it as data
+  // prevents the participant lookup from clearing the first visible record.
+  RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBainomeadversa', 'nomeadversa', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBaiidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBaivenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmquitacao, 'ZQRecBai', 'ZQRecBaiquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

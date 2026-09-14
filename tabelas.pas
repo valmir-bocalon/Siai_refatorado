@@ -577,7 +577,9 @@ end;
 
 procedure TDM_Tabelas.ZQCompr_DadosCalcFields(DataSet: TDataSet);
 begin
-  ZQCompr_Dados.FieldByName('cidadeestadonatual').AsString := alltrim(ZQCompr_Dados.FieldByName('natural').AsString)+'/'+alltrim(ZQCompr_Dados.FieldByName('estado').AsString);
+  { A consulta do Quadro de Resumo ja traz a cidade da naturalidade. Usar o
+    campo retornado evita depender do lookup durante a impressao. }
+  ZQCompr_Dados.FieldByName('cidadeestadonatual').AsString := alltrim(ZQCompr_Dados.FieldByName('nomecid').AsString)+'/'+alltrim(ZQCompr_Dados.FieldByName('estado').AsString);
   ZQCompr_Dados.FieldByName('cid_uf_cob').AsString:=alltrim(ZQCompr_Dados.FieldByName('cidnome_cob').AsString)+'/'+alltrim(ZQCompr_Dados.FieldByName('cidUF_cob').AsString);
 end;
 
@@ -1486,8 +1488,8 @@ initialization
   RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresalimite', 'limite', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresadia', 'dia', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresatentativa', 'tentativa', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresanomecidade', 'nomecidade', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade', 'ZQCidade', 'idcidade', 'nomecid', True);
-  RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresaestado', 'estado', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade', 'ZQCidade', 'idcidade', 'estado', True);
+  RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresanomecidade', 'nomecidade', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cidade', 'ZQCidade', 'idcidade', 'nomecid', True, True);
+  RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresaestado', 'estado', TWideStringField, fkLookup, 2, 0, False, '', '', '', '', 0, 'cidade', 'ZQCidade', 'idcidade', 'estado', True, True);
   RegisterRuntimeField(TDM_Tabelas, 'ZQEmpresa', 'ZQEmpresadt_importacao', 'dt_importacao', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TDM_Tabelas, 'ZqParticipante', False);
   RegisterRuntimeField(TDM_Tabelas, 'ZqParticipante', 'ZqParticipanteidpaticipante', 'idpaticipante', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

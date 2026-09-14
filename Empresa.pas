@@ -117,6 +117,7 @@ type
   private
     { Private declarations }
 
+    procedure AtualizarCidadeEmpresa;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -133,9 +134,51 @@ uses Tabelas, funcoes, uRuntimeFields;
 
 procedure TFrmCad_Empresa.FormShow(Sender: TObject);
 begin
+  if not DM_Tabelas.ZQCidade.Active then
+    DM_Tabelas.ZQCidade.Open;
   DM_Tabelas.ZQEmpresa.close;
   DM_Tabelas.ZQEmpresa.open;
+  AtualizarCidadeEmpresa;
   Desativar_campos;
+end;
+
+procedure TFrmCad_Empresa.AtualizarCidadeEmpresa;
+var
+  LCidade: TField;
+  LNomeCidade: Variant;
+  LEstado: Variant;
+begin
+  if (DM_Tabelas = nil) or (not DM_Tabelas.ZQEmpresa.Active) or  DM_Tabelas.ZQEmpresa.IsEmpty then
+  begin
+    ECidcasou.Clear;
+    EEstCart.Clear;
+    Exit;
+  end;
+
+  if not DM_Tabelas.ZQCidade.Active then
+    DM_Tabelas.ZQCidade.Open;
+
+  ECidcasou.Clear;
+  EEstCart.Clear;
+  LCidade := DM_Tabelas.ZQEmpresa.FindField('cidade');
+  if (LCidade = nil) or LCidade.IsNull then
+    Exit;
+
+  { A busca usa a chave física já gravada na empresa. Assim, o primeiro
+    registro não depende do ciclo visual de campos calculados. }
+  LNomeCidade := DM_Tabelas.ZQCidade.Lookup('idcidade', LCidade.Value,
+    'nomecid');
+  LEstado := DM_Tabelas.ZQCidade.Lookup('idcidade', LCidade.Value, 'estado');
+  if not VarIsNull(LNomeCidade) and not VarIsEmpty(LNomeCidade) then
+    ECidcasou.Text := VarToStr(LNomeCidade);
+  if not VarIsNull(LEstado) and not VarIsEmpty(LEstado) then
+    EEstCart.Text := VarToStr(LEstado);
+
+  { Mantem compatibilidade com consultas que já disponibilizam os lookups. }
+  if ECidcasou.Text = '' then
+    ECidcasou.Text := DM_Tabelas.ZQEmpresa.FieldByName('nomecidade').AsString;
+  if EEstCart.Text = '' then
+    EEstCart.Text := DM_Tabelas.ZQEmpresa.FieldByName('estado').AsString;
 end;
 
 procedure TFrmCad_Empresa.DXBFecharClick(Sender: TObject);
@@ -169,6 +212,7 @@ end;
 procedure TFrmCad_Empresa.DXBPrimeiroClick(Sender: TObject);
 begin
   DM_Tabelas.ZQEmpresa.First;
+  AtualizarCidadeEmpresa;
   DXBPrimeiro.Enabled := false;
   DXBAnterior.Enabled := false;
   DXBProximo.Enabled := true;
@@ -178,7 +222,8 @@ end;
 procedure TFrmCad_Empresa.DXBAnteriorClick(Sender: TObject);
 begin
   DM_Tabelas.ZQEmpresa.Prior;
-  if DM_Tabelas.ZQUsuario.RecNo = 1 then begin
+  AtualizarCidadeEmpresa;
+  if DM_Tabelas.ZQEmpresa.RecNo = 1 then begin
     DXBPrimeiro.Enabled := false;
     DXBAnterior.Enabled := false;
   end;
@@ -189,6 +234,7 @@ end;
 procedure TFrmCad_Empresa.DXBProximoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQEmpresa.Next;
+  AtualizarCidadeEmpresa;
   if DM_Tabelas.ZQEmpresa.RecNo = DM_Tabelas.ZQEmpresa.RecordCount then begin
     DXBProximo.Enabled := false;
     DXBUltimo.Enabled := false;
@@ -200,68 +246,69 @@ end;
 procedure TFrmCad_Empresa.DXBUltimoClick(Sender: TObject);
 begin
   DM_Tabelas.ZQEmpresa.Last;
-  DXBProximo.Enabled := false;
-  DXBUltimo.Enabled := false;
+  AtualizarCidadeEmpresa;
+  DXBProximo.Enabled  := false;
+  DXBUltimo.Enabled   := false;
   DXBPrimeiro.Enabled := true;
   DXBAnterior.Enabled := true;
 end;
 
 procedure TFrmCad_Empresa.Ativar_campos;
 Begin
-  DBCBTipo.ReadOnly := False;
-  DBCBAtiva.ReadOnly := False;  
-  DBERazao.ReadOnly := False;
+  DBCBTipo.ReadOnly    := False;
+  DBCBAtiva.ReadOnly   := False;
+  DBERazao.ReadOnly    := False;
   DBEFantazia.ReadOnly := False;
   DBEEndereco.ReadOnly := False;
-  DBEBairro.ReadOnly := False;
-  ECidcasou.ReadOnly := False;
-  DBECep.ReadOnly := False;
+  DBEBairro.ReadOnly   := False;
+  ECidcasou.ReadOnly   := False;
+  DBECep.ReadOnly      := False;
   DBEIfalgura.ReadOnly := False;
-  DBEIe.ReadOnly := False;
-  CBECnpj.ReadOnly := False;
-  DBEFone1.ReadOnly := False;
-  DBEFone2.ReadOnly := False;
-  DBEFone3.ReadOnly := False;
-  DBEEmail.ReadOnly := False;
-  DBEFilial.ReadOnly := False;
-  DXBIncluir.Enabled := False;
-  DXBEditar.Enabled := False;
-  DXBExcluir.Enabled := False;
-  DXBPrimeiro.Enabled := False;
-  DXBAnterior.Enabled := False;
-  DXBProximo.Enabled := False;
-  DXBUltimo.Enabled := False;
-  DXBGravar.Enabled := True;
-  DXBCancelar.Enabled := True;
+  DBEIe.ReadOnly       := False;
+  CBECnpj.ReadOnly     := False;
+  DBEFone1.ReadOnly    := False;
+  DBEFone2.ReadOnly    := False;
+  DBEFone3.ReadOnly    := False;
+  DBEEmail.ReadOnly    := False;
+  DBEFilial.ReadOnly   := False;
+  DXBIncluir.Enabled   := False;
+  DXBEditar.Enabled    := False;
+  DXBExcluir.Enabled   := False;
+  DXBPrimeiro.Enabled  := False;
+  DXBAnterior.Enabled  := False;
+  DXBProximo.Enabled   := False;
+  DXBUltimo.Enabled    := False;
+  DXBGravar.Enabled    := True;
+  DXBCancelar.Enabled  := True;
 End;
 
 procedure TFrmCad_Empresa.Desativar_campos;
 Begin
-  DBCBTipo.ReadOnly := True;
-  DBCBAtiva.ReadOnly := True;
-  DBERazao.ReadOnly := True;
+  DBCBTipo.ReadOnly    := True;
+  DBCBAtiva.ReadOnly   := True;
+  DBERazao.ReadOnly    := True;
   DBEFantazia.ReadOnly := True;
   DBEEndereco.ReadOnly := True;
-  DBEBairro.ReadOnly := True;
-  ECidcasou.ReadOnly := True;
-  DBECep.ReadOnly := True;
+  DBEBairro.ReadOnly   := True;
+  ECidcasou.ReadOnly   := True;
+  DBECep.ReadOnly      := True;
   DBEIfalgura.ReadOnly := True;
-  DBEIe.ReadOnly := True;
-  CBECnpj.ReadOnly := True;
-  DBEFone1.ReadOnly := True;
-  DBEFone2.ReadOnly := True;
-  DBEFone3.ReadOnly := True;
-  DBEEmail.ReadOnly := True;
-  DBEFilial.ReadOnly := True;
-  DXBIncluir.Enabled := True;
-  DXBEditar.Enabled := True;
-  DXBExcluir.Enabled := True;
-  DXBPrimeiro.Enabled := True;
-  DXBAnterior.Enabled := True;
-  DXBProximo.Enabled := True;
-  DXBUltimo.Enabled := True;
-  DXBGravar.Enabled := False;
-  DXBCancelar.Enabled := False;
+  DBEIe.ReadOnly       := True;
+  CBECnpj.ReadOnly     := True;
+  DBEFone1.ReadOnly    := True;
+  DBEFone2.ReadOnly    := True;
+  DBEFone3.ReadOnly    := True;
+  DBEEmail.ReadOnly    := True;
+  DBEFilial.ReadOnly   := True;
+  DXBIncluir.Enabled   := True;
+  DXBEditar.Enabled    := True;
+  DXBExcluir.Enabled   := True;
+  DXBPrimeiro.Enabled  := True;
+  DXBAnterior.Enabled  := True;
+  DXBProximo.Enabled   := True;
+  DXBUltimo.Enabled    := True;
+  DXBGravar.Enabled    := False;
+  DXBCancelar.Enabled  := False;
 End;
 
 procedure TFrmCad_Empresa.DXBEditarClick(Sender: TObject);
@@ -467,16 +514,19 @@ end;
 
 procedure TFrmCad_Empresa.DBERazaoChange(Sender: TObject);
 begin
-  ECidcasou.Text := DM_Tabelas.ZQEmpresa.FieldByName('nomecidade').AsString;
-  EEstCart.Text := DM_Tabelas.ZQEmpresa.FieldByName('estado').AsString;
+  AtualizarCidadeEmpresa;
 end;
 
 procedure TFrmCad_Empresa.DXBExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Empresa','Deletar','Código: '+DM_Tabelas.ZQEmpresa.FieldByName('codigo').Text+'  Razão: '+DM_Tabelas.ZQEmpresa.FieldByName('razao').AsString) then Exit;
-  DM_Tabelas.ZQEmpresa.Delete;
-  Ativar_campos;
-  DBERazao.setFocus;
+  if simnao('Confirma a exclusão da empresa ?','SIM') then
+  begin
+    DM_Tabelas.ZQEmpresa.Cancel;
+    DM_Tabelas.ZQEmpresa.Delete;
+    Ativar_campos;
+    DBERazao.setFocus;
+  end;
   DM_Tabelas.ZQEmpresa.Cancel;
 end;
 

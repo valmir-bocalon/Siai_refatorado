@@ -316,11 +316,14 @@ end;
 procedure TFrm_Loteamento.BTExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Loteamento','Exclusão','Loteamento: '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text+' - '+DM_Tabelas.ZQLoteamento.FieldByName('matriculaloteamento').AsString) Then Exit;
-  DM_tabelas.ZQQuadras.First;
-  While not DM_TAbelas.ZQQuadras.Eof do
-    DM_Tabelas.ZQQuadras.Delete;
-  DM_Tabelas.ZQLoteamento.Delete;
-  atualiza_lotes;
+  if simnao('Confirma a exclusão do empreendimento ?','SIM') then
+  begin
+    DM_tabelas.ZQQuadras.First;
+    While not DM_TAbelas.ZQQuadras.Eof do
+      DM_Tabelas.ZQQuadras.Delete;
+    DM_Tabelas.ZQLoteamento.Delete;
+    atualiza_lotes;
+  end;
 end;
 
 procedure TFrm_Loteamento.BTPesquisarClick(Sender: TObject);
@@ -348,72 +351,74 @@ end;
 
 procedure TFrm_Loteamento.ativar_campos;
 Begin
-  DBCBTipo.ReadOnly := False;
-  DBEMatricula.ReadOnly := False;
-  DBECadastrado.ReadOnly := False;
-  DBEInalgurado.ReadOnly := False;
-  DBEConcluido.ReadOnly := False;
+  DBCBTipo.ReadOnly          := False;
+  DBEMatricula.ReadOnly      := False;
+  DBECadastrado.ReadOnly     := False;
+  DBEInalgurado.ReadOnly     := False;
+  DBEConcluido.ReadOnly      := False;
   DBENomeloteamento.ReadOnly := False;
-  DBEApelido.ReadOnly := False;
-  EUSUCIDADE.ReadOnly := False;
-  DBEBAirro.ReadOnly := False;
-  DBELogo.ReadOnly := False;
-  DBGQruadra.ReadOnly := False;
-  GBTestemunha.Enabled := True;
-  DBEPercent.ReadOnly := False;
-  Eparticipante.ReadOnly := False;
-  BTPrimeiro.Enabled := False;
-  BTAnterior.Enabled := False;
-  BTProximo.Enabled := False;
-  BtUltimo.Enabled := False;
-  BtGravar.Enabled := True;
-  BtCancelar.Enabled := True;
-  BtProcessar.Enabled := False;
-  BtFechar.Enabled := False;
-  BtIncluir.Enabled := False;
-  BtEditar.Enabled := False;
-  BtExcluir.Enabled := False;
-  BtPesquisar.Enabled := False;
-  BtRelatorio.Enabled := False;
-  DBGLotemamento.Enabled := False;
+  DBEApelido.ReadOnly        := False;
+  EUSUCIDADE.ReadOnly        := False;
+  DBEBAirro.ReadOnly         := False;
+  DBELogo.ReadOnly           := False;
+  DBGQruadra.ReadOnly        := False;
+  GBTestemunha.Enabled       := True;
+  DBEPercent.ReadOnly        := False;
+  Eparticipante.ReadOnly     := False;
+  BTPrimeiro.Enabled         := False;
+  BTAnterior.Enabled         := False;
+  BTProximo.Enabled          := False;
+  BtUltimo.Enabled           := False;
+  BtGravar.Enabled           := True;
+  BtCancelar.Enabled         := True;
+  BtProcessar.Enabled        := False;
+  BtFechar.Enabled           := False;
+  BtIncluir.Enabled          := False;
+  BtEditar.Enabled           := False;
+  BtExcluir.Enabled          := False;
+  BtPesquisar.Enabled        := False;
+  BtRelatorio.Enabled        := False;
+  DBGLotemamento.Enabled     := False;
 end;
 
 procedure TFrm_Loteamento.desativar_campos;
 Begin
-  DBCBTipo.ReadOnly := True;
-  DBEMatricula.ReadOnly := True;
+  DBCBTipo.ReadOnly          := True;
+  DBEMatricula.ReadOnly      := True;
   DBENomeloteamento.ReadOnly := True;
-  DBEApelido.ReadOnly := True;  
-  DBECadastrado.ReadOnly := True;
-  DBEInalgurado.ReadOnly := True;
-  DBEConcluido.ReadOnly := True;
-  EUSUCIDADE.ReadOnly := True;
-  DBEBAirro.ReadOnly := True;
-  DBELogo.ReadOnly := True;
-  GBTestemunha.Enabled := False;
-  DBGQruadra.ReadOnly := True;
-  DBEPercent.ReadOnly := True;
-  Eparticipante.ReadOnly := True;
-  BTPrimeiro.Enabled := True;
-  BTAnterior.Enabled := True;
-  BTProximo.Enabled := True;
-  BtUltimo.Enabled := True;
-  BtGravar.Enabled := False;
-  BtCancelar.Enabled := False;
-  BtProcessar.Enabled := False;
-  BtFechar.Enabled := True;
-  BtIncluir.Enabled := True;
-  BtEditar.Enabled := True;
-  BtExcluir.Enabled := True;
-  BtPesquisar.Enabled := True;
-  BtRelatorio.Enabled := True;
-  DBGLotemamento.Enabled := True;
+  DBEApelido.ReadOnly        := True;
+  DBECadastrado.ReadOnly     := True;
+  DBEInalgurado.ReadOnly     := True;
+  DBEConcluido.ReadOnly      := True;
+  EUSUCIDADE.ReadOnly        := True;
+  DBEBAirro.ReadOnly         := True;
+  DBELogo.ReadOnly           := True;
+  GBTestemunha.Enabled       := False;
+  DBGQruadra.ReadOnly        := True;
+  DBEPercent.ReadOnly        := True;
+  Eparticipante.ReadOnly     := True;
+  BTPrimeiro.Enabled         := True;
+  BTAnterior.Enabled         := True;
+  BTProximo.Enabled          := True;
+  BtUltimo.Enabled           := True;
+  BtGravar.Enabled           := False;
+  BtCancelar.Enabled         := False;
+  BtProcessar.Enabled        := False;
+  BtFechar.Enabled           := True;
+  BtIncluir.Enabled          := True;
+  BtEditar.Enabled           := True;
+  BtExcluir.Enabled          := True;
+  BtPesquisar.Enabled        := True;
+  BtRelatorio.Enabled        := True;
+  DBGLotemamento.Enabled     := True;
 end;
 
 procedure TFrm_Loteamento.FormShow(Sender: TObject);
 begin
   EnsureLoteamentoNomeCidadeField(DM_Tabelas);
   Pag_Loteamento.PageIndex := 0;
+  if not DM_Tabelas.ZQCidade.Active then
+    DM_Tabelas.ZQCidade.Open;
   DM_Tabelas.ZQincorp_loteame.open;
   DM_Tabelas.ZQAchaContaBanc.Open;
   DM_tabelas.ZQQuadras.Open;
@@ -421,6 +426,9 @@ begin
   DM_TAbelas.ZQContaBancaria.open;
   DM_Tabelas.zqprocuradores.open;
   desativar_campos;
+  { A abertura nao passa pelos botoes de navegacao. Atualize o primeiro
+    registro somente depois que todos os datasets dependentes estiverem ativos. }
+  botoes;
   DBGLotemamento.SetFocus;
 end;
 
@@ -610,6 +618,10 @@ end;
 procedure TFrm_Loteamento.DBGLotemamentoDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn;
   State: TGridDrawState);
+var
+  FCidadeId: TField;
+  TextoCidade: Variant;
+  EstiloPincel: TBrushStyle;
 begin
   if DBECod.Text = DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text Then Begin
     DBGLotemamento.Canvas.Brush.Color :=$006CFFFF;
@@ -618,6 +630,38 @@ begin
   end;
   DBGLotemamento.DefaultDrawDataCell(Rect, DBGLotemamento.columns[datacol].field, State);
 
+  { Estas duas colunas nao podem depender do valor calculado pelo dataset:
+    na primeira linha ele ainda pode estar vazio. O desenho usa a mesma chave
+    de cidade que ja alimenta o detalhe da tela, sem alterar o registro. }
+  if (Column.Field = nil) or
+     (not SameText(Column.Field.FieldName, 'nomecidade')) and
+     (not SameText(Column.Field.FieldName, 'estado')) then
+    Exit;
+  if not DM_Tabelas.ZQCidade.Active then
+    Exit;
+
+  FCidadeId := DM_Tabelas.ZQLoteamento.FindField('cidade_idcidade');
+  if (FCidadeId = nil) or FCidadeId.IsNull then
+    Exit;
+
+  if SameText(Column.Field.FieldName, 'nomecidade') then
+    TextoCidade := DM_Tabelas.ZQCidade.Lookup('idcidade', FCidadeId.Value,
+      'nomecid')
+  else
+    TextoCidade := DM_Tabelas.ZQCidade.Lookup('idcidade', FCidadeId.Value,
+      'estado');
+
+  if VarIsNull(TextoCidade) or VarIsEmpty(TextoCidade) then
+    Exit;
+
+  EstiloPincel := DBGLotemamento.Canvas.Brush.Style;
+  DBGLotemamento.Canvas.Brush.Style := bsClear;
+  try
+    DBGLotemamento.Canvas.TextRect(Rect, Rect.Left + 2, Rect.Top + 2,
+      VarToStr(TextoCidade));
+  finally
+    DBGLotemamento.Canvas.Brush.Style := EstiloPincel;
+  end;
 end;
 
 procedure TFrm_Loteamento.DBGrid1MouseUp(Sender: TObject;

@@ -184,14 +184,19 @@ begin
     ZQTempCliReceb.SQL.Clear;
     ZQTempCliReceb.SQL.Add('select p1.idpaticipante,p1.nome_parte,p1.codpaginc,p1.codrecinc,p1.codpagBx,p1.codrecBx,rec.idrecebimento,rec.documento,rec.cliente,');
     ZQTempCliReceb.SQL.Add('rec.usuario,rec.Dt_Entrada,rec.Dt_Vencimento,rec.Valor,rec.ordem,rec.TipDoc,rec.saldo,rec.marcar,rec.RefBaixa,rec.refvinda,rec.contabil,');
-    ZQTempCliReceb.SQL.Add('rec.empresa,rec.custodaparcela,rec.origem,rec.adversa,rec.recpag,rec.numordem,rec.nomeadversa,rec.idloteamento,rec.venda_idvenda,rec.quadralote,rec.numboleto');
+    ZQTempCliReceb.SQL.Add('rec.empresa,rec.custodaparcela,rec.origem,rec.adversa,rec.recpag,rec.numordem,coalesce(p2.nome_parte,rec.nomeadversa) as nomeadversa,rec.idloteamento,rec.venda_idvenda,rec.quadralote,rec.numboleto,');
+    ZQTempCliReceb.SQL.Add('coalesce(l_titulo.apelido,l_venda.apelido) as Nome_loteamento');
     ZQTempCliReceb.SQL.Add(' from recebimento as rec left join participante as p1 on rec.cliente=p1.idpaticipante');
     ZQTempCliReceb.SQL.Add(' left join participante as p2 on rec.adversa=p2.idpaticipante');
+    ZQTempCliReceb.SQL.Add(' left join loteamento as l_titulo on l_titulo.idloteamento=rec.idloteamento');
+    ZQTempCliReceb.SQL.Add(' left join venda as v on v.idvenda=rec.venda_idvenda');
+    ZQTempCliReceb.SQL.Add(' left join imovel as i on i.idimovel=v.imovel');
+    ZQTempCliReceb.SQL.Add(' left join loteamento as l_venda on l_venda.idloteamento=i.loteamento_idloteamento');
     if not empty(ednome.Text) then
     begin
       posi:=pos('|',ednome.text);
       dec(posi);
-      ZQTempCliReceb.SQL.Add(' where (idloteamento='+quotedstr(copy(ednome.Text,1,posi))+') and (p1.nome_parte like '+quotedstr('%'+Edit1.Text+'%'));
+      ZQTempCliReceb.SQL.Add(' where (rec.idloteamento='+quotedstr(copy(ednome.Text,1,posi))+') and (p1.nome_parte like '+quotedstr('%'+Edit1.Text+'%'));
     end
     else
     begin
@@ -241,6 +246,8 @@ begin
     DM_tabelas.ZQRecebimento.Open;
 
     DM_tabelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
+    if Assigned(FrmCad_Recebimento) then
+      FrmCad_Recebimento.AtualizarLookupsRecebimento;
     Close;
   end;
 end;
@@ -273,6 +280,8 @@ begin
     begin
       ZQTempCliReceb.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
       DM_tabelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
+      if Assigned(FrmCad_Recebimento) then
+        FrmCad_Recebimento.AtualizarLookupsRecebimento;
       DBGrid2.Visible:=true;
       DBGrid2.SetFocus;
     end
@@ -292,7 +301,9 @@ begin
   begin
     zqcheque.Next;
     ZQTempCliReceb.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
-    DM_tabelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);        
+    DM_tabelas.ZQRecebimento.Locate('idrecebimento',ZQTempCliReceb.FieldByName('idrecebimento').AsLargeInt,[]);
+    if Assigned(FrmCad_Recebimento) then
+      FrmCad_Recebimento.AtualizarLookupsRecebimento;
   end;
 end;
 
@@ -319,6 +330,8 @@ begin
 
 
     DM_tabelas.ZQRecebimento.Locate('idrecebimento',ZQCheque.FieldByName('idrecebimento').AsInteger,[]);
+    if Assigned(FrmCad_Recebimento) then
+      FrmCad_Recebimento.AtualizarLookupsRecebimento;
 //    dbgrid1.setfocus;
     dbgrid2.Visible:=false;
     Close;
@@ -341,9 +354,14 @@ begin
       ZQTempCliReceb.SQL.Clear;
       ZQTempCliReceb.SQL.Add('select p1.idpaticipante,p1.nome_parte,p1.codpaginc,p1.codrecinc,p1.codpagBx,p1.codrecBx,rec.idrecebimento,rec.documento,rec.cliente,');
       ZQTempCliReceb.SQL.Add('rec.usuario,rec.Dt_Entrada,rec.Dt_Vencimento,rec.Valor,rec.ordem,rec.TipDoc,rec.saldo,rec.marcar,rec.RefBaixa,rec.refvinda,rec.contabil,');
-      ZQTempCliReceb.SQL.Add('empresa,custodaparcela,origem,adversa,recpag,numordem,nomeadversa,idloteamento,venda_idvenda,rec.quadralote,rec.numboleto');
+      ZQTempCliReceb.SQL.Add('rec.empresa,rec.custodaparcela,rec.origem,rec.adversa,rec.recpag,rec.numordem,coalesce(p2.nome_parte,rec.nomeadversa) as nomeadversa,rec.idloteamento,rec.venda_idvenda,rec.quadralote,rec.numboleto,');
+      ZQTempCliReceb.SQL.Add('coalesce(l_titulo.apelido,l_venda.apelido) as Nome_loteamento');
       ZQTempCliReceb.SQL.Add(' from recebimento as rec left join participante as p1 on rec.cliente=p1.idpaticipante');
       ZQTempCliReceb.SQL.Add(' left join participante as p2 on rec.adversa=p2.idpaticipante ');
+      ZQTempCliReceb.SQL.Add(' left join loteamento as l_titulo on l_titulo.idloteamento=rec.idloteamento');
+      ZQTempCliReceb.SQL.Add(' left join venda as v on v.idvenda=rec.venda_idvenda');
+      ZQTempCliReceb.SQL.Add(' left join imovel as i on i.idimovel=v.imovel');
+      ZQTempCliReceb.SQL.Add(' left join loteamento as l_venda on l_venda.idloteamento=i.loteamento_idloteamento');
       ZQTempCliReceb.SQL.Add(' group by rec.idrecebimento LIMIT '+alltrim(inttostr(limite))+',500 ');
       ZQTempCliReceb.Open;
     end;
@@ -402,12 +420,12 @@ initialization
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebadversa', 'adversa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebrecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebnumordem', 'numordem', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebnomeadversa', 'nomeadversa', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'adversa', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
+  RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebnomeadversa', 'nomeadversa', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebidloteamento', 'idloteamento', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebvenda_idvenda', 'venda_idvenda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebquadralote', 'quadralote', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebnumboleto', 'numboleto', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebNome_loteamento', 'Nome_loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
+  RegisterRuntimeField(TFrmPesqRecebimento, 'ZQTempCliReceb', 'ZQTempCliRecebNome_loteamento', 'Nome_loteamento', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TFrmPesqRecebimento, 'ZQCheque', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQCheque', 'ZQChequeidcheque', 'idcheque', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqRecebimento, 'ZQCheque', 'ZQChequebanco', 'banco', TWideStringField, fkData, 3, 0, False, '', '', '', '', 0, '', '', '', '', False);
