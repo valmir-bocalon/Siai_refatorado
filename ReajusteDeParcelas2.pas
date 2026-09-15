@@ -1,13 +1,11 @@
-ï»¿unit ReajusteDeParcelas2;
+unit ReajusteDeParcelas2;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids,
-    dxButton, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
   ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi, ImgList, ExtCtrls,
-  ComCtrls, dxCore2, System.ImageList;
+  ComCtrls, System.ImageList;
 
 const
   WM_ATUALIZAR_GRID_REAJUSTE2 = WM_APP + 171;
@@ -22,8 +20,8 @@ type
     GroupBox5: TGroupBox;
     XBanner3: TXBanner;
     XLabel3D1: TXLabel3D;
-    DXBFechar: TdxButton;
-    dxButton1: TdxButton;
+    DXBFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     DS_quadraLote: TDataSource;
     DS_Adversatemp: TDataSource;
     ZQAdvsersatemp: TZQuery;
@@ -50,12 +48,12 @@ type
     percent: TXNumEdit;
     Eadversa: TEdit;
     DBGReceb: TDBGrid;
-    DXBPrimeiro: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBProximo: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBPesquisar: TdxButton;
-    dxButton2: TdxButton;
+    DXBPrimeiro: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    dxButton2: TdxButtonArround;
     DBEIDReceb: TDBEdit;
     GroupBox1: TGroupBox;
     XBanner1: TXBanner;
@@ -68,7 +66,7 @@ type
     DataZQRecebtmp: TDataSource;
     DBid: TDBEdit;
     ListBox1: TListBox;
-    dxButton3: TdxButton;
+    dxButton3: TdxButtonArround;
     DS_Entrada: TDataSource;
     ZQEntrada: TZQuery;
     DS_Parcela: TDataSource;
@@ -88,12 +86,12 @@ type
     XBanner5: TXBanner;
     DBGrid3: TDBGrid;
     Eloteamento: TEdit;
-    dxButton14: TdxButton;
-    dxButton13: TdxButton;
+    dxButton14: TdxButtonArround;
+    dxButton13: TdxButtonArround;
     CBDesconsidera: TCheckBox;
     ImageList1: TImageList;
-    dxButton4: TdxButton;
-    dxButton5: TdxButton;
+    dxButton4: TdxButtonArround;
+    dxButton5: TdxButtonArround;
     Image1: TImage;
     Image2: TImage;
     DBGrid5: TDBGrid;
@@ -388,7 +386,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote nÃ£o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -745,7 +743,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1091,7 +1089,7 @@ begin
 
           if trim(varquadra)=emptystr then
           begin
-            showmessage('VocÃª nÃ£o selecionou nada no grid ao lado.'+#13+#10+' Clique no botÃ£o Selecionar Todas !');
+            showmessage('Você não selecionou nada no grid ao lado.'+#13+#10+' Clique no botão Selecionar Todas !');
             exit
           end;
 
@@ -1144,7 +1142,7 @@ begin
   end
   else if (percent.Value=0) and (ZQRecebtmp2.RecordCount>0) then
   begin
-    showmessage('Informe o Percentual; Adicione os TÃ­tulos Selecionados no Grid !');
+    showmessage('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
     percent.SetFocus;
     exit;
   end;
@@ -1290,7 +1288,7 @@ begin
     ZQEntrada.close;
     ZQParcela.close;
     ql:='';
-    // atÃ© aqui
+    // até aqui
   end
   else if (percent.Value<0) and (ZQRecebtmp2.RecordCount>0) then
   begin
@@ -1391,7 +1389,7 @@ begin
   begin
     if FrmRelReajuste=nil then
        FrmRelReajuste:=TFrmRelReajuste.Create(Application);
-    FrmRelReajuste.RLLabel2.Caption := 'Contratos Reajustados do mÃªs/ano: '+xmes.Text+'/'+xano.Text;
+    FrmRelReajuste.RLLabel2.Caption := 'Contratos Reajustados do mês/ano: '+xmes.Text+'/'+xano.Text;
     FrmRelReajuste.rlpercent.Caption:=transform(percent.Value,'##0.00');
     FrmRelReajuste.RLReport1.PreviewModal;
     FrmRelReajuste:=nil;
@@ -1411,7 +1409,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1477,7 +1475,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1751,7 +1749,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -2173,7 +2171,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

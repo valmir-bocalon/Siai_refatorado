@@ -1,14 +1,13 @@
-ï»¿unit Venda;
+unit Venda;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, XDBNum, XNum, StdCtrls, wwdbdatetimepicker, Mask, DBCtrls,
-  Grids, DBGrids, ComCtrls, TabNotBk,   dxButton, ExtCtrls, XBanner,
+  Grids, DBGrids, ComCtrls, TabNotBk, ExtCtrls, XBanner,
   XDate, XDBEdit, DB, JvExControls, JvXPCore, JvXPBar, ZAbstractRODataset,
   ZAbstractDataset, ZDataset, FnpNumericEdit, XDBDate, Gauges, ImgList,
-  DBClient, Provider, AppEvnts, dxCore2, System.ImageList, dxCoreA,system.Threading;
+  DBClient, Provider, AppEvnts, System.ImageList, dxCoreA,system.Threading;
 
 type
   TFrm_Venda = class(TForm)
@@ -16,19 +15,19 @@ type
     Label19: TLabel;
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BTFechar: TdxButton;
-    BtProcessar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BTFechar: TdxButtonArround;
+    BtProcessar: TdxButtonArround;
     Pag_Venda: TTabbedNotebook;
     XBanner1: TXBanner;
     DBGVenda: TDBGrid;
@@ -61,7 +60,7 @@ type
     EContabilEntrada: TEdit;
     Label6: TLabel;
     Label8: TLabel;
-    DXBAchaLote: TdxButton;
+    DXBAchaLote: TdxButtonArround;
     DBELote: TDBEdit;
     DBEdit6: TDBEdit;
     Label2: TLabel;
@@ -235,8 +234,8 @@ type
     xdliquidado: TXNumEdit;
     vrfinal: TXNumEdit;
     sldpago: TXNumEdit;
-    dxButton1: TdxButton;
-    dxButton2: TdxButton;
+    dxButton1: TdxButtonArround;
+    dxButton2: TdxButtonArround;
     ZQparcelas_pagas: TZQuery;
     DS_parcelas_pagas: TDataSource;
 
@@ -422,7 +421,7 @@ type
 
 
 
-    dxButton3: TdxButton;
+    dxButton3: TdxButtonArround;
     XBanner15: TXBanner;
     DBRichEdit1: TDBRichEdit;
     DataSetProvider1: TDataSetProvider;
@@ -791,7 +790,7 @@ type
     cds_participantexquadra: TWidestringField;
     cds_participantexlote: TWidestringField;
     SaveDialog1: TSaveDialog;
-    dxButton4: TdxButton;
+    dxButton4: TdxButtonArround;
     cds_compradorvenda_idvenda: TLargeintField;
     cds_vendedorvenda_idvenda: TLargeintField;
 
@@ -987,7 +986,7 @@ type
     Label94: TLabel;
     XDBNumEdit3: TXDBNumEdit;
     XBanner17: TXBanner;
-    dxButton5: TdxButton;
+    dxButton5: TdxButtonArround;
     OpenDialog2: TOpenDialog;
     procedure ApplicationEvents1Message(var Msg: TMsg; var Handled: Boolean);    
     procedure FormShow(Sender: TObject);
@@ -1597,7 +1596,7 @@ begin
       exit;
     end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA nÃ£o deve ser menor que o valor venal...');
+//    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
@@ -1644,7 +1643,7 @@ begin
     end;
     DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
     DM_Tabelas.ZQImovel.Edit;
-    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NÂºO';
+    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
     DM_Tabelas.ZQImovel.Post;
 
     if DM_TAbelas.ZQmemorial.Active=false then
@@ -1804,7 +1803,7 @@ begin
          Bar1.Position:=0;
 
          entrada:='S';
-        // atÃ© aqui
+        // até aqui
       end;
 
       DM_Tabelas.CDSPagParcela.First;
@@ -2097,7 +2096,7 @@ begin
          Bar1.Position:=0;
 
          entrada:='S';
-         // atÃ© aqui
+         // até aqui
         end;
         DM_Tabelas.CDSPagParcela.First;
 
@@ -2323,7 +2322,7 @@ procedure TFrm_Venda.BtEditarClick(Sender: TObject);
 var
 tv:string;
 begin
-  if not Verif_senha('Venda','Editar ','Venda NÂº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
+  if not Verif_senha('Venda','Editar ','Venda Nº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
   if Pag_Venda.PageIndex=3 then
   begin
       DM_TAbelas.ZQmemorial.Edit;
@@ -2358,12 +2357,12 @@ procedure TFrm_Venda.BTExcluirClick(Sender: TObject);
 var
 cd:integer;
 begin
-  if not Verif_senha('Venda','Excluir ','Venda NÂº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
+  if not Verif_senha('Venda','Excluir ','Venda Nº: '+DM_tabelas.ZQVenda.FieldByName('idvenda').Text) then exit;
   if SIMNAO('Deseja Realmente Excluir esse Registro ?','SIM') then
   begin
     if Pag_Venda.PageIndex<>4 then
     begin
-      if SIMNAO('Ã‰ RescisÃ£o de Contrato ?','SIM') then
+      if SIMNAO('É Rescisão de Contrato ?','SIM') then
       begin
         gbrescisao.Visible:=true;
         mdata.SetFocus;
@@ -2470,7 +2469,7 @@ begin
         DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
         DM_Tabelas.ZQImovel.Edit;
         DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÂºO';
+        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
         DM_Tabelas.ZQImovel.Post;
 
         if DM_TAbelas.ZQmemorial.active= false then
@@ -2486,7 +2485,7 @@ begin
         DM_Tabelas.ZQCheque.Open;
 
 
-        showmessage('ExclusÃ£o Efetuada Com Sucesso!');
+        showmessage('Exclusão Efetuada Com Sucesso!');
 
 
       end;
@@ -2543,7 +2542,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',  DM_Tabelas.ZQProposta.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÂºO';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
       DM_Tabelas.ZQImovel.Post;
 
       DM_Tabelas.ZQComprador_proposta.close;
@@ -2611,7 +2610,7 @@ begin
       DM_Tabelas.ZQVendedor_proposta.SQL.Add('select * from Vendedor_proposta ');
       DM_Tabelas.ZQVendedor_proposta.Open;
       
-      showmessage('ExclusÃ£o Efetuada Com Sucesso!');
+      showmessage('Exclusão Efetuada Com Sucesso!');
 
     end;
   end;
@@ -2619,7 +2618,7 @@ end;
 
 procedure TFrm_Venda.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Vendas','RelatÃ³rios','') Then Exit;
+  if not Verif_senha('Vendas','Relatórios','') Then Exit;
   JvXPBar1.Visible := True;
   JvXPBar1.SetFocus;
 end;
@@ -2725,7 +2724,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato nÃ£o encontrado');
+      showmessage('PDF do Contrato não encontrado');
     end;
   end
   else
@@ -2740,7 +2739,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato nÃ£o encontrado');
+      showmessage('PDF do Contrato não encontrado');
     end;
   end;
 end;
@@ -3164,7 +3163,7 @@ Begin
   if Pag_Venda.PageIndex=2 then
   begin
     if xdqtdeparcelas.Value=xdparpagas.Value then
-       Showmessage('NÃ£o hÃ¡ Valores para QuitaÃ§Ã£o.');
+       Showmessage('Não há Valores para Quitação.');
   end;
 end;
 
@@ -3457,7 +3456,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat<(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat) Then
-    Showmessage('O valor de venda Ã© menor que o valor de tabela + ComissÃ£o...');
+    Showmessage('O valor de venda é menor que o valor de tabela + Comissão...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);
@@ -3774,7 +3773,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').AsString;
-      DM_Tabelas.CDSAsscargo.Value :='ResponsÃ¡vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -3812,7 +3811,7 @@ end;
 
 procedure TFrm_Venda.JvXPBar1Items1Click(Sender: TObject);
 begin
-  if not Verif_senha('Vendas','RelatÃ³rios Administrativo','') Then Exit;
+  if not Verif_senha('Vendas','Relatórios Administrativo','') Then Exit;
   JvXPBar1.Visible := False;
   Panel1.Visible:=true;
   Application.ProcessMessages;
@@ -4141,7 +4140,7 @@ gera:Boolean;
 begin
    if DM_Tabelas.zqvenda.state in [DsInsert] then
    begin
-       if simnao('Gerar ComissÃ£o ?','SIM') then
+       if simnao('Gerar Comissão ?','SIM') then
        begin
          if DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat>0 then
          begin
@@ -4162,7 +4161,7 @@ begin
          DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat:=(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat*DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat)/100;
        end;
      end
-     else if simnao('Gerar ComissÃ£o ?','SIM') then
+     else if simnao('Gerar Comissão ?','SIM') then
      begin
          if DM_Tabelas.ZQVenda.FieldByName('Perc_comissao').AsFloat>0 then
          begin
@@ -4274,7 +4273,7 @@ end;
 
 procedure TFrm_Venda.dxButton2Click(Sender: TObject);
 begin
-  if simnao('Deseja Efetuar a QuitaÃ§Ã£o ?','SIM') then
+  if simnao('Deseja Efetuar a Quitação ?','SIM') then
   begin
     if Frmquitacao=nil then
        Frmquitacao:=TFrmquitacao.Create(Self);
@@ -4695,7 +4694,7 @@ begin
     while not DM_TAbelas.ZQCompr_Resp_Dados.Eof do begin
       DM_TAbelas.CDSAss.Insert;
       DM_TAbelas.CDSAssassinante.Value :=DM_TAbelas.ZQCompr_Resp_Dados.FieldByName('nomerepres').AsString;
-      DM_Tabelas.CDSAsscargo.Value :='ResponsÃ¡vel';
+      DM_Tabelas.CDSAsscargo.Value :='Responsável';
       DM_TAbelas.CDSAss.Post;
       DM_TAbelas.ZQCompr_Resp_Dados.Next;
     end;
@@ -5133,7 +5132,7 @@ begin
     while not CdsImovel.Eof do
     begin
       application.ProcessMessages;
-      Label85.caption:='Verificando ImÃ³veis...                ';
+      Label85.caption:='Verificando Imóveis...                ';
       Gauge2.Progress:=CdsImovel.RecNo;
       DM_Tabelas.ZQimovel.close;
       DM_Tabelas.ZQimovel.SQL.Clear;
@@ -5439,9 +5438,9 @@ begin
   caminho:=ExtractFilePath(Application.ExeName);
                                     //SW_ShowNormal                                                                                                                                                                     //SW_ShowNormal
   if WinExecAndWait32(comando,caminho,SW_Hide) = 0 then
-     showmessage('ExportaÃ§Ã£o Foi Realizada!')
+     showmessage('Exportação Foi Realizada!')
   else
-     showmessage('ExportaÃ§Ã£o NÃ£o Foi Realizada!');
+     showmessage('Exportação Não Foi Realizada!');
 end;
 
 procedure TFrm_Venda.dxButton4Click(Sender: TObject);
@@ -5746,7 +5745,7 @@ begin
   DM_Tabelas.ZQConjuge_proposta.open;
 
   application.ProcessMessages;
-  Label85.caption:='Verificando ImÃ³vel...';
+  Label85.caption:='Verificando Imóvel...';
   application.ProcessMessages;
 
 
@@ -5758,7 +5757,7 @@ begin
   DM_Tabelas.ZQimovel.open;
   if DM_Tabelas.ZQimovel.RecordCount>0 then
   begin
-    showmessage('ImÃ³vel NÃ£o DisponÃ­vel !');
+    showmessage('Imóvel Não Disponível !');
     exit;
   end;
 
@@ -6094,8 +6093,8 @@ begin
     if (DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString='SIM') then
      begin
        DM_Tabelas.ZQimovel.Edit;
-       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='NÂºO';
-       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='NÂºO';
+       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='NºO';
+       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='NºO';
        DM_Tabelas.ZQimovel.post;
      end;
   end;
@@ -6111,7 +6110,7 @@ begin
      DM_Tabelas.ZQProposta.Delete;
 
 
-  // aqui corrige o incoporador do loteamento para cobranÃ§a bancaria
+  // aqui corrige o incoporador do loteamento para cobrança bancaria
 {  ZQRecebimento_temp.close;
   ZQRecebimento_temp.SQL.Clear;
   ZQRecebimento_temp.SQL.Add('update recebimento,incorporador_loteamento set cliente=incorporador_idincorporador where idloteamento='+quotedstr(inttostr(xidloteamento))+' and loteamento_idloteamento='+quotedstr(inttostr(xidloteamento)));
@@ -6130,7 +6129,7 @@ begin
   Label85.caption:='';
   application.ProcessMessages;
   Gauge2.Progress:=0;
-  showmessage('TransferÃªncia Completa.');
+  showmessage('Transferência Completa.');
 end;
 
 procedure TFrm_Venda.dxButton5Click(Sender: TObject);
@@ -6148,7 +6147,7 @@ procedure TFrm_Venda.Button2Click(Sender: TObject);
 begin
   if mdata.Text='  /  /    ' then
   begin
-    showmessage('Informe a data de RescisÃ£o!');
+    showmessage('Informe a data de Rescisão!');
     mdata.SetFocus;
     exit;
   end;  
@@ -6173,7 +6172,7 @@ begin
     ZQRescisao.FieldByName('idcomprador').AsLargeInt:=DM_Tabelas.CDSCompradorTempcodparticipante.Value;
     ZQRescisao.FieldByName('idparticipante').AsLargeInt:=DM_Tabelas.CDSCompradorTempcodparticipante.Value;;
     ZQRescisao.FieldByName('nome_parte').AsString:=DM_Tabelas.CDSCompradorTempnomeparticipante.Value;
-    ZQRescisao.FieldByName('historico').AsString:='RescisÃ£o de Contrato da compra do imÃ³vel por:'+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ nÂº '+DM_Tabelas.CDSCompradorTempdoc1.Value;
+    ZQRescisao.FieldByName('historico').AsString:='Rescisão de Contrato da compra do imóvel por:'+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ nº '+DM_Tabelas.CDSCompradorTempdoc1.Value;
     ZQRescisao.FieldByName('hora_rescisao').AsDateTime:=time;
     ZQRescisao.FieldByName('quadralote').AsString:=DM_Tabelas.ZQRecebimento.FieldByName('quadralote').AsString;
     ZQRescisao.post;
@@ -6306,7 +6305,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÂºO';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
       DM_Tabelas.ZQImovel.Post;
 
       if DM_TAbelas.ZQmemorial.active= false then
@@ -6319,12 +6318,12 @@ begin
       DM_Tabelas.ZQCheque.SQL.Clear;
       DM_Tabelas.ZQCheque.SQL.Add('select * from cheque_rec ');
       DM_Tabelas.ZQCheque.Open;
-      showmessage('RescisÃ£o Efetuada Com Sucesso!');
+      showmessage('Rescisão Efetuada Com Sucesso!');
     end;
   end
   else
   begin
-    showmessage('RescisÃ£o NÃ£o Efetuada. Parcelas todas pagas e inadimplentes!');
+    showmessage('Rescisão Não Efetuada. Parcelas todas pagas e inadimplentes!');
   end;  
   mdata.Clear;
   gbrescisao.Visible:=false;

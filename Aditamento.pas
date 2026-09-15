@@ -1,14 +1,13 @@
-ï»¿unit Aditamento;
+unit Aditamento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
   XBanner, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids,
   DBGrids, ImgList, XNum, DBClient, XDBDate, XDBNum, ComCtrls,
   JvExComCtrls, JvDateTimePicker, XEdit, XDBEdit, ExtCtrls, JvExControls,
-  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, dxCore2, System.ImageList,
+  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, System.ImageList,
   FnpNumericEdit;
 type
   TFrmaditamento = class(TForm)
@@ -19,10 +18,10 @@ type
     Label16: TLabel;
     DBEBaixaDocum: TDBEdit;
     DBEBaixaVrRec: TDBEdit;
-    DXBBaixaGravar: TdxButton;
+    DXBBaixaGravar: TdxButtonArround;
     DS_RecBai: TDataSource;
     DBGBaixando: TDBGrid;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     ImageList1: TImageList;
     Label2: TLabel;
     Label3: TLabel;
@@ -237,7 +236,7 @@ type
     CDSParcelasvenda_idvenda: TIntegerField;
     CDSParcelasquadralote: TStringField;
     Label18: TLabel;
-    DXBPesquisar: TdxButton;
+    DXBPesquisar: TdxButtonArround;
 
 
 
@@ -1012,13 +1011,13 @@ Var
 begin
   if empty(CBTipobaixa.Text) then
   begin
-    showmessage('Selecione o tipo de operaÃ§Ã£o !');
+    showmessage('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     exit;
   end;
   if empty(EMNovostit.Text) then
   begin
-    showmessage('Digite o HistÃ³rico do Aditamento !');
+    showmessage('Digite o Histórico do Aditamento !');
     EMNovostit.SetFocus;
     exit;
   end;
@@ -1362,7 +1361,7 @@ begin
   DM_tabelas.ZQReceb_Baixa.open;
 
   CDSParcelas.EnableControls;
-  // histÃ³rico do aditamento 06/08/2010
+  // histórico do aditamento 06/08/2010
   CDSParcelas.Prior;
   zqaditamento.close;
   zqaditamento.Open;
@@ -1392,7 +1391,7 @@ begin
     zqaditamento.close;
   end;
   CDSParcelas.Last;
-  // atÃ© aqui
+  // até aqui
 
   BarraVertical.Progress:=0;
   BarraVertical.Visible:=false;
@@ -1776,7 +1775,7 @@ begin
 //    ZQRecBai.Refresh;
 
 
-    // alteraÃ§Ã£o do valor de venda 28/08/2010
+    // alteração do valor de venda 28/08/2010
 
     ZqRecBai.First;
     posi:=pos('-',ql);
@@ -1836,7 +1835,7 @@ begin
     ql:='';
 
 
-    // atÃ© aqui
+    // até aqui
 
    // atualizar recebimento parcelas_fixas 15/12/2011
 
@@ -2080,7 +2079,7 @@ begin
 //    ZQRecBai.First;
   end;
   Resp:='N';
-  if simnao('Zerar Nosso NÂº e Remessas Geradas atÃ© Agora ?','SIM') then
+  if simnao('Zerar Nosso Nº e Remessas Geradas até Agora ?','SIM') then
   begin
     ZQRecBai.close;
     ZQRecBai.SQL.Clear;
@@ -2151,7 +2150,7 @@ begin
 
   //  FrmImpRecibo.showmodal;
 ///
-{  if perguntaSN('Gerar Recibo de QuitaÃ§Ã£o ?','S') Then Begin
+{  if perguntaSN('Gerar Recibo de Quitação ?','S') Then Begin
     FrmRelRecibodeQuita.ZQForma.SQL.Clear;
     FrmRelRecibodeQuita.ZQForma.SQL.Add('Select * from receb_baixa where refbaixa='+DM_tabelas.ZQCobaRecotagem.Text);
     FrmRelRecibodeQuita.ZQForma.Open;
@@ -2180,7 +2179,7 @@ begin
   DXBFechar.Enabled := true;
   zqrecbai.Filtered:=false;
   ZQRecBai.close;
-  mensagem('OperaÃ§Ã£o Terminada!');
+  mensagem('Operação Terminada!');
 
 end;
 
@@ -2194,7 +2193,7 @@ begin
     DM_tabelas.ZQTipodoc.Locate('tipodoc',DBCBTipDoc.Text,[]);
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').AsString='S' Then Begin
       if (datetostr(CDSParcelasVenci.Value)<>vecto1.Datetext) and ((CDSParcelasTipDoc.Value<>'DP')) Then BEgin
-        showmessage('Este tipo de documento sÃ³ aceita pagamento a vista!!!');
+        showmessage('Este tipo de documento só aceita pagamento a vista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -2324,7 +2323,7 @@ procedure TFrmaditamento.EContabilExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
     if empty(Econtabil.text) Then Begin
-      showmessage('A descriÃ§Ã£o contÃ¡bil nÃ£o pode ficar em branco....');
+      showmessage('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -2350,23 +2349,23 @@ procedure TFrmaditamento.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.Value),VarDoc)>0) Then Begin
-      showmessage('Este cheque jÃ¡ foi lanÃ§ado nesta inclusÃ£o... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo NÂº do cheque deve ser preenchido...');
+      showmessage('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}
@@ -2549,7 +2548,7 @@ Begin
       end
       else
       begin
-         showmessage('NÃ£o encontrado o terreno');
+         showmessage('Não encontrado o terreno');
          ZQRecBai.Close;
          ZQRecBai.SQL.Clear;
          ZQRecBai.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
@@ -2692,7 +2691,7 @@ Begin
      end
      else
      begin
-         showmessage('NÃ£o encontrado o terreno');
+         showmessage('Não encontrado o terreno');
          ZQRecBai.Close;
          ZQRecBai.SQL.Clear;
          ZQRecBai.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');

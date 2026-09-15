@@ -2,15 +2,14 @@ unit ImpRecibo;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, dxButton, StdCtrls, XBanner, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, XBanner;
 
 type
   TFrmImpRecibo = class(TForm)
     Label1: TLabel;
-    DXBSim: TdxButton;
-    DXBNao: TdxButton;
+    DXBSim: TdxButtonArround;
+    DXBNao: TdxButtonArround;
     Label2: TLabel;
     Label3: TLabel;
     Label6: TLabel;

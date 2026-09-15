@@ -1,23 +1,22 @@
-﻿unit RelREMESSA;
+unit RelREMESSA;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, XBanner,   dxButton, TFlatCheckBoxUnit, CheckLst,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, XBanner, TFlatCheckBoxUnit, CheckLst,
   DB, DBClient, Grids, DBGrids, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, ExtCtrls, dxCore2;
+  ZDataset, ExtCtrls;
 
 type
   TFrm_RelREMESSA = class(TForm)
     XBanner10: TXBanner;
     Label2: TLabel;
-    BTFechar: TdxButton;
-    BtRelatorio: TdxButton;
+    BTFechar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
     GroupBox2: TGroupBox;
     XBanner3: TXBanner;
     XBanner4: TXBanner;
-    DXBMarcEmpree: TdxButton;
+    DXBMarcEmpree: TdxButtonArround;
     DS_Remess: TDataSource;
     CDSRemess: TClientDataSet;
     DBGEmpre: TDBGrid;
@@ -28,7 +27,7 @@ type
     CDSRemessgerado: TDateField;
     CDSRemessnomearq: TStringField;
     CDSRemessarquivo: TStringField;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     Timer1: TTimer;
     procedure BTFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);

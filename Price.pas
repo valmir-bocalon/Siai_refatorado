@@ -1,11 +1,9 @@
-﻿unit Price;
+unit Price;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, wwdbdatetimepicker, StdCtrls, DBCtrls, Mask, Grids, DBGrids,
-    dxButton, ExtCtrls, XBanner, DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, DBCtrls, Mask, Grids, DBGrids, ExtCtrls, XBanner, DB;
 
 type
   TFrm_Price = class(TForm)
@@ -16,21 +14,21 @@ type
     Label23: TLabel;
     Panel4: TPanel;
     XBanner13: TXBanner;
-    BtExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BtPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BTProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BTPrimeiro: TdxButton;
+    BtExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BtPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BTProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BTPrimeiro: TdxButtonArround;
     DBGCid: TDBGrid;
     DBECodCid: TDBEdit;
     DBECidNome: TDBEdit;
-    BtFechar: TdxButton;
+    BtFechar: TdxButtonArround;
     Label1: TLabel;
     Registros: TLabel;
     LReg: TLabel;

@@ -1,27 +1,26 @@
-﻿unit Empresa;
+unit Empresa;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, DBCtrls,   dxButton, XBanner, ExtCtrls,
-  GradBtn, ExtDlgs, DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, DBCtrls, XBanner, ExtCtrls,
+  GradBtn, ExtDlgs, DB;
 
 type
   TFrmCad_Empresa = class(TForm)
     PPainelBotoes: TPanel;
-    DXBExcluir: TdxButton;
-    DXBEditar: TdxButton;
-    DXBIncluir: TdxButton;
-    DXBCancelar: TdxButton;
-    DXBGravar: TdxButton;
-    DXBPesquisar: TdxButton;
-    DXBRelatorios: TdxButton;
-    DXBFechar: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBProximo: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBPrimeiro: TdxButton;
+    DXBExcluir: TdxButtonArround;
+    DXBEditar: TdxButtonArround;
+    DXBIncluir: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
+    DXBGravar: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    DXBRelatorios: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBPrimeiro: TdxButtonArround;
     Label1: TLabel;
     Label3: TLabel;
     DBEFantazia: TDBEdit;

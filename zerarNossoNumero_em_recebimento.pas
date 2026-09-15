@@ -2,16 +2,14 @@ unit zerarNossoNumero_em_recebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,  
-  dxButton, Gauges, StdCtrls, dxCore2, Vcl.Mask;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Gauges, StdCtrls, Vcl.Mask;
 
 type
   TFrm_Zerar_nosso_numero = class(TForm)
     Gauge1: TGauge;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     ql: TMaskEdit;
     Label1: TLabel;
     ZQRecBai: TZQuery;

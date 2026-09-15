@@ -1,18 +1,17 @@
-﻿unit Transferencia;
+unit Transferencia;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, StdCtrls, Gauges, OleServer, ExcelXP, Grids,
-  ComObj, IniFiles, JvExControls, JvSimPID, JvSimIndicator, Excel2000, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Gauges, OleServer, ExcelXP, Grids,
+  ComObj, IniFiles, JvExControls, JvSimPID, JvSimIndicator, Excel2000;
 
 type
   TFrm_Transferencia = class(TForm)
     Gauge1: TGauge;
     Label1: TLabel;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     ExcelApplication1: TExcelApplication;
     SGPart: TStringGrid;
     Gauge2: TGauge;

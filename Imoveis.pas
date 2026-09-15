@@ -2,28 +2,27 @@
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,   dxButton, XBanner, ExtCtrls, Grids, DBGrids,
-  DBCtrls, Mask, XDBNum, ComCtrls, TabNotBk, DB, XNum, dxCore2,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, XBanner, ExtCtrls, Grids, DBGrids,
+  DBCtrls, Mask, XDBNum, ComCtrls, TabNotBk, DB, XNum,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, XLabel3D;
 
 type
   TFrm_Imoveis = class(TForm)
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BtProcessar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BtProcessar: TdxButtonArround;
     Label2: TLabel;
     DBGImovel: TDBGrid;
     Pag_Imovel: TTabbedNotebook;
@@ -66,7 +65,7 @@ type
     Label18: TLabel;
     DBECurva: TDBEdit;
     Eloteamento: TEdit;
-    BTFechar: TdxButton;
+    BTFechar: TdxButtonArround;
     DBCBLado: TDBComboBox;
     DBCBDisp: TDBComboBox;
     Label12: TLabel;
@@ -79,32 +78,11 @@ type
     DBEMATRICULA: TDBEdit;
     Label23: TLabel;
     ZQRecebimento: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
     DS_Recebimento: TDataSource;
     XBanner3: TXBanner;
     XLabel3D1: TXLabel3D;
     DBGrid1: TDBGrid;
     DBGrid2: TDBGrid;
-
-
-
-
-
-
-
-
-
-
     Label24: TLabel;
     XDBNumEdit1: TXDBNumEdit;
     procedure AtivaCampos;

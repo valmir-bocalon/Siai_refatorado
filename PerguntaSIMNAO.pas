@@ -2,15 +2,14 @@ unit PerguntaSIMNAO;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, StdCtrls, dxButton, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, StdCtrls;
 
 type
   TFrmPerguntaSIMNAO = class(TForm)
     XBanner1: TXBanner;
-    DXBNAO: TdxButton;
-    DXBSIM: TdxButton;
+    DXBNAO: TdxButtonArround;
+    DXBSIM: TdxButtonArround;
     Label1: TLabel;
     Label2: TLabel;
     procedure FormShow(Sender: TObject);

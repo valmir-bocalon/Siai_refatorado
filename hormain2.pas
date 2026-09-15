@@ -1,12 +1,11 @@
-﻿unit hormain2;
+unit hormain2;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Db, DBTables, XBanner,   dxButton,
+uses ButtonDxArround, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, Db, DBTables, XBanner,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, DBClient, Grids, DBGrids,
-  Mask, ComCtrls, dxCore2;
+  Mask, ComCtrls;
 
 type
   TfrmMain2 = class(TForm)
@@ -17,9 +16,9 @@ type
     Label2: TLabel;
     SkipEdtn: TEdit;
     XBanner1: TXBanner;
-    btnPreview: TdxButton;
-    btnPrint: TdxButton;
-    Button1: TdxButton;
+    btnPreview: TdxButtonArround;
+    btnPrint: TdxButtonArround;
+    Button1: TdxButtonArround;
     DS_Participante: TDataSource;
     ZqParticipante: TZQuery;
 
@@ -70,11 +69,11 @@ type
     GroupBox1: TGroupBox;
     XBanner2: TXBanner;
     DBGrid1: TDBGrid;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     DS_Empreend: TDataSource;
     bar1: TProgressBar;
-    DXBMarcEmpree: TdxButton;
-    BtRelatorio: TdxButton;
+    DXBMarcEmpree: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
     DataCDS_etq2: TDataSource;
 
     Label12: TLabel;
@@ -89,7 +88,7 @@ type
     bsc: TMaskEdit;
     Label4: TLabel;
     CB_marcar: TCheckBox;
-    dxButton2: TdxButton;
+    dxButton2: TdxButtonArround;
     Timer1: TTimer;
     Label8: TLabel;
     CDS_etq: TClientDataSet;
@@ -527,7 +526,7 @@ begin
   CDS_etq.DisableControls;
 
   try
-    // 🔹 FILTRO
+    // [nota] FILTRO
     CDSEmpreend.Filtered := False;
     CDSEmpreend.Filter := 'marcar=0';
     CDSEmpreend.Filtered := True;
@@ -549,7 +548,7 @@ begin
     ProgressBar1.Position := 0;
 
     // =========================
-    // 🔥 LOOP 1 (geração CDS_etq2)
+    // [destaque] LOOP 1 (gera��o CDS_etq2)
     // =========================
     while not CDSEmpreend.Eof do
     begin
@@ -601,11 +600,11 @@ begin
 
     ProgressBar1.Visible := False;
 
-    // 🔥 Ordena para remoção de duplicados mais eficiente
+    // [destaque] Ordena para remo��o de duplicados mais eficiente
     CDS_etq2.IndexFieldNames := 'nome_parte';
 
     // =========================
-    // 🔥 LOOP 2 (remove duplicados)
+    // [destaque] LOOP 2 (remove duplicados)
     // =========================
     CDS_etq.Close;
     CDS_etq.CreateDataSet;
@@ -616,7 +615,7 @@ begin
     bar1.Max := CDS_etq2.RecordCount;
     bar1.Position := 0;
 
-    // 🔥 cria mapa UMA vez
+    // [destaque] cria mapa UMA vez
     MontarMapaCampos(CDS_etq2, CDS_etq);
 
     nom := CDS_etq2nome_parte.Value;

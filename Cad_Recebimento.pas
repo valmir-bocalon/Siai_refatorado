@@ -1,31 +1,30 @@
-Ôªøunit Cad_Recebimento;
+unit Cad_Recebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, DBCtrls,  dxButton, ExtCtrls, XBanner,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, DBCtrls, ExtCtrls, XBanner,
   DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids, DBGrids,
   wwdbdatetimepicker, XDate, XNum, XEdit, DBClient, ComCtrls, TabNotBk,
   XDBNum, JvExControls, JvArrayButton, GradBtn, JvXPCore, JvXPBar,
-  XDBDate, FnpNumericEdit, dxCore2, DBDateTimePicker, Vcl.Samples.Gauges;
+  XDBDate, FnpNumericEdit, DBDateTimePicker, Vcl.Samples.Gauges;
 
 type
   TFrmCad_Recebimento = class(TForm)
     Label5: TLabel;
     PPainelBotoes: TPanel;
-    DXBExcluir: TdxButton;
-    DXBEditar: TdxButton;
-    DXBIncluir: TdxButton;
-    DXBCancelar: TdxButton;
-    DXBGravar: TdxButton;
-    DXBPesquisar: TdxButton;
-    DXBRelatorios: TdxButton;
-    DXBFechar: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBProximo: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBPrimeiro: TdxButton;
+    DXBExcluir: TdxButtonArround;
+    DXBEditar: TdxButtonArround;
+    DXBIncluir: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
+    DXBGravar: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    DXBRelatorios: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBPrimeiro: TdxButtonArround;
     Pag_Receb: TTabbedNotebook;
     Label1: TLabel;
     Label2: TLabel;
@@ -66,13 +65,11 @@ type
     Label15: TLabel;
     Label21: TLabel;
     Label24: TLabel;
-    DX: TdxButton;
+    DX: TdxButtonArround;
     DBGrid2: TDBGrid;
     DBGrid3: TDBGrid;
     Label19: TLabel;
     EContabil: TEdit;
-
-
     DBGReceb: TDBGrid;
     DBEIDReceb: TDBEdit;
     DBGrid4: TDBGrid;
@@ -88,19 +85,13 @@ type
     CBFinal: TCheckBox;
     TimeRecebimento: TTimer;
     DBMemo1: TDBMemo;
-    dxButton2: TdxButton;
+    dxButton2: TdxButtonArround;
     XDBNumEdit1: TXDBNumEdit;
     Label20: TLabel;
     RGDElete: TRadioGroup;
     DS_TempDivid: TDataSource;
     ZQTempDivid: TZQuery;
-
-
-
-
-
-
-    dxButton3: TdxButton;
+    dxButton3: TdxButtonArround;
     DBGrid5: TDBGrid;
     Label23: TLabel;
     DS_Gerou: TDataSource;
@@ -111,51 +102,22 @@ type
     CDSResult: TClientDataSet;
     DS_result1: TDataSource;
     ZQResult1: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     CDSResultareceber: TFloatField;
     CDSResultapagar: TFloatField;
     CDSResultrecebido: TFloatField;
     CDSResultpago: TFloatField;
-
     DS_Feito: TDataSource;
     ZQFeito: TZQuery;
     CDSResultdata: TDateField;
     CDSResultordem: TWideStringField;
-
-
     XBanner2: TXBanner;
     XBanner4: TXBanner;
     XBanner6: TXBanner;
-
-
-
-
-
-
-
-
-
-
     XBanner5: TXBanner;
     XBanner8: TXBanner;
     DBENumero: TDBEdit;
     Label32: TLabel;
-    DBXProcesso: TdxButton;
+    DBXProcesso: TdxButtonArround;
     JBBaixa: TJvXPBar;
     GroupBox1: TGroupBox;
     Label33: TLabel;
@@ -165,41 +127,18 @@ type
     XBanner7: TXBanner;
     DBEdit1: TDBEdit;
     Label35: TLabel;
-    DBXBaixa: TdxButton;
+    DBXBaixa: TdxButtonArround;
     JBProcesso: TJvXPBar;
     ZQReceb_Baixa: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     DS_Receb_baixa: TDataSource;
     Panel1: TPanel;
     Panel2: TPanel;
     ZQVenda: TZQuery;
-
-
-
-
-
     DS_Venda: TDataSource;
     ZQParcela: TZQuery;
-
-
     DS_Parcela: TDataSource;
     DS_Entrada: TDataSource;
     ZQEntrada: TZQuery;
-
     CDSResultpareceber: TFloatField;
     CDSResultprecebido: TFloatField;
     CDSResultpatrazado: TFloatField;
@@ -217,7 +156,7 @@ type
     Edevedor: TEdit;
     Ecoddeved: TEdit;
     Label30: TLabel;
-    dxButton4: TdxButton;
+    dxButton4: TdxButtonArround;
     PnlGrafico1: TPanel;
     XBanner9: TXBanner;
     XBanner10: TXBanner;
@@ -227,7 +166,7 @@ type
     Label37: TLabel;
     Edloteamento: TEdit;
     EdNomeLoteamento: TEdit;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     PnlGrafico2: TPanel;
     XDVar1: TXDateEdit;
     Label38: TLabel;
@@ -235,27 +174,11 @@ type
     DBcobranca: TDBGrid;
     DS_Recebimento: TDataSource;
     ZQRecebimento: TZQuery;
-
-
-
-
-
-
-
-
-
     Label40: TLabel;
     ZQRecebimento2: TZQuery;
     DS_Recebimento2: TDataSource;
-
-
     nparcelas: TFnpNumericEdit;
     Label41: TLabel;
-
-
-
-
-
     vencidos: TXNumEdit;
     Label42: TLabel;
     Label44: TLabel;
@@ -265,10 +188,6 @@ type
     XCorrigido: TXNumEdit;
     Label43: TLabel;
     Xpagto: TXDateEdit;
-
-
-
-
     Panel3: TPanel;
     Label46: TLabel;
     Shape1: TShape;
@@ -283,8 +202,8 @@ type
     CDnegociovencimento: TDateField;
     CDnegocioJuros: TFloatField;
     CDnegociovr_parcela_corrigida: TFloatField;
-    dxButton7: TdxButton;
-    dxButton8: TdxButton;
+    dxButton7: TdxButtonArround;
+    dxButton8: TdxButtonArround;
     fpg: TMaskEdit;
     Label48: TLabel;
     Bar1: TProgressBar;
@@ -294,52 +213,6 @@ type
     DS_Recebimento3: TDataSource;
     ZQRecebimento4: TZQuery;
     DS_Recebimento4: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ListBox1: TListBox;
     CDnegocio2: TClientDataSet;
     DS_negocio2: TDataSource;
@@ -355,89 +228,16 @@ type
     ZQInadimplentes: TZQuery;
     DataZQInadimplentes: TDataSource;
     Gauge3: TGauge;
-    dxButton9: TdxButton;
-
-    dxButton10: TdxButton;
-
-
-
-
-
+    dxButton9: TdxButtonArround;
+    dxButton10: TdxButtonArround;
     ZQRecebimento_bancario: TZQuery;
     DS_ZQRecebimento_bancario: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     XBanner13: TXBanner;
     DBMemo2: TDBMemo;
     Label50: TLabel;
     Label51: TLabel;
     DBMemo3: TDBMemo;
     Label52: TLabel;
-
     Lmora: TLabel;
     RGSelecao: TRadioGroup;
     dt_selecao: TDateTimePicker;
@@ -448,114 +248,15 @@ type
     Label54: TLabel;
     DBMemo4: TDBMemo;
     Label55: TLabel;
-
-
-
     ZQVenda_cobr: TZQuery;
     DS_venda_cobr: TDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     XDBDateEdit1: TXDBDateEdit;
     Gauge1: TGauge;
-    dxButton5: TdxButton;
+    dxButton5: TdxButtonArround;
     XDVar: TXDateEdit;
     Gauge2: TGauge;
     Label39: TLabel;
-    dxButton6: TdxButton;
+    dxButton6: TdxButtonArround;
     procedure FormShow(Sender: TObject);
     procedure Ativa_campos;
     procedure Desativa_campos;
@@ -847,9 +548,9 @@ begin
     DM_Tabelas.ZQCheque.open;
   end;
 
-  { Os campos nomecli, adversanome e nome_loteamento s√£o calculados a
+  { Os campos nomecli, adversanome e nome_loteamento s„o calculados a
     partir destes dois datasets. Eles precisam estar abertos antes do
-    primeiro posicionamento do grid para que First/Last tamb√©m calculem o
+    primeiro posicionamento do grid para que First/Last tambÈm calculem o
     registro atual. }
   PrepararLookupsRecebimento;
 
@@ -1017,7 +718,7 @@ var
 ql:string;
 begin
   if not (DM_tabelas.ZQRecebimento.State in [DsInsert, DsEdit]) Then Begin
-    showmessage('Houve problema de controle de tabelas...  Registro n√£o ser√° gravado...');
+    showmessage('Houve problema de controle de tabelas...  Registro n„o ser· gravado...');
     Desativa_campos;
     DBGReceb.SetFocus;
     exit;
@@ -1062,7 +763,7 @@ begin
       ZQParcela.close;
     end;
   end;
-// at√© aqui
+// atÈ aqui
 
 
   Panel1.Visible:=false;
@@ -1120,7 +821,7 @@ end;
 
 procedure TFrmCad_Recebimento.DXBRelatoriosClick(Sender: TObject);
 begin
-  if not Verif_senha('Financeiro','Relat√≥rio ','') then exit;
+  if not Verif_senha('Financeiro','RelatÛrio ','') then exit;
   if FrmRelRecebimento=nil then
      FrmRelRecebimento:=TFrmRelRecebimento.Create(Self);
   FrmRelRecebimento.Top := FrmCad_Recebimento.Top+100;
@@ -1152,7 +853,7 @@ begin
   if DM_Tabelas = nil then
     Exit;
 
-  { N√£o altere SQL nem feche datasets que possam estar sendo usados por
+  { N„o altere SQL nem feche datasets que possam estar sendo usados por
     outras telas. Apenas abra os lookups quando a tela financeira precisar
     deles. }
   if not DM_Tabelas.ZqParticipante.Active then
@@ -1316,7 +1017,7 @@ end;
 
 procedure TFrmCad_Recebimento.PrepararLookupsCobranca;
 begin
-  { A cobran√ßa usa campos calculados que dependem destes dois lookups.
+  { A cobranÁa usa campos calculados que dependem destes dois lookups.
     Abra-os somente neste fluxo, sem alterar o estado global das demais telas. }
   if not DM_Tabelas.ZqParticipante.Active then
     DM_Tabelas.ZqParticipante.Open;
@@ -1333,7 +1034,7 @@ var
 begin
   if (not ZQRecebimento.Active) or (DM_Tabelas = nil) then
     Exit;
-  { Este m√©todo escreve campos calculados. Nunca tente alterar o registro
+  { Este mÈtodo escreve campos calculados. Nunca tente alterar o registro
     enquanto o dataset estiver apenas em modo de consulta. }
   if not (ZQRecebimento.State in [dsEdit, dsInsert, dsCalcFields]) then
     Exit;
@@ -1724,10 +1425,10 @@ Var
 begin
   if not Verif_senha('Financeiro','Baixar ','Cliente: '+DM_tabelas.ZQRecebimento.FieldByName('nomecli').AsString) then exit;
   Varregidrec := DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
-  FrmRecebBaixa.Label9.Caption := 'Baixando T√≠tulos em Aberto do Contas a Pagar';
+  FrmRecebBaixa.Label9.Caption := 'Baixando TÌtulos em Aberto do Contas a Pagar';
   FrmRecebBaixa.Label9.Color := $0000BB00;
   if DM_Tabelas.ZQRecebimento.FieldByName('recpag').AsString = 'R' Then Begin
-    FrmRecebBaixa.Label9.Caption := 'Baixando T√≠tulos em Aberto do Contas a Receber';
+    FrmRecebBaixa.Label9.Caption := 'Baixando TÌtulos em Aberto do Contas a Receber';
     FrmRecebBaixa.Label9.Color := ClRed;
   end;
   FrmRecebBaixa.showmodal;
@@ -1840,7 +1541,7 @@ Var
   end;
 
 begin
-  if not Verif_senha('Financeiro','Excluir Baixa','Cliente: '+DM_tabelas.ZQRecebimento.FieldByName('nomecli').AsString+' | N¬∫ baixa: '+DM_tabelas.ZQRecebimento.FieldByName('RefBaixa').Text+' - Lan√ß.'+DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text) then exit;
+  if not Verif_senha('Financeiro','Excluir Baixa','Cliente: '+DM_tabelas.ZQRecebimento.FieldByName('nomecli').AsString+' | N∫ baixa: '+DM_tabelas.ZQRecebimento.FieldByName('RefBaixa').Text+' - LanÁ.'+DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text) then exit;
   Varrefbaixa:=0;
   varidrec:=0;
   if FrmObs_estorno=nil then
@@ -1943,8 +1644,10 @@ begin
     DM_tabelas.ZQRecebimento.Locate('IdRecebimento',varregistro,[]);
 
 
-    DM_tabelas.ZQRecebimento.Close;
-    DM_tabelas.ZQRecebimento.SQL.Clear;
+
+    DM_tabelas.ZQRecebimento.Close;
+
+    DM_tabelas.ZQRecebimento.SQL.Clear;
     DM_tabelas.ZQRecebimento.SQL.Add(varsqltexto);
     DM_tabelas.ZQRecebimento.Open;
 
@@ -2106,13 +1809,13 @@ begin
     Exit;
   varmensa := '';
   if DM_Tabelas.ZQRecebBxTemp.RecordCount>0 Then
-    varmensa := 'N√£o vai excluir porque existe baixa deste lan√ß.';
+    varmensa := 'N„o vai excluir porque existe baixa deste lanÁ.';
   if not Verif_senha('Financeiro','Excluir ','Documento: '+DM_tabelas.ZQRecebimento.FieldByName('documento').AsString+'  '+DM_tabelas.ZQRecebimento.FieldByName('ordem').AsString+'  Interno: '+DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').Text+' '+varmensa) then Begin
     RGDElete.Visible := False;
     exit;
   end;
   if DM_Tabelas.ZQRecebBxTemp.RecordCount>0 Then Begin
-    showmessage('Este lan√ßamento s√≥ pode ser excluido depois que todas as baixas dele forem excluidas!!!');
+    showmessage('Este lanÁamento sÛ pode ser excluido depois que todas as baixas dele forem excluidas!!!');
     RGDelete.Visible := False;
     exit;
   end;
@@ -2187,7 +1890,7 @@ end;
 
 procedure TFrmCad_Recebimento.DXBExcluirClick(Sender: TObject);
 begin
-  if simnao('Confirma a exclus√£o do registro ?','SIM') then
+  if simnao('Confirma a exclus„o do registro ?','SIM') then
   begin
     RGDElete.Visible := True;
     RGDElete.Items.Strings[0] := 'Registro '+DM_Tabelas.ZQRecebimento.FieldByName('idrecebimento').Text;
@@ -2603,10 +2306,10 @@ begin
     FrmRecebBaixa.Left := Frm_principal.Left+7;
     FrmRecebBaixa.Top := Frm_principal.Top+135;
     Varregidrec := DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
-    FrmRecebBaixa.Label9.Caption := 'Baixando T√≠tulos em Aberto do Contas a Pagar';
+    FrmRecebBaixa.Label9.Caption := 'Baixando TÌtulos em Aberto do Contas a Pagar';
     FrmRecebBaixa.Label9.Color := $0000BB00;
     if DM_Tabelas.ZQRecebimento.FieldByName('recpag').AsString = 'R' Then Begin
-      FrmRecebBaixa.Label9.Caption := 'Baixando T√≠tulos em Aberto do Contas a Receber';
+      FrmRecebBaixa.Label9.Caption := 'Baixando TÌtulos em Aberto do Contas a Receber';
       FrmRecebBaixa.Label9.Color := ClRed;
     end;
     JBBaixa.Visible:=false;
@@ -2652,7 +2355,7 @@ end;
 
 procedure TFrmCad_Recebimento.JvXPBar1Items0Click(Sender: TObject);
 begin
- if DM_Tabelas.ZQConfiguracoes.FieldByName('Tipo_reajuste').AsString='DATA QUITA√á√ÉO GERAL' then
+ if DM_Tabelas.ZQConfiguracoes.FieldByName('Tipo_reajuste').AsString='DATA QUITA«√O GERAL' then
  begin
    try
      if Frm_ReajusteDeParcelas2=nil then
@@ -2730,7 +2433,7 @@ begin
 
   Frmquitacao.Left := FrmCad_Recebimento.Left+7;
  // Frmquitacao.Top := FrmCad_Recebimento.Top+135;
-  if not Verif_senha('Quita√ß√£o','Tela Principal','') then exit;
+  if not Verif_senha('QuitaÁ„o','Tela Principal','') then exit;
   Frmquitacao.show;
   JBProcesso.Visible:=false;
 end;
@@ -3005,9 +2708,9 @@ procedure TFrmCad_Recebimento.ZQRecebimentoCalcFields(DataSet: TDataSet);
 var
 zmora:double;
 begin
-  { O evento de campos calculados s√≥ pode preencher campos calculados.
-    Se algum c√≥digo solicitar o c√°lculo fora do ciclo interno do dataset,
-    n√£o tente escrever no registro em modo dsBrowse. }
+  { O evento de campos calculados sÛ pode preencher campos calculados.
+    Se algum cÛdigo solicitar o c·lculo fora do ciclo interno do dataset,
+    n„o tente escrever no registro em modo dsBrowse. }
   if (DataSet = nil) or
      not (DataSet.State in [dsCalcFields, dsEdit, dsInsert]) then
     Exit;
@@ -3886,14 +3589,14 @@ procedure TFrmCad_Recebimento.JBProcessoItems4Click(Sender: TObject);
 Var
   Varregidrec : integer;
 begin
-  if not Verif_senha('Financeiro','Substitui√ß√£o ','Cliente: '+DM_tabelas.ZQRecebimento.FieldByName('nomecli').AsString) then exit;
+  if not Verif_senha('Financeiro','SubstituiÁ„o ','Cliente: '+DM_tabelas.ZQRecebimento.FieldByName('nomecli').AsString) then exit;
   Varregidrec := DM_tabelas.ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
   if FrmRecebBaixa_subst=nil then
      FrmRecebBaixa_subst:=TFrmRecebBaixa_subst.Create(Self);
-  FrmRecebBaixa_subst.Label9.Caption := 'Substitui√ß√£o de T√≠tulos em Aberto do Contas a Pagar';
+  FrmRecebBaixa_subst.Label9.Caption := 'SubstituiÁ„o de TÌtulos em Aberto do Contas a Pagar';
   FrmRecebBaixa_subst.Label9.Color := $0000BB00;
   if DM_Tabelas.ZQRecebimento.FieldByName('recpag').AsString = 'R' Then Begin
-    FrmRecebBaixa_subst.Label9.Caption := 'Substitui√ß√£o de T√≠tulos em Aberto do Contas a Receber';
+    FrmRecebBaixa_subst.Label9.Caption := 'SubstituiÁ„o de TÌtulos em Aberto do Contas a Receber';
     FrmRecebBaixa_subst.Label9.Color := ClRed;
   end;
   JBProcesso.Visible:=false;
@@ -4010,7 +3713,7 @@ end;
 procedure TFrmCad_Recebimento.JBProcessoItems6Click(Sender: TObject);
 begin
   JBProcesso.Visible:=false;
-  if not Verif_senha('Recebimento','Parcelas n√£o Pagas no M√™s','') then exit;
+  if not Verif_senha('Recebimento','Parcelas n„o Pagas no MÍs','') then exit;
      if frmnaopaga=nil then
         frmnaopaga:=Tfrmnaopaga.Create(Self);
      frmnaopaga.showmodal;
@@ -4020,7 +3723,7 @@ procedure TFrmCad_Recebimento.JBProcessoItems7Click(Sender: TObject);
 begin
 
 //  FrmAditamento.Top := FrmCad_Recebimento.Top+135;
-  if not Verif_senha('Bal√£o','Tela Principal','') then exit;
+  if not Verif_senha('Bal„o','Tela Principal','') then exit;
   if Frmbalao=nil then
      Frmbalao:=TFrmbalao.Create(Self);
   Frmbalao.Left := FrmCad_Recebimento.Left+7;
@@ -4032,7 +3735,7 @@ end;
 procedure TFrmCad_Recebimento.JBProcessoItems8Click(Sender: TObject);
 begin
 
-  if not Verif_senha('Cobran√ßa','Tela Principal','') then exit;
+  if not Verif_senha('CobranÁa','Tela Principal','') then exit;
   if frmcobranca=nil then
      frmcobranca:=Tfrmcobranca.Create(Self);
   frmcobranca.Left := FrmCad_Recebimento.Left+7;
@@ -4222,7 +3925,7 @@ initialization
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQEntrada', 'ZQEntradacliente', 'cliente', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TFrmCad_Recebimento, 'ZQRecebimento', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentonomecli', 'nomecli', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'cliente', 'DM_Tabelas.ZqParticipante', 'idpaticipante', 'nome_parte', True);
-  { Estes tres campos sao calculados localmente para que a cobran√ßa possa
+  { Estes tres campos sao calculados localmente para que a cobranÁa possa
     preservar o valor alternativo gravado no titulo quando o ID do lookup
     antigo nao possuir mais correspondencia. }
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento', 'ZQRecebimentoadversanome', 'adversanome', TWideStringField, fkCalculated, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);

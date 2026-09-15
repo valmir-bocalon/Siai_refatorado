@@ -2,16 +2,14 @@ unit acerta_remessa_recebida;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,  
-  dxButton, Gauges, StdCtrls, Mask, XDate, XBanner, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Gauges, StdCtrls, Mask, XDate, XBanner;
 
 type
   Tfrm_acerta_remessa = class(TForm)
     Gauge1: TGauge;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     ZQRemesRec: TZQuery;
 
 

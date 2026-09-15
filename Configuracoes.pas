@@ -1,11 +1,10 @@
-ï»¿unit Configuracoes;
+unit Configuracoes;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, TabNotBk, XBanner, StdCtrls,   dxButton, DBGrids,
-  DBCtrls, XNum, ExtCtrls,DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, TabNotBk, XBanner, StdCtrls, DBGrids,
+  DBCtrls, XNum, ExtCtrls,DB;
 
 
 type
@@ -15,7 +14,7 @@ type
     TabbedNotebook1: TTabbedNotebook;
     Label1: TLabel;
     XBanner1: TXBanner;
-    BtFechar: TdxButton;
+    BtFechar: TdxButtonArround;
     EVendaPlano: TEdit;
     Label2: TLabel;
     ERecebePlano: TEdit;
@@ -63,7 +62,7 @@ uses tabelas, funcoes, principal, uRuntimeFields;
 {$R *.dfm}
 
 
-//resoluÃ§Ã£o de tela
+//resolução de tela
 procedure PTela( Sender: Tobject );
   procedure PAlterar( Width, Height : Integer);
   var sDispMode: DevMode;
@@ -76,7 +75,7 @@ procedure PTela( Sender: Tobject );
     try
       ChangeDisplaySettings(sDispMode,0);
     except
-      ShowMessage('NÃ£o Ã© possÃ­vel alterar configuraÃ§Ãµes de vÃ­deo.')
+      ShowMessage('Não é possível alterar configurações de vídeo.')
     end;
 
   end;
@@ -86,17 +85,17 @@ begin
   if ((Screen.Width <> OldWidth ) or (Screen.Height <> OldHeight )) and (Oldwidth <> 0) then
     Palterar(OldWidth, OldHeight);
 
-  // Aqui testo se a resoluÃ§Ã£o Ã© 800 porque quero utilizar pro meu software resoluÃ§Ã£o 1280 X 768.
+  // Aqui testo se a resolução é 800 porque quero utilizar pro meu software resolução 1280 X 768.
   If ((Screen.Width <> 1280 ) or ( Screen.Height <> 768)) then
   begin
-{    if (messageDlg('Para uma boa utilizaÃ§Ã£o recomenda-se resoluÃ§Ã£o de video de 1280 X 768. ' +
-                    #13#13 + ' Deseja Alterar suas configuraÃ§Ãµes de vÃ­deo agora ?',
+{    if (messageDlg('Para uma boa utilização recomenda-se resolução de video de 1280 X 768. ' +
+                    #13#13 + ' Deseja Alterar suas configurações de vídeo agora ?',
        mtConfirmation, [mbYes, mbNo], 0)=mrYes) then}
     begin
-      // Vairavel que pega o valor original de inicializaÃ§Ã£o ex: 1280 X 720... etc...
+      // Vairavel que pega o valor original de inicialização ex: 1280 X 720... etc...
       OldWidth := GetSystemMetrics(SM_CXSCREEN);
       OldHeight := GetSystemMetrics(SM_CYSCREEN);
-      // ResoluÃ§Ã£o para qual quero utilizar enquanto o programa estiver aberto.
+      // Resolução para qual quero utilizar enquanto o programa estiver aberto.
       if DM_Tabelas<>nil then
       begin
         if DM_Tabelas.ZQConfiguracoes.FieldByName('resolucao_tela').AsString= '5120x2160'  then
@@ -146,7 +145,7 @@ end;
 
 procedure TFrm_Configuracoes.BtFecharClick(Sender: TObject);
 begin
-  //chama resoluÃ§Ã£o de tela
+  //chama resolução de tela
   PTela(Sender);
   Close;
 end;
@@ -218,7 +217,7 @@ end;
 procedure TFrm_Configuracoes.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  if not Verif_senha('ConfiguraÃ§Ãµes','Salvar AlteraÃ§Ãµes','') then exit;
+  if not Verif_senha('Configurações','Salvar Alterações','') then exit;
   DM_Tabelas.ZQConfiguracoes.Post;
 end;
 

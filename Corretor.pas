@@ -1,11 +1,10 @@
-﻿unit Corretor;
+unit Corretor;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, ExtCtrls, XBanner, StdCtrls, Grids, DBGrids,
-  DBCtrls, Mask, ComCtrls, TabNotBk, DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, XBanner, StdCtrls, Grids, DBGrids,
+  DBCtrls, Mask, ComCtrls, TabNotBk, DB;
 
 type
   TFrm_Corretor = class(TForm)
@@ -13,19 +12,19 @@ type
     XBanner2: TXBanner;
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BtProcessar: TdxButton;
-    BTFechar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BtProcessar: TdxButtonArround;
+    BTFechar: TdxButtonArround;
     Pag_Corretor: TTabbedNotebook;
     Label1: TLabel;
     DBECod: TDBEdit;

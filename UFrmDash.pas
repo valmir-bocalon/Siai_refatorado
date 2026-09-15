@@ -2,10 +2,9 @@ unit UFrmDash;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+uses ButtonDxArround, Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Samples.Gauges,
-  Vcl.ExtCtrls, dxCore2, dxButton, Vcl.StdCtrls, Vcl.Mask, XDate, XBanner,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Mask, XDate, XBanner,
   Datasnap.DBClient, ZAbstractRODataset, ZAbstractDataset, ZDataset, ACBrBase,
   ACBrEnterTab,jpeg;
 
@@ -26,11 +25,11 @@ type
     Label29: TLabel;
     EParticipante: TEdit;
     Ecodcli: TEdit;
-    dxButton4: TdxButton;
+    dxButton4: TdxButtonArround;
     XDVar: TXDateEdit;
     PnlGrafico1: TPanel;
     Gauge1: TGauge;
-    dxButton5: TdxButton;
+    dxButton5: TdxButtonArround;
     ZQCalculoEst: TZQuery;
     DS_CalculoEst: TDataSource;
     CDSResultA: TClientDataSet;
@@ -53,8 +52,8 @@ type
     DS_CDSResult: TDataSource;
     PnlGrafico3: TPanel;
     Gauge3: TGauge;
-    dxButton2: TdxButton;
-    dxButton3: TdxButton;
+    dxButton2: TdxButtonArround;
+    dxButton3: TdxButtonArround;
     DS_ResultP: TDataSource;
     CDSResultP: TClientDataSet;
     ACBrEnterTab1: TACBrEnterTab;
@@ -77,10 +76,10 @@ type
     CDSResultpdisponivel: TStringField;
     CDSResultpnaodisponivel: TStringField;
     Image1: TImage;
-    dxButton7: TdxButton;
+    dxButton7: TdxButtonArround;
     PnlGrafico2: TPanel;
     Gauge2: TGauge;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     CDSResultT: TClientDataSet;
     DS_ResultT: TDataSource;
     CDSResultTdata: TDateField;

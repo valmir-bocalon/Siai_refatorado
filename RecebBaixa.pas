@@ -1,15 +1,14 @@
-ï»¿
+
 
 unit RecebBaixa;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,  dxButton, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
   XBanner, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids,
   DBGrids, ImgList, XNum, DBClient, XDBDate, XDBNum, ComCtrls,
-  JvExComCtrls, JvDateTimePicker, XEdit, XDBEdit, ExtCtrls, XDate, dxCore2,
+  JvExComCtrls, JvDateTimePicker, XEdit, XDBEdit, ExtCtrls, XDate,
   System.ImageList,threading;
 type
   TFrmRecebBaixa = class(TForm)
@@ -20,11 +19,11 @@ type
     Label16: TLabel;
     DBEBaixaDocum: TDBEdit;
     DBEBaixaVrRec: TDBEdit;
-    DXBBaixaGravar: TdxButton;
+    DXBBaixaGravar: TdxButtonArround;
     DS_RecBai: TDataSource;
     ZQRecBai: TZQuery;
     DBGBaixando: TDBGrid;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     ImageList1: TImageList;
     Label2: TLabel;
     Label3: TLabel;
@@ -223,7 +222,7 @@ type
     CDSParcelasvenda_idvenda: TIntegerField;
     CDSParcelasquadralote: TWideStringField;
     Label18: TLabel;
-    DXBPesquisar: TdxButton;
+    DXBPesquisar: TdxButtonArround;
 
 
     CDSParcelasSubstituicao: TWideStringField;
@@ -790,7 +789,7 @@ begin
   JDEntrada.Enabled := True;
   JDBaixa.Enabled   := True;
 
-  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL' then
+  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL' then
   begin
     Label5.Visible:=true;
     XNEParcelas.Visible:=true;
@@ -921,17 +920,17 @@ end;
 
 // =============================================================================
 // PROCEDURE OTIMIZADA: TFrmRecebBaixa.DXBBaixaGravarClick
-// OtimizaÃ§Ãµes aplicadas:
-//   1. TransaÃ§Ã£o explÃ­cita (StartTransaction/Commit/Rollback) para seguranÃ§a
-//   2. SQL montado com texto Ãºnico (sem mÃºltiplos .Add desnecessÃ¡rios)
+// Otimizações aplicadas:
+//   1. Transação explícita (StartTransaction/Commit/Rollback) para segurança
+//   2. SQL montado com texto único (sem múltiplos .Add desnecessários)
 //   3. Datasets abertos UMA VEZ fora dos loops
-//   4. Eliminados Filter/Filtered dentro de loops â€” substituÃ­dos por SQL direto
+//   4. Eliminados Filter/Filtered dentro de loops — substituídos por SQL direto
 //   5. DisableControls/EnableControls aplicados em todos os loops
-//   6. application.ProcessMessages removido de dentro de loops crÃ­ticos
-//   7. VariÃ¡veis locais para cache de valores repetidos (quadra, contagem, etc.)
-//   8. Queries de reconstruÃ§Ã£o de ZQRecebimento unificadas (eram duplicadas)
+//   6. application.ProcessMessages removido de dentro de loops críticos
+//   7. Variáveis locais para cache de valores repetidos (quadra, contagem, etc.)
+//   8. Queries de reconstrução de ZQRecebimento unificadas (eram duplicadas)
 //   9. Abertura de ZQVenda movida para fora do loop interno
-//  10. FunÃ§Ã£o auxiliar local InserirRegistroBaixa elimina blocos if/else repetidos
+//  10. Função auxiliar local InserirRegistroBaixa elimina blocos if/else repetidos
 // =============================================================================
 
 procedure TFrmRecebBaixa.DXBBaixaGravarClick(Sender: TObject);
@@ -947,7 +946,7 @@ var
   vContagem: string;
 
   // ---------------------------------------------------------------------------
-  // Monta o SQL padrÃ£o de SELECT de Recebimento (evita repetiÃ§Ã£o de cÃ³digo)
+  // Monta o SQL padrão de SELECT de Recebimento (evita repetição de código)
   // ---------------------------------------------------------------------------
   function SQLRecebimento(const aWhere: string): string;
   begin
@@ -964,7 +963,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Monta o SQL padrÃ£o de SELECT de Recebimento entrada (evita repetiÃ§Ã£o de cÃ³digo)
+  // Monta o SQL padrão de SELECT de Recebimento entrada (evita repetição de código)
   // ---------------------------------------------------------------------------
   function SQLRecebimentoEntrada(const aWhere: string): string;
   begin
@@ -981,7 +980,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Monta o SQL padrÃ£o de SELECT de Recebimento parcela (evita repetiÃ§Ã£o de cÃ³digo)
+  // Monta o SQL padrão de SELECT de Recebimento parcela (evita repetição de código)
   // ---------------------------------------------------------------------------
   function SQLRecebimentoParcela(const aWhere: string): string;
   begin
@@ -1003,7 +1002,7 @@ var
   begin
     with TZQuery.Create(nil) do
     try
-      Connection := DM_tabelas.zconeccao; // ajuste para sua conexÃ£o
+      Connection := DM_tabelas.zconeccao; // ajuste para sua conexão
       SQL.Text := 'DELETE FROM receb_baixa WHERE docum = ' + QuotedStr(Trim(aDocum)) +
                   ' AND sq = ' + QuotedStr(Trim(IntToStr(aSq)));
       ExecSQL;
@@ -1013,7 +1012,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Insere no ZQReceb_Baixa â€” centraliza a lÃ³gica repetida nos dois branches
+  // Insere no ZQReceb_Baixa — centraliza a lógica repetida nos dois branches
   // ---------------------------------------------------------------------------
   procedure InserirRecebBaixa(aVrRec, aVrAb: Double; aDtRec: TDateTime;
     aSubstituicao: string);
@@ -1058,7 +1057,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Insere no ZQCaixa â€” centraliza lÃ³gica repetida
+  // Insere no ZQCaixa — centraliza lógica repetida
   // ---------------------------------------------------------------------------
   procedure InserirCaixa(aSubstituicao: string);
   begin
@@ -1089,7 +1088,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Insere no ZQCheque â€” centraliza lÃ³gica repetida
+  // Insere no ZQCheque — centraliza lógica repetida
   // ---------------------------------------------------------------------------
   procedure InserirCheque(aSubstituicao: string);
   begin
@@ -1114,7 +1113,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Insere no ZQMovBancaria â€” centraliza lÃ³gica repetida
+  // Insere no ZQMovBancaria — centraliza lógica repetida
   // ---------------------------------------------------------------------------
   procedure InserirMovBancaria(aSubstituicao: string);
   begin
@@ -1201,7 +1200,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Insere no ZQRecebimento â€” centraliza lÃ³gica repetida
+  // Insere no ZQRecebimento — centraliza lógica repetida
   // ---------------------------------------------------------------------------
   procedure InserirRecebimento(aSubstituicao: string; const aNumOrdem: string);
   begin
@@ -1242,7 +1241,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Processa rateio automÃ¡tico (dividido) â€” usado nos dois branches
+  // Processa rateio automático (dividido) — usado nos dois branches
   // ---------------------------------------------------------------------------
   procedure ProcessarRateio(const aReferencia: string);
   begin
@@ -1291,7 +1290,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Gera lanÃ§amentos de rateio no ZQRecebimento (dividido)
+  // Gera lançamentos de rateio no ZQRecebimento (dividido)
   // ---------------------------------------------------------------------------
   procedure GerarLancamentosRateio(const aReferencia: string;
     const aDataEntrada: TDateTime);
@@ -1331,7 +1330,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Atualiza saldo da venda apÃ³s baixa (bloco final â€” igual nos dois branches)
+  // Atualiza saldo da venda após baixa (bloco final — igual nos dois branches)
   // ---------------------------------------------------------------------------
   procedure AtualizarSaldoVenda(const aQuadra: string);
   begin
@@ -1389,8 +1388,8 @@ var
         if ZQVenda.RecordCount > 0 then
         begin
           ZQVenda.Edit;
-          // No branch DATA QUITAÃ‡ÃƒO GERAL mantinha o guard tip<>'J'; no outro nÃ£o.
-          // Mantemos sem guard (comportamento do branch padrÃ£o) â€” ajuste se necessÃ¡rio.
+          // No branch DATA QUITAÇÃO GERAL mantinha o guard tip<>'J'; no outro não.
+          // Mantemos sem guard (comportamento do branch padrão) — ajuste se necessário.
           ZQVenda.FieldByName('valorvenda').AsFloat := ZQEntrada.FieldByName('entrada').AsFloat + ZQParcela.FieldByName('parcela').AsFloat;
           ZQVenda.Post;
         end;
@@ -1424,7 +1423,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Copia regras de divisÃ£o (dividido) para a nova ordem
+  // Copia regras de divisão (dividido) para a nova ordem
   // ---------------------------------------------------------------------------
   procedure CopiarDividido(const aOrdemOrigem: string;
     const aNovaOrdem: string);
@@ -1452,7 +1451,7 @@ var
   end;
 
   // ---------------------------------------------------------------------------
-  // Finaliza a tela apÃ³s gravaÃ§Ã£o
+  // Finaliza a tela após gravação
   // ---------------------------------------------------------------------------
   procedure FinalizarTela;
   begin
@@ -1481,24 +1480,24 @@ var
 
 begin
   // --------------------------------------------------------------------------
-  // ValidaÃ§Ã£o inicial
+  // Validação inicial
   // --------------------------------------------------------------------------
   if Empty(CBTipobaixa.Text) then
   begin
-    ShowMessage('Selecione o tipo de operaÃ§Ã£o !');
+    ShowMessage('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     Exit;
   end;
 
   xrec                := 0;
-  isSubstituicao      := CBTipobaixa.Text = 'SUBSTITUIÃ‡ÃƒO';
-  isDataQuitacaoGeral :=DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString = 'DATA QUITAÃ‡ÃƒO GERAL';
+  isSubstituicao      := CBTipobaixa.Text = 'SUBSTITUIÇÃO';
+  isDataQuitacaoGeral :=DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString = 'DATA QUITAÇÃO GERAL';
 
   DXBBaixaGravar.Enabled := False;
   DXBFechar.Enabled      := False;
 
   // --------------------------------------------------------------------------
-  // LÃª o contador de baixa UMA VEZ antes dos loops
+  // Lê o contador de baixa UMA VEZ antes dos loops
   // --------------------------------------------------------------------------
   DM_tabelas.contador_bx.Close;
   DM_tabelas.contador_bx.Open;
@@ -1510,13 +1509,13 @@ begin
   DM_tabelas.contador_bx.Close;
 
   // --------------------------------------------------------------------------
-  // Inicia transaÃ§Ã£o para garantir atomicidade
+  // Inicia transação para garantir atomicidade
   // --------------------------------------------------------------------------
   DM_tabelas.zconeccao.StartTransaction; // ajuste para o nome da sua ZConnection
   try
 
     // =========================================================================
-    // BRANCH A â€” DATA QUITAÃ‡ÃƒO GERAL
+    // BRANCH A — DATA QUITAÇÃO GERAL
     // =========================================================================
     if isDataQuitacaoGeral then
     begin
@@ -1529,7 +1528,7 @@ begin
       varnumordem1       := '';
       varnumordem2       := '';
 
-      // Registra cabeÃ§alho de baixa
+      // Registra cabeçalho de baixa
       DM_tabelas.ZQCobaRe.Insert;
       DTPIni.DateText := DateToStr(Date);
       DTPFim.DateText := DateToStr(Date);
@@ -1543,7 +1542,7 @@ begin
       DM_tabelas.ZQCobaRe.Post;
 
       // ------------------------------------------------------------------
-      // Loop principal â€” CDSParcelas
+      // Loop principal — CDSParcelas
       // ------------------------------------------------------------------
       varsomarepasse := 0;
       bar1.Visible   := True;
@@ -1561,7 +1560,7 @@ begin
             StrToDate(JDBaixa.DateText), CDSParcelassubstituicao.Value)
         else
         begin
-          // SUBSTITUIÃ‡ÃƒO: DN ou DP gravam como recebimento, demais como abertura
+          // SUBSTITUIÇÃO: DN ou DP gravam como recebimento, demais como abertura
           if (CDSParcelasTipDoc.Value = 'DN') or
              (CDSParcelasTipDoc.Value = 'DP') then
             InserirRecebBaixa(CDSParcelasVrParc.Value, 0,
@@ -1610,7 +1609,7 @@ begin
             InserirCheque('S');
         end;
 
-        // Movimento bancÃ¡rio
+        // Movimento bancário
         if DM_tabelas.ZQTipoDoc.FieldByName('lancabanco').AsString = 'S' then
         begin
           if not isSubstituicao then
@@ -1638,7 +1637,7 @@ begin
         CopiarDividido(ZQRecBai.FieldByName('numordem').Text, varnumordem1);
 
       // ------------------------------------------------------------------
-      // Loop ZQRecBai â€” atualiza histÃ³rico e saldos
+      // Loop ZQRecBai — atualiza histórico e saldos
       // ------------------------------------------------------------------
       ZQRecBai.First;
       varpago   := 0;
@@ -1793,7 +1792,7 @@ begin
       if isDataQuitacaoGeral then
         GerarLancamentosRateio(DM_tabelas.ZQCobaRe.FieldByName('cotagem').Text, StrToDate(JDEntrada.DateText));
 
-      // Recarrega ZQRecebimento com filtro para impressÃ£o
+      // Recarrega ZQRecebimento com filtro para impressão
       DM_tabelas.ZQRecebimento.Close;
       DM_tabelas.ZQRecebimento.SQL.Clear;
       DM_tabelas.ZQRecebimento.SQL.Text := SQLRecebimento('WHERE idrecebimento = ' +
@@ -1803,7 +1802,7 @@ begin
 
     end   // fim BRANCH A
     // =========================================================================
-    // BRANCH B â€” DATA QUITAÃ‡ÃƒO POR PARCELA
+    // BRANCH B — DATA QUITAÇÃO POR PARCELA
     // =========================================================================
     else
     begin
@@ -1839,7 +1838,7 @@ begin
 
         if not isSubstituicao then
         begin
-          // Registra cabeÃ§alho por parcela
+          // Registra cabeçalho por parcela
           if not (DM_tabelas.ZQCobaRe.State in [dsEdit, dsInsert]) then
             DM_tabelas.ZQCobaRe.Insert;
           DM_tabelas.ZQCobaRe.FieldByName('entrada').AsDateTime   := CDSParcelasData_Quitacao.Value;
@@ -1908,7 +1907,7 @@ begin
             InserirCheque('S');
         end;
 
-        // Movimento bancÃ¡rio
+        // Movimento bancário
         if DM_tabelas.ZQTipoDoc.FieldByName('lancabanco').AsString = 'S' then
         begin
           quadra := CDSParcelasquadralote.Value;
@@ -1936,7 +1935,7 @@ begin
         CopiarDividido(ZQRecBai.FieldByName('numordem').Text, varnumordem1);
 
       // ------------------------------------------------------------------
-      // Loop ZQRecBai â€” atualiza histÃ³rico e saldos
+      // Loop ZQRecBai — atualiza histórico e saldos
       // ------------------------------------------------------------------
       ZQRecBai.First;
       varpago  := 0;
@@ -1945,7 +1944,7 @@ begin
       ZQRecBai.DisableControls;
       while not ZQRecBai.Eof do
       begin
-        // Filtra CDSParcelas para a parcela corrente (necessÃ¡rio para Data_Quitacao)
+        // Filtra CDSParcelas para a parcela corrente (necessário para Data_Quitacao)
         CDSParcelas.Filtered := False;
         CDSParcelas.Filter   := 'idrecebimento=' + QuotedStr(Trim(ZQRecBai.FieldByName('idrecebimento').Text));
         CDSParcelas.Filtered := True;
@@ -2058,17 +2057,17 @@ begin
     end; // fim BRANCH B
 
     // =========================================================================
-    // COMMIT â€” tudo certo
+    // COMMIT — tudo certo
     // =========================================================================
     DM_tabelas.zconeccao.Commit;
 
   except
     on E: Exception do
     begin
-      // ROLLBACK em caso de erro â€” banco volta ao estado anterior
+      // ROLLBACK em caso de erro — banco volta ao estado anterior
       DM_tabelas.zconeccao.Rollback;
       ShowMessage('Erro ao gravar baixa: ' + E.Message +
-                  #13#10 + 'A operaÃ§Ã£o foi cancelada.');
+                  #13#10 + 'A operação foi cancelada.');
       DXBBaixaGravar.Enabled := True;
       DXBFechar.Enabled      := True;
       Exit;
@@ -2076,7 +2075,7 @@ begin
   end;
 
   // ==========================================================================
-  // PÃ³s-gravaÃ§Ã£o: recibo, atualizaÃ§Ã£o de saldo de venda, refresh de tela
+  // Pós-gravação: recibo, atualização de saldo de venda, refresh de tela
   // ==========================================================================
 
   // Prepara recibo (sem exibir ainda)
@@ -2101,7 +2100,7 @@ begin
   if FrmImpRecibo <> nil then
     FreeAndNil(FrmImpRecibo);
 
-  ShowMessage('OperaÃ§Ã£o Terminada!');
+  ShowMessage('Operação Terminada!');
 end;
 procedure TFrmRecebBaixa.DBCBTIPDOCExit(Sender: TObject);
 begin
@@ -2119,7 +2118,7 @@ begin
       begin
         if (CDSParcelasVenci.Value<>CDSParcelasData_Quitacao.Value) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento sÃ³ aceita pagamento a vista!!!');
+          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2128,7 +2127,7 @@ begin
       begin
         if (datetostr(CDSParcelasVenci.Value)<>JDEntrada.DateText) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento sÃ³ aceita pagamento a vista!!!');
+          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2265,7 +2264,7 @@ begin
   CDSParcelas.RecNo := varregis;
   vardif := ExRound(XNERecebido.Value,2) - ExRound(varsoma,2);
   vartotalparcelas := Trunc(XNEParcelas.Value);
-  if (DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL') and
+  if (DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL') and
      (XNEResto.Value > 0) then
     vartotalparcelas := CDSParcelas.RecordCount;
 
@@ -2291,7 +2290,7 @@ begin
   Begin
     if empty(Econtabil.text) Then
     Begin
-      showmessage('A descriÃ§Ã£o contÃ¡bil nÃ£o pode ficar em branco....');
+      showmessage('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -2324,7 +2323,7 @@ end;
 
 procedure TFrmRecebBaixa.XDBNumEdit1Exit(Sender: TObject);
 begin
-  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL' then
+  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL' then
   begin
      CDSParcelasVrParc.Value := XNERecebido.Value*CDSParcelasPercent.Value/100;
   end;   
@@ -2334,23 +2333,23 @@ procedure TFrmRecebBaixa.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.AsString),VarDoc)>0) Then Begin
-      showmessage('Este cheque jÃ¡ foi lanÃ§ado nesta inclusÃ£o... corrija a numeraÃ§Ã£o.....');
+      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo NÂº do cheque deve ser preenchido...');
+      showmessage('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}
@@ -2897,7 +2896,7 @@ begin
 //   end
 //   else
 //   begin
-//     showmessage('Aguarde a Leitura dos Dados. FecharÃ¡ Automaticamente em Seguida.');
+//     showmessage('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
 //     sleep(12000);
 //     if Task.Status = TTaskStatus.Completed then
 //     begin
@@ -2923,7 +2922,7 @@ begin
 //     end
 //     else
 //     begin
-//       showmessage('Aguarde a Leitura dos Dados. FecharÃ¡ Automaticamente em Seguida.');
+//       showmessage('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
 //       sleep(15000);
 //       if Task.Status = TTaskStatus.Completed then
 //       begin
@@ -3014,7 +3013,7 @@ end;
 procedure TFrmRecebBaixa.CDSParcelasCalcFields(DataSet: TDataSet);
 begin
 //  CDSParcelasPercent.Value := CDSParcelasVrParc.Value*100/XNERecebido.Value;
-  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL' then
+  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL' then
   begin
     CDsParcelasPercent.Value := CDsParcelasVrParc.Value*100/XNERecebido.Value;
   end
@@ -3062,7 +3061,7 @@ begin
   ZQRecBai.Filtered := false;
   ZQRecBai.Filter := 'marcar=0';
   ZQRecBai.Filtered := True;
-  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL' then
+  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL' then
   begin
     if ZQRecBai.FieldByName('Data_Quitacao').AsDateTime>0 then
        varvenci :=  ZQRecBai.FieldByName('Data_Quitacao').AsDateTime
@@ -3474,11 +3473,11 @@ procedure TFrmRecebBaixa.CBTipobaixaExit(Sender: TObject);
 begin
   if CBTipobaixa.Text='NORMAL' then
   begin
-    Label15.Caption:='Dt. QuitaÃ§Ã£o.......';
+    Label15.Caption:='Dt. Quitação.......';
   end
   else
   begin
-    Label15.Caption:='Dt. 1Âº agto........';
+    Label15.Caption:='Dt. 1º agto........';
   end;
   //JDEntrada.SetFocus;
   DBGBaixando.SetFocus;
@@ -3718,11 +3717,11 @@ begin
     else
     begin
       ZQCheque.close;
-      showmessage('NÃºmero de Cheque nÃ£o Encontrado.');
+      showmessage('Número de Cheque não Encontrado.');
       dxbfechar.setfocus;
     end;
   end;
-  showmessage('Cheque nÃ£o Encontrado nas Parcelas em Aberto.');
+  showmessage('Cheque não Encontrado nas Parcelas em Aberto.');
   DM_tabelas.ZQRecebimento.Close;
   DM_tabelas.ZQRecebimento.SQL.Clear;
   DM_Tabelas.ZQRecebimento.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
@@ -3830,18 +3829,18 @@ begin
   FrmRecebBaixa.KeyPreview:=false;
   xnrecebido.Value:=XNERecebido.Value;
   ZQRecBai.Edit;
-  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÃ‡ÃƒO GERAL' then
+  if DM_Tabelas.ZQConfiguracoes.FieldByName('Baixa').AsString='DATA QUITAÇÃO GERAL' then
   begin
      GroupBox2.Visible:=true;
      DBGrid1.SetFocus;
-     DBGrid1.SelectedIndex:=0; // setfocus na 1Âª coluna
+     DBGrid1.SelectedIndex:=0; // setfocus na 1ª coluna
      DBGrid1.Options := DBGrid1.Options + [dgEditing];
   end
   else
   begin
      GroupBox3.Visible:=true;
      DBGrid3.SetFocus;
-     DBGrid3.SelectedIndex:=0; // setfocus na 1Âª coluna
+     DBGrid3.SelectedIndex:=0; // setfocus na 1ª coluna
      DBGrid3.Options := DBGrid3.Options + [dgEditing];
   end;
 

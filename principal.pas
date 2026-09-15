@@ -1,4 +1,4 @@
-ï»¿unit principal;
+unit principal;
 
 interface
 
@@ -8,9 +8,9 @@ uses
 //  StdCtrls, Grids, DBGrids, Mask, DBCtrls, wwdbdatetimepicker, DB, ComCtrls, ImgList;
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, DBGrids, DB, StdCtrls, DBCtrls, ExtCtrls, jpeg, XBanner, Mask,
-  XEdit, ComCtrls, IniFiles, ImgList, dxButton, Shellapi, Registry,
+  XEdit, ComCtrls, IniFiles, ImgList, Shellapi, Registry,
   JvExControls, JvXPCore, JvXPBar, TFlatHintUnit,qrprntr, TFlatPanelUnit,
-  ZAbstractRODataset, ZAbstractDataset, ZDataset, midaslib, dxCore2,psapi,RLConsts,
+  ZAbstractRODataset, ZAbstractDataset, ZDataset, midaslib, psapi,RLConsts,
   System.ImageList, dxCoreA, Vcl.Buttons,  DateUtils,
   Notification,
   System.JSON,IdSSLOpenSSL,
@@ -286,7 +286,7 @@ begin
    end;
    StrDispose(Parquivo);
 end;
-//resoluÃ§Ã£o de tela
+//resolução de tela
 procedure PTela( Sender: Tobject );
   procedure PAlterar( Width, Height : Integer);
   var sDispMode: DevMode;
@@ -299,7 +299,7 @@ procedure PTela( Sender: Tobject );
     try
       ChangeDisplaySettings(sDispMode,0);
     except
-      ShowMessage('NÃ£o Ã© possivel alterar configuraÃ§Ãµes de vÃ­deo.')
+      ShowMessage('Não é possivel alterar configurações de vídeo.')
     end;
 
   end;
@@ -309,17 +309,17 @@ begin
   if ((Screen.Width <> OldWidth ) or (Screen.Height <> OldHeight )) and (Oldwidth <> 0) then
     Palterar(OldWidth, OldHeight);
 
-  // Aqui testo se a resoluÃ§Ã£o Ã© 800 porque quero utilizar pro meu software resoluÃ§Ã£o 1280 X 768.
+  // Aqui testo se a resolução é 800 porque quero utilizar pro meu software resolução 1280 X 768.
   If ((Screen.Width <> 1280 ) or ( Screen.Height <> 768)) then
   begin
-{    if (messageDlg('Para uma boa utilizaÃ§Ã£o recomenda-se resolÃ§Ã£o de video de 1280 X 768. ' +
-                    #13#13 + ' Deseja Alterar suas configuraÃ§Ãµes de vÃ­deo agora ?',
+{    if (messageDlg('Para uma boa utilização recomenda-se resolção de video de 1280 X 768. ' +
+                    #13#13 + ' Deseja Alterar suas configurações de vídeo agora ?',
        mtConfirmation, [mbYes, mbNo], 0)=mrYes) then}
     begin
-      // Vairavel que pega o valor original de inicializaÃ§Ã£o ex: 1280 X 720... etc...
+      // Vairavel que pega o valor original de inicialização ex: 1280 X 720... etc...
       OldWidth := GetSystemMetrics(SM_CXSCREEN);
       OldHeight := GetSystemMetrics(SM_CYSCREEN);
-      // ResoluÃ§Ã£o para qual quero utilizar enquanto o programa estiver abertoâ€¦
+      // Resolução para qual quero utilizar enquanto o programa estiver aberto…
       if DM_Tabelas<>nil then
       begin
         if DM_Tabelas.ZQConfiguracoes.FieldByName('resolucao_tela').AsString= '5120x2160'  then
@@ -566,7 +566,7 @@ var
 
 begin
    try
-     // Chama a procedure que busca as cotaÃ§Ãµes
+     // Chama a procedure que busca as cotações
      GetCurrenciesQuotation;
      Panel6.Visible:=true;
    except
@@ -605,18 +605,18 @@ begin
   DecodeDate( Date, sAno, sMes, sDia );
   xAno := IntToStr(SAno);
                                                       //alt+184   alt+0174
-  StatusBar1.Panels.Items[3].Text := 'V.'+VersaoExe+'-'+xAno+' Â© Master Software Â®  -  UsuÃ¡rio:'+xusuario.Caption;//+'  | Serial da Placa MÃ£e:'+GetMotherboardSerialNumber; // MemoNovidade.Lines.Strings[0];
+  StatusBar1.Panels.Items[3].Text := 'V.'+VersaoExe+'-'+xAno+' © Master Software ®  -  Usuário:'+xusuario.Caption;//+'  | Serial da Placa Mãe:'+GetMotherboardSerialNumber; // MemoNovidade.Lines.Strings[0];
   DM_Tabelas.ZQEmpresa.Open;
   if DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime<GetFileDate('SIAI.exe') then Begin
     DM_tabelas.ZQEmpresa.Edit;
     DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime:=GetFileDate('SIAI.exe');
     DM_TAbelas.ZQEmpresa.Post;
-    showmessage('Registrada nova versÃ£o do sistema...');
+    showmessage('Registrada nova versão do sistema...');
   End
   else if DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime>GetFileDate('SIAI.exe') then Begin
-    Showmessage('A data do executavel usado neste terminal Ã© de '+datetostr(GetFileDate('SIAI.exe'))+chr(13)+chr(13)
-    +'A data do executavel mais atual usado por esta empresa Ã© de '+datetostr(DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime)
-    +chr(13)+chr(13)+'Providencie uma atualizaÃ§Ã£o URGENTE, para evitar danos ao banco de dados!!')
+    Showmessage('A data do executavel usado neste terminal é de '+datetostr(GetFileDate('SIAI.exe'))+chr(13)+chr(13)
+    +'A data do executavel mais atual usado por esta empresa é de '+datetostr(DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime)
+    +chr(13)+chr(13)+'Providencie uma atualização URGENTE, para evitar danos ao banco de dados!!')
   end;
 
   DM_Tabelas.ZQCorretor.Open;
@@ -629,7 +629,7 @@ begin
   DM_Tabelas.ZQLoteamento.Open;
   DM_Tabelas.ZQRemes_Receb.Open;
 
-  //chama resoluÃ§Ã£o de tela
+  //chama resolução de tela
    PTela(Sender);
 
   Panel1.Visible:=true;
@@ -650,7 +650,7 @@ begin
             try
               DM_Tabelas.qryAgenda.Close;
               DM_Tabelas.qryAgenda.SQL.Clear;
-              DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', date))); //que Ã© essa 27/11/2012 00:00:00
+              DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', date))); //que é essa 27/11/2012 00:00:00
               DM_Tabelas.qryAgenda.Open;
               if DM_Tabelas.qryAgenda.RecordCount>0 then
               begin
@@ -676,23 +676,23 @@ begin
   HTTPClient := TIdHTTP.Create(nil);
   SSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
   try
-    SSLHandler.SSLOptions.Method     := sslvTLSv1_2;  // ForÃ§a TLS 1.2
+    SSLHandler.SSLOptions.Method     := sslvTLSv1_2;  // Força TLS 1.2
     SSLHandler.SSLOptions.Mode       := sslmClient;
     HTTPClient.IOHandler             := SSLHandler;
     HTTPClient.HandleRedirects       := True;  // Permite redirecionamentos
     HTTPClient.Request.UserAgent     := 'Mozilla/5.0';  // Alguns servidores rejeitam UserAgent vazio
-    // Faz a requisiÃ§Ã£o GET
+    // Faz a requisição GET
     JSONResponse := HTTPClient.Get('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL');
 
     // Converte o response para JSON
     JSONObj := TJSONObject.ParseJSONValue(JSONResponse) as TJSONObject;
     try
-      // Extrai os valores das cotaÃ§Ãµes
+      // Extrai os valores das cotações
       USD_Rate := JSONObj.GetValue<string>('USDBRL.bid');
       EUR_Rate := JSONObj.GetValue<string>('EURBRL.bid');
       BTC_Rate := JSONObj.GetValue<string>('BTCBRL.bid');
 
-      // Exibe as cotaÃ§Ãµes
+      // Exibe as cotações
       xdolar.Caption := USD_Rate;
       xeuro.Caption  := EUR_Rate;
       xbtc.Caption   := BTC_Rate;
@@ -774,7 +774,7 @@ end;
 
 procedure TFrm_principal.dxButton14Click(Sender: TObject);
 begin
-  if not Verif_senha('UsuÃ¡rio','Tela de UsuÃ¡rio','') Then Exit;
+  if not Verif_senha('Usuário','Tela de Usuário','') Then Exit;
   try
     if Frm_Usuario=nil then
        Frm_Usuario := TFrm_Usuario.Create(self);
@@ -867,7 +867,7 @@ end;
 
 procedure TFrm_principal.dxButton24Click(Sender: TObject);
 begin
-  if not Verif_senha('ImÃ³vel','Tela Principal','') Then Exit;
+  if not Verif_senha('Imóvel','Tela Principal','') Then Exit;
 //  Frm_Imoveis.Left := Frm_principal.Left+7;
 //  Frm_Imoveis.Top := Frm_principal.Top+135;
 //  Frm_Imoveis.show;
@@ -1060,7 +1060,7 @@ end;
 
 procedure TFrm_principal.JXBarraCad_DiversosItems4Click(Sender: TObject);
 begin
-  if not Verif_senha('ConfiguraÃ§Ãµes','Tela Principal','') then exit;
+  if not Verif_senha('Configurações','Tela Principal','') then exit;
   Frm_Configuracoes.Left := Frm_principal.Left+7;
   Frm_Configuracoes.Top := Frm_principal.Top+135;
   Frm_Configuracoes.show;
@@ -1208,7 +1208,7 @@ end;
 
 procedure TFrm_principal.Imveis2Click(Sender: TObject);
 begin
-  if not Verif_senha('ImÃ³vel','Tela Principal','') Then Exit;
+  if not Verif_senha('Imóvel','Tela Principal','') Then Exit;
 //  Frm_Imoveis.Left := Frm_principal.Left+7;
 //  Frm_Imoveis.Top := Frm_principal.Top+135;
 //  Frm_Imoveis.show;
@@ -1246,7 +1246,7 @@ end;
 
 procedure TFrm_principal.D1Click(Sender: TObject);
 begin
-   if not Verif_senha('EstatÃ­ticas','DashBoard','') then exit;
+   if not Verif_senha('Estatíticas','DashBoard','') then exit;
   if FrmDash=nil then
      FrmDash:=TFrmDash.create(self);
   FrmDash.showmodal;
@@ -1255,7 +1255,7 @@ end;
 
 procedure TFrm_principal.Usurio1Click(Sender: TObject);
 begin
-  if not Verif_senha('UsuÃ¡rio','Tela de UsuÃ¡rio','') Then Exit;
+  if not Verif_senha('Usuário','Tela de Usuário','') Then Exit;
 //  Frm_Usuario.Left := Frm_principal.Left+7;
 //  Frm_Usuario.Top := Frm_principal.Top+135;
 //  Frm_Usuario.show;
@@ -1312,7 +1312,7 @@ end;
 
 procedure TFrm_principal.P1Click(Sender: TObject);
 begin
-   if not Verif_senha('EstatÃ­ticas','Painel','') then exit;
+   if not Verif_senha('Estatíticas','Painel','') then exit;
   if frmPainel=nil then
      frmPainel:=TfrmPainel.create(self);
   frmPainel.showmodal;
@@ -1376,7 +1376,7 @@ end;
 
 procedure TFrm_principal.Configuraes1Click(Sender: TObject);
 begin
-  if not Verif_senha('ConfiguraÃ§Ãµes','Tela Principal','') then exit;
+  if not Verif_senha('Configurações','Tela Principal','') then exit;
   Frm_Configuracoes.Left := Frm_principal.Left+7;
   Frm_Configuracoes.Top := Frm_principal.Top+135;
   Frm_Configuracoes.show;
@@ -1466,7 +1466,7 @@ end;
 
 procedure TFrm_principal.Quitao1Click(Sender: TObject);
 begin
-  if not Verif_senha('QuitaÃ§Ã£o','Tela Principal','') then exit;
+  if not Verif_senha('Quitação','Tela Principal','') then exit;
   if Frmquitacao=nil then
      Frmquitacao:=TFrmquitacao.Create(Self);
   Frmquitacao.show;
@@ -1611,7 +1611,7 @@ end;
 
 procedure TFrm_principal.A1Click(Sender: TObject);
 begin
-  if not Verif_senha('UtilitÃ¡rios','Acerto dos valores das Parcelas ','') then exit;
+  if not Verif_senha('Utilitários','Acerto dos valores das Parcelas ','') then exit;
 //  Frm_Acerto_parcelas.showmodal;
   try
     if Frm_Acerto_parcelas=nil then
@@ -1629,7 +1629,7 @@ end;
 
 procedure TFrm_principal.A2Click(Sender: TObject);
 begin
-  if not Verif_senha('AlteraÃ§Ã£o da Data de Vencimento','Alterar Vencimento Parcelas','') Then Exit;
+  if not Verif_senha('Alteração da Data de Vencimento','Alterar Vencimento Parcelas','') Then Exit;
 //  Frm_ProximoVctoParcelas.showmodal;
   try
     if Frm_ProximoVctoParcelas=nil then
@@ -1759,7 +1759,7 @@ end;
 procedure TFrm_principal.AlteraroCampoPrximoReajuste1Click(
   Sender: TObject);
 begin
-  if not Verif_senha('AlteraÃ§Ã£o da Data do PrÃ³ximo Reajuste','Alterar PrÃ³ximo Reajuste','') Then Exit;
+  if not Verif_senha('Alteração da Data do Próximo Reajuste','Alterar Próximo Reajuste','') Then Exit;
 //  Frm_ProximoReajusteDeParcelas.showmodal;
   try
     if Frm_ProximoReajusteDeParcelas=nil then
@@ -1776,7 +1776,7 @@ end;
 
 procedure TFrm_principal.JBarraUtilItems3Click(Sender: TObject);
 begin
-  if not Verif_senha('UtilitÃ¡rios','MÃªs/Ano Reajuste','') then exit;
+  if not Verif_senha('Utilitários','Mês/Ano Reajuste','') then exit;
   JBarraUtil.Visible:=false;
 //  Frm_Acerto_ano.showmodal;
   try
@@ -1809,7 +1809,7 @@ end;
 
 procedure TFrm_principal.AdicionarMsAnodeReajuste1Click(Sender: TObject);
 begin
-  if not Verif_senha('UtilitÃ¡rios','MÃªs/Ano Reajuste','') then exit;
+  if not Verif_senha('Utilitários','Mês/Ano Reajuste','') then exit;
 //  Frm_Acerto_ano.showmodal;
   try
     if Frm_Acerto_ano=nil then
@@ -1855,7 +1855,7 @@ begin
 {  if DM_Tabelas=nil then
      DM_Tabelas:=tDM_Tabelas.Create(application);
   DM_Tabelas.ZQConfiguracoes.Open;
-  //chama resoluÃ§Ã£o de tela
+  //chama resolução de tela
    PTela(Sender);
  }
   ConfigurarMenuModerno;
@@ -1864,14 +1864,14 @@ end;
 procedure TFrm_principal.FormDestroy(Sender: TObject);
 begin
   DM_Tabelas:=nil;
-  //volta a resoluÃ§Ã£o antiga
+  //volta a resolução antiga
   PTela(Sender);
 
 end;
 
 procedure TFrm_principal.ConsultaRpida1Click(Sender: TObject);
 begin
-  if not Verif_senha('Participante','Consulta RÃ¡pida','') Then Exit;
+  if not Verif_senha('Participante','Consulta Rápida','') Then Exit;
 //  frmparticipante2.Left := Frm_principal.Left+7;
 //  frmparticipante2.Top := Frm_principal.Top+135;
 //  frmparticipante2.show;
@@ -1891,7 +1891,7 @@ end;
 procedure TFrm_principal.LimparTabelaRemessaRecebidaporPerodo1Click(
   Sender: TObject);
 begin
-    if not Verif_senha('Utilitarios','Apagar Remessa Recebida por PerÃ­odo','') Then Exit;
+    if not Verif_senha('Utilitarios','Apagar Remessa Recebida por Período','') Then Exit;
     try
       if frm_acerta_remessa=nil then
          frm_acerta_remessa := Tfrm_acerta_remessa.Create(self);
@@ -1909,7 +1909,7 @@ end;
 
 procedure TFrm_principal.dxButton3Click(Sender: TObject);
 begin
-  if not Verif_senha('Participante','Consulta RÃ¡pida','') Then Exit;
+  if not Verif_senha('Participante','Consulta Rápida','') Then Exit;
 //  frmparticipante2.Left := Frm_principal.Left+7;
 //  frmparticipante2.Top := Frm_principal.Top+135;
 //  frmparticipante2.show;
@@ -1985,7 +1985,7 @@ begin
   FrmAlerta := TFrmAlerta.Create(self);
   //localiza o Handle da janela iniciar
   BarraIniciar := FindWindow('Shell_TrayWnd', nil);
-  //Pega o "retÃ¢ngulo" que envolve a barra e sua altura
+  //Pega o "retângulo" que envolve a barra e sua altura
   GetWindowRect(BarraIniciar, tmRect);
   tmAltura := tmRect.Bottom - tmRect.Top;
 

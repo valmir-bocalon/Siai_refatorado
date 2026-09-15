@@ -2,13 +2,12 @@ unit TabelasDeMensagens;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, Grids, DBGrids, StdCtrls,   dxButton, Data.DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, Grids, DBGrids, StdCtrls, Data.DB;
 
 type
   TFrm_TabelasDeMensagens = class(TForm)
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     Label5: TLabel;
     DBGMens: TDBGrid;
     DBGMotivo: TDBGrid;

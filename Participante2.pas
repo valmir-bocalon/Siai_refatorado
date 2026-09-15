@@ -2,22 +2,21 @@ unit Participante2;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, XBanner, ExtCtrls, StdCtrls, Grids, DBGrids,
-  XDBNum, DBCtrls, Mask, XDBEdit, wwdbdatetimepicker, ComCtrls, dxCore2, Data.DB;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, ExtCtrls, StdCtrls, Grids, DBGrids,
+  XDBNum, DBCtrls, Mask, XDBEdit, wwdbdatetimepicker, ComCtrls, Data.DB;
 
 type
   Tfrmparticipante2 = class(TForm)
     Label2: TLabel;
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTPesquisar: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BTFechar: TdxButton;
+    BTPesquisar: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BTFechar: TdxButtonArround;
     XBanner10: TXBanner;
     DBGPart: TDBGrid;
     DBECod: TDBEdit;
@@ -56,7 +55,7 @@ type
     DBEEnde: TDBEdit;
     DBEBairr: TDBEdit;
     DBECompl: TDBEdit;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     GroupBox2: TGroupBox;
     XBanner4: TXBanner;
     Label11: TLabel;

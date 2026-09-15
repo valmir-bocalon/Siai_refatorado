@@ -1,17 +1,15 @@
-﻿unit Excluir_loteamento;
+unit Excluir_loteamento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,  
-  dxButton, Gauges, StdCtrls, Mask, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Gauges, StdCtrls, Mask;
 
 type
   TFrm_Excluir = class(TForm)
     Gauge1: TGauge;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     ZQSelecao: TZQuery;
     DS_Selecao: TDataSource;
 
@@ -384,7 +382,7 @@ procedure TFrm_Excluir.BTFecharClick(Sender: TObject);
 begin
   if empty(cdlt.Text) then
   begin
-    showmessage('Informe o Código do Loteamento.');
+    showmessage('Informe o C�digo do Loteamento.');
     cdlt.SetFocus;
     exit;
   end;

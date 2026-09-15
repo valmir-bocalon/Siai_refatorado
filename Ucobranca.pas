@@ -1,13 +1,11 @@
-﻿unit Ucobranca;
+unit Ucobranca;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+uses ButtonDxArround, Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, ZAbstractRODataset,
   ZAbstractDataset, ZDataset, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls,
-  FnpNumericEdit, Vcl.Grids, Vcl.DBGrids, Datasnap.DBClient, Vcl.ComCtrls,
-  dxCore2, dxButton, JvComponentBase, JvEnterTab;
+  FnpNumericEdit, Vcl.Grids, Vcl.DBGrids, Datasnap.DBClient, Vcl.ComCtrls, JvComponentBase, JvEnterTab;
 
 type
   Tfrmcobranca = class(TForm)
@@ -106,9 +104,9 @@ type
     database: TDateTimePicker;
     inicial: TDateTimePicker;
     final: TDateTimePicker;
-    dxButton1: TdxButton;
-    dxButton2: TdxButton;
-    dxButton3: TdxButton;
+    dxButton1: TdxButtonArround;
+    dxButton2: TdxButtonArround;
+    dxButton3: TdxButtonArround;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;

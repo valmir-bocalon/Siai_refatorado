@@ -1,4 +1,4 @@
-ï»¿unit UFrmPainel;
+unit UFrmPainel;
 
 interface
 
@@ -142,7 +142,7 @@ begin
    ZQCalculoEst.SQL.Add('select * from Estatistica_imoveis');
    ZQCalculoEst.open;
 
-   // Inserimos as informaÃ§Ãµes de cabeÃ§alho de
+   // Inserimos as informações de cabeçalho de
    // cada coluna
    ZQCalculoEst.First;
    // Varremos o cds e inserimos os dados
@@ -165,15 +165,15 @@ begin
    if RGFiltro.ItemIndex=0 then
       PRText1.Lines.Add('Filtro Geral')
    else
-     PRText1.Lines.Add('Filtro por PerÃ­odo: De: '+datetostr(dtinicio.Date)+'  atÃ©  '+datetostr(dtfinal.Date));
+     PRText1.Lines.Add('Filtro por Período: De: '+datetostr(dtinicio.Date)+'  até  '+datetostr(dtfinal.Date));
 
    PRText1.Lines.Add('');
    PRText1.Lines.Add('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Painel de Controle de Empresa <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
    PRText1.Lines.Add('');
    PRText1.Lines.Add('>>>>>>>>>>>>>>>>>>>>>>>>>>>> '+ZQCalculoEst.FieldByName('apelido').AsString+' <<<<<<<<<<<<<<<<<<<<<<<<<<<<');
    PRText1.Lines.Add('');
-   PRText1.Lines.Add('Total de Lotes: '+FormatFloat('###,###,##0.##',custo_compra)+'  Lotes DisponÃ­veis: '+FormatFloat('###,###,##0.##',custovnd)+'  Lotes nÃ£o DisponÃ­veis: '+FormatFloat('###,###,##0.##',abertorec));
-   PRText1.Lines.Add('DisponÃ­veis: '+FormatFloat('0.00',perc)+' %  - NÃ£o DisponÃ­veis:'+FormatFloat('0.00',saldo)+' %');
+   PRText1.Lines.Add('Total de Lotes: '+FormatFloat('###,###,##0.##',custo_compra)+'  Lotes Disponíveis: '+FormatFloat('###,###,##0.##',custovnd)+'  Lotes não Disponíveis: '+FormatFloat('###,###,##0.##',abertorec));
+   PRText1.Lines.Add('Disponíveis: '+FormatFloat('0.00',perc)+' %  - Não Disponíveis:'+FormatFloat('0.00',saldo)+' %');
    PRText1.Lines.Add('');
    PRText1.Lines.Add('');
 

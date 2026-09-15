@@ -2,9 +2,8 @@ unit Uobs_estorno;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, StdCtrls,   dxButton;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, StdCtrls;
 
 type
   TFrmObs_estorno = class(TForm)
@@ -12,7 +11,7 @@ type
     gbestorno: TGroupBox;
     XBanner13: TXBanner;
     obs_est: TMemo;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     procedure DXBFecharClick(Sender: TObject);
   private
     { Private declarations }

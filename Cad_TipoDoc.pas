@@ -1,11 +1,10 @@
-﻿unit Cad_TipoDoc;
+unit Cad_TipoDoc;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Grids, DBGrids,   dxButton, ExtCtrls, StdCtrls, XBanner,
-  Mask, DBCtrls, dxCore2, Data.DB;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, DBGrids, ExtCtrls, StdCtrls, XBanner,
+  Mask, DBCtrls, Data.DB;
 
 type
   TFrmCad_TipoDoc = class(TForm)
@@ -13,18 +12,18 @@ type
     LReg: TLabel;
     Label11: TLabel;
     PPainelBotoes: TPanel;
-    DXBExcluir: TdxButton;
-    DXBEditar: TdxButton;
-    DXBIncluir: TdxButton;
-    DXBCancelar: TdxButton;
-    DXBGravar: TdxButton;
-    DXBPesquisar: TdxButton;
-    DXBRelatorios: TdxButton;
-    DXBFechar: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBProximo: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBPrimeiro: TdxButton;
+    DXBExcluir: TdxButtonArround;
+    DXBEditar: TdxButtonArround;
+    DXBIncluir: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
+    DXBGravar: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    DXBRelatorios: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBPrimeiro: TdxButtonArround;
     Label1: TLabel;
     DBECodInt: TDBEdit;
     Label2: TLabel;

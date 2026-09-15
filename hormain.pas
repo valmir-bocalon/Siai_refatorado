@@ -1,12 +1,11 @@
-﻿unit hormain;
+unit hormain;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Db, DBTables, XBanner, dxButton,
+uses ButtonDxArround, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, Db, DBTables, XBanner,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, DBClient, Grids, DBGrids,
-  Mask, ComCtrls, dxCore2;
+  Mask, ComCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -17,9 +16,9 @@ type
     Label2: TLabel;
     SkipEdtn: TEdit;
     XBanner1: TXBanner;
-    btnPreview: TdxButton;
-    btnPrint: TdxButton;
-    Button1: TdxButton;
+    btnPreview: TdxButtonArround;
+    btnPrint: TdxButtonArround;
+    Button1: TdxButtonArround;
     DS_Participante: TDataSource;
     ZqParticipante: TZQuery;
     DS_etq: TDataSource;
@@ -31,13 +30,13 @@ type
     GroupBox1: TGroupBox;
     XBanner2: TXBanner;
     DBGrid1: TDBGrid;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     DS_Empreend: TDataSource;
     bar1: TProgressBar;
-    DXBMarcEmpree: TdxButton;
+    DXBMarcEmpree: TdxButtonArround;
     ZQRecebimento: TZQuery;
     DS_Recebimento: TDataSource;
-    BtRelatorio: TdxButton;
+    BtRelatorio: TdxButtonArround;
     ZQcomprador: TZQuery;
     DS_ZQcomprador: TDataSource;
     DataCDS_etq2: TDataSource;
@@ -473,7 +472,7 @@ var
 begin
   Screen.Cursor := crHourGlass;
 
-  // 🔥 garante CDS abertos
+  // [destaque] garante CDS abertos
   if not CDS_etq2.Active then
   begin
     CDS_etq2.Close;
@@ -493,7 +492,7 @@ begin
     CDS_etq.EmptyDataSet;
 
   try
-    // 🔹 monta lista de loteamentos
+    // [nota] monta lista de loteamentos
     varlote := '';
     CDSEmpreend.First;
     while not CDSEmpreend.Eof do
@@ -512,7 +511,7 @@ begin
 
     Delete(varlote, Length(varlote), 1);
 
-    // 🔥 cria query dinâmica
+    // [destaque] cria query din�mica
     ZQRelatorio := TZQuery.Create(nil);
     ListaNomes := TStringList.Create;
 
@@ -546,7 +545,7 @@ begin
 
       ZQRelatorio.Open;
 
-      // 🔥 ProgressBar REAL
+      // [destaque] ProgressBar REAL
       ProgressBar1.Visible := True;
       ProgressBar1.Position := 0;
       ProgressBar1.Max := ZQRelatorio.RecordCount;
@@ -556,7 +555,7 @@ begin
       begin
         ProgressBar1.Position := ZQRelatorio.RecNo;
 
-        // 🔹 CDS_etq2 (TODOS)
+        // [nota] CDS_etq2 (TODOS)
         NomeCidadeLookup := '';
         EstadoLookup := '';
         if not DM_Tabelas.ZQCidade.Active then
@@ -582,7 +581,7 @@ begin
         if not ZQRelatorio.FieldByName('inativo').IsNull then
           CDS_etq2Inativo.Value     := ZQRelatorio.FieldByName('inativo').AsString
         else
-          CDS_etq2Inativo.Value     := 'NÃO';
+          CDS_etq2Inativo.Value     := 'N�O';
 
         if not ZQRelatorio.FieldByName('aniversario').IsNull then
         begin
@@ -593,7 +592,7 @@ begin
 
         CDS_etq2.Post;
 
-        // 🔥 evita duplicados (rápido)
+        // [destaque] evita duplicados (r�pido)
         if ListaNomes.IndexOf(ZQRelatorio.FieldByName('nome_parte').AsString) = -1 then
         begin
           ListaNomes.Add(ZQRelatorio.FieldByName('nome_parte').AsString);
@@ -612,7 +611,7 @@ begin
           if not ZQRelatorio.FieldByName('inativo').IsNull then
             CDS_etqInativo.Value     := ZQRelatorio.FieldByName('inativo').AsString
           else
-            CDS_etqInativo.Value     := 'NÃO';
+            CDS_etqInativo.Value     := 'N�O';
 
           if not ZQRelatorio.FieldByName('aniversario').IsNull then
           begin

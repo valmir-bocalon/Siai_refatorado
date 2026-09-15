@@ -1,16 +1,15 @@
-ï»¿unit Estrutura;
+unit Estrutura;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvExControls, JvSpecialProgress, dxButton, StdCtrls,
-  XBanner, db, IniFiles, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, JvExControls, JvSpecialProgress, StdCtrls,
+  XBanner, db, IniFiles;
 
 type
   TFrmEstrutura = class(TForm)
-    DXBPesquisar: TdxButton;
-    dxButton1: TdxButton;
+    DXBPesquisar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     JSP1: TJvSpecialProgress;
     ListBox1: TListBox;
     XBanner1: TXBanner;
@@ -367,7 +366,7 @@ Begin
   Altera('MODIFY','cheque_rec','agencia','varchar(6) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL'); // 22/10/08
   Altera('ADD','contabxrec','tipobaixa','varchar(15)');                             // 28/04/10
 
-  showmessage('Ao sair desta tela, o sistema serÃ¡ fechado para que as atualizaÃ§Ãµes sejam consideradas,'+ chr(13) +'execute novamente o sistema para poder trabalhar normalmente...');
+  showmessage('Ao sair desta tela, o sistema será fechado para que as atualizações sejam consideradas,'+ chr(13) +'execute novamente o sistema para poder trabalhar normalmente...');
 End;
 
 

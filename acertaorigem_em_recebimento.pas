@@ -2,16 +2,14 @@ unit acertaorigem_em_recebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,  
-  dxButton, Gauges, StdCtrls, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Gauges, StdCtrls;
 
 type
   TFrm_acertaorigem_em_recebimento = class(TForm)
     Gauge1: TGauge;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     Label1: TLabel;
     ZQRecebimento: TZQuery;
     DS_Recebimento: TDataSource;

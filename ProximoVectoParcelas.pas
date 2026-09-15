@@ -1,12 +1,10 @@
-Ôªøunit ProximoVectoParcelas;
+unit ProximoVectoParcelas;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids,
-    dxButton, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi;
 
 type
   TFrm_ProximoVctoParcelas = class(TForm)
@@ -16,8 +14,8 @@ type
     XBanner6: TXBanner;
     DBGrid4: TDBGrid;
     XLabel3D1: TXLabel3D;
-    DXBFechar: TdxButton;
-    dxButton1: TdxButton;
+    DXBFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     DS_quadraLote: TDataSource;
     DS_Adversatemp: TDataSource;
     ZQAdvsersatemp: TZQuery;
@@ -165,12 +163,12 @@ type
     Elote: TEdit;
     Eadversa: TEdit;
     DBGReceb: TDBGrid;
-    DXBPrimeiro: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBProximo: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBPesquisar: TdxButton;
-    dxButton2: TdxButton;
+    DXBPrimeiro: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    dxButton2: TdxButtonArround;
     DBEIDReceb: TDBEdit;
     barra: TFlatGauge;
     GroupBox1: TGroupBox;
@@ -208,7 +206,7 @@ type
     DBid: TDBEdit;
     ListBox1: TListBox;
 
-    dxButton3: TdxButton;
+    dxButton3: TdxButtonArround;
     DS_Entrada: TDataSource;
     ZQEntrada: TZQuery;
 
@@ -316,8 +314,8 @@ type
     XBanner5: TXBanner;
     DBGrid3: TDBGrid;
     Eloteamento: TEdit;
-    dxButton14: TdxButton;
-    dxButton13: TdxButton;
+    dxButton14: TdxButtonArround;
+    dxButton13: TdxButtonArround;
 
 
 
@@ -528,7 +526,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote n√£o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote n„o foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -716,7 +714,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar√ßo' then
+  if mmes='MarÁo' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -829,7 +827,7 @@ begin
   //  dxButton13.Enabled:=true;
     //dxButton14.Enabled:=true;
 //    dxButton14.SetFocus;
-    Showmessage('Sele√ß√£o Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
+    Showmessage('SeleÁ„o Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
     DBGrid2.DataSource:=DS_Recebimento;
     dxButton1.Enabled:=true;
     dxButton1.SetFocus;
@@ -909,7 +907,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='Mar√ßo' then
+  if mmes='MarÁo' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

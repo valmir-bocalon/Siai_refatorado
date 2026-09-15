@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, dxButton, StdCtrls, Mask, XEdit, XBanner;
+  Dialogs, StdCtrls, Mask, XEdit, XBanner;
 
 type
   TFrmPergunta = class(TForm)

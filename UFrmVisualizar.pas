@@ -1,11 +1,10 @@
-﻿unit UFrmVisualizar;
+unit UFrmVisualizar;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+uses ButtonDxArround, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QrExtra, QrExport, qrprntr,  ExtCtrls, StdCtrls, Spin, Buttons, // Label3D,
-  XP_Form, XBanner,   dxButton,QRPDFFilt, dxCore2;
+  XP_Form, XBanner,QRPDFFilt;
 
 type
   TFrmVisualizar = class(TForm)
@@ -25,7 +24,7 @@ type
     SpnPagina: TSpinButton;
     SpnZoom: TSpinButton;
     QRPreview1: TQRPreview;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     SaveDialog1: TSaveDialog;
     SaveDialog2: TSaveDialog;
     procedure BtnImprimirClick(Sender: TObject);

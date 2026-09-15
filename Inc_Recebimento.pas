@@ -1,14 +1,13 @@
-ï»¿unit Inc_Recebimento;
+unit Inc_Recebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, DBClient, StdCtrls, Grids, DBGrids, XDate, XNum, Mask,
-  XEdit, XBanner, dxButton, DBCtrls, XDBEdit, XDBNum,
+  XEdit, XBanner, DBCtrls, XDBEdit, XDBNum,
   wwdbdatetimepicker, ComCtrls, JvExComCtrls, JvDateTimePicker,
   JvDBDateTimePicker, ExtCtrls, jpeg, TFlatRadioButtonUnit,
-  ZAbstractRODataset, ZDataset, dxCore2;
+  ZAbstractRODataset, ZDataset;
 
 type
   TFrm_Inc_Recebimento = class(TForm)
@@ -34,8 +33,8 @@ type
     CDSParcelascliente: TIntegerField;
     CDSParcelasusuario: TIntegerField;
     CDSParcelasentrada: TDateField;
-    DXBGravar: TdxButton;
-    DXBCancelar: TdxButton;
+    DXBGravar: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
     Label1: TLabel;
     Label2: TLabel;
     WDBDVenci: TwwDBDateTimePicker;
@@ -349,7 +348,7 @@ begin
     end;
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').AsString='S' Then Begin
       if CDSParcelasVenci.Value<>date Then BEgin
-        showmessage('Este tipo de documento sÃ³ aceita pagamento avista!!!');
+        showmessage('Este tipo de documento só aceita pagamento avista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -404,7 +403,7 @@ begin
     exit;
   end;
   if XNEValor.Value= 0 Then Begin
-    showmessage('Deve ser informado o valor da negociaÃ§Ã£o...');
+    showmessage('Deve ser informado o valor da negociação...');
     XNEValor.SetFocus;
     exit;
   end;
@@ -423,12 +422,12 @@ begin
     CDSParcelas.Next;
   end;
   if floattostr(varsoma) <> floattostr(XNEValor.Value) Then Begin
-    Showmessage('HÃ¡ uma diferenÃ§a de '+floattostr(varsoma-XNEValor.Value)+' no valor das parcelas...  RefaÃ§a as parcelas...');
+    Showmessage('Há uma diferença de '+floattostr(varsoma-XNEValor.Value)+' no valor das parcelas...  Refaça as parcelas...');
     XNEParcelas.Setfocus;
     exit;
   end;
   CDSParcelas.First;
-//  if not Verif_senha('Financeiro','Gravar InclusÃ£o ','participante: '+DM_Tabelas.ZqParticipanteidpaticipante.Text+'  NÂº parc.:'+XNEParcelas.Text+'  1Âº Doc.:'+CDSParcelasDocum.Value+'  Entrada:'+Datetostr(XDEEntrada.DateTime)) then exit;
+//  if not Verif_senha('Financeiro','Gravar Inclusão ','participante: '+DM_Tabelas.ZqParticipanteidpaticipante.Text+'  Nº parc.:'+XNEParcelas.Text+'  1º Doc.:'+CDSParcelasDocum.Value+'  Entrada:'+Datetostr(XDEEntrada.DateTime)) then exit;
   DM_Tabelas.ZQNumOrdem.Insert;
   DM_Tabelas.ZQNumOrdem.Post;
   if Xpartes.Value >0 Then
@@ -583,23 +582,23 @@ end;
 procedure TFrm_Inc_Recebimento.XDBEDocumenExit(Sender: TObject);
 begin
   if (not empty(XDBEDocumen.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',XDBEDocumen.Text,[])) Then Begin
-    showmessage('Este documento jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+    showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
     XDBEDocumen.SetFocus;
     exit;
   End;
   if DM_tabelas.ZQCheque.Locate('Numero, Banco, Agencia, conta',VarArrayOf([XDBEDocumen.Text,CDSParcelasbanco.Value,CDSParcelasagencia.Value,CDSParcelasconta.Value]),[]) Then Begin
-    showmessage('Este cheque jÃ¡ foi lanÃ§ado anteriormente... corrija a numeraÃ§Ã£o.....');
+    showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
     XDBEDocumen.SetFocus;
     exit;
   end;
   DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
   if (DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString='S') and (pos(quotedstr(CDSParcelasDocum.Value),VarDoc)>0) Then Begin
-    showmessage('Este cheque jÃ¡ foi lanÃ§ado nesta inclusÃ£o... corrija a numeraÃ§Ã£o.....');
+    showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
     XDBEDocumen.SetFocus;
     exit;
   end;
   if (DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-    showmessage('o campo NÂº do cheque deve ser preenchido...');
+    showmessage('o campo Nº do cheque deve ser preenchido...');
     XDBEDocumen.SetFocus;
     exit;
   end;
@@ -612,7 +611,7 @@ Var
   varsoma, vardif : Double;
 begin
   if XNEValor.Value= 0 Then Begin
-    showmessage('Deve ser informado o valor da negociaÃ§Ã£o...');
+    showmessage('Deve ser informado o valor da negociação...');
     XNEValor.SetFocus;
     exit;
   end;
@@ -961,7 +960,7 @@ begin
     end;
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').AsString='S' Then Begin
       if CDSParcelasVenci.Value<>date Then BEgin
-        showmessage('Este tipo de documento sÃ³ aceita pagamento avista!!!');
+        showmessage('Este tipo de documento só aceita pagamento avista!!!');
         EContabil.SetFocus;
         Exit;
       end;

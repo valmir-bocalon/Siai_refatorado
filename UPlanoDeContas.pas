@@ -2,10 +2,9 @@
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Grids, DBGrids, StdCtrls, Mask, DBCtrls,   dxButton,
-  XBanner, ExtCtrls, XDBEdit, qrprntr, Data.DB, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Menus, Grids, DBGrids, StdCtrls, Mask, DBCtrls,
+  XBanner, ExtCtrls, XDBEdit, qrprntr, Data.DB;
 
 
 //  ,  , DB, , , , jpeg, XBanner,  XEdit;
@@ -14,18 +13,18 @@ uses
 type
   TFrmCad_PlanodeContas = class(TForm)
     PPainelBotoes: TPanel;
-    DXBExcluir: TdxButton;
-    DXBEditar: TdxButton;
-    DXBIncluir: TdxButton;
-    DXBCancelar: TdxButton;
-    DXBGravar: TdxButton;
-    DXBPesquisar: TdxButton;
-    DXBRelatorios: TdxButton;
-    DXBFechar: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBProximo: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBPrimeiro: TdxButton;
+    DXBExcluir: TdxButtonArround;
+    DXBEditar: TdxButtonArround;
+    DXBIncluir: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
+    DXBGravar: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    DXBRelatorios: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBPrimeiro: TdxButtonArround;
     Label5: TLabel;
     Label1: TLabel;
     DBECodInterno: TDBEdit;

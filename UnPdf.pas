@@ -1,4 +1,4 @@
-﻿unit UnPdf;
+unit UnPdf;
 
 interface
 
@@ -34,7 +34,7 @@ begin
     if FileExists(CaminhoPDF) then
       WebBrowser1.Navigate(CaminhoPDF)
     else
-      ShowMessage('PDF do contrato não encontrado: ' + CaminhoPDF);
+      ShowMessage('PDF do contrato n�o encontrado: ' + CaminhoPDF);
 end;
 procedure TFrmVisualizarPdf.FormShow(Sender: TObject);
 begin

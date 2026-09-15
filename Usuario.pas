@@ -1,11 +1,10 @@
-﻿unit Usuario;
+unit Usuario;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, DBGrids, StdCtrls, wwdbdatetimepicker, Mask, DBCtrls,
-  ComCtrls, TabNotBk,   dxButton, ExtCtrls, XBanner, DB, dxCore2;
+  ComCtrls, TabNotBk, ExtCtrls, XBanner, DB;
 
 type
   TFrm_Usuario = class(TForm)
@@ -13,19 +12,19 @@ type
     Label1: TLabel;
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BTFechar: TdxButton;
-    BtProcessar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BTFechar: TdxButtonArround;
+    BtProcessar: TdxButtonArround;
     Pag_Usuario: TTabbedNotebook;
     XBanner10: TXBanner;
     Label5: TLabel;
@@ -148,7 +147,7 @@ end;
 procedure TFrm_Usuario.Esenha2Exit(Sender: TObject);
 begin
   if Esenha2.Text <> DM_Tabelas.ZQUsuario.FieldByName('senha').AsString Then Begin
-    showmessage('Senha não confere...  Confirme a senha!!');
+    showmessage('Senha n�o confere...  Confirme a senha!!');
     DBEUsuSenha.SetFocus;
   end;
 end;
@@ -236,7 +235,7 @@ end;
 
 procedure TFrm_Usuario.BtGravarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usuário','Gravar inclusão ou edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usu�rio','Gravar inclus�o ou edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
     DM_Tabelas.ZQUsuario.Post;
   desativausuario;
   DBGUsuario.SetFocus;
@@ -245,7 +244,7 @@ end;
 
 procedure TFrm_Usuario.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usuário','Cancelar inclusão ou edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usu�rio','Cancelar inclus�o ou edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
   DM_Tabelas.ZQUsuario.Cancel;
   desativausuario;
   DBGUsuario.SetFocus;
@@ -253,7 +252,7 @@ end;
 
 procedure TFrm_Usuario.BtIncluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Usuário','inclusão','') Then Exit;
+  if not Verif_senha('Usu�rio','inclus�o','') Then Exit;
   Pag_Usuario.PageIndex := 0;
   DM_Tabelas.ZQUsuario.Insert;
   ativausuario;
@@ -262,7 +261,7 @@ end;
 
 procedure TFrm_Usuario.BtEditarClick(Sender: TObject);
 begin
-  if not Verif_senha('Usuário','Edição','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if not Verif_senha('Usu�rio','Edi��o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
   DM_Tabelas.ZQUsuario.Edit;
   ativausuario;
   if Pag_Usuario.PageIndex = 0 then
@@ -273,8 +272,8 @@ end;
 
 procedure TFrm_Usuario.BTExcluirClick(Sender: TObject);
 begin
-  if not Verif_senha('Usuário','Exclusão','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
-  if simnao('Confirma a exclusão do usuario ?','SIM') then
+  if not Verif_senha('Usu�rio','Exclus�o','Usuario: '+DM_Tabelas.ZQUsuario.FieldByName('idusuario').Text+' - '+DM_Tabelas.ZQUsuario.FieldByName('nome').AsString) Then Exit;
+  if simnao('Confirma a exclus�o do usuario ?','SIM') then
      DM_Tabelas.ZQUsuario.Delete;
 end;
 

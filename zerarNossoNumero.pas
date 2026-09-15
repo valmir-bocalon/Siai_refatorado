@@ -1,29 +1,28 @@
-ï»¿unit zerarNossoNumero;
+unit zerarNossoNumero;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
   XBanner, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids,
   DBGrids, ImgList, XNum, DBClient, XDBDate, XDBNum, ComCtrls,
   JvExComCtrls, JvDateTimePicker, XEdit, XDBEdit, ExtCtrls, JvExControls,
-  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, dxCore2, System.ImageList,
+  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, System.ImageList,
   FnpNumericEdit;
 type
   TFrmzerarNossoNumero = class(TForm)
     Label16: TLabel;
-    DXBBaixaGravar: TdxButton;
+    DXBBaixaGravar: TdxButtonArround;
     DS_RecBai: TDataSource;
     DBGBaixando: TDBGrid;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     ImageList1: TImageList;
     Label9: TLabel;
     LREg: TLabel;
     Label31: TLabel;
     Label33: TLabel;
     XBanner1: TXBanner;
-    DXBPesquisar: TdxButton;
+    DXBPesquisar: TdxButtonArround;
     btndes: TButton;
     Label35: TLabel;
     Elote: TEdit;
@@ -244,7 +243,7 @@ begin
   LREg.Caption := inttostr(ZQREcbai.RecordCount)+' Registros';
 
   Resp:='N';
-  if simnao('Zerar Nosso NÂº e Remessas Geradas atÃ© Agora ?','SIM') then
+  if simnao('Zerar Nosso Nº e Remessas Geradas até Agora ?','SIM') then
   begin
     ZQRecBai.close;
     ZQRecBai.SQL.Clear;
@@ -294,7 +293,7 @@ begin
   DXBFechar.Enabled := true;
   zqrecbai.Filtered:=false;
   ZQRecBai.close;
-  mensagem('OperaÃ§Ã£o Terminada!');
+  mensagem('Operação Terminada!');
 
 end;
 

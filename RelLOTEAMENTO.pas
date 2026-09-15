@@ -1,12 +1,11 @@
-﻿unit RelLOTEAMENTO;
+unit RelLOTEAMENTO;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, XBanner,   dxButton, TFlatCheckBoxUnit, CheckLst,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, XBanner, TFlatCheckBoxUnit, CheckLst,
   DB, DBClient, Grids, DBGrids, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, dxCore2, Vcl.ComCtrls;
+  ZDataset, Vcl.ComCtrls;
 
 type
   TFrm_Relloteamento = class(TForm)
@@ -16,12 +15,12 @@ type
     FCBS: TFlatCheckBox;
     FCBN: TFlatCheckBox;
     XBanner1: TXBanner;
-    BTFechar: TdxButton;
-    BtRelatorio: TdxButton;
+    BTFechar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
     GroupBox2: TGroupBox;
     XBanner3: TXBanner;
     XBanner4: TXBanner;
-    DXBMarcEmpree: TdxButton;
+    DXBMarcEmpree: TdxButtonArround;
     DS_Empreend: TDataSource;
     CDSEmpreend: TClientDataSet;
     CDSEmpreendnomeempre: TStringField;

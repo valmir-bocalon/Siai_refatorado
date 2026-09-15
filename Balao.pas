@@ -1,14 +1,13 @@
-Ôªøunit Balao;
+unit Balao;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, Mask, DBCtrls,
   XBanner, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids,
   DBGrids, ImgList, XNum, DBClient, XDBDate, XDBNum, ComCtrls,
   JvExComCtrls, JvDateTimePicker, XEdit, XDBEdit, ExtCtrls, JvExControls,
-  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, dxCore2, System.ImageList;
+  JvSimIndicator, TFlatGaugeUnit, XDate, Provider, System.ImageList;
 type
   TFrmbalao = class(TForm)
     Label10: TLabel;
@@ -18,10 +17,10 @@ type
     Label16: TLabel;
     DBEBaixaDocum: TDBEdit;
     DBEBaixaVrRec: TDBEdit;
-    DXBBaixaGravar: TdxButton;
+    DXBBaixaGravar: TdxButtonArround;
     DS_RecBai: TDataSource;
     DBGBaixando: TDBGrid;
-    DXBFechar: TdxButton;
+    DXBFechar: TdxButtonArround;
     ImageList1: TImageList;
     Label2: TLabel;
     Label3: TLabel;
@@ -236,7 +235,7 @@ type
     CDSParcelasvenda_idvenda: TIntegerField;
     CDSParcelasquadralote: TStringField;
     Label18: TLabel;
-    DXBPesquisar: TdxButton;
+    DXBPesquisar: TdxButtonArround;
 
 
 
@@ -958,13 +957,13 @@ Var
 begin
   if empty(CBTipobaixa.Text) then
   begin
-    showmessage('Selecione o tipo de opera√ß√£o !');
+    showmessage('Selecione o tipo de operaÁ„o !');
     CBTipobaixa.SetFocus;
     exit;
   end;
   if empty(EMNovostit.Text) then
   begin
-    showmessage('Digite o Hist√≥rico do Bal√£o !');
+    showmessage('Digite o HistÛrico do Bal„o !');
     EMNovostit.SetFocus;
     exit;
   end;
@@ -1323,7 +1322,7 @@ begin
   DM_tabelas.ZQReceb_Baixa.open;
 
   CDSParcelas.EnableControls;
-  // hist√≥rico do aditamento 06/08/2010
+  // histÛrico do aditamento 06/08/2010
   CDSParcelas.Prior;
   zqaditamento.close;
   zqaditamento.Open;
@@ -1353,7 +1352,7 @@ begin
     zqaditamento.close;
   end;
   CDSParcelas.Last;
-  // at√© aqui
+  // atÈ aqui
 
   BarraVertical.Progress:=0;
   BarraVertical.Visible:=false;
@@ -1601,7 +1600,7 @@ begin
 //    ZQRecBai.Refresh;
 
 
-    // altera√ß√£o do valor de venda 28/08/2010
+    // alteraÁ„o do valor de venda 28/08/2010
 
     ZqRecBai.First;
     posi:=pos('-',ql);
@@ -1646,7 +1645,7 @@ begin
     ql:='';
 
 
-    // at√© aqui
+    // atÈ aqui
 
    // atualizar recebimento parcelas_fixas 15/12/2011
 
@@ -1871,7 +1870,7 @@ begin
 
   //  FrmImpRecibo.showmodal;
 ///
-{  if perguntaSN('Gerar Recibo de Quita√ß√£o ?','S') Then Begin
+{  if perguntaSN('Gerar Recibo de QuitaÁ„o ?','S') Then Begin
     FrmRelRecibodeQuita.ZQForma.SQL.Clear;
     FrmRelRecibodeQuita.ZQForma.SQL.Add('Select * from receb_baixa where refbaixa='+DM_tabelas.ZQCobaRecotagem.Text);
     FrmRelRecibodeQuita.ZQForma.Open;
@@ -1900,7 +1899,7 @@ begin
   DXBFechar.Enabled := true;
   zqrecbai.Filtered:=false;
   ZQRecBai.close;
-  mensagem('Opera√ß√£o Terminada!');
+  mensagem('OperaÁ„o Terminada!');
 
 end;
 
@@ -1914,7 +1913,7 @@ begin
     DM_tabelas.ZQTipodoc.Locate('tipodoc',DBCBTipDoc.Text,[]);
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').AsString='S' Then Begin
       if (datetostr(CDSParcelasVenci.Value)<>vecto1.Datetext) and ((CDSParcelasTipDoc.Value<>'DP')) Then BEgin
-        showmessage('Este tipo de documento s√≥ aceita pagamento a vista!!!');
+        showmessage('Este tipo de documento sÛ aceita pagamento a vista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -2044,7 +2043,7 @@ procedure TFrmbalao.EContabilExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
     if empty(Econtabil.text) Then Begin
-      showmessage('A descri√ß√£o cont√°bil n√£o pode ficar em branco....');
+      showmessage('A descriÁ„o cont·bil n„o pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -2070,23 +2069,23 @@ procedure TFrmbalao.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento j√° foi lan√ßado anteriormente... corrija a numera√ß√£o.....');
+      showmessage('Este documento j· foi lanÁado anteriormente... corrija a numeraÁ„o.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque j√° foi lan√ßado anteriormente... corrija a numera√ß√£o.....');
+      showmessage('Este cheque j· foi lanÁado anteriormente... corrija a numeraÁ„o.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.Value),VarDoc)>0) Then Begin
-      showmessage('Este cheque j√° foi lan√ßado nesta inclus√£o... corrija a numera√ß√£o.....');
+      showmessage('Este cheque j· foi lanÁado nesta inclus„o... corrija a numeraÁ„o.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo N¬∫ do cheque deve ser preenchido...');
+      showmessage('o campo N∫ do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}

@@ -1,31 +1,30 @@
-Ôªøunit Participante;
+unit Participante;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, TabNotBk, Grids, DBGrids, StdCtrls,  dxButton,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, TabNotBk, Grids, DBGrids, StdCtrls,
   XBanner, ExtCtrls, wwdbdatetimepicker, DBCtrls, Mask, DB, XDBEdit, XDBNum,
   JvExControls, JvXPCore, JvXPBar, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, dxCore2;
+  ZDataset;
 
 type
   TFrm_Participante = class(TForm)
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BTFechar: TdxButton;
-    BtProcessar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BTFechar: TdxButtonArround;
+    BtProcessar: TdxButtonArround;
     Label2: TLabel;
     DBGPart: TDBGrid;
     LReg: TLabel;
@@ -237,7 +236,7 @@ type
     ZQBxEntrada: TZQuery;
     DS_BsParcela: TDataSource;
     ZQBxParcela: TZQuery;
-    btnimprimir: TdxButton;
+    btnimprimir: TdxButtonArround;
     Label83: TLabel;
     DBComboBox1: TDBComboBox;
     Label84: TLabel;
@@ -256,7 +255,7 @@ type
     Label90: TLabel;
     dbquadra: TDBEdit;
     dblote: TDBEdit;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     DS_zqpart: TDataSource;
     ZQpart: TZQuery;
     TabSheet5: TTabSheet;
@@ -387,7 +386,7 @@ begin
      DM_Tabelas.ZQConjuge.IsEmpty then
     Exit;
 
-  { Use o campo calculado quando o runtime j√° o criou. }
+  { Use o campo calculado quando o runtime j· o criou. }
   LField := DM_Tabelas.ZQConjuge.FindField(ALookupField);
   if (LField <> nil) and not LField.IsNull then
   begin
@@ -396,8 +395,8 @@ begin
       Exit;
   end;
 
-  { Fallback para a chave f√≠sica, evitando que a tela dependa da ordem de
-    cria√ß√£o do lookup durante a primeira abertura do cadastro. }
+  { Fallback para a chave fÌsica, evitando que a tela dependa da ordem de
+    criaÁ„o do lookup durante a primeira abertura do cadastro. }
   LField := DM_Tabelas.ZQConjuge.FindField(AKeyField);
   if (LField = nil) or LField.IsNull or (not DM_Tabelas.ZQCidade.Active) then
     Exit;
@@ -453,12 +452,12 @@ Begin
   if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'F' Then Begin
     Label36.Visible := True;
     DBEProfResp.Visible := True;
-    TabPag2.Caption := 'C√¥njuge';
-    DBCBPessoa.Text := 'F√çSICA';
+    TabPag2.Caption := 'CÙnjuge';
+    DBCBPessoa.Text := 'FÕSICA';
     Label3.Caption := 'Nome';
     Label5.Caption := 'R.G.';
     Label6.Caption := 'C.P.F.';
-    Label22.Caption := 'Anivers√°rio';
+    Label22.Caption := 'Anivers·rio';
     if not (DM_TAbelas.ZQConjuge.State in [DsInsert, DsEdit]) Then
     Begin
       if not empty(DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text) then
@@ -469,7 +468,7 @@ Begin
       if (DM_Tabelas.ZqParticipante.FieldByName('ESTADOCIVIL').AsString = '') or (DM_Tabelas.ZqParticipante.FieldByName('ESTADOCIVIL').AsString = 'AMASIADO(A)') or (DM_Tabelas.ZqParticipante.FieldByName('ESTADOCIVIL').AsString = 'CASADO(A)') or (DM_Tabelas.ZqParticipante.FieldByName('ESTADOCIVIL').AsString = 'REL.ESTAVEL') Then Begin
         Pagina.Pages[2].TabVisible := True;
         Pagina.Pages[3].TabVisible := False;
-        if DM_Tabelas.ZQConjuge.FieldByName('regime').AsString = 'COMUNH√ÉO UNIVERSAL DE BENS' Then Begin
+        if DM_Tabelas.ZQConjuge.FieldByName('regime').AsString = 'COMUNH√O UNIVERSAL DE BENS' Then Begin
           GBPacto.Visible := True;
           ECidcasou.Text := LookupConjugeCidade('cart_cidnome', 'cidade_cart', 'nomecid');
           EEstCart.Text := LookupConjugeCidade('cart_cidest', 'cidade_cart', 'estado');
@@ -509,8 +508,8 @@ Begin
     DBEProf.Visible := True;
   end
   else if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'J' Then Begin
-    DBCBPessoa.Text := 'JUR√çDICA';
-    Label3.Caption := 'Raz√£o';
+    DBCBPessoa.Text := 'JURÕDICA';
+    Label3.Caption := 'Raz„o';
     Label5.Caption := 'Insc. Est.';
     Label6.Caption := 'C.N.P.J.';
     Label22.Caption := 'Inaugurada';
@@ -530,7 +529,7 @@ Begin
   end
   else if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'R' Then Begin
     DBCBPessoa.Text := 'RURAL';
-    Label3.Caption := 'Raz√£o';
+    Label3.Caption := 'Raz„o';
     Label5.Caption := 'Insc. Rural';
     Label6.Caption := 'C.N.P.J.';
     Label22.Caption := 'Inaugurada';
@@ -546,8 +545,8 @@ Begin
     DBEProf.Visible := False;
   end
   else if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'P' Then Begin
-    DBCBPessoa.Text := 'P√∫blica';
-    Label3.Caption := 'Raz√£o';
+    DBCBPessoa.Text := 'P˙blica';
+    Label3.Caption := 'Raz„o';
     Label6.Caption := 'C.N.P.J.';
     Label22.Caption := 'Inaugurada';
     Label5.Visible := False;
@@ -565,12 +564,12 @@ Begin
   else if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'I' Then Begin
     Label36.Visible := True;
     DBEProfResp.Visible := True;
-//    TabPag2.Caption := 'C√¥njuge';
+//    TabPag2.Caption := 'CÙnjuge';
     DBCBPessoa.Text := 'IMPUBERE';
     Label3.Caption := 'Nome';
     Label5.Caption := 'R.G.';
     Label6.Caption := 'C.P.F.';
-    Label22.Caption := 'Anivers√°rio';
+    Label22.Caption := 'Anivers·rio';
 
 //        Pagina.Pages[1].TabVisible := False;
 //        Pagina.Pages[2].TabVisible := True;
@@ -673,7 +672,7 @@ procedure TFrm_Participante.BtGravarClick(Sender: TObject);
 var
   varinsert : boolean;
 begin
-  if not Verif_senha('Participante','Gravar inclus√£o ou edi√ß√£o','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
+  if not Verif_senha('Participante','Gravar inclus„o ou ediÁ„o','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
   varinsert := False;
   if DM_Tabelas.ZqParticipante.State in [DsInsert] Then
     varinsert := True;
@@ -734,7 +733,7 @@ end;
 
 procedure TFrm_Participante.BtCancelarClick(Sender: TObject);
 begin
-  if not Verif_senha('Participante','Cancelar inclus√£o ou edi√ß√£o','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
+  if not Verif_senha('Participante','Cancelar inclus„o ou ediÁ„o','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
   DM_Tabelas.ZqParticipante.Cancel;
   DM_Tabelas.ZQresponsavel.Cancel;
   DM_Tabelas.ZQConjuge.Cancel;
@@ -775,7 +774,7 @@ end;
 procedure TFrm_Participante.BTExcluirClick(Sender: TObject);
 begin
   if not Verif_senha('Participante','Exluir','Participante: '+DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').Text+' - Qd.'+DM_Tabelas.ZQParticipante.FieldByName('nome_parte').AsString) Then Exit;
-  if simnao('Confirma a exclus√£o do participante ? ','SIM') then
+  if simnao('Confirma a exclus„o do participante ? ','SIM') then
      DM_Tabelas.ZqParticipante.Delete;
 end;
 
@@ -794,7 +793,7 @@ end;
 
 procedure TFrm_Participante.BtRelatorioClick(Sender: TObject);
 begin
-  if not Verif_senha('Participante','Relat√≥rio','') Then Exit;
+  if not Verif_senha('Participante','RelatÛrio','') Then Exit;
   jrel.Visible:=true;
 end;
 
@@ -1000,7 +999,7 @@ begin
   begin
     if empty(DM_tabelas.ZqParticipante.FieldByName('endereco').AsString) then
     begin
-      if simnao('O Endere√ßo Est√° em Branco. Deseja Cadastrar ?','SIM') then
+      if simnao('O EndereÁo Est· em Branco. Deseja Cadastrar ?','SIM') then
       begin
         FrmPesqEndereco.Top := Self.Top+100;
         FrmPesqEndereco.Left := Self.Left;
@@ -1021,7 +1020,7 @@ begin
   end
   else if (DM_Tabelas.ZqParticipante.State in [DsInsert, DsEdit]) and (DM_Tabelas.ZqParticipante.FieldByName('ende_cob').AsString<>DM_Tabelas.ZqParticipante.FieldByName('endereco').AsString) Then
   begin
-    if simnao('Atualiza o Logradouro de Cobran√ßa Igual ao Logradouro ?','SIM') then
+    if simnao('Atualiza o Logradouro de CobranÁa Igual ao Logradouro ?','SIM') then
     begin
         DM_Tabelas.ZqParticipante.FieldByName('ende_cob').AsString := DM_Tabelas.ZqParticipante.FieldByName('endereco').AsString;
         ECidaddeCob.Text := ECidEnder.Text;
@@ -1141,7 +1140,7 @@ var
   ImprimirFicha: Boolean;
 begin
   jrel.Visible := False;
-  if not Verif_senha('Participante', 'Relat√≥rios', 'Ficha Completa') then
+  if not Verif_senha('Participante', 'RelatÛrios', 'Ficha Completa') then
     Exit;
 
   IdParticipante := DM_Tabelas.ZQParticipante.FieldByName('idpaticipante').AsString;
@@ -1249,14 +1248,14 @@ procedure TFrm_Participante.DBEDoc1Exit(Sender: TObject);
 begin
   if DM_Tabelas.ZqParticipante.State in [dsInsert, dsEdit] then
   begin
-    // üîπ Valida√ß√£o do documento
+    // [nota] ValidaÁ„o do documento
     if not Verif_doc(DBEDoc1.Text, True) then
     begin
       DBEDoc1.SetFocus;
       Exit;
     end;
 
-    // üîπ Consulta no banco
+    // [nota] Consulta no banco
     with ZqParticipantes_doc do
     begin
       Close;
@@ -1269,16 +1268,16 @@ begin
 
       Open;
 
-      // üîπ Se encontrou
+      // [nota] Se encontrou
       if not IsEmpty then
       begin
-        // üîπ Evita validar contra o pr√≥prio registro
+        // [nota] Evita validar contra o prÛprio registro
         if FieldByName('idpaticipante').AsLargeInt <> DM_Tabelas.ZqParticipante.FieldByName('idpaticipante').AsLargeInt then
         begin
           if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'F' then
-            ShowMessage('CPF j√° cadastrado!')
+            ShowMessage('CPF j· cadastrado!')
           else
-            ShowMessage('CNPJ j√° cadastrado!');
+            ShowMessage('CNPJ j· cadastrado!');
 
           DBEDoc1.SetFocus;
           close;
@@ -1635,7 +1634,7 @@ end;
 procedure TFrm_Participante.JrelItems0Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Etiquetas') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Etiquetas') Then Exit;
   Self.FormStyle:=fsNormal;
   if frmMain=nil then
      frmMain:=TfrmMain.create(Application);
@@ -1663,7 +1662,7 @@ begin
     end
     else
     begin
-      if simnao('Deseja Alterar o Endere√ßo?','SIM') then
+      if simnao('Deseja Alterar o EndereÁo?','SIM') then
       begin
         FrmPesqEndereco.Top := Self.Top+100;
         FrmPesqEndereco.Left := Self.Left;
@@ -1794,7 +1793,7 @@ end;
 procedure TFrm_Participante.JrelItems1Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Etiquetas') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Etiquetas') Then Exit;
   Self.FormStyle:=fsNormal;
   if frmMain2=nil then
      frmMain2:=TfrmMain2.create(Application);
@@ -1806,7 +1805,7 @@ end;
 procedure TFrm_Participante.JrelItems2Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Ficha') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Ficha') Then Exit;
   ZqParticipantes.close;
   ZqParticipantes.SQL.clear;
 //  ZqParticipantes.SQL.Add('Select  idpaticipante,nome_parte,doc1,doc2,endereco,bairro,cidade,cep,ende_cob,bairro_cob,cidade_cob,cep_cob,Fone1,fone2,fone3,tipopessoa,aniversario,nacionalidade,');
@@ -1848,7 +1847,7 @@ end;
 procedure TFrm_Participante.JrelItems3Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Ficha por Empreendimento') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Ficha por Empreendimento') Then Exit;
 
   try
     Self.FormStyle:=fsNormal;
@@ -1866,7 +1865,7 @@ end;
 procedure TFrm_Participante.JrelItems4Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Ficha Completa') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Ficha Completa') Then Exit;
   ZqParticipantes.close;
   ZqParticipantes.SQL.clear;
 //  ZqParticipantes.SQL.Add('Select  idpaticipante,nome_parte,doc1,doc2,endereco,bairro,cidade,cep,ende_cob,bairro_cob,cidade_cob,cep_cob,Fone1,fone2,fone3,tipopessoa,aniversario,nacionalidade,');
@@ -1907,7 +1906,7 @@ end;
 procedure TFrm_Participante.JrelItems5Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Ficha por Empreendimento') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Ficha por Empreendimento') Then Exit;
 
   try
     if DM_Tabelas.ZQCidade.Active then
@@ -1928,7 +1927,7 @@ end;
 procedure TFrm_Participante.JrelItems6Click(Sender: TObject);
 begin
   jrel.Visible:=false;
-  if not Verif_senha('Participante','Relat√≥rios','Fich√°rio Completo') Then Exit;
+  if not Verif_senha('Participante','RelatÛrios','Fich·rio Completo') Then Exit;
   ZqParticipantes.Close;
   ZqParticipantes.SQL.Clear;
   ZqParticipantes.SQL.Add('Select * from participante order by nome_parte');

@@ -1,13 +1,10 @@
-ï»¿unit ReajusteDeParcelas;
+unit ReajusteDeParcelas;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids,
-    dxButton, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi, ImgList, ExtCtrls,
-  dxCore2, System.ImageList;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, XNum, XLabel3D, Mask, XDate, StdCtrls, Grids, DBGrids, DB, DBClient, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, DBCtrls, TFlatGaugeUnit,DbiProcs,Shellapi, ImgList, ExtCtrls, System.ImageList;
 
 const
   WM_ATUALIZAR_GRID_REAJUSTE = WM_APP + 170;
@@ -22,8 +19,8 @@ type
     GroupBox5: TGroupBox;
     XBanner3: TXBanner;
     XLabel3D1: TXLabel3D;
-    DXBFechar: TdxButton;
-    dxButton1: TdxButton;
+    DXBFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     DS_quadraLote: TDataSource;
     DS_Adversatemp: TDataSource;
     ZQAdvsersatemp: TZQuery;
@@ -147,12 +144,12 @@ type
     percent: TXNumEdit;
     Eadversa: TEdit;
     DBGReceb: TDBGrid;
-    DXBPrimeiro: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBProximo: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBPesquisar: TdxButton;
-    dxButton2: TdxButton;
+    DXBPrimeiro: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    dxButton2: TdxButtonArround;
     DBEIDReceb: TDBEdit;
     barra: TFlatGauge;
     GroupBox1: TGroupBox;
@@ -202,7 +199,7 @@ type
     ListBox1: TListBox;
 
 
-    dxButton3: TdxButton;
+    dxButton3: TdxButtonArround;
     DS_Entrada: TDataSource;
     ZQEntrada: TZQuery;
 
@@ -310,8 +307,8 @@ type
     XBanner5: TXBanner;
     DBGrid3: TDBGrid;
     Eloteamento: TEdit;
-    dxButton14: TdxButton;
-    dxButton13: TdxButton;
+    dxButton14: TdxButtonArround;
+    dxButton13: TdxButtonArround;
 
 
     CBDesconsidera: TCheckBox;
@@ -534,7 +531,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote nÃ£o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -829,7 +826,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1225,7 +1222,7 @@ begin
   end
   else if (percent.Value=0) and (ZQRecebtmp.RecordCount>0) then
   begin
-    showmessage('Informe o Percentual; Adicione os TÃ­tulos Selecionados no Grid !');
+    showmessage('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
     percent.SetFocus;
     exit;
   end;
@@ -1447,7 +1444,7 @@ begin
     ZQRecebimento.Open;
     ZQRecebimento.First;
   end;
-  // atÃ© aqui
+  // até aqui
   if DM_tabelas.ZQRecebimento.Active=true then
      DM_tabelas.ZQRecebimento.refresh;
 
@@ -1474,7 +1471,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1538,7 +1535,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -1793,7 +1790,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';
@@ -2109,7 +2106,7 @@ begin
      xdata:='01';
   if mmes='Fevereiro' then
      xdata:='02';
-  if mmes='MarÃ§o' then
+  if mmes='Março' then
      xdata:='03';
   if mmes='Abril' then
      xdata:='04';

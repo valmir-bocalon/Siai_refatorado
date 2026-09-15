@@ -1,13 +1,12 @@
-Ôªøunit CobrancaBancaria;
+unit CobrancaBancaria;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, XBanner, StdCtrls, Grids, DBGrids,   dxButton, Mask,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, StdCtrls, Grids, DBGrids, Mask,
   DBCtrls, DB, Gauges, XDBEdit, DBClient, ImgList, IniFiles,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, RLSaveDialog, RLFilters,
-  RLPDFFilter, RLBoleto, dxCore2, ExtCtrls, System.ImageList, ACBrBoleto,ACBrBoletoConversao,
+  RLPDFFilter, RLBoleto, ExtCtrls, System.ImageList, ACBrBoleto,ACBrBoletoConversao,
   ACBrBase, ACBrBoletoFCFortesFr;
 
 type
@@ -130,7 +129,7 @@ type
     XBanner3: TXBanner;
     Panel4: TPanel;
     XBanner4: TXBanner;
-    DXBMarcTit: TdxButton;
+    DXBMarcTit: TdxButtonArround;
     DBGTit: TDBGrid;
     Panel5: TPanel;
     XBanner5: TXBanner;
@@ -149,13 +148,13 @@ type
     chkemissao: TCheckBox;
     rgnosso: TCheckBox;
     CBTipoArq: TCheckBox;
-    dxButton1: TdxButton;
-    DBGerar: TdxButton;
-    XBRelat: TdxButton;
-    DXBFechar: TdxButton;
+    dxButton1: TdxButtonArround;
+    DBGerar: TdxButtonArround;
+    XBRelat: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
     Panel6: TPanel;
     XBanner6: TXBanner;
-    DXBMarcEmp: TdxButton;
+    DXBMarcEmp: TdxButtonArround;
     XBanner1: TXBanner;
     GroupBox2: TGroupBox;
     Label8: TLabel;
@@ -307,7 +306,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
   if empty(trim(VarPath)) then
   begin
-    showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+    showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
     exit;
   end;
 
@@ -373,25 +372,25 @@ begin
     
   varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
   Rewrite(f); //abre o arquivo para escrita
-  Write(f,'0'); // Identifica√ß√£o do Registro
-  Write(f,'1'); // Identifica√ß√£o d arquivo remessa
+  Write(f,'0'); // IdentificaÁ„o do Registro
+  Write(f,'1'); // IdentificaÁ„o d arquivo remessa
   Write(f,'REMESSA');  // literal remessa
-  Write(f,'01'); // codigo de servi√ßo
-  Write(f,'COBRANCA'); // literal do servi√ßo
+  Write(f,'01'); // codigo de serviÁo
+  Write(f,'COBRANCA'); // literal do serviÁo
   Write(f,espacos(7));
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia').AsString,4,false,' ')); // agencia
   Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_agencia_v').AsString,1,1)); // dig. verificador agencia
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta').AsString,8,true,' ')); // codigo do cedente conta
   Write(f,copy(DM_Tabelas.ZQContaBancaria.FieldByName('n_conta_v').AsString,1,1)); // dig. verificador conta
   Write(f,Formatar(DM_Tabelas.ZQContaBancaria.FieldByName('convenio').AsString,6,false,'0')); // convenio
-  Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz√£o social da empresa
+  Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+espacos(30),1,30)); //  raz„o social da empresa
 
 //  Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentocod_no_banco.Value),20)); //  codigo da empresa no banco (banco fornece)
 
-  Write(f,'756'); // numero do bradesco na camara da compensa√ß√£o
+  Write(f,'756'); // numero do bradesco na camara da compensaÁ„o
   Write(f,'BANCOOBCED     '); //  Nome do banco por extenso//
   Write(f,varhoje); // data de hoje
-  Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa2').AsInteger,7));  //  n¬∫ sequencial de remessa
+  Write(f,inttostrZero(DM_Tabelas.ZQBancRemes.FieldByName('remessa2').AsInteger,7));  //  n∫ sequencial de remessa
   Write(f,espacos(287)); // branco
   Writeln(f,'000001');
   FrmRelRecebimento.CDS_MarcaTit.First;
@@ -416,7 +415,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
     else Begin
 
       if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -497,7 +496,7 @@ begin
       ZQRemesRec.Filtered:=false;
       VarDif :=FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value;
 
-      Write(f,'1'); // Identifica√ß√£o do Registro
+      Write(f,'1'); // IdentificaÁ„o do Registro
       if length(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)=14 Then
         Write(f,'01')   // tipo cpf
       else
@@ -513,13 +512,13 @@ begin
 
       if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
       begin
-        if empty(VarDif) then // coluna 38 at√© 62
+        if empty(VarDif) then // coluna 38 atÈ 62
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n¬∫ de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n∫ de controle da empresa;
         end
         else
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n¬∫ de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n∫ de controle da empresa;
           Write(f,VarDif);
         end;
       end
@@ -527,40 +526,40 @@ begin
       begin
         inc(carne);
         ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-        if empty(VarDif) then // coluna 38 at√© 62
+        if empty(VarDif) then // coluna 38 atÈ 62
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n¬∫ de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n∫ de controle da empresa;
         end
         else
         begin
-          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n¬∫ de controle da empresa;
+          Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n∫ de controle da empresa;
           Write(f,VarDif);
         end;
       end;
-      Write(f,varnossnum); //N¬∫ bancario para cobrana com e em registro
+      Write(f,varnossnum); //N∫ bancario para cobrana com e em registro
       Write(f,'0000   ');  //  zero
 
       Write(f,' '); //Indicador de Sacador
-      Write(f,'   '); //Prefixo do t√≠tulo
-      Write(f,'000'); //Varia√ß√£o
-      Write(f,'0'); //Conta Cau√ß√£o
-      Write(f,'000000'); //C√≥digo de Responsabilidade + DV
-      Write(f,'000000'); //N√∫mero do border√¥
+      Write(f,'   '); //Prefixo do tÌtulo
+      Write(f,'000'); //VariaÁ„o
+      Write(f,'0'); //Conta CauÁ„o
+      Write(f,'000000'); //CÛdigo de Responsabilidade + DV
+      Write(f,'000000'); //N˙mero do borderÙ
       Write(f,'00000'); //filter
       Write(f,'01'); //Carteira/Modalidade
       Write(f,'00'); //Comando/Movimento
-      Write(f,vardoc); //Seu N√∫mero
+      Write(f,vardoc); //Seu N˙mero
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento
       Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
-      Write(f,'756'); // numero do banco na camara da compensa√ß√£o
+      Write(f,'756'); // numero do banco na camara da compensaÁ„o
  //     Write(f,Formatar(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value,4,false,' ')); // agencia
 //      Write(f,copy(FrmRelRecebimento.CDSEmpreendimenton_agencia_v.value,1,1)); // dig. verificador agencia
       Write(f,'00000'); // Agencia depositaria
-      Write(f,'01'); //Esp√©cie do T√≠tulo
-      Write(f,'0'); //Aceite do T√≠tulo
+      Write(f,'01'); //EspÈcie do TÌtulo
+      Write(f,'0'); //Aceite do TÌtulo
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao      
-      Write(f,'00'); //Primeira instru√ß√£o codificada
-      Write(f,'00'); //Segunda instru√ß√£o
+      Write(f,'00'); //Primeira instruÁ„o codificada
+      Write(f,'00'); //Segunda instruÁ„o
       Write(f,varmora); // Mora por dia de atraso
       Write(f,'000000'); // Taxa de multa
       Write(f,'0'); // Filter
@@ -580,17 +579,17 @@ begin
       Write(f,copy(charrem(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8)) ;
       Write(f,copy(charrem(removeacentos(FrmRelRecebimento.CDS_MarcaTitnomecidade.Value))+espacos(15),1,15)) ;
       Write(f,copy(charrem(FrmRelRecebimento.CDS_MarcaTituf.Value)+espacos(2),1,2)) ;
-      Write(f,COPY('SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(40),1,40));  // decomposi√ß√£o
+      Write(f,COPY('SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(40),1,40));  // decomposiÁ„o
       Write(f,'00');  // Protesto
       Write(f,' ');  //  Filler
-      Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial
+      Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial
 {      tam:=length(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text);
       tam:=37+tam;
       tam:=49-tam;
 
       VarDif:='';
-      Write(f,'   '); // codigo do banco a ser debitado na camara de compensa√ß√£o
-//      Write(f,'237'); // codigo do banco a ser debitado na camara de compensa√ß√£o
+      Write(f,'   '); // codigo do banco a ser debitado na camara de compensaÁ„o
+//      Write(f,'237'); // codigo do banco a ser debitado na camara de compensaÁ„o
       Write(f,'2'); // cobrar multa
       Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),4));  // % de multa a ser considerado
 
@@ -598,24 +597,24 @@ begin
       if CBBancoemite.Checked Then
         Write(f,'1')  //   banco emite e registra o beleto
       else
-        Write(f,'2');  //   n√≥s emitimos o boleto e o banco registra o beleto
-      Write(f,'N');  //  N√£o registra na cobran√ßa. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
-//      Write(f,inttostrZero(0,10));  // Identifica√ß√£o da opera√ß√£o do banco
-      Write(f,espacos(10));  //  Identifica√ß√£o da opera√ß√£o do banco
+        Write(f,'2');  //   nÛs emitimos o boleto e o banco registra o beleto
+      Write(f,'N');  //  N„o registra na cobranÁa. Diferente de N registra e emite boleto caso os dados estejam errados  coluna 84
+//      Write(f,inttostrZero(0,10));  // IdentificaÁ„o da operaÁ„o do banco
+      Write(f,espacos(10));  //  IdentificaÁ„o da operaÁ„o do banco
       Write(f,' ');  //  Indicador rateio credito
       Write(f,' ');  //  cod. endereco de aviso do sacado
       Write(f,'  ');  //  Brancos              coluna 107
       Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  //  codigo de ocorrencia
-      Write(f,vardoc);  //  n¬∫ do documento      coluna 111
+      Write(f,vardoc);  //  n∫ do documento      coluna 111
 
 //      Write(f,inttostrZero(truncar(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
       Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo
-      Write(f,'000');  // Banco encarregado da cobran√ßa
+      Write(f,'000');  // Banco encarregado da cobranÁa
       Write(f,'00000'); // Agencia depositaria
       Write(f,'01');  // Especie de Titulo  01 = duplicata
-      Write(f,'N');  //  identifica√ß√£o - sempre N             coluna 150
+      Write(f,'N');  //  identificaÁ„o - sempre N             coluna 150
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao
-      Write(f,'0000'); //  1¬™ e 2¬™ instru√ß√£o
+      Write(f,'0000'); //  1™ e 2™ instruÁ„o
       Write(f,varmora); // Mora por dia de atraso
       Write(f,'000000'); //copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,1,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,4,2)+ copy(DM_Tabelas.ZQRecebimentoDt_Vencimento.Text,9,2));  // Limite para desconto
       Write(f,'0000000000000');  //  Valor do desconto
@@ -629,10 +628,10 @@ begin
       Write(f,varcpfcnpj);  // cpf/cnpj
       Write(f,copy(FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+espacos(40),1,40));  // nome do sacado  coluna 235
       Write(f,copy(varendereco+espacos(40),1,40));  // Endereco   275 a 314
-      Write(f,espacos(12)); // 1¬™ mensagem 315 a 326
-//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1¬™ mensagem 315 a 326
+      Write(f,espacos(12)); // 1™ mensagem 315 a 326
+//      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1™ mensagem 315 a 326
       Write(f,copy(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8));  // cep
-      Write(f,COPY('SR. CAIXA, N¬∫O RECEBER AP√ìS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposi√ß√£o}
+      Write(f,COPY('SR. CAIXA, N∫O RECEBER AP”S 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposiÁ„o}
 
 
 
@@ -646,12 +645,12 @@ begin
         Write(f,'2');  //  Tipo de Registro
         Write(f,varmens1+varmens2+varmens3+varmens4);  //  mensagens 80 cacacteres cada
         Write(f,espacos(45));  //  reserva   -  filler
-        Write(f,DM_Tabelas.ZQContaBancariacarteira.Value);  // C√≥digo da carteira
+        Write(f,DM_Tabelas.ZQContaBancariacarteira.Value);  // CÛdigo da carteira
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimenton_agencia.Value),5));  // codigo da agencia cedente, sem o digito
         Write(f,inttostrZero(strtofloat(FrmRelRecebimento.CDSEmpreendimentoconta.Value),7)); // conta corrente
         Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.Value,1,1)); // digito da conta
-        Write(f,varnossnum); //N¬∫ bancario para cobrana com e em registro
-        Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial
+        Write(f,varnossnum); //N∫ bancario para cobrana com e em registro
+        Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial
       end;}
     end;
     FrmRelRecebimento.CDS_MarcaTit.Next;
@@ -668,9 +667,9 @@ begin
   zqcarne.Close;
   //TRAILLER
   inc(varregistro);
-  Write(f,'9');  // identifica√ß√£o do registro
+  Write(f,'9');  // identificaÁ„o do registro
   Write(f,espacos(393));   // branco
-  Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial
+  Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial
   Closefile(f); //fecha o handle de arquivo
   Gauge1.Visible := False;
 
@@ -709,7 +708,7 @@ begin
   DM_Tabelas.ZQRemes_Receb_atualiza.close;
   Gauge1.Progress:=0;
   Gauge1.Visible := false;
-  showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+  showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
 end;
 
 procedure TFrmCobrancaBancaria.SICOOB_240;
@@ -758,7 +757,7 @@ begin
     //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -839,20 +838,20 @@ begin
       1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
       2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
       3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-      4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+      4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
       5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-      6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-      7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-      8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+      6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+      7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+      8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
       9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
       10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
       11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-      12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-      13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-      14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-      15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-      16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-      17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+      12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+      13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+      14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+      15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+      16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+      17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
   end;
   ACBrBoleto1.Banco.TipoCobranca:=cobBancoob;
   ACBrBoleto1.Banco.TamanhoMaximoNossoNum:=7;
@@ -971,7 +970,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
     else Begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
@@ -1132,7 +1131,7 @@ begin
           Sacado.UF         := Trim(FrmRelRecebimento.CDS_MarcaTitUF.Value);
           Sacado.CEP        := Trim(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value));
           ValorAbatimento   := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-          LocalPagamento    := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+          LocalPagamento    := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
           CodigoMoraJuros   := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
           CodigoMora        := '1'; //1-por dia 2-mensal 3-isento
@@ -1144,7 +1143,7 @@ begin
           else
              PercentualMulta   := 0;
 
-      //            MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+      //            MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
           MultaValorFixo    := False;
 
          if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -1181,50 +1180,50 @@ begin
 
          if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
          begin
-              if empty(VarDif) then // coluna 38 at√© 62
+              if empty(VarDif) then // coluna 38 atÈ 62
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+'  N.Carn√™:'+strzero(carne,5);
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+'  N.CarnÍ:'+strzero(carne,5);
               end
               else
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5)+'-'+Vardif;
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5)+'-'+Vardif;
               end;
          end
          else
          begin
               inc(carne);
               ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-              if empty(VarDif) then // coluna 38 at√© 62
+              if empty(VarDif) then // coluna 38 atÈ 62
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5);
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5);
               end
               else
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5)+'-'+Vardif;
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5)+'-'+Vardif;
               end;
          end;
 //         if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2)>0 then
 //         begin
-//            Mensagem.Text := Mensagem.Text +#13+' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'));
+//            Mensagem.Text := Mensagem.Text +#13+' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'));
 //         end;
             case CBIdentOcorr.ItemIndex of
                 1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                 2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                 3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                 5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                 9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                 10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                 11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
             end;
         end;
     end;
@@ -1294,7 +1293,7 @@ begin
     Gauge1.Progress:=0;
     Gauge1.Visible := false;
     if cb2via.Checked=false then
-       showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+       showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
   end;
 
 
@@ -1349,7 +1348,7 @@ begin
     //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -1431,20 +1430,20 @@ begin
       1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
       2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
       3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-      4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+      4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
       5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-      6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-      7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-      8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+      6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+      7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+      8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
       9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
       10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
       11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-      12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-      13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-      14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-      15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-      16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-      17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+      12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+      13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+      14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+      15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+      16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+      17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
   end;
   ACBrBoleto1.Banco.TipoCobranca:=cobitau;
   ACBrBoleto1.Banco.TamanhoMaximoNossoNum:=8;
@@ -1565,7 +1564,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
     else Begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
@@ -1730,7 +1729,7 @@ begin
           Sacado.UF         := Trim(FrmRelRecebimento.CDS_MarcaTitUF.Value);
           Sacado.CEP        := Trim(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value));
           ValorAbatimento   := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-          LocalPagamento    := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+          LocalPagamento    := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
           CodigoMoraJuros   := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
           CodigoMora        := '1'; //1-por dia 2-mensal 3-isento
@@ -1742,7 +1741,7 @@ begin
           else
              PercentualMulta   := 0;
 
-      //            MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+      //            MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
           MultaValorFixo    := False;
 
          if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -1779,50 +1778,50 @@ begin
 
          if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
          begin
-              if empty(VarDif) then // coluna 38 at√© 62
+              if empty(VarDif) then // coluna 38 atÈ 62
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+'  N.Carn√™:'+strzero(carne,5);
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+'  N.CarnÍ:'+strzero(carne,5);
               end
               else
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5)+'-'+Vardif;
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5)+'-'+Vardif;
               end;
          end
          else
          begin
               inc(carne);
               ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-              if empty(VarDif) then // coluna 38 at√© 62
+              if empty(VarDif) then // coluna 38 atÈ 62
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5);
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5);
               end
               else
               begin
-                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.Carn√™:'+strzero(carne,5)+'-'+Vardif;
+                Mensagem.Text     := 'SR. CAIXA, NAO RECEBER APOS 30 (TRINTA) DIAS DE VENCIMENTO. N.Tit.'+FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+' N.CarnÍ:'+strzero(carne,5)+'-'+Vardif;
               end;
          end;
 //         if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2)>0 then
 //         begin
-//            Mensagem.Text := Mensagem.Text +#13+' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'));
+//            Mensagem.Text := Mensagem.Text +#13+' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'));
 //         end;
             case CBIdentOcorr.ItemIndex of
                 1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                 2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                 3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                 5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                 9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                 10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                 11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
             end;
         end;
     end;
@@ -1894,7 +1893,7 @@ begin
     DM_Tabelas.ZQContaBancaria.refresh;
     DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
     if cb2via.Checked=false then
-       showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+       showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
   end;
 
 End;
@@ -1964,7 +1963,7 @@ begin
 
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -2068,20 +2067,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca          := cobBradesco;
@@ -2125,7 +2124,7 @@ begin
         if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
         else
          if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
         else
         Begin
           if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -2154,7 +2153,7 @@ begin
           if (not empty(FrmRelRecebimento.CDS_MarcaTitnumboleto.Value)) and (rgnosso.Checked=true) then
           begin
             randomize;
-            num := Round(random(999)); // 999 √© o limite do numero randomico
+            num := Round(random(999)); // 999 È o limite do numero randomico
             codcli:=num+strtoint(inttostr(eita)+FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
             codnosso:= copy(trim(FrmRelRecebimento.CDS_MarcaTitIdreceb.text+inttostr(num+eita)),1,11);
 
@@ -2163,7 +2162,7 @@ begin
           begin
           //mudei aqui 09/06/2021 para ver se para de dar nosso numero duplicado
             randomize;
-            num := Round(random(999)); // 999 √© o limite do numero randomico
+            num := Round(random(999)); // 999 È o limite do numero randomico
             codcli:=num+strtoint(inttostr(eita)+FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
             codnosso:= copy(trim(FrmRelRecebimento.CDS_MarcaTitIdreceb.text+inttostr(num+eita)),1,11);
           end;
@@ -2273,19 +2272,19 @@ begin
 
             if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
             begin
-              if empty(VarDif) then // coluna 38 at√© 62
-                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25)  // uso da empresa, n¬∫ de controle da empresa;
+              if empty(VarDif) then // coluna 38 atÈ 62
+                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25)  // uso da empresa, n∫ de controle da empresa;
               else
-                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,24)+VarDif;  // uso da empresa, n¬∫ de controle da empresa;
+                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,24)+VarDif;  // uso da empresa, n∫ de controle da empresa;
             end
             else
             begin
               inc(carne);
               ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-              if empty(VarDif) then // coluna 38 at√© 62
-                  SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25) // uso da empresa, n¬∫ de controle da empresa;
+              if empty(VarDif) then // coluna 38 atÈ 62
+                  SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25) // uso da empresa, n∫ de controle da empresa;
               else
-                  SeuNumero         :=copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24)+VarDif;  // uso da empresa, n¬∫ de controle da empresa;
+                  SeuNumero         :=copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24)+VarDif;  // uso da empresa, n∫ de controle da empresa;
             end;
             VarDif:='';
 
@@ -2409,9 +2408,9 @@ begin
             Sacado.UF         := Trim(FrmRelRecebimento.CDS_MarcaTitUF.Value);
             Sacado.Bairro     := Trim(FrmRelRecebimento.CDS_MarcaTitbairro.value);
 //            if CBParcelas.Checked=true then
-//               Sacado.Avalista:=COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60)  // decomposi√ß√£o
+//               Sacado.Avalista:=COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60)  // decomposiÁ„o
 //            else
-//               Sacado.Avalista:=COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60);  // decomposi√ß√£o
+//               Sacado.Avalista:=COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60);  // decomposiÁ„o
 
 
           //dados da cobranca
@@ -2431,7 +2430,7 @@ begin
               ValorDesconto              := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
             end;
             ValorAbatimento   := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-            LocalPagamento := 'PAG√ÅVEL PREFERENCIALMENTE NA REDE BRADESCO OU BRADESCO EXPRESSO';//trim(DM_comercio.ZQConta_BancariaInstrucoes.Value);
+            LocalPagamento := 'PAG¡VEL PREFERENCIALMENTE NA REDE BRADESCO OU BRADESCO EXPRESSO';//trim(DM_comercio.ZQConta_BancariaInstrucoes.Value);
 
              DataProtesto   := 0; //FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
             // dias de protestos e carteira de envio
@@ -2444,7 +2443,7 @@ begin
             CodigoMora        :='1'; // 1 = Valor 2 = Percentual 9 = Dispensar Multa
             CodigoMulta       := cmPercentual;//(cmValorFixo, cmPercentual)
             DataMulta         := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+1;
-   //       MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+   //       MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
             MultaValorFixo    := False;
             if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
                ValorMoraJuros            := truncar(DM_Tabelas.ZQContaBancaria.FieldByName('taxadiaria').AsFloat*100,2)
@@ -2466,13 +2465,13 @@ begin
               begin
                // mensagem.Add('NAO RECEBER APOS 30 DIAS DO VENCIMENTO.');
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end
               else
               begin
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end;
             end
@@ -2482,13 +2481,13 @@ begin
               begin
           //      mensagem.Add('NAO RECEBER APOS 30 DIAS DO VENCIMENTO.');
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end
               else
               begin
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end;
             end;
@@ -2496,20 +2495,20 @@ begin
                 1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                 2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                 3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                 5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                 9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                 10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                 11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
             end;
           end;
 
@@ -2571,20 +2570,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
 
@@ -2627,7 +2626,7 @@ begin
         if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
         else
          if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
         else
         Begin
           if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -2741,19 +2740,19 @@ begin
 
             if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
             begin
-              if empty(VarDif) then // coluna 38 at√© 62
-                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25)  // uso da empresa, n¬∫ de controle da empresa;
+              if empty(VarDif) then // coluna 38 atÈ 62
+                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25)  // uso da empresa, n∫ de controle da empresa;
               else
-                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,24)+VarDif;  // uso da empresa, n¬∫ de controle da empresa;
+                 SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,24)+VarDif;  // uso da empresa, n∫ de controle da empresa;
             end
             else
             begin
               inc(carne);
               ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-              if empty(VarDif) then // coluna 38 at√© 62
-                  SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25) // uso da empresa, n¬∫ de controle da empresa;
+              if empty(VarDif) then // coluna 38 atÈ 62
+                  SeuNumero         := copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25) // uso da empresa, n∫ de controle da empresa;
               else
-                  SeuNumero         :=copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24)+VarDif;  // uso da empresa, n¬∫ de controle da empresa;
+                  SeuNumero         :=copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24)+VarDif;  // uso da empresa, n∫ de controle da empresa;
             end;
             VarDif:='';
 
@@ -2866,9 +2865,9 @@ begin
             Sacado.UF         := Trim(FrmRelRecebimento.CDS_MarcaTitUF.Value);
             Sacado.Bairro     := Trim(FrmRelRecebimento.CDS_MarcaTitbairro.value);
 //            if CBParcelas.Checked=true then
-//               Sacado.Avalista:=COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60)  // decomposi√ß√£o
+//               Sacado.Avalista:=COPY('N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60)  // decomposiÁ„o
 //            else
-//               Sacado.Avalista:=COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60);  // decomposi√ß√£o
+//               Sacado.Avalista:=COPY('Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(60),1,60);  // decomposiÁ„o
 
 
           //dados da cobranca
@@ -2888,7 +2887,7 @@ begin
               ValorDesconto              := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
             end;
             ValorAbatimento   := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-            LocalPagamento := 'PAG√ÅVEL PREFERENCIALMENTE NA REDE BRADESCO OU BRADESCO EXPRESSO';//trim(DM_comercio.ZQConta_BancariaInstrucoes.Value);
+            LocalPagamento := 'PAG¡VEL PREFERENCIALMENTE NA REDE BRADESCO OU BRADESCO EXPRESSO';//trim(DM_comercio.ZQConta_BancariaInstrucoes.Value);
 
              DataProtesto   := 0; //FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
             // dias de protestos e carteira de envio
@@ -2901,7 +2900,7 @@ begin
             CodigoMora        :='1'; // 1 = Valor 2 = Percentual 9 = Dispensar Multa
             CodigoMulta       := cmPercentual;//(cmValorFixo, cmPercentual)
             DataMulta         := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+1;
-   //       MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+   //       MultaValorFixo    := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
             MultaValorFixo    := False;
             if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
                ValorMoraJuros            := truncar(DM_Tabelas.ZQContaBancaria.FieldByName('taxadiaria').AsFloat*100,2)
@@ -2925,13 +2924,13 @@ begin
               begin
             //    mensagem.Add('NAO RECEBER APOS 30 DIAS DO VENCIMENTO.');
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end
               else
               begin
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end;
             end
@@ -2941,13 +2940,13 @@ begin
               begin
       //          mensagem.Add('NAO RECEBER APOS 30 DIAS DO VENCIMENTO.');
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end
               else
               begin
                 if DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat>0 then
-                   mensagem.Add(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
+                   mensagem.Add(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')));
                 mensagem.Add(' N.Parc.:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
               end;
             end;
@@ -2955,20 +2954,20 @@ begin
                 1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                 2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                 3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                 5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                 9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                 10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                 11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
             end;
           end;
 
@@ -2990,7 +2989,7 @@ begin
   end;
 
 
-    //Emiss√£o dos Boletos
+    //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     ACBrBoleto1.Imprimir;
@@ -3133,7 +3132,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -3221,20 +3220,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.LayoutRemessa                                    :=c400;
@@ -3242,20 +3241,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.Digito                                     := 9;
@@ -3304,7 +3303,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -3333,8 +3332,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='01'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -3402,7 +3401,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -3414,7 +3413,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -3548,12 +3547,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
 
@@ -3561,7 +3560,7 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               :=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                   inc(carne);
                 end;
 
@@ -3569,20 +3568,20 @@ begin
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -3616,7 +3615,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+      showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
     end;
   end
   else
@@ -3638,20 +3637,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobBancoDoBrasil;
@@ -3697,7 +3696,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -3726,8 +3725,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='01'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -3795,7 +3794,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -3807,7 +3806,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -3919,12 +3918,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
                 if zqcarne.active=false then
@@ -3935,26 +3934,26 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               :=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                 end;
                 case CBIdentOcorr.ItemIndex of
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -3986,7 +3985,7 @@ begin
   end;
 
 
-    //Emiss√£o dos Boletos
+    //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     ACBrBoleto1.Imprimir;
@@ -4188,7 +4187,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -4277,20 +4276,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobSantander;
@@ -4337,7 +4336,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -4366,8 +4365,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
               else
@@ -4434,7 +4433,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -4446,7 +4445,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -4568,7 +4567,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
 
                 if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2)>0 then
                 begin
@@ -4579,12 +4578,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
 
@@ -4592,27 +4591,27 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               := FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                   inc(carne);
                 end;
                 case CBIdentOcorr.ItemIndex of
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -4645,7 +4644,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+      showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
     end;
   end
   else
@@ -4668,20 +4667,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobSantander;
@@ -4746,7 +4745,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -4775,8 +4774,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -4844,7 +4843,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -4856,7 +4855,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -4960,7 +4959,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
 
                 if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2)>0 then
                 begin
@@ -4971,12 +4970,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
                 if zqcarne.active=false then
@@ -4987,26 +4986,26 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               := FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                 end;
                 case CBIdentOcorr.ItemIndex of
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -5038,7 +5037,7 @@ begin
   end;
 
 
-    //Emiss√£o dos Boletos
+    //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     ACBrBoleto1.Imprimir;
@@ -5155,7 +5154,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -5244,20 +5243,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobSantander;
@@ -5303,7 +5302,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -5332,8 +5331,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
               else
@@ -5400,7 +5399,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -5412,7 +5411,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -5560,7 +5559,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
 
                 if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2)>0 then
                 begin
@@ -5571,12 +5570,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
 
@@ -5584,27 +5583,27 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               := FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                   inc(carne);
                 end;
                 case CBIdentOcorr.ItemIndex of
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -5637,7 +5636,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+      showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
     end;
   end
   else
@@ -5660,20 +5659,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobSantander;
@@ -5719,7 +5718,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -5748,8 +5747,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -5817,7 +5816,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'PAG√ÅVEL EM QUALQUER BANCO AT√â O VENCIMENTO';
+                LocalPagamento                                     := 'PAG¡VEL EM QUALQUER BANCO AT… O VENCIMENTO';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -5829,7 +5828,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -5959,7 +5958,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
 
                 if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2)>0 then
                 begin
@@ -5970,12 +5969,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
                 if zqcarne.active=false then
@@ -5987,26 +5986,26 @@ begin
                 if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
                 begin
                   ql                                               :=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.Carn√™:'+strzero(carne,5);
+                  Mensagem.Text                                    := 'NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' N.CarnÍ:'+strzero(carne,5);
                 end;
                 case CBIdentOcorr.ItemIndex of
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -6038,7 +6037,7 @@ begin
   end;
 
 
-    //Emiss√£o dos Boletos
+    //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     ACBrBoleto1.Imprimir;
@@ -6157,7 +6156,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+        showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -6246,20 +6245,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobCaixaEconomica;
@@ -6329,7 +6328,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -6362,8 +6361,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -6431,7 +6430,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'EM TODA A REDE BANC√ÅRIA E SEUS CORRESPONDENTES AT√â O VALOR LIMITE';
+                LocalPagamento                                     := 'EM TODA A REDE BANC¡RIA E SEUS CORRESPONDENTES AT… O VALOR LIMITE';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -6443,7 +6442,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -6591,7 +6590,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
                 if CBCarteiraEnvio.Checked then
                    CarteiraEnvio     := tceBanco   // vai retornar '1'   tceCedente; // vai retornar '2'    coluna 93
                 else
@@ -6605,12 +6604,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
 
@@ -6625,20 +6624,20 @@ begin
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -6671,7 +6670,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+      showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
     end;
   end
   else
@@ -6694,20 +6693,20 @@ begin
           1  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaRegistrar);                       {Remessa}
           2  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaBaixar);                          {Pedido de Baixa}
           3  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestoFinsFalimentares);        {Pedido de Protesto Falimentar}
-          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess√£o de Abatimento}
+          4  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaConcederAbatimento);              {Concess„o de Abatimento}
           5  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarAbatimento);              {Cancelamento de Abatimento concedido}
-          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {Altera√ß√£o de vencimento}
-          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {Altera√ß√£o do controle do participante}
-          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {Altera√ß√£o de seu n√∫mero}
+          6  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarVencimento);               {AlteraÁ„o de vencimento}
+          7  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarControleParticipante);     {AlteraÁ„o do controle do participante}
+          8  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAlterarNumeroControle);           {AlteraÁ„o de seu n˙mero}
           9  : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaProtestar);                       {Pedido de protesto}
           10 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtestoBaixa);  {Sustar protesto e baixar}
           11 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarInstrucaoProtesto);       {Sustar protesto e manter na carteira}
-          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {Transfer√™ncia entre Carteiras}
-          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. Transfer√™ncia entre Carteiras}
-          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {Altera√ß√£o de Outros Dados}
-          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de Cr√©dito}
-          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de cr√©dito.}
+          12 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransfCessaoCreditoIDProd10);     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+          13 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaTransferenciaCarteira);           {TransferÍncia entre Carteiras}
+          14 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaDevTransferenciaCarteira);        {Dev. TransferÍncia entre Carteiras}
+          15 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaOutrasOcorrencias);               {AlteraÁ„o de Outros Dados}
+          16 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaAcertarRateioCredito);            {Acerto nos dados do rateio de CrÈdito}
+          17 : ACBrBoleto1.Banco.TipoOcorrenciaToCodRemessa(toRemessaCancelarRateioCredito);           {Cancelamento do rateio de crÈdito.}
       end;
 
       ACBrBoleto1.Banco.TipoCobranca                               :=cobCaixaEconomica;
@@ -6773,7 +6772,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
             end
             else
             begin
@@ -6806,8 +6805,8 @@ begin
                  ACBrBoleto1.Cedente.Modalidade                    :='101'
               else
                  ACBrBoleto1.Cedente.Modalidade                    := trim(DM_Tabelas.ZQContaBancaria.FieldByName('variacao').AsString);  {Tipo de Modalidade Carteira
-                                                                                                      101-Cobran√ßa R√°pida COM Registro  cliente emite os boletos
-                                                                                                      104-Cobran√ßa Eletr√¥nica COM Registro bco emite os boletos}
+                                                                                                      101-CobranÁa R·pida COM Registro  cliente emite os boletos
+                                                                                                      104-CobranÁa EletrÙnica COM Registro bco emite os boletos}
 
               if CBBancoemite.checked then
                  ACBrBoleto1.Cedente.ResponEmissao := tbBancoEmite
@@ -6875,7 +6874,7 @@ begin
                 //dados da cobranca
 
                 ValorAbatimento                                    := 0; //StrToCurrDef(edtValorAbatimento.Text,0);
-                LocalPagamento                                     := 'EM TODA A REDE BANC√ÅRIA E SEUS CORRESPONDENTES AT√â O VALOR LIMITE';
+                LocalPagamento                                     := 'EM TODA A REDE BANC¡RIA E SEUS CORRESPONDENTES AT… O VALOR LIMITE';
 
                 CodigoMoraJuros                                    := cjValorDia; //(cjValorDia, cjTaxaMensal, cjIsento, cjValorMensal, cjTaxaDiaria);
                 CodigoMora                                         := '1'; //1-por dia 2-mensal 3-isento
@@ -6887,7 +6886,7 @@ begin
                 else
                    PercentualMulta                                 := 0;
 
-       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N√£o cobrar multa
+       //            MultaValorFixo                                := 1; //1-Cobrar Multa Valor Fixo / 2-Percentual / 0-N„o cobrar multa
                 MultaValorFixo                                     := False;
 
       //            DataProtesto                                   := FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Value+5;
@@ -7018,7 +7017,7 @@ begin
                 EspecieMod                                         := '$';
                 Aceite                                             := atNao; //atSim
                 DataProcessamento                                  := Now;
-                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se √© s√≥ um digito mesmo
+                Carteira                                           := trim(DM_Tabelas.ZQContaBancaria.FieldByName('carteira').AsString);//copy(trim(DM_Tabelas.ZQContaBancariacarteira.Value),3,1);  // verificar se È sÛ um digito mesmo
                 if CBCarteiraEnvio.Checked then
                    CarteiraEnvio     := tceBanco   // vai retornar '1'   tceCedente; // vai retornar '2'    coluna 93
                 else
@@ -7032,12 +7031,12 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100),2) >0 then
-    //               RLBTitulo2.Instrucoes.Text                    := 'At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+    //               RLBTitulo2.Instrucoes.Text                    := 'AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
     //                                             ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
     //            else
                 if zqcarne.active=false then
@@ -7054,20 +7053,20 @@ begin
                     1  : OcorrenciaOriginal.Tipo := toRemessaRegistrar;                       {Remessa}
                     2  : OcorrenciaOriginal.Tipo := toRemessaBaixar;                          {Pedido de Baixa}
                     3  : OcorrenciaOriginal.Tipo := toRemessaProtestoFinsFalimentares;        {Pedido de Protesto Falimentar}
-                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess√£o de Abatimento}
+                    4  : OcorrenciaOriginal.Tipo := toRemessaConcederAbatimento;              {Concess„o de Abatimento}
                     5  : OcorrenciaOriginal.Tipo := toRemessaCancelarAbatimento;              {Cancelamento de Abatimento concedido}
-                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {Altera√ß√£o de vencimento}
-                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {Altera√ß√£o do controle do participante}
-                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {Altera√ß√£o de seu n√∫mero}
+                    6  : OcorrenciaOriginal.Tipo := toRemessaAlterarVencimento;               {AlteraÁ„o de vencimento}
+                    7  : OcorrenciaOriginal.Tipo := toRemessaAlterarControleParticipante;     {AlteraÁ„o do controle do participante}
+                    8  : OcorrenciaOriginal.Tipo := toRemessaAlterarNumeroControle;           {AlteraÁ„o de seu n˙mero}
                     9  : OcorrenciaOriginal.Tipo := toRemessaProtestar;                       {Pedido de protesto}
                     10 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtestoBaixa;  {Sustar protesto e baixar}
                     11 : OcorrenciaOriginal.Tipo := toRemessaCancelarInstrucaoProtesto;       {Sustar protesto e manter na carteira}
-                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {Transfer√™ncia Cess√£o cr√©dito ID. Prod.10}
-                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {Transfer√™ncia entre Carteiras}
-                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. Transfer√™ncia entre Carteiras}
-                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {Altera√ß√£o de Outros Dados}
-                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de Cr√©dito}
-                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de cr√©dito.}
+                    12 : OcorrenciaOriginal.Tipo := toRemessaTransfCessaoCreditoIDProd10;     {TransferÍncia Cess„o crÈdito ID. Prod.10}
+                    13 : OcorrenciaOriginal.Tipo := toRemessaTransferenciaCarteira;           {TransferÍncia entre Carteiras}
+                    14 : OcorrenciaOriginal.Tipo := toRemessaDevTransferenciaCarteira;        {Dev. TransferÍncia entre Carteiras}
+                    15 : OcorrenciaOriginal.Tipo := toRemessaOutrasOcorrencias;               {AlteraÁ„o de Outros Dados}
+                    16 : OcorrenciaOriginal.Tipo := toRemessaAcertarRateioCredito;            {Acerto nos dados do rateio de CrÈdito}
+                    17 : OcorrenciaOriginal.Tipo := toRemessaCancelarRateioCredito;           {Cancelamento do rateio de crÈdito.}
                 end;
               end;
 
@@ -7099,7 +7098,7 @@ begin
   end;
 
 
-    //Emiss√£o dos Boletos
+    //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     ACBrBoleto1.Imprimir;
@@ -7210,7 +7209,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo n√£o pode ficar em branco, tem que ser remessa.rem');
+      showmessage('O nome do Arquivo n„o pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -7283,14 +7282,14 @@ begin
 
     varhoje := copy(datetostr(date),1,2)+copy(datetostr(date),4,2)+copy(datetostr(date),9,2);
     Rewrite(f); //abre o arquivo para escrita
-    Write(f,'0'); // Identifica√ß√£o do Registro
-    Write(f,'1'); // Identifica√ß√£o d arquivo remessa
+    Write(f,'0'); // IdentificaÁ„o do Registro
+    Write(f,'1'); // IdentificaÁ„o d arquivo remessa
     if CBTipoArq.Checked=false Then
        Write(f,'REMESSA')  // literal remessa
     else
        Write(f,'TESTE  ');  // literal remessa
-    Write(f,'01'); // codigo de servi√ßo
-    Write(f,'COBRANCA       '); // literal do servi√ßo
+    Write(f,'01'); // codigo de serviÁo
+    Write(f,'COBRANCA       '); // literal do serviÁo
 //    Write(f,space(7));
     Write(f,'0');
     Write(f,alltrim(strzero(strtoint(FrmRelRecebimento.CDSEmpreendimenton_agencia.value),4)));
@@ -7301,16 +7300,16 @@ begin
     Write(f,FrmRelRecebimento.CDSEmpreendimenton_agencia.value+FrmRelRecebimento.CDSEmpreendimentoconta.value+FrmRelRecebimento.CDSEmpreendimentoconta_v.value);
 //    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentoconta_v.value,1,1));
     Write(f,space(2));
-    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+space(30),1,30)); //  raz√£o social da empresa
-    Write(f,'399'); // numero do brasil na camara da compensa√ß√£o
+    Write(f,copy(FrmRelRecebimento.CDSEmpreendimentonometitular.Value+space(30),1,30)); //  raz„o social da empresa
+    Write(f,'399'); // numero do brasil na camara da compensaÁ„o
     Write(f,'HSBC           '); //  Nome do banco por extenso//
     Write(f,varhoje); // data de hoje
-    Write(f,'01600'); // densidade de grava√ß√£o
-    Write(f,'BPI'); // Unidade de densidade de grava√ß√£o
+    Write(f,'01600'); // densidade de gravaÁ„o
+    Write(f,'BPI'); // Unidade de densidade de gravaÁ„o
     Write(f,space(2));
-    Write(f,'LANCV08'); // Unidade de densidade de grava√ß√£o
+    Write(f,'LANCV08'); // Unidade de densidade de gravaÁ„o
     Write(f,space(277));
-//    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  n¬∫ sequencial de remessa
+//    Write(f,inttostrZero(DM_Tabelas.ZQBancRemesremessa.Value,7));  //  n∫ sequencial de remessa
 //    Write(f,espacos(22));  //  branco
   //  Write(f,FrmRelRecebimento.CDSEmpreendimentoconvenio.Value); // convenio 7 digitos
 //    Write(f,espacos(258)); // branco
@@ -7341,7 +7340,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
         if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente')
+           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente')
       else
       Begin
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -7474,7 +7473,7 @@ begin
 
         numeroremessa:=ZQRemesRec.FieldByName('remessa').AsInteger;
 
-        Write(f,'1'); // Identifica√ß√£o do Registro
+        Write(f,'1'); // IdentificaÁ„o do Registro
         if length(tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString))=11 Then
            Write(f,'01')   // tipo cpf
         else
@@ -7501,13 +7500,13 @@ begin
 
         if ql=FrmRelRecebimento.CDS_MarcaTitquadralote.Value then
         begin
-          if empty(VarDif) then // coluna 38 at√© 62
+          if empty(VarDif) then // coluna 38 atÈ 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n¬∫ de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n∫ de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n¬∫ de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n∫ de controle da empresa;
             Write(f,VarDif);
           end;
         end
@@ -7515,39 +7514,39 @@ begin
         begin
           inc(carne);
           ql:=FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
-          if empty(VarDif) then // coluna 38 at√© 62
+          if empty(VarDif) then // coluna 38 atÈ 62
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n¬∫ de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(8),1,25));  // uso da empresa, n∫ de controle da empresa;
           end
           else
           begin
-            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n¬∫ de controle da empresa;
+            Write(f,copy(FrmRelRecebimento.CDS_MarcaTitIdreceb.Text+espacos(tam)+strzero(carne,5)+espacos(7),1,24));  // uso da empresa, n∫ de controle da empresa;
             Write(f,VarDif);
           end;
         end;
         VarDif:='';
         if CBBancoemite.Checked=false then
-           Write(f,varnossonumero) //N¬∫ bancario para cobrana com e em registro    63 a 73
+           Write(f,varnossonumero) //N∫ bancario para cobrana com e em registro    63 a 73
         else
-           Write(f,'00000000000');//N¬∫ bancario para cobrana com e em registro    63 a 73
+           Write(f,'00000000000');//N∫ bancario para cobrana com e em registro    63 a 73
 
         Write(f,'0000000000000000000000000000000000'); // da 74 a 107
 
-//        Write(f,DM_Tabelas.ZQContaBancariavariacao.value);  // varia√ß√£o da carteira  108 a 108
+//        Write(f,DM_Tabelas.ZQContaBancariavariacao.value);  // variaÁ„o da carteira  108 a 108
         if not empty(FrmRelRecebimento.CDSEmpreendimentocarteira.Value) then
-            Write(f,alltrim(COPY(inttostr(strtoint(FrmRelRecebimento.CDSEmpreendimentocarteira.Value)),1,1)))  // C√≥digo da carteira 108 a 108
+            Write(f,alltrim(COPY(inttostr(strtoint(FrmRelRecebimento.CDSEmpreendimentocarteira.Value)),1,1)))  // CÛdigo da carteira 108 a 108
         else
-            Write(f,'1');  // C√≥digo da carteira 108 a 108
+            Write(f,'1');  // CÛdigo da carteira 108 a 108
         Write(f,copy(CBIdentOcorr.Items.Strings[CBIdentOcorr.ItemIndex],1,2));  // codigo de ocorrencia 109 a 110
-        Write(f,vardoc);  //  n¬∫ do documento // Seu N√∫mero/N√∫mero do T√≠tulo Atribu√≠do pelo Cedente 111 a 120
+        Write(f,vardoc);  //  n∫ do documento // Seu N˙mero/N˙mero do TÌtulo AtribuÌdo pelo Cedente 111 a 120
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.Text,9,2));  // Vencimento 121 a 126
         Write(f,inttostrZero(ExRound(FrmRelRecebimento.CDS_MarcaTitvalor.Value,2)*100,13));   //  Valor do titulo 127  a 139
         Write(f,'399');
         Write(f,'00000');
-        Write(f,'09'); // 01-DP-duplicata mercantil 09-CE-Cobran√ßa Escritural 148 a 149
+        Write(f,'09'); // 01-DP-duplicata mercantil 09-CE-CobranÁa Escritural 148 a 149
         Write(f,'N'); // aceite 150 a 150
         Write(f,copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,1,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,4,2)+ copy(FrmRelRecebimento.CDS_MarcaTitDt_Entrada.Text,9,2));  // emissao 151 a 156
-        Write(f,'1500'); //  1¬™ e 2¬™ instru√ß√£o 157 a 160
+        Write(f,'1500'); //  1™ e 2™ instruÁ„o 157 a 160
         Write(f,varmora); // Mora por dia de atraso   161 a 173
         if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100),2) >0then
         begin
@@ -7567,10 +7566,10 @@ begin
            Write(f,'2'); // cobrar multa (1-valor  2-percentual  9-sem multa)
            data:=FrmRelRecebimento.CDS_MarcaTitDt_Vencimento.value+1;
 
-           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da Cobran√ßa da Multa
+           Write(f,copy(datetostr(data),1,2)+ copy(datetostr(data),4,2)+ copy(datetostr(data),9,2));  // Data de Inicio da CobranÁa da Multa
            Write(f,inttostrZero(truncar(FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Value*100,0),12));  // % de multa a ser considerado
            Write(f,espacos(372));
-           Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial 395 a 400
+           Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial 395 a 400
            inc(varregistro);
         end;
         }
@@ -7603,18 +7602,18 @@ begin
         varmens1 := 'APOS VENCIMENTO, PAGAVEL NO BANCO BRADESCO';
         varmens2 := copy(' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+' '+DM_Tabelas.ZQBol_men.FieldByName('linha2').AsString,1,40);
         if truncar(((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100),2) >0 then
-           varmens3 := copy(' At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')),1,40)
+           varmens3 := copy(' AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2),'###,###,##0.00')),1,40)
         else
            varmens3 := copy(' '+DM_Tabelas.ZQBol_men.FieldByName('linha3').AsString,1,40);
         varmens4 := copy(' '+DM_Tabelas.ZQBol_men.FieldByName('linha4').AsString,1,40);
 
         // tony pediu para tirar o numero da parcela 25/11/2013
-//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposi√ß√£o
+//        Write(f,COPY('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value+espacos(40),1,40));  // decomposiÁ„o
 
-        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposi√ß√£o
+        Write(f,COPY(varmens1+varmens2+varmens3+varmens4+espacos(40),1,40));  // decomposiÁ„o
   //      Write(f,espacos(3)); //392 a 394
         //inc(varregistro);
-        Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial 395 a 400
+        Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial 395 a 400
         inc(varregistro);
 
 
@@ -7636,16 +7635,16 @@ begin
     zqcarne.Close;
 
 //    inc(varregistro);
-    Write(f,'9');  // identifica√ß√£o do registro
+    Write(f,'9');  // identificaÁ„o do registro
     Write(f,espacos(393));   // branco
-    Writeln(f,inttostrZero(varregistro,6)); //  n¬∫ seguencial
+    Writeln(f,inttostrZero(varregistro,6)); //  n∫ seguencial
     Closefile(f); //fecha o handle de arquivo
 
-    showmessage('Relat√≥rio de Boletos gerado com sucesso!!!'+chr(13)+'O relat√≥rio foi gravado em '+VARARQ);
+    showmessage('RelatÛrio de Boletos gerado com sucesso!!!'+chr(13)+'O relatÛrio foi gravado em '+VARARQ);
   end;
   end;
 
-  //Emiss√£o dos Boletos
+  //Emiss„o dos Boletos
   if CBBancoemite.Checked=false then
   begin
     FrmRelRecebimento.CDS_MarcaTit.First;
@@ -7664,7 +7663,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n√£o ser√° anexada a cobran√ßa bancaria,'+chr(13)+'pois est√° com o cadastro incompleto da documenta√ß√£o do cliente');
+             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'n„o ser· anexada a cobranÁa bancaria,'+chr(13)+'pois est· com o cadastro incompleto da documentaÁ„o do cliente');
           end
           else
           begin
@@ -7771,12 +7770,12 @@ begin
               RLBTitulo2.ValorDesconto   := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
             end;
            // tony pediu para trocar a mensagem no dia 28/11/2012
-//            RLBTitulo2.Instrucoes.Text := trim('N¬∫O RECEBER AP√ìS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo2.Instrucoes.Text := trim('N∫O RECEBER AP”S 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo2.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            if truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2)>0 then
-//               RLBTitulo2.Instrucoes.Text :='At√© o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
+//               RLBTitulo2.Instrucoes.Text :='AtÈ o vencimento desconto de R$ '+trim(transform(truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancariaPerc_descontos.Value)/100,2),'###,###,##0.00'))+#13+
 //                                            ' COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value
 //            else
                RLBTitulo2.Instrucoes.Text := 'COBRAR MULTA DE '+FrmRelRecebimento.CDSEmpreendimentojurosemboleto.Text+'% SOBRE O VALOR DA PARCELA'+#13+' NAO RECEBER APOS 30 DIAS DO VENCIMENTO. '+#13+' Pagto. Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value;
@@ -7823,7 +7822,7 @@ begin
             RLBTitulo2.Cedente.Nome := trim(CadempRAZ_EMP.Value);
             //dados do sacado
             RLBTitulo2.Sacado.Nome := Trim(CadcliRAZAO.Value);
-            if cadclitip_pessoa.Value='JUR√çDICA' then
+            if cadclitip_pessoa.Value='JURÕDICA' then
             begin
               RLBTitulo2.Sacado.NumeroCPFCGC:=charrem(trim(CadcliCGC.value));
               RLBTitulo2.Sacado.TipoInscricao := tiPessoaJuridica;
@@ -7961,7 +7960,7 @@ begin
  FrmRelRecebimento.CDSEmpreendimento.First;
  FrmRelRecebimento.CDS_MarcaTit.First;
   if copy(FrmRelRecebimento.XDEVencimentoInicio.DateText,1,2)='00' Then Begin
-    showmessage('A data de vencimento n√£o foi informada...  Arquivo n√£o ser√° gerado....');
+    showmessage('A data de vencimento n„o foi informada...  Arquivo n„o ser· gerado....');
     close;
     exit;
   end;
@@ -7983,7 +7982,7 @@ begin
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='SICOOB_240' Then SICOOB_240
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='CAIXA_240' Then caixa_240
 
-        else showmessage('Este banco n√£o esta configurado para gerar arquivo magn√©tico...');
+        else showmessage('Este banco n„o esta configurado para gerar arquivo magnÈtico...');
       end;
 //    end;
     FrmRelRecebimento.CDSEmpreendimento.Next;
@@ -8043,7 +8042,7 @@ begin
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='SICOOB_240' Then SICOOB_240
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='BRASIL_400' Then BRASIL_400
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='SANTANDER_400' Then santander_400
-  else showmessage('Este banco n√£o esta configurado para gerar arquivo magn√©tico...');
+  else showmessage('Este banco n„o esta configurado para gerar arquivo magnÈtico...');
 //  XBRelat.Enabled := true;
 //  XBRelat.SetFocus;
 end;

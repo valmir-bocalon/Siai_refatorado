@@ -1,17 +1,15 @@
-﻿unit acertaproximo_reajuste_em_recebimento;
+unit acertaproximo_reajuste_em_recebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,  
-  dxButton, Gauges, StdCtrls, DBClient, Grids, DBGrids, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Gauges, StdCtrls, DBClient, Grids, DBGrids;
 
 type
   TFrm_acertaproximo_reajuste_em_recebimento = class(TForm)
     Gauge1: TGauge;
-    BTFechar: TdxButton;
-    dxButton1: TdxButton;
+    BTFechar: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     Label1: TLabel;
     DS_Recebimento: TDataSource;
     ZQRecebimento: TZQuery;
@@ -52,7 +50,7 @@ type
     recebetempProximo_Reajuste: TWideStringField;
     DBGrid1: TDBGrid;
     Label2: TLabel;
-    dxButton2: TdxButton;
+    dxButton2: TdxButtonArround;
     ZQEntrada: TZQuery;
 
 

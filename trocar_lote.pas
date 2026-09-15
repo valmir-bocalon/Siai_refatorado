@@ -1,14 +1,13 @@
-Ôªøunit trocar_lote;
+unit trocar_lote;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, XDBNum, XNum, StdCtrls, wwdbdatetimepicker, Mask, DBCtrls,
-  Grids, DBGrids, ComCtrls, TabNotBk,   dxButton, ExtCtrls, XBanner,
+  Grids, DBGrids, ComCtrls, TabNotBk, ExtCtrls, XBanner,
   XDate, XDBEdit, DB, JvExControls, JvXPCore, JvXPBar, ZAbstractRODataset,
   ZAbstractDataset, ZDataset, JvExComCtrls, JvDateTimePicker, XDBDate,
-  FnpNumericEdit,Comobj, dxCore2;
+  FnpNumericEdit,Comobj;
 
 type
   TFrm_Trocar = class(TForm)
@@ -16,17 +15,17 @@ type
     Label19: TLabel;
     Panel2: TPanel;
     XBanner8: TXBanner;
-    BTExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BTPesquisar: TdxButton;
-    BtUltimo: TdxButton;
-    BtProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BtPrimeiro: TdxButton;
-    BTFechar: TdxButton;
-    BtGravar: TdxButton;
+    BTExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BTPesquisar: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BtProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BtPrimeiro: TdxButtonArround;
+    BTFechar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
     Pag_Venda: TTabbedNotebook;
     XBanner1: TXBanner;
     DBGVenda: TDBGrid;
@@ -40,7 +39,7 @@ type
     DBGrid2: TDBGrid;
     Label14: TLabel;
     DBEImovel: TDBEdit;
-    DXBAchaLote: TdxButton;
+    DXBAchaLote: TdxButtonArround;
     DBELote: TDBEdit;
     DBEdit6: TDBEdit;
     Label2: TLabel;
@@ -295,7 +294,7 @@ type
 
     Label78: TLabel;
     Epercentual: TFnpNumericEdit;
-    BtRelatorio: TdxButton;
+    BtRelatorio: TdxButtonArround;
     imovelant: TEdit;
     Edvenda: TEdit;
     edloteamento: TEdit;
@@ -570,9 +569,9 @@ var
   bmLocal : TBookmark;
 
 begin
-  if simnao('Confirma a Opera√ß√£o ?','SIM')=false then
+  if simnao('Confirma a OperaÁ„o ?','SIM')=false then
   begin
-    showmessage('O Processo n√£o ser√° executado.');
+    showmessage('O Processo n„o ser· executado.');
     JDEntrada.SetFocus;
     exit;
   end;
@@ -590,7 +589,7 @@ begin
     exit;
   end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA n√£o deve ser menor que o valor venal...');
+//    Showmessage('O valor de VENDA n„o deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
@@ -642,8 +641,8 @@ begin
         ZQcomprador_cessaoidcomprador.Value:=DM_Tabelas.ZQCompradoridcomprador.Value;
         ZQcomprador_cessaoidparticipante.Value:=DM_Tabelas.ZQCompradorpaticipante_idpaticipante.Value;
         ZQcomprador_cessaonome_parte.Value:=Zpartnome_parte.Value;
-        ZQcomprador_cessaohistorico.Value:='Cess√£o de direito de compra do im√≥vel pelos cedente(s):'+Zpartnome_parte.Value+', '+Zpartnacionalidade.Value+', '+Zpartprofissao.Value+', '+Zpartestadocivil.Value+', portador do CPF/CNPJ n¬∫ '+
-                                            Zpartdoc1.Value+', para o(s) cession√°rio(s): '+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ n¬∫ '+DM_Tabelas.CDSCompradorTempdoc1.Value;
+        ZQcomprador_cessaohistorico.Value:='Cess„o de direito de compra do imÛvel pelos cedente(s):'+Zpartnome_parte.Value+', '+Zpartnacionalidade.Value+', '+Zpartprofissao.Value+', '+Zpartestadocivil.Value+', portador do CPF/CNPJ n∫ '+
+                                            Zpartdoc1.Value+', para o(s) cession·rio(s): '+DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ n∫ '+DM_Tabelas.CDSCompradorTempdoc1.Value;
         ZQcomprador_cessaohora_cessao.value:=time;
         ZQcomprador_cessao.post;
       end;
@@ -658,20 +657,20 @@ begin
   begin
     DM_Tabelas.CDSCompradorTemp.First;
     DM_Tabelas.ZQComprador.First;
-    historico:='Cess√£o de direito de compra do im√≥vel pelos cedente(s):';
+    historico:='Cess„o de direito de compra do imÛvel pelos cedente(s):';
     while not DM_Tabelas.ZQComprador.Eof do
     begin
       Zpart.close;
       Zpart.SQL.clear;
       Zpart.SQL.Add('select * from participante where idpaticipante='+quotedstr(DM_Tabelas.ZQCompradorpaticipante_idpaticipante.Text));
       Zpart.open;
-      historico:=historico+Zpartnome_parte.Value+', '+Zpartnacionalidade.Value+', '+Zpartprofissao.Value+', '+Zpartestadocivil.Value+', portador do CPF/CNPJ n¬∫ '+Zpartdoc1.Value+' e ';
+      historico:=historico+Zpartnome_parte.Value+', '+Zpartnacionalidade.Value+', '+Zpartprofissao.Value+', '+Zpartestadocivil.Value+', portador do CPF/CNPJ n∫ '+Zpartdoc1.Value+' e ';
       DM_Tabelas.ZQComprador.Delete;
     end;
-    historico2:=', para o(s) cession√°rio(s): ';
+    historico2:=', para o(s) cession·rio(s): ';
     while not DM_Tabelas.CDSCompradorTemp.eof do
     begin
-       historico2:=historico2+' Com '+DM_Tabelas.CDSCompradorTemppercentual.Text+' %, ' +DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ n¬∫ '+DM_Tabelas.CDSCompradorTempdoc1.Value+' e ';
+       historico2:=historico2+' Com '+DM_Tabelas.CDSCompradorTemppercentual.Text+' %, ' +DM_Tabelas.CDSCompradorTempnomeparticipante.Value+', '+DM_Tabelas.CDSCompradorTempprofissao.Value+', '+DM_Tabelas.CDSCompradorTempestadocivil.Value+', portador do CPF/CNPJ n∫ '+DM_Tabelas.CDSCompradorTempdoc1.Value+' e ';
        DM_Tabelas.CDSCompradorTemp.Next;
     end;
     tm:=length(historico);
@@ -706,7 +705,7 @@ begin
   end;}
 
 
-  // at√© aqui
+  // atÈ aqui
 
 {  DM_Tabelas.CDSCompradorTemp.First;
   while not DM_Tabelas.CDSCompradorTemp.Eof do begin
@@ -937,7 +936,7 @@ begin
   edvenda.Text:='';
   DM_Tabelas.ZQImovel.Locate('idimovel',DBEImovel.Text,[]);
   DM_Tabelas.ZQImovel.Edit;
-  DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'N¬∫O';
+  DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'N∫O';
   DM_Tabelas.ZQImovel.Post;
 
 
@@ -1258,7 +1257,7 @@ begin
 
      sleep(10000);
 
-     // 2¬™ via
+     // 2™ via
 
      // Cria Objeto principal de Controle
      WinWord := CreateOleObject('Word.Application');

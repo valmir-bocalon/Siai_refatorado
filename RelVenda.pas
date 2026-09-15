@@ -1,20 +1,18 @@
-Ôªøunit RelVenda;
+unit RelVenda;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, XBanner, Mask, XDate, ExtCtrls, Grids, DBGrids,
-    dxButton, CheckLst, DB, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, DBClient, TFlatRadioButtonUnit, IniFiles, Gauges, dxCore2,system.Threading,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, XBanner, Mask, XDate, ExtCtrls, Grids, DBGrids, CheckLst, DB, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, DBClient, TFlatRadioButtonUnit, IniFiles, Gauges,system.Threading,
   FnpNumericEdit;
 
 type
   TFrm_RelVenda = class(TForm)
     XBanner14: TXBanner;
     Label19: TLabel;
-    DXBImprimir: TdxButton;
-    DXBFechar: TdxButton;
+    DXBImprimir: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
     GroupBox1: TGroupBox;
     XBanner1: TXBanner;
     Label1: TLabel;
@@ -33,7 +31,7 @@ type
     DBGrid3: TDBGrid;
     EComprador: TEdit;
     CLBEmpree: TCheckListBox;
-    DXBMarcEmpree: TdxButton;
+    DXBMarcEmpree: TdxButtonArround;
     DS_Venda: TDataSource;
     ZQVenda: TZQuery;
 
@@ -1407,13 +1405,13 @@ begin
     begin
       if FrmRelReceb02_diaria=nil then
          FrmRelReceb02_diaria:=TFrmRelReceb02_diaria.Create(Application);
-      FrmRelReceb02_diaria.RLLabel2.Caption:='Per√≠odo de '+XDEEntradaInicio.Text + ' at√© '+XDEEntradaFinal.Text;
+      FrmRelReceb02_diaria.RLLabel2.Caption:='PerÌodo de '+XDEEntradaInicio.Text + ' atÈ '+XDEEntradaFinal.Text;
       FrmRelReceb02_diaria.RLReport1.PreviewModal;
       FrmRelReceb02_diaria:=nil;
     end
     else
     begin
-      Showmessage('N√£o h√° Venda nesse Per√≠odo.');
+      Showmessage('N„o h· Venda nesse PerÌodo.');
     end;
     DXBImprimir.Enabled:=true;
     ZQdiaria.Close;
@@ -1469,13 +1467,13 @@ begin
     begin
       if FrmRelReceb02_cessao=nil then
          FrmRelReceb02_cessao:=TFrmRelReceb02_cessao.Create(Application);
-      FrmRelReceb02_cessao.RLLabel2.Caption:='Per√≠odo de '+XDEEntradaInicio.Text + ' at√© '+XDEEntradaFinal.Text;
+      FrmRelReceb02_cessao.RLLabel2.Caption:='PerÌodo de '+XDEEntradaInicio.Text + ' atÈ '+XDEEntradaFinal.Text;
       FrmRelReceb02_cessao.RLReport1.PreviewModal;
       FrmRelReceb02_cessao:=nil;
     end
     else
     begin
-      Showmessage('N√£o h√° Cess√£o nesse per√≠odo.');
+      Showmessage('N„o h· Cess„o nesse perÌodo.');
     end;
     ZQcessao.Close;
   end
@@ -1531,13 +1529,13 @@ begin
     begin
       if not assigned(FrmRelReceb02_rescisao) then
          FrmRelReceb02_rescisao:=TFrmRelReceb02_rescisao.Create(Application);
-      FrmRelReceb02_rescisao.RLLabel2.Caption:='Per√≠odo de '+XDEEntradaInicio.Text + ' at√© '+XDEEntradaFinal.Text;
+      FrmRelReceb02_rescisao.RLLabel2.Caption:='PerÌodo de '+XDEEntradaInicio.Text + ' atÈ '+XDEEntradaFinal.Text;
       FrmRelReceb02_rescisao.RLReport1.PreviewModal;
       FrmRelReceb02_rescisao:=nil;
     end
     else
     begin
-      Showmessage('N√£o h√° Rescis√£o nesse per√≠odo.');
+      Showmessage('N„o h· Rescis„o nesse perÌodo.');
     end;
     ZQRescisao.Close;
   end
@@ -1754,7 +1752,7 @@ begin
       FrmRelReceb03.ZQparcelas.First;
       FrmRelReceb03.ZQparcelas.recordcount;
 
-      FrmRelReceb03.RLLabel2.Caption:='Per√≠odo de '+XDEEntradaInicio.Text + ' at√© '+XDEEntradaFinal.Text;
+      FrmRelReceb03.RLLabel2.Caption:='PerÌodo de '+XDEEntradaInicio.Text + ' atÈ '+XDEEntradaFinal.Text;
 
       ZQcomprador_cessao.MasterSource:=nil;
       ZQcomprador_cessao.MasterFields:='';
@@ -2008,7 +2006,7 @@ begin
         ZQVenda.SQL.Add('Select * from relquitados where sld=0 ');
         ZQVenda.Open;
          ZQVenda.RecordCount;
-       // at√© aqui
+       // atÈ aqui
 
         {    ZQVenda.close;
         ZQVenda.SQL.Clear;
@@ -2463,7 +2461,7 @@ begin
             ZQrelquitados.ParamByName('dt2').AsDate:=XDEEntradaFinal.DateValue;
             ZQrelquitados.Open;
             ZQrelquitados.First;
-           // FrmRelReceb02_quitado.RLLabel2.Caption:='Per√≠odo de '+XDEEntradaInicio.Text + ' at√© '+XDEEntradaFinal.Text;
+           // FrmRelReceb02_quitado.RLLabel2.Caption:='PerÌodo de '+XDEEntradaInicio.Text + ' atÈ '+XDEEntradaFinal.Text;
             if FrmRelReceb02_quitado=nil then
                FrmRelReceb02_quitado:=TFrmRelReceb02_quitado.Create(Application);
 
@@ -2663,7 +2661,7 @@ begin
           ZQTemp3.SQL.Clear;
           ZQTemp3.SQL.Add('CREATE TEMPORARY TABLE `'+varschemata+'`.`tempmensal` AS ');
           ZQTemp3.SQL.Add(' ( select *,month(datavenda) as Mes, case month(datavenda)');
-          ZQTemp3.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Mar√ßo''');
+          ZQTemp3.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''MarÁo''');
           ZQTemp3.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
           ZQTemp3.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
           ZQTemp3.SQL.Add(' when 10 then ''Outubro'' when 11 then ''Novembro'' when 12 then ''Dezembro''');
@@ -2744,7 +2742,7 @@ begin
         else
         begin
           if CBanalitico.Checked=false then
-             showmessage('Nenhuma Venda Nesse Per√≠odo!');
+             showmessage('Nenhuma Venda Nesse PerÌodo!');
         end;
       end;
       baixa.close;
@@ -2908,7 +2906,7 @@ begin
       end;
     end
     else
-      Showmessage('Esta Quadra e lote n√£o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote n„o foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

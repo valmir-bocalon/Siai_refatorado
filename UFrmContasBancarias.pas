@@ -2,29 +2,27 @@
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs,   dxButton, XBanner, StdCtrls, ExtCtrls, Mask, DBCtrls,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, XBanner, StdCtrls, ExtCtrls, Mask, DBCtrls,
   JvExControls, JvButton, JvNavigationPane, Grids, DBGrids, DB, XDBNum,
   XDBDate, wwdbdatetimepicker, TFlatPanelUnit, ComCtrls, TabNotBk,
-  TFlatGroupBoxUnit, ZAbstractRODataset, ZAbstractDataset, ZDataset,
-  dxCore2, XNum, XDate,acbrutil;
+  TFlatGroupBoxUnit, ZAbstractRODataset, ZAbstractDataset, ZDataset, XNum, XDate,acbrutil;
 
 type
   TFrmCad_ContasBancarias = class(TForm)
     Panel1: TPanel;
-    DXBExcluir: TdxButton;
-    DXBEditar: TdxButton;
-    DXBCancelar: TdxButton;
-    DXBGravar: TdxButton;
-    DXBPesquisar: TdxButton;
-    DXBRelatorios: TdxButton;
-    DXBFechar: TdxButton;
-    DXBUltimo: TdxButton;
-    DXBProximo: TdxButton;
-    DXBAnterior: TdxButton;
-    DXBPrimeiro: TdxButton;
-    DXBIncluir: TdxButton;
+    DXBExcluir: TdxButtonArround;
+    DXBEditar: TdxButtonArround;
+    DXBCancelar: TdxButtonArround;
+    DXBGravar: TdxButtonArround;
+    DXBPesquisar: TdxButtonArround;
+    DXBRelatorios: TdxButtonArround;
+    DXBFechar: TdxButtonArround;
+    DXBUltimo: TdxButtonArround;
+    DXBProximo: TdxButtonArround;
+    DXBAnterior: TdxButtonArround;
+    DXBPrimeiro: TdxButtonArround;
+    DXBIncluir: TdxButtonArround;
     Label1: TLabel;
     DBGConta_Bancaria: TDBGrid;
     PagContaBanco: TTabbedNotebook;
@@ -53,12 +51,12 @@ type
     DBESenhaBancaria: TDBEdit;
     GroupBox1: TGroupBox;
     DBGlimiteEspecial: TDBGrid;
-    DXBIncluirEspecial: TdxButton;
-    DXBExcluirEspecial: TdxButton;
-    DXBEditarEspecial: TdxButton;
+    DXBIncluirEspecial: TdxButtonArround;
+    DXBExcluirEspecial: TdxButtonArround;
+    DXBEditarEspecial: TdxButtonArround;
     XNEvalorespecial: TXDBNumEdit;
-    DXBGravarespecial: TdxButton;
-    DXBCancelarEspecial: TdxButton;
+    DXBGravarespecial: TdxButtonArround;
+    DXBCancelarEspecial: TdxButtonArround;
     DBEDataValida: TwwDBDateTimePicker;
     dbcbativa: TDBComboBox;
     DBEAbertura: TwwDBDateTimePicker;
@@ -90,7 +88,7 @@ type
     Label12: TLabel;
     Eparticipante: TEdit;
     DBESeq: TDBEdit;
-    dxButtonREMESSA: TdxButton;
+    dxButtonREMESSA: TdxButtonArround;
     numero: TLabel;
     Label22: TLabel;
     DBEdit1: TDBEdit;

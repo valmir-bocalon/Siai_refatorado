@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Mask, DBGrids, XEdit, XBanner, dxButton;
+  Dialogs, StdCtrls, Mask, DBGrids, XEdit, XBanner;
 
 type
   TFrmContraSenha = class(TForm)

@@ -1,12 +1,11 @@
-﻿unit usimulaAditamento;
+unit usimulaAditamento;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+uses ButtonDxArround, Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, XBanner, Vcl.StdCtrls, XNum, XLabel3D,
   Vcl.ExtCtrls, ACBrBase, ACBrEnterTab,math, Data.DB, Datasnap.DBClient,
-  Vcl.Grids, Vcl.DBGrids, dxCore2, dxButton;
+  Vcl.Grids, Vcl.DBGrids;
 
 type
   Tfrmsimulaaditamento = class(TForm)
@@ -41,8 +40,8 @@ type
     CdsAditamentosld_devedor: TFloatField;
     CdsAditamentoindice: TFloatField;
     DBGrid1: TDBGrid;
-    dxButton5: TdxButton;
-    dxButton1: TdxButton;
+    dxButton5: TdxButtonArround;
+    dxButton1: TdxButtonArround;
     Shape3: TShape;
     Shape4: TShape;
     procedure FormShow(Sender: TObject);

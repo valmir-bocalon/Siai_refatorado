@@ -1,13 +1,12 @@
-ï»¿unit RelRecebimento;
+unit RelRecebimento;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, CheckLst, XEdit, Mask, XDate, ExtCtrls, XBanner,
-  XLabel3D, dxButton, DB, ZAbstractRODataset, ZAbstractDataset,
+  XLabel3D, DB, ZAbstractRODataset, ZAbstractDataset,
   ZDataset, JvExControls, JvSpecialProgress, Grids, DBGrids, DBClient,
-  DBCtrls, TFlatCheckBoxUnit, ActnList, IniFiles, XNum, Provider, dxCore2,
+  DBCtrls, TFlatCheckBoxUnit, ActnList, IniFiles, XNum, Provider,
   System.Actions,system.Threading;
 
 type
@@ -20,8 +19,8 @@ type
     Label2: TLabel;
     XLabel3D1: TXLabel3D;
     RGFormato: TRadioGroup;
-    DXBFechar: TdxButton;
-    DXBImprimir: TdxButton;
+    DXBFechar: TdxButtonArround;
+    DXBImprimir: TdxButtonArround;
     DS_TempReceber: TDataSource;
     ZQTempReceber: TZQuery;
     GroupBox5: TGroupBox;
@@ -785,7 +784,7 @@ type
 
     DS_MarcaTit: TDataSource;
 
-    dxbSelecionar: TdxButton;
+    dxbSelecionar: TdxButtonArround;
     stotais: TCheckBox;
 
     DataZQTempReceber2: TDataSource;
@@ -1426,8 +1425,8 @@ type
 
 
 
-    DXBMarcDoc: TdxButton;
-    dbxmarcempre: TdxButton;
+    DXBMarcDoc: TdxButtonArround;
+    dbxmarcempre: TdxButtonArround;
     Eadversa: TEdit;
 
     CDSTipoDocsomadescontos: TFloatField;
@@ -1921,7 +1920,7 @@ begin
       zqfinanciamento.SQL.Add(' and RE.DT_Entrada between :dt1 and :dt2');
       zqfinanciamento.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       zqfinanciamento.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       zqfinanciamento.SQL.Add(' and RE.DT_Vencimento between :dt3 and :dt4');
@@ -1929,7 +1928,7 @@ begin
       zqfinanciamento.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       zqfinanciamento.SQL.Add(' and RB.DT_Rec between :dt5 and :dt6');
@@ -1937,7 +1936,7 @@ begin
       zqfinanciamento.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       zqfinanciamento.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -1945,7 +1944,7 @@ begin
       zqfinanciamento.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;  }
     zqfinanciamento.SQL.Add(' group by RE.quadralote order by lt.apelido,re.nomeadversa,re.quadralote');
 //    zqfinanciamento.SQL.Add(' group by RE.quadralote,re.saldo  order by re.quadralote,re.saldo desc,RE.'+VArOrdem);
@@ -2013,7 +2012,7 @@ begin
     if frm_financiamento=nil then
       frm_financiamento:=Tfrm_financiamento.Create(Application);
 //    if not empty(vrtexto) Then
-//      frm_financiamento.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+//      frm_financiamento.RLLabel2.Caption := 'Período de : '+vrtexto;
 
 //    frm_financiamento.RLGroup1.DataFields:='idloteamento;'+VArOrdem;
 
@@ -2036,13 +2035,13 @@ begin
     vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
 
     if not empty(XDEVencimentoInicio.Text) Then
-      vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' Ã  '+XDEVencimentoFinal.Text;
+      vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' à '+XDEVencimentoFinal.Text;
     if not empty(XDEEntradaInicio.Text) Then
-      vartitulo := vartitulo + ', com EmissÃ£o de '+XDEEntradaInicio.Text+' Ã  '+XDEEntradaFinal.Text;
+      vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' à '+XDEEntradaFinal.Text;
     if not empty(XDEBaixasInicio.Text) Then
-      vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' Ã  '+XDEBaixasFinal.Text;
+      vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' à '+XDEBaixasFinal.Text;
     if not empty(XDERefInicio.Text) Then
-      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' Ã  '+XDERefFinal.Text;
+      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
 
     vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
 
@@ -2101,13 +2100,13 @@ begin
       ZQTempReceber.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
       ZQTempReceber.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZQTempReceber.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZQTempReceber.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
       ZQTempReceber.ParamByName('dt3').AsDate:=strtodate(XDEVencimentoInicio.DateText);
       ZQTempReceber.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       ZQTempReceber.SQL.Add(' and BX.DT_Rec between :dt5 and :dt6');
@@ -2118,7 +2117,7 @@ begin
       ZQTempReceber.SQL.Add(' and BX.dataref between :dt7 and :dt8');
       ZQTempReceber.ParamByName('dt7').AsDate:=strtodate(XDERefInicio.DateText);
       ZQTempReceber.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
-      Vrtexto := 'Baixado de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Baixado de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
     // 24/11/2010
 //    if CBDesconsidera.Checked Then
@@ -2129,9 +2128,9 @@ begin
     ZQTempReceber.Open;
 
     if not empty(vrtexto) Then
-      FrmRelReceb04.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto+' - Ordem '+VArOrdem;
+      FrmRelReceb04.RLLabel2.Caption := 'Período de : '+vrtexto+' - Ordem '+VArOrdem;
 
-    FrmRelReceb04.RLLabel1.Caption := 'Contas Receber - Parcelas Fora do MÃªs de Vecto.';
+    FrmRelReceb04.RLLabel1.Caption := 'Contas Receber - Parcelas Fora do Mês de Vecto.';
 
     FrmRelReceb04.RLReport1.PreviewModal;
     FreeAndNil(FrmRelReceb04);
@@ -2149,13 +2148,13 @@ begin
     vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
 
     if not empty(XDEVencimentoInicio.Text) Then
-      vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' Ã  '+XDEVencimentoFinal.Text;
+      vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' à '+XDEVencimentoFinal.Text;
     if not empty(XDEEntradaInicio.Text) Then
-      vartitulo := vartitulo + ', com EmissÃ£o de '+XDEEntradaInicio.Text+' Ã  '+XDEEntradaFinal.Text;
+      vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' à '+XDEEntradaFinal.Text;
     if not empty(XDEBaixasInicio.Text) Then
-      vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' Ã  '+XDEBaixasFinal.Text;
+      vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' à '+XDEBaixasFinal.Text;
     if not empty(XDERefInicio.Text) Then
-      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' Ã  '+XDERefFinal.Text;
+      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
     vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
 
     ZQTempReceber.Close;
@@ -2213,13 +2212,13 @@ begin
       ZQTempReceber.SQL.Add(' and Data_juridico between :dt1 and :dt2');
       ZQTempReceber.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZQTempReceber.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZQTempReceber.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
       ZQTempReceber.ParamByName('dt3').AsDate:=strtodate(XDEVencimentoInicio.DateText);
       ZQTempReceber.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       ZQTempReceber.SQL.Add(' and BX.DT_Rec between :dt5 and :dt6');
@@ -2230,7 +2229,7 @@ begin
       ZQTempReceber.SQL.Add(' and BX.dataref between :dt7 and :dt8');
       ZQTempReceber.ParamByName('dt7').AsDate:=strtodate(XDERefInicio.DateText);
       ZQTempReceber.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
-      Vrtexto := 'Baixado de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Baixado de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
     // 24/11/2010
    // if CBDesconsidera.Checked Then
@@ -2241,9 +2240,9 @@ begin
     ZQTempReceber.Open;
 
     if not empty(vrtexto) Then
-      FrmRelReceb05.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto+' - Ordem '+VArOrdem;
+      FrmRelReceb05.RLLabel2.Caption := 'Período de : '+vrtexto+' - Ordem '+VArOrdem;
 
-    FrmRelReceb05.RLLabel1.Caption := 'Contas Receber - Parcelas Em JurÃ­dico';
+    FrmRelReceb05.RLLabel1.Caption := 'Contas Receber - Parcelas Em Jurídico';
 
     FrmRelReceb05.RLReport1.PreviewModal;
     FreeAndNil(FrmRelReceb05);
@@ -2260,7 +2259,7 @@ begin
     FrmRelReajuste2:=nil;
     if FrmRelReajuste2=nil then
        FrmRelReajuste2:=TFrmRelReajuste2.Create(Application);
-    FrmRelReajuste2.RLLabel2.Caption := 'Contratos Reajustados no PerÃ­odo de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+    FrmRelReajuste2.RLLabel2.Caption := 'Contratos Reajustados no Período de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
 //    FrmRelReajuste2.rlpercent.Caption:=transform(percent.Value,'##0.00');
 
     ZQRecebimento.Close;
@@ -2344,7 +2343,7 @@ begin
         ZRTotPago.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
         ZRTotPago.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
         ZRTotPago.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-        Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+        Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
       end;
       if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
         ZRTotPago.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
@@ -2352,7 +2351,7 @@ begin
         ZRTotPago.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
         if not empty(vrtexto) Then
           vrtexto := vrtexto+' e ';
-        Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+        Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
       end;
       if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
         ZRTotPago.SQL.Add(' and RB.DT_Rec between :dt5 and :dt6');
@@ -2360,7 +2359,7 @@ begin
         ZRTotPago.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
         if not empty(vrtexto) Then
           vrtexto := vrtexto+' e ';
-        Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+        Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
       end;
       if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
         ZRTotPago.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -2368,7 +2367,7 @@ begin
         ZRTotPago.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
         if not empty(vrtexto) Then
           vrtexto := vrtexto+' e ';
-        Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+        Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
       end;
       ZRTotPago.SQL.Add(' group by Re.quadralote ');
       ZRTotPago.Open;
@@ -2391,7 +2390,7 @@ begin
    begin
     ZQmensal2.SQL.Clear;
     ZQmensal2.SQL.Add('select month(rb.dataref) as Mes, case month(rb.dataref)');
-    ZQmensal2.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''MarÃ§o''');
+    ZQmensal2.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQmensal2.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQmensal2.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
     ZQmensal2.SQL.Add(' when 10 then ''Outubro'' when 11 then ''Novembro'' when 12 then ''Dezembro''');
@@ -2412,7 +2411,7 @@ begin
       ZQmensal2.SQL.Add(' and re.DT_Entrada between :dt1 and :dt2');
       ZQmensal2.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZQmensal2.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZQmensal2.SQL.Add(' and re.DT_Vencimento between :dt3 and :dt4');
@@ -2420,7 +2419,7 @@ begin
       ZQmensal2.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
 
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
@@ -2429,7 +2428,7 @@ begin
       ZQmensal2.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       ZQmensal2.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -2437,7 +2436,7 @@ begin
       ZQmensal2.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
     // Keep the detail selection local; relmensal is a table in some databases.
     ZQrelatorio.close;
@@ -2451,7 +2450,7 @@ begin
     if FrmRelReceb02_mensal=nil then
        FrmRelReceb02_mensal:=TFrmRelReceb02_mensal.Create(Application);
     if not empty(vrtexto) Then
-      FrmRelReceb02_mensal.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+      FrmRelReceb02_mensal.RLLabel2.Caption := 'Período de : '+vrtexto;
     FrmRelReceb02_mensal.RLLabel1.Caption := 'Contas Recebidas';
     if RGContas.ItemIndex = 1 Then
 
@@ -2459,9 +2458,9 @@ begin
     FrmRelReceb02_mensal.RLLabel17.Caption:='Vr. Saldo Baixado  ';
     FrmRelReceb02_mensal.RLDBResult2.Text:='Saldo Geral Baixado:    ';
     FrmRelReceb02_mensal.RLDBResult1.Text:='Saldo Total Baixado:    ';
-    FrmRelReceb02_mensal.RLLabel11.Caption:='Vr. Saldo Baixado/VariaÃ§Ã£o';
-//    FrmRelReceb02_mensal.RLDBResult3.Text:='Saldo Geral Baixado/VariaÃ§Ã£o:    ';
-//    FrmRelReceb02_mensal.RLDBResult4.Text:='Saldo Total Baixado/VariaÃ§Ã£o:    ';
+    FrmRelReceb02_mensal.RLLabel11.Caption:='Vr. Saldo Baixado/Variação';
+//    FrmRelReceb02_mensal.RLDBResult3.Text:='Saldo Geral Baixado/Variação:    ';
+//    FrmRelReceb02_mensal.RLDBResult4.Text:='Saldo Total Baixado/Variação:    ';
 
     FrmRelReceb02_mensal.RLReport1.DataSource:=DataZQrelatorio;
     FrmRelReceb02_mensal.RLReport1.DataSource:=FrmRelRecebimento.DataZQrelatorio;
@@ -2512,7 +2511,7 @@ begin
       ZRdiario.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
       ZRdiario.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZRdiario.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZRdiario.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
@@ -2520,7 +2519,7 @@ begin
       ZRdiario.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       ZRdiario.SQL.Add(' and RB.DT_Rec between :dt5 and :dt6');
@@ -2528,7 +2527,7 @@ begin
       ZRdiario.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       ZRdiario.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -2536,7 +2535,7 @@ begin
       ZRdiario.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
     ZRdiario.SQL.Add(' order by '+VArOrdem);
     ZRdiario.Open;
@@ -2546,7 +2545,7 @@ begin
     if frm_rel_diario=nil then
        frm_rel_diario:=Tfrm_rel_diario.Create(Application);
     if not empty(vrtexto) Then
-      frm_rel_diario.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+      frm_rel_diario.RLLabel2.Caption := 'Período de : '+vrtexto;
 
     frm_rel_diario.RLGroup1.DataFields:='idloteamento;'+VArOrdem;
     if (x2=6) or (x2=8) or (x2=10) then
@@ -2574,7 +2573,7 @@ begin
    begin
     ZQcarteira.SQL.Clear;
     ZQcarteira.SQL.Add('select month(rb.dataref) as Mes, lt.apelido as ap, case month(rb.dataref)');
-    ZQcarteira.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''MarÃ§o''');
+    ZQcarteira.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQcarteira.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQcarteira.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
     ZQcarteira.SQL.Add(' when 10 then ''Outubro'' when 11 then ''Novembro'' when 12 then ''Dezembro''');
@@ -2595,7 +2594,7 @@ begin
       ZQcarteira.SQL.Add(' and re.DT_Entrada between :dt1 and :dt2');
       ZQcarteira.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZQcarteira.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZQcarteira.SQL.Add(' and re.DT_Vencimento between :dt3 and :dt4');
@@ -2603,7 +2602,7 @@ begin
       ZQcarteira.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
 
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
@@ -2612,7 +2611,7 @@ begin
       ZQcarteira.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       ZQcarteira.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -2620,7 +2619,7 @@ begin
       ZQcarteira.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
     // Keep the detail selection local; relcarteira is a table in some databases.
     ZQRelCarteira.close;
@@ -2635,17 +2634,17 @@ begin
     if FrmRelReceb02_carteira=nil then
        FrmRelReceb02_carteira:=TFrmRelReceb02_carteira.Create(Application);
     if not empty(vrtexto) Then
-      FrmRelReceb02_carteira.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
-    FrmRelReceb02_carteira.RLLabel1.Caption := 'AdministraÃ§Ã£o da Carteira de RecebÃ­veis';
+      FrmRelReceb02_carteira.RLLabel2.Caption := 'Período de : '+vrtexto;
+    FrmRelReceb02_carteira.RLLabel1.Caption := 'Administração da Carteira de Recebíveis';
     if RGContas.ItemIndex = 1 Then
 
-    FrmRelReceb02_carteira.RLLabel1.Caption := 'AdministraÃ§Ã£o da Carteira de RecebÃ­veis';
+    FrmRelReceb02_carteira.RLLabel1.Caption := 'Administração da Carteira de Recebíveis';
     FrmRelReceb02_carteira.RLLabel17.Caption:='Vr. Saldo Baixado  ';
     FrmRelReceb02_carteira.RLDBResult2.Text:='Saldo Geral Baixado:    ';
     FrmRelReceb02_carteira.RLDBResult1.Text:='Saldo Total Baixado:    ';
-    FrmRelReceb02_carteira.RLLabel11.Caption:='Vr. Saldo Baixado/VariaÃ§Ã£o';
-//    FrmRelReceb02_carteira.RLDBResult3.Text:='Saldo Geral Baixado/VariaÃ§Ã£o:    ';
-//    FrmRelReceb02_carteira.RLDBResult4.Text:='Saldo Total Baixado/VariaÃ§Ã£o:    ';
+    FrmRelReceb02_carteira.RLLabel11.Caption:='Vr. Saldo Baixado/Variação';
+//    FrmRelReceb02_carteira.RLDBResult3.Text:='Saldo Geral Baixado/Variação:    ';
+//    FrmRelReceb02_carteira.RLDBResult4.Text:='Saldo Total Baixado/Variação:    ';
 
     FrmRelReceb02_carteira.RLReport1.DataSource:=DS_ZQRelCarteira;
     FrmRelReceb02_carteira.RLReport1.DataSource:=FrmRelRecebimento.DS_ZQRelCarteira;
@@ -2705,7 +2704,7 @@ begin
       ZROQReceb.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
       ZROQReceb.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZROQReceb.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
@@ -2713,7 +2712,7 @@ begin
       ZROQReceb.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     if  not empty(copy(XDEBaixasInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and RB.DT_Rec between :dt5 and :dt6');
@@ -2721,7 +2720,7 @@ begin
       ZROQReceb.ParamByName('dt6').AsDate:=strtodate(XDEBaixasFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' Ã  '+XDEBaixasFinal.DateText;
+      Vrtexto := 'Baixa de '+XDEBaixasInicio.DateText+' à '+XDEBaixasFinal.DateText;
     end;
     if  not empty(copy(XDERefInicio.Text,1,2)) Then Begin
       ZROQReceb.SQL.Add(' and RB.dataref between :dt7 and :dt8');
@@ -2729,7 +2728,7 @@ begin
       ZROQReceb.ParamByName('dt8').AsDate:=strtodate(XDERefFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'ReferÃªncia de '+XDERefInicio.DateText+' Ã  '+XDERefFinal.DateText;
+      Vrtexto := 'Referência de '+XDERefInicio.DateText+' à '+XDERefFinal.DateText;
     end;
 //    if TemDuplicidade then
 //      ZROQReceb.SQL.Add('GROUP BY RH.idrecib,RB.tipdoc')
@@ -2740,7 +2739,7 @@ begin
     ZROQReceb.Open;
     ZROQReceb.RecordCount;
     if not empty(vrtexto) Then
-      FRM_Recebi03.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+      FRM_Recebi03.RLLabel2.Caption := 'Período de : '+vrtexto;
     FRM_Recebi03.XNumEdit1.Value := 0;
     ZROQReceb.DisableControls;
     while not ZROQReceb.Eof do begin
@@ -3073,7 +3072,7 @@ begin
     FRM_Recebi03.RLLabel52.Caption:=Transform(parcela_adiantada.Value,'###,###,##0.00');
     if CBObsBai.Checked=true then
     begin
-      FRM_Recebi03.RLLabel19.Caption:='ObservaÃ§Ãµes';
+      FRM_Recebi03.RLLabel19.Caption:='Observações';
       FRM_Recebi03.RLDBText13.Visible:=false;
       FRM_Recebi03.RLDBMemo2.Visible:=true;
     end
@@ -3366,13 +3365,13 @@ begin
   end;
   vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
   if not empty(XDEVencimentoInicio.Text) Then
-    vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' Ã  '+XDEVencimentoFinal.Text;
+    vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' à '+XDEVencimentoFinal.Text;
   if not empty(XDEEntradaInicio.Text) Then
-    vartitulo := vartitulo + ', com EmissÃ£o de '+XDEEntradaInicio.Text+' Ã  '+XDEEntradaFinal.Text;
+    vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' à '+XDEEntradaFinal.Text;
   if not empty(XDEBaixasInicio.Text) Then
-    vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' Ã  '+XDEBaixasFinal.Text;
+    vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' à '+XDEBaixasFinal.Text;
     if not empty(XDERefInicio.Text) Then
-      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' Ã  '+XDERefFinal.Text;
+      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
 
   vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
 
@@ -3464,7 +3463,7 @@ begin
     ZQmensal.Close;
     ZQmensal.SQL.Clear;
     ZQmensal.SQL.Add(' select month(re.dt_vencimento) as Mes, case month(re.dt_vencimento)');
-    ZQmensal.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''MarÃ§o''');
+    ZQmensal.SQL.Add( 'when 1 then ''Janeiro'' when 2 then ''Fevereiro'' when 3 then ''Março''');
     ZQmensal.SQL.Add(' when 4 then ''Abril'' when 5 then ''Maio'' when 6 then ''Junho''');
     ZQmensal.SQL.Add(' when 7 then ''Julho'' when 8 then ''Agosto'' when 9 then ''Setembro''');
     ZQmensal.SQL.Add(' when 10 then ''Outubro'' when 11 then ''Novembro'' when 12 then ''Dezembro''');
@@ -3486,7 +3485,7 @@ begin
       ZQmensal.SQL.Add(' and re.DT_Entrada between :dt1 and :dt2');
       ZQmensal.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZQmensal.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZQmensal.SQL.Add(' and re.DT_Vencimento between :dt3 and :dt4');
@@ -3494,7 +3493,7 @@ begin
       ZQmensal.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
 
     { A consulta derivada dispensa criar ou substituir objetos no banco. }
@@ -3510,7 +3509,7 @@ begin
     if FrmRelReceb02_mensal_ab=nil then
       FrmRelReceb02_mensal_ab:=TFrmRelReceb02_mensal_ab.Create(Application);
     if not empty(vrtexto) Then
-      FrmRelReceb02_mensal_ab.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+      FrmRelReceb02_mensal_ab.RLLabel2.Caption := 'Período de : '+vrtexto;
     FrmRelReceb02_mensal_ab.RLLabel1.Caption := 'Contas a Receber';
     if RGContas.ItemIndex = 1 Then
     FrmRelReceb02_mensal_ab.RLLabel1.Caption := 'Contas a Pagar';
@@ -3561,7 +3560,7 @@ begin
       ZqresumoReceb.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
       ZqresumoReceb.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
       ZqresumoReceb.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);
-      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+      Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
     end;
     if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then Begin
       ZqresumoReceb.SQL.Add(' and DT_Vencimento between :dt3 and :dt4');
@@ -3569,7 +3568,7 @@ begin
       ZqresumoReceb.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
     end;
     ZqresumoReceb.SQL.Add(' GROUP BY RE.tipdoc ORDER BY '+VarOrdem);
     ZqresumoReceb.Open;
@@ -3624,7 +3623,7 @@ begin
     if FrmRelReceb02=nil then
       FrmRelReceb02:=TFrmRelReceb02.Create(Application);
     if not empty(vrtexto) Then
-       FrmRelReceb02.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+       FrmRelReceb02.RLLabel2.Caption := 'Período de : '+vrtexto;
     FrmRelReceb02.RLReport1.PreviewModal;
     FreeAndNil(FrmRelReceb02);
     ZQEmpree.Close;
@@ -3634,13 +3633,13 @@ begin
    begin
      vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
      if not empty(XDEVencimentoInicio.Text) Then
-        vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' Ã  '+XDEVencimentoFinal.Text;
+        vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' à '+XDEVencimentoFinal.Text;
      if not empty(XDEEntradaInicio.Text) Then
-        vartitulo := vartitulo + ', com EmissÃ£o de '+XDEEntradaInicio.Text+' Ã  '+XDEEntradaFinal.Text;
+        vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' à '+XDEEntradaFinal.Text;
      if not empty(XDEBaixasInicio.Text) Then
-        vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' Ã  '+XDEBaixasFinal.Text;
+        vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' à '+XDEBaixasFinal.Text;
     if not empty(XDERefInicio.Text) Then
-      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' Ã  '+XDERefFinal.Text;
+      vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
      vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
      ZQTempReceber2.Close;
      ZQTempReceber2.SQL.Clear;
@@ -3750,7 +3749,7 @@ begin
 {       ZqresumoReceb.SQL.Add(' and DT_Entrada between :dt1 and :dt2');
        ZqresumoReceb.ParamByName('dt1').AsDate:=strtodate(XDEEntradaInicio.DateText);
        ZqresumoReceb.ParamByName('dt2').AsDate:=strtodate(XDEEntradaFinal.DateText);}
-       Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+       Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
      end;
      if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then
      Begin
@@ -3759,7 +3758,7 @@ begin
       ZqresumoReceb.ParamByName('dt4').AsDate:=strtodate(XDEVencimentoFinal.DateText);}
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
      end;
 {     ZqresumoReceb.SQL.Add(' GROUP BY idloteamento ORDER BY '+VarOrdem);
      ZqresumoReceb.SQL.Text;
@@ -3802,7 +3801,7 @@ begin
      if FrmRelReceb02_total=nil then
         FrmRelReceb02_total:=TFrmRelReceb02_total.Create(Application);
      if not empty(vrtexto) Then
-        FrmRelReceb02_total.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+        FrmRelReceb02_total.RLLabel2.Caption := 'Período de : '+vrtexto;
      FrmRelReceb02_total.RLReport1.PreviewModal;
      FreeAndNil(FrmRelReceb02_total);
      ZQEmpree.Close;
@@ -3814,16 +3813,16 @@ begin
       vartitulo := 'Ordem de '+RGOrdem.Items.Strings[RGOrdem.ItemIndex];
 
       if not empty(XDEVencimentoInicio.Text) Then
-        vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' Ã  '+XDEVencimentoFinal.Text;
+        vartitulo := vartitulo + ', com vencimento de '+XDEVencimentoInicio.Text+' à '+XDEVencimentoFinal.Text;
 
       if not empty(XDEEntradaInicio.Text) Then
-        vartitulo := vartitulo + ', com EmissÃ£o de '+XDEEntradaInicio.Text+' Ã  '+XDEEntradaFinal.Text;
+        vartitulo := vartitulo + ', com Emissão de '+XDEEntradaInicio.Text+' à '+XDEEntradaFinal.Text;
 
       if not empty(XDEBaixasInicio.Text) Then
-        vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' Ã  '+XDEBaixasFinal.Text;
+        vartitulo := vartitulo + ', com Baixas de '+XDEBaixasInicio.Text+' à '+XDEBaixasFinal.Text;
 
       if not empty(XDERefInicio.Text) Then
-        vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' Ã  '+XDERefFinal.Text;
+        vartitulo := vartitulo + ', com Ref/Baixas de '+XDERefInicio.Text+' à '+XDERefFinal.Text;
 
       vartitulo := vartitulo + ', com Quitados='+CBSaldo.Text+', com Doc.='+VarDoc;
 
@@ -3946,13 +3945,13 @@ begin
      Vrtexto := '';
      if  not empty(copy(XDEEntradaInicio.Text,1,2)) Then
      Begin
-       Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' Ã  '+XDEEntradaFinal.DateText;
+       Vrtexto := 'Entrada de '+XDEEntradaInicio.DateText+' à '+XDEEntradaFinal.DateText;
      end;
      if  not empty(copy(XDEVencimentoInicio.Text,1,2)) Then
      Begin
       if not empty(vrtexto) Then
         vrtexto := vrtexto+' e ';
-      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' Ã  '+XDEVencimentoFinal.DateText;
+      Vrtexto := 'Vencimento de '+XDEVencimentoInicio.DateText+' à '+XDEVencimentoFinal.DateText;
      end;
      if CBEmpre.Checked then
      begin
@@ -3963,7 +3962,7 @@ begin
          if RGContas.ItemIndex = 1 Then
             FrmRelReceb02_total_ab_lt.RLLabel1.Caption := 'Contas a Pagar';
          if not empty(vrtexto) Then
-            FrmRelReceb02_total_ab_lt.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+            FrmRelReceb02_total_ab_lt.RLLabel2.Caption := 'Período de : '+vrtexto;
          FrmRelReceb02_total_ab_lt.RLReport1.PreviewModal;
          FreeAndNil(FrmRelReceb02_total_ab_lt);
      end
@@ -3976,7 +3975,7 @@ begin
          if RGContas.ItemIndex = 1 Then
             FrmRelReceb02_total_ab.RLLabel1.Caption := 'Contas a Pagar';
          if not empty(vrtexto) Then
-            FrmRelReceb02_total_ab.RLLabel2.Caption := 'PerÃ­odo de : '+vrtexto;
+            FrmRelReceb02_total_ab.RLLabel2.Caption := 'Período de : '+vrtexto;
          FrmRelReceb02_total_ab.RLReport1.PreviewModal;
          FreeAndNil(FrmRelReceb02_total_ab);
      end;
@@ -4015,7 +4014,7 @@ begin
       CDSDetalmascara.Value := ZQTempReceber.FieldByName('planomascara').AsString;
       CDSDetalvalor.Value := ZQTempReceber.FieldByName('Valor').AsFloat;
       CDSDetaldata.Value := ZQTempReceber.FieldByName('Dt_Vencimento').AsDateTime;
-      CDSDetaldetalhe.Value := 'LanÃ§: '+ZQTempReceber.FieldByName('idrecebimento').Text+'  Participante: '+ZQTempReceber.FieldByName('nome_parte').AsString+'      Adversa: '+ZQTempReceber.FieldByName('adversanome').AsString+chr(13);
+      CDSDetaldetalhe.Value := 'Lanç: '+ZQTempReceber.FieldByName('idrecebimento').Text+'  Participante: '+ZQTempReceber.FieldByName('nome_parte').AsString+'      Adversa: '+ZQTempReceber.FieldByName('adversanome').AsString+chr(13);
       CDSDetaldetalhe.Value := CDSDetaldetalhe.Value + ZQTempReceber.FieldByName('Observ').AsString;
       ZQTempReceber.Next;
     end;
@@ -4079,7 +4078,7 @@ begin
       if Linha = '' then
         Continue;
 
-      // ====== EXTRAÃ‡ÃƒO ======
+      // ====== EXTRAÇÃO ======
       // Exemplo esperado: NO.22.13.13-10
       // Quadra = NO.22.13.13
       // Lote   = 10
@@ -4091,7 +4090,7 @@ begin
       end
       else
       begin
-        ShowMessage('Formato invÃ¡lido: ' + Linha);
+        ShowMessage('Formato inválido: ' + Linha);
         Continue;
       end;
 
@@ -4119,7 +4118,7 @@ begin
       end
       else
       begin
-        ShowMessage('NÃ£o encontrado: ' + Linha);
+        ShowMessage('Não encontrado: ' + Linha);
       end;
     end;
 
@@ -4454,7 +4453,7 @@ begin
 //        XDEEntradaFinal.DateValue := ZQVen1datavenda.Value;
     end
     else
-      Showmessage('Esta Quadra e lote nÃ£o foram vendidos!!!!');
+      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

@@ -1,12 +1,10 @@
-﻿unit Cidade;
+unit Cidade;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, wwdbdatetimepicker, StdCtrls, DBCtrls, Mask, Grids, DBGrids,
-    dxButton, ExtCtrls, XBanner, DB, ZAbstractRODataset,
-  ZAbstractDataset, ZDataset, ComCtrls, dxCore2;
+uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, wwdbdatetimepicker, StdCtrls, DBCtrls, Mask, Grids, DBGrids, ExtCtrls, XBanner, DB, ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, ComCtrls;
 
 type
   TFrm_Cidade = class(TForm)
@@ -19,29 +17,29 @@ type
     Label23: TLabel;
     Panel4: TPanel;
     XBanner13: TXBanner;
-    BtExcluir: TdxButton;
-    BtEditar: TdxButton;
-    BtIncluir: TdxButton;
-    BtCancelar: TdxButton;
-    BtGravar: TdxButton;
-    BtPesquisar: TdxButton;
-    BtRelatorio: TdxButton;
-    BtUltimo: TdxButton;
-    BTProximo: TdxButton;
-    BTAnterior: TdxButton;
-    BTPrimeiro: TdxButton;
+    BtExcluir: TdxButtonArround;
+    BtEditar: TdxButtonArround;
+    BtIncluir: TdxButtonArround;
+    BtCancelar: TdxButtonArround;
+    BtGravar: TdxButtonArround;
+    BtPesquisar: TdxButtonArround;
+    BtRelatorio: TdxButtonArround;
+    BtUltimo: TdxButtonArround;
+    BTProximo: TdxButtonArround;
+    BTAnterior: TdxButtonArround;
+    BTPrimeiro: TdxButtonArround;
     DBGCid: TDBGrid;
     DBECodCid: TDBEdit;
     DBECidNome: TDBEdit;
     DBECidDDD: TDBEdit;
     DBCBCidEstado: TDBComboBox;
     DBECidEmanc: TwwDBDateTimePicker;
-    BtFechar: TdxButton;
+    BtFechar: TdxButtonArround;
     Label1: TLabel;
     DBECep: TDBEdit;
     Registros: TLabel;
     LReg: TLabel;
-    dxButton1: TdxButton;
+    dxButton1: TdxButtonArround;
     ZQlog_localidade: TZQuery;
     DS_log_localidade: TDataSource;
 
