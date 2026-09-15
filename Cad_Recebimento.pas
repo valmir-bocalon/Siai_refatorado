@@ -8,9 +8,7 @@ uses
   DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids, DBGrids,
   wwdbdatetimepicker, XDate, XNum, XEdit, DBClient, ComCtrls, TabNotBk,
   XDBNum, JvExControls, JvArrayButton, GradBtn, JvXPCore, JvXPBar,
-  XDBDate, FnpNumericEdit, dxCore2, DBDateTimePicker, VclTee.TeeGDIPlus,
-  VCLTee.Series, VCLTee.TeEngine, VCLTee.TeeTools, VCLTee.TeePageNumTool,
-  Vcl.Samples.Gauges, VCLTee.TeeProcs, VCLTee.Chart, VCLTee.DBChart;
+  XDBDate, FnpNumericEdit, dxCore2, DBDateTimePicker, Vcl.Samples.Gauges;
 
 type
   TFrmCad_Recebimento = class(TForm)
@@ -220,15 +218,7 @@ type
     Ecoddeved: TEdit;
     Label30: TLabel;
     dxButton4: TdxButton;
-    DBChart1: TDBChart;
-    Gauge1: TGauge;
-    dxButton5: TdxButton;
-    Series1: TFastLineSeries;
-    Series2: TFastLineSeries;
-    Series3: TFastLineSeries;
-    Series4: TFastLineSeries;
-    ChartTool1: TPageNumTool;
-    XDVar: TXDateEdit;
+    PnlGrafico1: TPanel;
     XBanner9: TXBanner;
     XBanner10: TXBanner;
     XDEIni1: TXDateEdit;
@@ -238,15 +228,8 @@ type
     Edloteamento: TEdit;
     EdNomeLoteamento: TEdit;
     dxButton1: TdxButton;
-    DBChart2: TDBChart;
-    Label39: TLabel;
-    Gauge2: TGauge;
-    dxButton6: TdxButton;
+    PnlGrafico2: TPanel;
     XDVar1: TXDateEdit;
-    Series5: TBarSeries;
-    FastLineSeries3: TBarSeries;
-    FastLineSeries4: TBarSeries;
-    PageNumTool1: TPageNumTool;
     Label38: TLabel;
     XBanner11: TXBanner;
     DBcobranca: TDBGrid;
@@ -368,13 +351,11 @@ type
     cbmontante: TCheckBox;
     CDnegocioDias: TIntegerField;
     XBanner12: TXBanner;
-    DBChart3: TDBChart;
-    PageNumTool2: TPageNumTool;
+    PnlGrafico3: TPanel;
     ZQInadimplentes: TZQuery;
     DataZQInadimplentes: TDataSource;
     Gauge3: TGauge;
     dxButton9: TdxButton;
-    Series6: THorizBarSeries;
 
     dxButton10: TdxButton;
 
@@ -569,6 +550,12 @@ type
 
 
     XDBDateEdit1: TXDBDateEdit;
+    Gauge1: TGauge;
+    dxButton5: TdxButton;
+    XDVar: TXDateEdit;
+    Gauge2: TGauge;
+    Label39: TLabel;
+    dxButton6: TdxButton;
     procedure FormShow(Sender: TObject);
     procedure Ativa_campos;
     procedure Desativa_campos;
@@ -655,7 +642,6 @@ type
     procedure EdNomeLoteamentoEnter(Sender: TObject);
     procedure dxButton1Click(Sender: TObject);
     procedure dxButton6Click(Sender: TObject);
-    procedure DBChart2BeforeDrawChart(Sender: TObject);
     procedure tab_graficosClick(Sender: TObject);
     procedure ZQRecebimentoCalcFields(DataSet: TDataSet);
     procedure DBcobrancaDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -667,7 +653,6 @@ type
     procedure ZQRecebimento4CalcFields(DataSet: TDataSet);
     procedure DBcobrancaDblClick(Sender: TObject);
     procedure dxButton7Click(Sender: TObject);
-    procedure DBChart3BeforeDrawChart(Sender: TObject);
     procedure dxButton9Click(Sender: TObject);
     procedure JBProcessoItems4Click(Sender: TObject);
     procedure dxButton10Click(Sender: TObject);
@@ -687,11 +672,13 @@ type
     FPaintBoxGrafico1: TPaintBox;
     FPaintBoxGrafico2: TPaintBox;
     FPaintBoxGrafico3: TPaintBox;
+    FPintandoGrafico1: Boolean;
+    FPintandoGrafico2: Boolean;
     procedure CriarGraficosRuntime;
     procedure PintarGrafico1(Sender: TObject);
     procedure PintarGrafico2(Sender: TObject);
     procedure PintarGrafico3(Sender: TObject);
-    procedure InvalidarGraficosRuntime;
+    procedure AtualizarGrafico(PaintBox: TPaintBox);
     procedure PrepararLookupsCobranca;
     procedure PreencherLookupsCobranca;
     procedure AtualizarCamposCobranca;
@@ -2404,73 +2391,102 @@ begin
   end;
   CDSResult.Post;
   Gauge1.Visible := false;
-  InvalidarGraficosRuntime;
+  AtualizarGrafico(FPaintBoxGrafico1);
 end;
 
 procedure TFrmCad_Recebimento.CriarGraficosRuntime;
-  procedure CriarPaintBox(Chart: TDBChart; var PaintBox: TPaintBox;
+  procedure CriarPaintBox(Container: TPanel; var PaintBox: TPaintBox;
     PaintHandler: TNotifyEvent);
   begin
     if PaintBox <> nil then
       Exit;
-    if (Chart = nil) or (Chart.Parent = nil) then
+    if Container = nil then
       Exit;
-    PaintBox := TPaintBox.Create(Self);
-    PaintBox.Parent := Chart.Parent;
-    PaintBox.SetBounds(Chart.Left, Chart.Top, Chart.Width, Chart.Height);
-    PaintBox.Anchors := Chart.Anchors;
+    PaintBox := TPaintBox.Create(Container);
+    PaintBox.Parent := Container;
+    PaintBox.Align := alClient;
     PaintBox.OnPaint := PaintHandler;
-    Chart.Visible := False;
-    PaintBox.BringToFront;
   end;
 begin
-  CriarPaintBox(DBChart1, FPaintBoxGrafico1, PintarGrafico1);
-  CriarPaintBox(DBChart2, FPaintBoxGrafico2, PintarGrafico2);
-  CriarPaintBox(DBChart3, FPaintBoxGrafico3, PintarGrafico3);
+  CriarPaintBox(PnlGrafico1, FPaintBoxGrafico1, PintarGrafico1);
+  CriarPaintBox(PnlGrafico2, FPaintBoxGrafico2, PintarGrafico2);
+  CriarPaintBox(PnlGrafico3, FPaintBoxGrafico3, PintarGrafico3);
 end;
 
 procedure TFrmCad_Recebimento.PintarGrafico1(Sender: TObject);
 var
   Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
+  PaintBox: TPaintBox;
 begin
-  if FPaintBoxGrafico1 = nil then
+  if FPintandoGrafico1 or not (Sender is TPaintBox) then
     Exit;
-  LoadChartSeriesFromDataSet(CDSResult, 'ordem',
-    ['A Pagar', 'A Receber', 'Recebido', 'Pago'],
-    ['apagar', 'areceber', 'recebido', 'pago'],
-    [clRed, clTeal, clBlue, clOlive], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico1.Canvas, Series, ctLine,
-    FPaintBoxGrafico1.ClientWidth, FPaintBoxGrafico1.ClientHeight,
-    'Recebimentos e Pagamentos do Periodo Informado', clWhite,
-    True, True, True, False);
+  FPintandoGrafico1 := True;
+  try
+    PaintBox := TPaintBox(Sender);
+    LoadChartSeriesFromDataSet(CDSResult,['ordem', 'ordem', 'ordem', 'ordem'],['A Pagar', 'A Receber', 'Recebido', 'Pago'],
+                               ['apagar', 'areceber', 'recebido', 'pago'],[clRed, clTeal, clBlue, TColor(234)], Series);
+    Series[0].LineStyle := psDot;
+    Series[0].LineWidth := 4;
+    Series[1].LineStyle := psDash;
+    Series[1].LineWidth := 2;
+    Series[2].LineWidth := 2;
+    Series[3].LineWidth := 2;
+
+    Options := DefaultChartRenderOptions(clWhite);
+    Options.UseBackgroundGradient := True;
+    Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+    Options.BackgroundEndColor := clWhite;
+    Options.BorderColor := clBlue;
+    Options.BorderWidth := 2;
+    GenerateStyledMultiSeriesChart(PaintBox.Canvas, Series, ctLine,PaintBox.ClientWidth, PaintBox.ClientHeight,
+                                   'Recebimentos e Pagamentos do Periodo Informado', Options, True, True);
+  finally
+    FPintandoGrafico1 := False;
+  end;
 end;
 
 procedure TFrmCad_Recebimento.PintarGrafico2(Sender: TObject);
 var
   Series: TChartSeriesArray;
   ChartTitle: string;
+  Options: TChartRenderOptions;
+  PaintBox: TPaintBox;
 begin
-  if FPaintBoxGrafico2 = nil then
+  if FPintandoGrafico2 or not (Sender is TPaintBox) then
     Exit;
-  if Trim(EdNomeLoteamento.Text) = '' then
-    ChartTitle := 'Lot.: Todos - Previsao de Recebimentos no Vencimento do Periodo de ' +
-      XDEIni1.Text + ' a ' + XDEFim1.Text
-  else
-    ChartTitle := 'Lot.:' + EdNomeLoteamento.Text +
-      ' - Previsao de Recebimentos no Vencimento do Periodo de ' +
-      XDEIni1.Text + ' a ' + XDEFim1.Text;
-  LoadChartSeriesFromDataSet(CDSResult, 'ordem',
-    ['A Receber no Periodo', 'Recebido no Periodo', 'Aberto no Periodo'],
-    ['areceber', 'recebido', 'apagar'],
-    [clLime, clBlue, clRed], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico2.Canvas, Series, ctBar,
-    FPaintBoxGrafico2.ClientWidth, FPaintBoxGrafico2.ClientHeight,
-    ChartTitle, clWhite, True, True, True, False);
+  FPintandoGrafico2 := True;
+  try
+    PaintBox := TPaintBox(Sender);
+    if Trim(EdNomeLoteamento.Text) = '' then
+      ChartTitle := 'Lot.: Todos - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text
+    else
+      ChartTitle := 'Lot.:' + EdNomeLoteamento.Text + ' - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text;
+    LoadChartSeriesFromDataSet(CDSResult,['pareceber', 'precebido', 'patrazado'],['A Receber no Periodo', 'Recebido no Periodo', 'Aberto no Periodo'],
+                              ['areceber', 'recebido', 'apagar'],[clLime, clBlue, clRed], Series);
+    Series[0].BarPenWidth := 2;
+    Series[0].MarkStyle := cmsValue;
+    Series[1].BarPenWidth := 2;
+    Series[1].MarkStyle := cmsValue;
+    Series[2].BarPenWidth := 2;
+    Series[2].MarkStyle := cmsValue;
+
+    Options := DefaultChartRenderOptions(clWhite);
+    Options.UseBackgroundGradient := True;
+    Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+    Options.BackgroundEndColor := clWhite;
+    Options.BorderColor := clBlue;
+    Options.BorderWidth := 2;
+    GenerateStyledMultiSeriesChart(PaintBox.Canvas, Series, ctBar,PaintBox.ClientWidth, PaintBox.ClientHeight,ChartTitle, Options, True, True);
+  finally
+    FPintandoGrafico2 := False;
+  end;
 end;
 
 procedure TFrmCad_Recebimento.PintarGrafico3(Sender: TObject);
 var
   Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
 begin
   if FPaintBoxGrafico3 = nil then
     Exit;
@@ -2478,32 +2494,33 @@ begin
   Series[0].Title := 'Inadimplencia';
   Series[0].Color := clRed;
   SetLength(Series[0].Data, 0);
-  if ZQInadimplentes.Active and
-     (ZQInadimplentes.FindField('idloteamento') <> nil) and
-     (ZQInadimplentes.FindField('inadimplente') <> nil) then
-    LoadChartSeriesFromDataSet(ZQInadimplentes, 'idloteamento',
-      ['Inadimplencia'], ['inadimplente'], [clRed], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctBar,
-    FPaintBoxGrafico3.ClientWidth, FPaintBoxGrafico3.ClientHeight,
-    'Grafico de Inadimplencias ate a data de ' + DateToStr(Date - 1),
-    clWhite, True, True, True, False);
+  if ZQInadimplentes.Active and (ZQInadimplentes.FindField('nome_loteamento_sql') <> nil) and (ZQInadimplentes.FindField('inadimplente') <> nil) then
+     LoadChartSeriesFromDataSet(ZQInadimplentes, ['nome_loteamento_sql'],['Inadimplencia'], ['inadimplente'], [clRed], Series);
+  if Length(Series) > 0 then
+  begin
+    Series[0].ColorEachPoint := True;
+    Series[0].MarkStyle := cmsValue;
+  end;
+
+  Options := DefaultChartRenderOptions(clWhite);
+  Options.BorderColor := clBlue;
+  Options.BorderWidth := 2;
+  Options.LegendBySeries := False;
+  GenerateStyledMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctHorizontalBar, FPaintBoxGrafico3.ClientWidth,
+                                 FPaintBoxGrafico3.ClientHeight,'Grafico de Inadimplencias ate a data de ' + DateToStr(Date - 1), Options, True, True);
 end;
 
-procedure TFrmCad_Recebimento.InvalidarGraficosRuntime;
+procedure TFrmCad_Recebimento.AtualizarGrafico(PaintBox: TPaintBox);
 begin
-  if FPaintBoxGrafico1 <> nil then
-    FPaintBoxGrafico1.Invalidate;
-  if FPaintBoxGrafico2 <> nil then
-    FPaintBoxGrafico2.Invalidate;
-  if FPaintBoxGrafico3 <> nil then
-    FPaintBoxGrafico3.Invalidate;
+  if (PaintBox <> nil) and (PaintBox.Parent <> nil) and
+     (PaintBox.Width > 0) and (PaintBox.Height > 0) then
+    PaintBox.Invalidate;
 end;
 
 procedure TFrmCad_Recebimento.dxButton5Click(Sender: TObject);
 begin
   if FPaintBoxGrafico1 <> nil then
-    PrintPaintBoxChart(FPaintBoxGrafico1,
-      'Recebimentos e Pagamentos do Periodo Informado', True);
+    PrintPaintBoxChart(FPaintBoxGrafico1, 'Recebimentos e Pagamentos do Periodo Informado', True);
 end;
 
 procedure TFrmCad_Recebimento.Pag_RecebClick(Sender: TObject);
@@ -2554,6 +2571,7 @@ begin
 
     ZQInadimplentes.SQL.Add('Select idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,VrDoc,ordem,TipDoc,saldo,marcar,empresa,');
     ZQInadimplentes.SQL.Add(' origem,adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,nomeadversa,somar,juros,descontos,Data_Quitacao,');
+    ZQInadimplentes.SQL.Add(' (select l.apelido from loteamento l where l.idloteamento=recebimento.idloteamento) as nome_loteamento_sql,');
     ZQInadimplentes.SQL.Add(' sum(valor) as inadimplente from Recebimento where TipDoc ='+quotedstr('BO')+' and recpag ='+quotedstr('R')+' and Dt_Vencimento between :dt3 and :dt4 and saldo>0 group by idloteamento order by inadimplente desc');
 
     ZQInadimplentes.ParamByName('dt3').AsDate:=strtodate('01/01/1900');
@@ -2939,7 +2957,7 @@ begin
 
 
   Gauge2.Visible := false;
-  InvalidarGraficosRuntime;
+  AtualizarGrafico(FPaintBoxGrafico2);
 end;
 
 procedure TFrmCad_Recebimento.dxButton6Click(Sender: TObject);
@@ -2957,15 +2975,6 @@ begin
         XDEIni1.Text + ' a ' + XDEFim1.Text;
     PrintPaintBoxChart(FPaintBoxGrafico2, ChartTitle, True);
   end;
-end;
-
-procedure TFrmCad_Recebimento.DBChart2BeforeDrawChart(Sender: TObject);
-begin
-  DBChart2.Title.Text.Clear;
-  if empty(EdNomeLoteamento.Text) then
-     DBChart2.Title.Text.Add('Lot.: Todos - Previsão de Recebimentos no Vencimento do Período de '+XDEIni1.Text+' à '+XDEFim1.Text)
-  else
-    DBChart2.Title.Text.Add('Lot.:'+EdNomeLoteamento.Text+' - Previsão de Recebimentos no Vencimento do Período de '+XDEIni1.Text+' à '+XDEFim1.Text);
 end;
 
 procedure TFrmCad_Recebimento.tab_graficosClick(Sender: TObject);
@@ -2987,7 +2996,8 @@ begin
     XDEIni1.SetFocus;
   end;
 
-  InvalidarGraficosRuntime;
+  if tab_graficos.PageIndex = 2 then
+    AtualizarGrafico(FPaintBoxGrafico3);
 
 end;
 
@@ -3865,12 +3875,6 @@ begin
   FrmRelCobranca:=nil;
 end;
 
-procedure TFrmCad_Recebimento.DBChart3BeforeDrawChart(Sender: TObject);
-begin
-  DBChart3.Title.Text.Clear;
-  DBChart3.Title.Text.Add('Gráfico de Inadimplências até a data de '+datetostr(date-1));
-end;
-
 procedure TFrmCad_Recebimento.dxButton9Click(Sender: TObject);
 begin
   if FPaintBoxGrafico3 <> nil then
@@ -4363,6 +4367,7 @@ initialization
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQInadimplentes', 'ZQInadimplentesdescontos', 'descontos', TFloatField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQInadimplentes', 'ZQInadimplentesData_Quitacao', 'Data_Quitacao', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQInadimplentes', 'ZQInadimplentesinadimplente', 'inadimplente', TFloatField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQInadimplentes', 'ZQInadimplentesnome_loteamento_sql', 'nome_loteamento_sql', TWideStringField, fkData, 100, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQInadimplentes', 'ZQInadimplentesloteamento', 'loteamento', TWideStringField, fkLookup, 100, 0, False, '', '', '', '', 0, 'idloteamento', 'DM_Tabelas.ZQLoteamento', 'idloteamento', 'apelido', True);
   RegisterRuntimeDataSet(TFrmCad_Recebimento, 'ZQRecebimento_bancario', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQRecebimento_bancario', 'ZQRecebimento_bancarioidrecebimento', 'idrecebimento', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

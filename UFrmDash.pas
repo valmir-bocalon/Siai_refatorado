@@ -4,10 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, VclTee.TeeGDIPlus, Data.DB,
-  VCLTee.TeEngine, VCLTee.TeeTools, VCLTee.TeePageNumTool, VCLTee.Series,
-  Vcl.Samples.Gauges, Vcl.ExtCtrls, VCLTee.TeeProcs, VCLTee.Chart,
-  VCLTee.DBChart, dxCore2, dxButton, Vcl.StdCtrls, Vcl.Mask, XDate, XBanner,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Samples.Gauges,
+  Vcl.ExtCtrls, dxCore2, dxButton, Vcl.StdCtrls, Vcl.Mask, XDate, XBanner,
   Datasnap.DBClient, ZAbstractRODataset, ZAbstractDataset, ZDataset, ACBrBase,
   ACBrEnterTab,jpeg;
 
@@ -30,10 +28,9 @@ type
     Ecodcli: TEdit;
     dxButton4: TdxButton;
     XDVar: TXDateEdit;
-    DBChart1: TDBChart;
+    PnlGrafico1: TPanel;
     Gauge1: TGauge;
     dxButton5: TdxButton;
-    ChartTool1: TPageNumTool;
     ZQCalculoEst: TZQuery;
     DS_CalculoEst: TDataSource;
     CDSResultA: TClientDataSet;
@@ -54,10 +51,9 @@ type
     CDSResultVmes: TStringField;
     CDSResult: TClientDataSet;
     DS_CDSResult: TDataSource;
-    DBChart3: TDBChart;
+    PnlGrafico3: TPanel;
     Gauge3: TGauge;
     dxButton2: TdxButton;
-    PageNumTool2: TPageNumTool;
     dxButton3: TdxButton;
     DS_ResultP: TDataSource;
     CDSResultP: TClientDataSet;
@@ -68,9 +64,6 @@ type
     CDSResulttotal_disponivel: TIntegerField;
     CDSResultTotal_nao_disponivel: TIntegerField;
     CDSResultTexto: TStringField;
-    Series3: TBarSeries;
-    Series5: TBarSeries;
-    Series2: TBarSeries;
     CDSResultPdata: TDateField;
     CDSResultPordem: TIntegerField;
     CDSResultPTotalParcela: TIntegerField;
@@ -78,8 +71,6 @@ type
     CDSResultPatrasado: TIntegerField;
     CDSResultPbaixado: TIntegerField;
     CDSResultPtexto: TStringField;
-    Series6: TBarSeries;
-    Series7: TBarSeries;
     CDSResultPpercaberto: TStringField;
     CDSResultPpercatrasado: TStringField;
     CDSResultPpercbaixado: TStringField;
@@ -87,13 +78,9 @@ type
     CDSResultpnaodisponivel: TStringField;
     Image1: TImage;
     dxButton7: TdxButton;
-    DBChart2: TDBChart;
+    PnlGrafico2: TPanel;
     Gauge2: TGauge;
     dxButton1: TdxButton;
-    BarSeries4: TBarSeries;
-    BarSeries5: TBarSeries;
-    BarSeries6: TBarSeries;
-    PageNumTool1: TPageNumTool;
     CDSResultT: TClientDataSet;
     DS_ResultT: TDataSource;
     CDSResultTdata: TDateField;
@@ -106,9 +93,6 @@ type
     CDSResultTpercaberto: TStringField;
     CDSResultTpercatrasado: TStringField;
     CDSResultTpercbaixado: TStringField;
-    BarSeries2: TBarSeries;
-    Series1: TBarSeries;
-    Series4: TBarSeries;
     procedure dxButton4Click(Sender: TObject);
     procedure EParticipanteExit(Sender: TObject);
     procedure dxButton5Click(Sender: TObject);
@@ -143,70 +127,112 @@ uses Tabelas, Principal,Funcoes , uRuntimeFields, ChartGenerator;
 {$R *.dfm}
 
 procedure TFrmDash.CriarGraficosRuntime;
-  procedure CriarPaintBox(Chart: TDBChart; var PaintBox: TPaintBox;
+  procedure CriarPaintBox(Container: TPanel; var PaintBox: TPaintBox;
     PaintHandler: TNotifyEvent);
   begin
     if PaintBox <> nil then
       Exit;
-    if (Chart = nil) or (Chart.Parent = nil) then
+    if Container = nil then
       Exit;
-    PaintBox := TPaintBox.Create(Self);
-    PaintBox.Parent := Chart.Parent;
-    PaintBox.SetBounds(Chart.Left, Chart.Top, Chart.Width, Chart.Height);
-    PaintBox.Anchors := Chart.Anchors;
+    PaintBox := TPaintBox.Create(Container);
+    PaintBox.Parent := Container;
+    PaintBox.Align := alClient;
     PaintBox.OnPaint := PaintHandler;
-    Chart.Visible := False;
-    PaintBox.BringToFront;
   end;
 begin
-  CriarPaintBox(DBChart1, FPaintBoxGrafico1, PintarGrafico1);
-  CriarPaintBox(DBChart2, FPaintBoxGrafico2, PintarGrafico2);
-  CriarPaintBox(DBChart3, FPaintBoxGrafico3, PintarGrafico3);
+  CriarPaintBox(PnlGrafico1, FPaintBoxGrafico1, PintarGrafico1);
+  CriarPaintBox(PnlGrafico2, FPaintBoxGrafico2, PintarGrafico2);
+  CriarPaintBox(PnlGrafico3, FPaintBoxGrafico3, PintarGrafico3);
 end;
 
 procedure TFrmDash.PintarGrafico1(Sender: TObject);
 var
   Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
 begin
   if FPaintBoxGrafico1 = nil then
     Exit;
-  LoadChartSeriesFromDataSet(CDSResult, 'Texto',
+  LoadChartSeriesFromDataSet(CDSResult,
+    ['Texto', 'pdisponivel', 'pnaodisponivel'],
     ['Total', 'Disponivel', 'Nao Disponivel'],
     ['TotalLotes', 'total_disponivel', 'Total_nao_disponivel'],
     [clBlue, clLime, clRed], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico1.Canvas, Series, ctBar,
+  Series[0].BarPenWidth := 2;
+  Series[0].MarkStyle := cmsValue;
+  Series[1].BarPenWidth := 2;
+  Series[1].BarStyle := cbsCylinder;
+  Series[1].MarkStyle := cmsLabelValue;
+  Series[2].BarPenStyle := psDash;
+  Series[2].BarStyle := cbsCylinder;
+  Series[2].MarkStyle := cmsLabelValue;
+
+  Options := DefaultChartRenderOptions(clWhite);
+  Options.UseBackgroundGradient := True;
+  Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+  Options.BackgroundEndColor := clWhite;
+  Options.BorderColor := clBlue;
+  Options.BorderWidth := 2;
+  GenerateStyledMultiSeriesChart(FPaintBoxGrafico1.Canvas, Series, ctBar,
     FPaintBoxGrafico1.ClientWidth, FPaintBoxGrafico1.ClientHeight,
-    'Lotes', clWhite, True, True, True, False);
+    'Lotes', Options, True, True);
 end;
 
 procedure TFrmDash.PintarGrafico2(Sender: TObject);
 var
   Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
 begin
   if FPaintBoxGrafico2 = nil then
     Exit;
-  LoadChartSeriesFromDataSet(CDSResultT, 'texto',
+  LoadChartSeriesFromDataSet(CDSResultT,
+    ['texto', 'percaberto', 'percatrasado', 'percbaixado'],
     ['Total', 'Abertos', 'Atrasados', 'Baixados'],
     ['TotalParcela', 'aberto', 'atrasado', 'baixado'],
     [clBlue, clLime, clRed, clOlive], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico2.Canvas, Series, ctBar,
+  Series[0].MarkStyle := cmsValue;
+  Series[1].BarPenWidth := 2;
+  Series[1].MarkStyle := cmsLabelValue;
+  Series[2].MarkStyle := cmsLabelValue;
+  Series[3].MarkStyle := cmsLabelValue;
+
+  Options := DefaultChartRenderOptions(clWhite);
+  Options.UseBackgroundGradient := True;
+  Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+  Options.BackgroundEndColor := clWhite;
+  Options.BorderColor := clBlue;
+  Options.BorderWidth := 2;
+  GenerateStyledMultiSeriesChart(FPaintBoxGrafico2.Canvas, Series, ctBar,
     FPaintBoxGrafico2.ClientWidth, FPaintBoxGrafico2.ClientHeight,
-    'Total de Parcelas Valores', clWhite, True, True, True, False);
+    'Total de Parcelas Valores', Options, True, True);
 end;
 
 procedure TFrmDash.PintarGrafico3(Sender: TObject);
 var
   Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
 begin
   if FPaintBoxGrafico3 = nil then
     Exit;
-  LoadChartSeriesFromDataSet(CDSResultP, 'texto',
+  LoadChartSeriesFromDataSet(CDSResultP,
+    ['texto', 'percaberto', 'percatrasado', 'percbaixado'],
     ['Total', 'Abertos', 'Atrasados', 'Baixados'],
     ['TotalParcela', 'aberto', 'atrasado', 'baixado'],
     [clBlue, clLime, clRed, clOlive], Series);
-  GenerateMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctBar,
+  Series[0].MarkStyle := cmsValue;
+  Series[1].BarPenWidth := 2;
+  Series[1].MarkStyle := cmsLabelValue;
+  Series[2].MarkStyle := cmsLabelValue;
+  Series[3].MarkStyle := cmsLabelValue;
+
+  Options := DefaultChartRenderOptions(clWhite);
+  Options.UseBackgroundGradient := True;
+  Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+  Options.BackgroundEndColor := clWhite;
+  Options.BorderColor := clBlue;
+  Options.BorderWidth := 2;
+  GenerateStyledMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctBar,
     FPaintBoxGrafico3.ClientWidth, FPaintBoxGrafico3.ClientHeight,
-    'Total de Parcelas', clWhite, True, True, True, False);
+    'Total de Parcelas', Options, True, True);
 end;
 
 procedure TFrmDash.InvalidarGraficosRuntime;

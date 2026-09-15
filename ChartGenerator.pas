@@ -7,7 +7,9 @@ uses
   Dialogs, DB, Printers, ExtCtrls;
 
 type
-  TChartType = (ctBar, ctLine, ctPie);
+  TChartType = (ctBar, ctLine, ctPie, ctHorizontalBar);
+  TChartMarkStyle = (cmsNone, cmsValue, cmsLabelValue);
+  TChartBarStyle = (cbsRectangle, cbsCylinder);
 
   TChartData = record
     XValue: string;
@@ -21,9 +23,39 @@ type
     Title: string;
     Data: TChartDataArray;
     Color: TColor;
+    LineStyle: TPenStyle;
+    LineWidth: Integer;
+    BarPenColor: TColor;
+    BarPenStyle: TPenStyle;
+    BarPenWidth: Integer;
+    BarStyle: TChartBarStyle;
+    MarkStyle: TChartMarkStyle;
+    ColorEachPoint: Boolean;
   end;
 
   TChartSeriesArray = array of TChartSeriesData;
+
+  TChartRenderOptions = record
+    UseBackgroundGradient: Boolean;
+    BackgroundStartColor: TColor;
+    BackgroundEndColor: TColor;
+    BorderColor: TColor;
+    BorderWidth: Integer;
+    TitleColor: TColor;
+    TitleFontName: string;
+    TitleFontSize: Integer;
+    TitleFontStyle: TFontStyles;
+    AxisColor: TColor;
+    GridColor: TColor;
+    AxisLabelColor: TColor;
+    AxisFontName: string;
+    AxisFontSize: Integer;
+    AxisFontStyle: TFontStyles;
+    LegendColor: TColor;
+    LegendBackColor: TColor;
+    ShowLegend: Boolean;
+    LegendBySeries: Boolean;
+  end;
 
 procedure LoadChartDataFromSQL(Connection: TZConnection; SQLQuery: string;
   XField, YField: string; var Data: TChartDataArray);
@@ -31,7 +63,16 @@ procedure LoadChartDataFromQuery(Query: TZQuery; XField, YField: string;
   var Data: TChartDataArray);
 procedure LoadChartSeriesFromDataSet(DataSet: TDataSet; const XField: string;
   const SeriesTitles: array of string; const YFields: array of string;
-  const SeriesColors: array of TColor; var Series: TChartSeriesArray);
+  const SeriesColors: array of TColor; var Series: TChartSeriesArray); overload;
+procedure LoadChartSeriesFromDataSet(DataSet: TDataSet;
+  const XFields: array of string; const SeriesTitles: array of string;
+  const YFields: array of string; const SeriesColors: array of TColor;
+  var Series: TChartSeriesArray); overload;
+function DefaultChartRenderOptions(BackgroundColor: TColor = clWhite): TChartRenderOptions;
+procedure GenerateStyledMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
+  ChartType: TChartType; Width, Height: Integer; const Title: string;
+  const Options: TChartRenderOptions; ShowXAxisLabels: Boolean = True;
+  ShowYAxisLabels: Boolean = True; DashboardLegend: Boolean = False);
 procedure GenerateChart(Canvas: TCanvas; Data: TChartDataArray;
   ChartType: TChartType; Width, Height: Integer; Title: string = '';
   ShowPercentage: Boolean = True; ShowValuesOnBars: Boolean = True;
@@ -57,6 +98,29 @@ const
     $0C58BC5, $08BC5C5, $0C090C5, $0F9CEA4,
     $0677C52, $05C758B, $0340044, $0171717
   );
+
+function DefaultChartRenderOptions(BackgroundColor: TColor): TChartRenderOptions;
+begin
+  Result.UseBackgroundGradient := False;
+  Result.BackgroundStartColor := BackgroundColor;
+  Result.BackgroundEndColor := BackgroundColor;
+  Result.BorderColor := clBlue;
+  Result.BorderWidth := 1;
+  Result.TitleColor := clNavy;
+  Result.TitleFontName := 'Tahoma';
+  Result.TitleFontSize := 12;
+  Result.TitleFontStyle := [fsBold];
+  Result.AxisColor := clNavy;
+  Result.GridColor := clSilver;
+  Result.AxisLabelColor := clNavy;
+  Result.AxisFontName := 'Tahoma';
+  Result.AxisFontSize := 8;
+  Result.AxisFontStyle := [fsBold];
+  Result.LegendColor := clBlack;
+  Result.LegendBackColor := clWhite;
+  Result.ShowLegend := True;
+  Result.LegendBySeries := True;
+end;
 
 function SelecionarImpressoraPadraoWindows(out ANome: string): Boolean;
 begin
@@ -87,16 +151,43 @@ begin
   Result := FormatFloat('###,###,##0.00', Value, FS);
 end;
 
-procedure DrawTitle(Canvas: TCanvas; const Title: string; Width: Integer);
+procedure DrawTitle(Canvas: TCanvas; const Title: string; Width: Integer;
+  const Options: TChartRenderOptions);
 begin
   if Title <> '' then
   begin
     Canvas.Brush.Style := bsClear;
-    Canvas.Font.Size := 14;
-    Canvas.Font.Style := [fsBold];
-    Canvas.Font.Color := clNavy;
+    Canvas.Font.Name := Options.TitleFontName;
+    Canvas.Font.Size := Options.TitleFontSize;
+    Canvas.Font.Style := Options.TitleFontStyle;
+    Canvas.Font.Color := Options.TitleColor;
     Canvas.TextOut((Width - Canvas.TextWidth(Title)) div 2, 15, Title);
     Canvas.Font.Style := [];
+  end;
+end;
+
+procedure FillVerticalGradient(Canvas: TCanvas; const R: TRect;
+  StartColor, EndColor: TColor);
+var
+  I, H: Integer;
+  StartRGB, EndRGB: COLORREF;
+  Red, Green, Blue: Byte;
+begin
+  H := Max(1, R.Bottom - R.Top);
+  StartRGB := ColorToRGB(StartColor);
+  EndRGB := ColorToRGB(EndColor);
+  Canvas.Pen.Style := psSolid;
+  for I := 0 to H - 1 do
+  begin
+    Red := GetRValue(StartRGB) +
+      ((GetRValue(EndRGB) - GetRValue(StartRGB)) * I div H);
+    Green := GetGValue(StartRGB) +
+      ((GetGValue(EndRGB) - GetGValue(StartRGB)) * I div H);
+    Blue := GetBValue(StartRGB) +
+      ((GetBValue(EndRGB) - GetBValue(StartRGB)) * I div H);
+    Canvas.Pen.Color := RGB(Red, Green, Blue);
+    Canvas.MoveTo(R.Left, R.Top + I);
+    Canvas.LineTo(R.Right, R.Top + I);
   end;
 end;
 
@@ -167,8 +258,22 @@ procedure LoadChartSeriesFromDataSet(DataSet: TDataSet; const XField: string;
   const SeriesTitles: array of string; const YFields: array of string;
   const SeriesColors: array of TColor; var Series: TChartSeriesArray);
 var
+  XFields: array of string;
+begin
+  SetLength(XFields, 1);
+  XFields[0] := XField;
+  LoadChartSeriesFromDataSet(DataSet, XFields, SeriesTitles, YFields,
+    SeriesColors, Series);
+end;
+
+procedure LoadChartSeriesFromDataSet(DataSet: TDataSet;
+  const XFields: array of string; const SeriesTitles: array of string;
+  const YFields: array of string; const SeriesColors: array of TColor;
+  var Series: TChartSeriesArray);
+var
   I, Row: Integer;
   Bmk: TBookmark;
+  XField: string;
 begin
   SetLength(Series, Length(YFields));
   for I := 0 to High(YFields) do
@@ -181,6 +286,14 @@ begin
       Series[I].Color := SeriesColors[I]
     else
       Series[I].Color := COLOR_PALETTE[I mod Length(COLOR_PALETTE)];
+    Series[I].LineStyle := psSolid;
+    Series[I].LineWidth := 2;
+    Series[I].BarPenColor := Series[I].Color;
+    Series[I].BarPenStyle := psSolid;
+    Series[I].BarPenWidth := 1;
+    Series[I].BarStyle := cbsRectangle;
+    Series[I].MarkStyle := cmsNone;
+    Series[I].ColorEachPoint := False;
     SetLength(Series[I].Data, 0);
   end;
 
@@ -197,7 +310,16 @@ begin
       for I := 0 to High(YFields) do
       begin
         SetLength(Series[I].Data, Row + 1);
-        Series[I].Data[Row].XValue := DataSet.FieldByName(XField).AsString;
+        if I <= High(XFields) then
+          XField := XFields[I]
+        else if Length(XFields) > 0 then
+          XField := XFields[0]
+        else
+          XField := '';
+        if XField <> '' then
+          Series[I].Data[Row].XValue := DataSet.FieldByName(XField).AsString
+        else
+          Series[I].Data[Row].XValue := '';
         Series[I].Data[Row].YValue := DataSet.FieldByName(YFields[I]).AsFloat;
         Series[I].Data[Row].Color := COLOR_PALETTE[(I * 31 + Row) mod Length(COLOR_PALETTE)];
       end;
@@ -220,11 +342,11 @@ begin
     BackgroundColor, ShowXAxisLabels, ShowYAxisLabels);
 end;
 
-procedure GenerateMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
-  ChartType: TChartType; Width, Height: Integer; Title: string = '';
-  BackgroundColor: TColor = clWhite; ShowXAxisLabels: Boolean = True;
-  ShowYAxisLabels: Boolean = True; LegendBySeriesForBars: Boolean = True;
-  DashboardLegend: Boolean = False);
+procedure GenerateMultiSeriesChartInternal(Canvas: TCanvas; Series: TChartSeriesArray;
+  ChartType: TChartType; Width, Height: Integer; const Title: string;
+  BackgroundColor: TColor; ShowXAxisLabels, ShowYAxisLabels: Boolean;
+  LegendBySeriesForBars, DashboardLegend: Boolean;
+  const Options: TChartRenderOptions);
 var
   ChartArea: TRect;
   I, J, K, XPos, YPos, PrevX, PrevY, GroupWidth, BarWidth, BarLeft: Integer;
@@ -289,10 +411,16 @@ var
     if (SeriesIndex >= 0) and (SeriesIndex <= High(Series)) and
        (DataIndex >= 0) and (DataIndex <= High(Series[SeriesIndex].Data)) then
     begin
-      { Barras usam a cor da serie sem variacao por mes. As linhas mantem
-        a variacao de tonalidade para diferenciar periodos. }
-      if ChartType = ctBar then
-        Result := Series[SeriesIndex].Color
+      { Barras usam a cor da serie, exceto quando o grafico solicita uma
+        cor por categoria. As linhas mantem variacao por periodo. }
+      if ChartType in [ctBar, ctHorizontalBar] then
+      begin
+        if Series[SeriesIndex].ColorEachPoint and
+           (Series[SeriesIndex].Data[DataIndex].Color <> 0) then
+          Result := Series[SeriesIndex].Data[DataIndex].Color
+        else
+          Result := Series[SeriesIndex].Color;
+      end
       else
         Result := ShadeSeriesColor(Series[SeriesIndex].Color,
           MonthColorIndex(Series[SeriesIndex].Data[DataIndex].XValue, DataIndex));
@@ -313,6 +441,14 @@ var
     Result := SeriesDisplayTitle(SeriesIndex) + ' - ' +
       Series[SeriesIndex].Data[DataIndex].XValue + ' - R$ ' +
       FormatYValue(Series[SeriesIndex].Data[DataIndex].YValue);
+  end;
+
+  function MarkText(SeriesIndex, DataIndex: Integer): string;
+  begin
+    Result := FormatYValue(Series[SeriesIndex].Data[DataIndex].YValue);
+    if (Series[SeriesIndex].MarkStyle = cmsLabelValue) and
+       (Series[SeriesIndex].Data[DataIndex].XValue <> '') then
+      Result := Series[SeriesIndex].Data[DataIndex].XValue + ': ' + Result;
   end;
 
   function DashboardLegendItemCount: Integer;
@@ -341,6 +477,21 @@ var
         if TextWidthValue > Result then
           Result := TextWidthValue;
       end;
+  end;
+
+  function LegendItemCount: Integer;
+  begin
+    if not Options.ShowLegend then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    if Options.LegendBySeries then
+    begin
+      Result := Length(Series);
+      Exit;
+    end;
+    Result := DashboardLegendItemCount;
   end;
 
   function FitText(const Text: string; MaxWidth: Integer): string;
@@ -376,8 +527,10 @@ var
     LabelX, LabelWidth, MinLabelX, MaxLabelX: Integer;
   begin
     Canvas.Brush.Style := bsClear;
-    Canvas.Font.Color := clBlack;
-    Canvas.Font.Size := 8;
+    Canvas.Font.Name := Options.AxisFontName;
+    Canvas.Font.Color := Options.AxisLabelColor;
+    Canvas.Font.Size := Options.AxisFontSize;
+    Canvas.Font.Style := Options.AxisFontStyle;
     LabelWidth := Canvas.TextWidth(LabelText);
     LabelX := CenterX - (LabelWidth div 2);
     { Mantem o texto inteiro dentro da area do grafico, sem invadir a
@@ -391,6 +544,7 @@ var
     if LabelX > MaxLabelX then
       LabelX := MaxLabelX;
     Canvas.TextOut(LabelX, LabelY, LabelText);
+    Canvas.Font.Style := [];
   end;
 
   function XAxisLabelsNeedSecondRow: Boolean;
@@ -400,7 +554,8 @@ var
     Result := False;
     if not DashboardLegend or (DataCount <= 1) then
       Exit;
-    Canvas.Font.Size := 8;
+    Canvas.Font.Name := Options.AxisFontName;
+    Canvas.Font.Size := Options.AxisFontSize;
     if (ChartType = ctLine) and (DataCount > 1) then
       SlotWidth := Max(1, ChartArea.Width div (DataCount - 1))
     else
@@ -432,6 +587,11 @@ var
     Result := ChartArea.Bottom - Round((Value - MinY) * ScaleFactorY);
   end;
 
+  function ValueToX(Value: Double): Integer;
+  begin
+    Result := ChartArea.Left + Round((Value - MinY) * ScaleFactorY);
+  end;
+
   procedure CalculateMetrics;
   var
     I, J, LeftMargin, LegendCount, RowsAvailable, MaxTextWidth: Integer;
@@ -453,20 +613,28 @@ var
     if RangeY <= 0 then
       RangeY := 1;
 
-    Canvas.Font.Size := 8;
+    Canvas.Font.Name := Options.AxisFontName;
+    Canvas.Font.Size := Options.AxisFontSize;
     LeftMargin := Max(62, Max(Canvas.TextWidth(FormatYValue(MaxY)), Canvas.TextWidth(FormatYValue(MinY))) + 16);
+    if ChartType = ctHorizontalBar then
+    begin
+      LeftMargin := 80;
+      for J := 0 to High(Series[0].Data) do
+        LeftMargin := Max(LeftMargin,
+          Canvas.TextWidth(Series[0].Data[J].XValue) + 16);
+    end;
     LegendMonthColumns := 2;
     LegendItemHeight := 16;
     LegendSideWidth := 0;
     LegendLeft := 0;
     LegendTopPos := DEFAULT_MARGIN + IfThen(Title <> '', 42, 20);
-    if DashboardLegend then
+    if DashboardLegend and Options.ShowLegend then
     begin
       { A dashboard tem varios graficos e muitas entradas. A legenda fica
         na lateral, liberando a faixa inferior para os eixos e botoes. }
       LegendFontSize := 7;
       LegendItemHeight := 13;
-      LegendCount := DashboardLegendItemCount;
+      LegendCount := LegendItemCount;
       MaxTextWidth := DashboardLegendTextWidth;
       LegendColumnWidth := Max(140, MaxTextWidth + 18);
       RowsAvailable := Max(1, (Height - LegendTopPos - 8) div LegendItemHeight);
@@ -480,7 +648,8 @@ var
     end
     else
     begin
-      LegendRows := Max(1, Ceil(DataCount / LegendMonthColumns));
+      LegendCount := LegendItemCount;
+      LegendRows := Max(0, Ceil(LegendCount / LegendMonthColumns));
       ChartArea := Rect(LeftMargin, LegendTopPos,
         Width - 24, Height - (LegendRows * LegendItemHeight) - 28);
     end;
@@ -490,7 +659,10 @@ var
       ChartArea.Right := Width - 20;
     if ChartArea.Bottom <= ChartArea.Top then
       ChartArea.Bottom := Height - 20;
-    ScaleFactorY := (ChartArea.Bottom - ChartArea.Top) / RangeY;
+    if ChartType = ctHorizontalBar then
+      ScaleFactorY := (ChartArea.Right - ChartArea.Left) / RangeY
+    else
+      ScaleFactorY := (ChartArea.Bottom - ChartArea.Top) / RangeY;
     ZeroY := ValueToY(0);
   end;
 
@@ -499,14 +671,16 @@ var
   begin
     Canvas.Pen.Width := 1;
     Canvas.Pen.Style := psSolid;
-    Canvas.Pen.Color := clBlack;
+    Canvas.Pen.Color := Options.AxisColor;
     Canvas.MoveTo(ChartArea.Left, ChartArea.Top);
     Canvas.LineTo(ChartArea.Left, ChartArea.Bottom);
     Canvas.LineTo(ChartArea.Right, ChartArea.Bottom);
     if ShowYAxisLabels then
     begin
-      Canvas.Font.Size := 8;
-      Canvas.Pen.Color := clSilver;
+      Canvas.Font.Name := Options.AxisFontName;
+      Canvas.Font.Size := Options.AxisFontSize;
+      Canvas.Font.Style := Options.AxisFontStyle;
+      Canvas.Pen.Color := Options.GridColor;
       Canvas.Pen.Style := psDot;
       for I := 0 to 5 do
       begin
@@ -516,7 +690,7 @@ var
         Canvas.LineTo(ChartArea.Right, YPos);
         YLabel := FormatYValue(LabelValue);
         Canvas.Brush.Style := bsClear;
-        Canvas.Font.Color := clNavy;
+        Canvas.Font.Color := Options.AxisLabelColor;
         Canvas.TextOut(ChartArea.Left - Canvas.TextWidth(YLabel) - 8, YPos - 7, YLabel);
       end;
     end;
@@ -527,6 +701,7 @@ var
       Canvas.MoveTo(ChartArea.Left, ZeroY);
       Canvas.LineTo(ChartArea.Right, ZeroY);
     end;
+    Canvas.Font.Style := [];
   end;
 
   procedure DrawLegend;
@@ -534,8 +709,30 @@ var
     I, J, X, Y, MonthColumn, Row, ColumnWidth, LegendTop, ItemOrdinal: Integer;
     Txt: string;
   begin
-    if Width < 420 then
+    if (Width < 420) or (not Options.ShowLegend) then
       Exit;
+
+    if Options.LegendBySeries then
+    begin
+      LegendTop := ChartArea.Bottom + 24;
+      Canvas.Font.Name := Options.AxisFontName;
+      Canvas.Font.Size := 8;
+      Canvas.Font.Color := Options.LegendColor;
+      for I := 0 to High(Series) do
+      begin
+        MonthColumn := I div Max(1, LegendRows);
+        Row := I mod Max(1, LegendRows);
+        X := MonthColumn * (Width div LegendMonthColumns) + 4;
+        Y := LegendTop + Row * LegendItemHeight;
+        Canvas.Brush.Style := bsSolid;
+        Canvas.Brush.Color := Series[I].Color;
+        Canvas.Pen.Color := Series[I].BarPenColor;
+        Canvas.Rectangle(X, Y, X + 10, Y + 10);
+        Canvas.Brush.Style := bsClear;
+        Canvas.TextOut(X + 14, Y - 1, SeriesDisplayTitle(I));
+      end;
+      Exit;
+    end;
 
     if DashboardLegend then
     begin
@@ -560,7 +757,7 @@ var
           Canvas.Pen.Color := clGray;
           Canvas.Rectangle(X, Y, X + 10, Y + 10);
           Canvas.Brush.Style := bsClear;
-          Canvas.Font.Color := clBlack;
+          Canvas.Font.Color := Options.LegendColor;
           Txt := DataLegendText(I, J);
           { A largura foi calculada pelo TextWidth; nao truncar valores. }
           Canvas.TextOut(X + 14, Y - 1, Txt);
@@ -570,6 +767,7 @@ var
     end;
 
     LegendTop := ChartArea.Bottom + 24;
+    Canvas.Font.Name := Options.AxisFontName;
     Canvas.Font.Size := 7;
     LegendItemHeight := Max(14, LegendItemHeight);
     LegendRows := Max(1, LegendRows);
@@ -591,21 +789,96 @@ var
         Canvas.Pen.Color := clGray;
         Canvas.Rectangle(X, Y, X + 10, Y + 10);
         Canvas.Brush.Style := bsClear;
-        Canvas.Font.Color := clBlack;
+        Canvas.Font.Color := Options.LegendColor;
         Txt := DataLegendText(I, J);
         Canvas.TextOut(X + 14, Y - 1, FitText(Txt, ColumnWidth - 18));
       end;
   end;
 
+  procedure DrawHorizontalBarChart;
+  var
+    I, J, XValue, CategoryTop, GroupHeight, BarHeight, BarTop: Integer;
+    LabelValueX: Double;
+    LabelText: string;
+    BarRect: TRect;
+  begin
+    Canvas.Pen.Width := 1;
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Color := Options.AxisColor;
+    Canvas.MoveTo(ChartArea.Left, ChartArea.Top);
+    Canvas.LineTo(ChartArea.Left, ChartArea.Bottom);
+    Canvas.LineTo(ChartArea.Right, ChartArea.Bottom);
+
+    Canvas.Font.Name := Options.AxisFontName;
+    Canvas.Font.Size := Options.AxisFontSize;
+    Canvas.Font.Style := Options.AxisFontStyle;
+    for I := 0 to 5 do
+    begin
+      LabelValueX := MinY + (I * RangeY) / 5;
+      XValue := ValueToX(LabelValueX);
+      Canvas.Pen.Color := Options.GridColor;
+      Canvas.Pen.Style := psDot;
+      Canvas.MoveTo(XValue, ChartArea.Top);
+      Canvas.LineTo(XValue, ChartArea.Bottom);
+      if ShowYAxisLabels then
+      begin
+        LabelText := FormatYValue(LabelValueX);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Font.Color := Options.AxisLabelColor;
+        Canvas.TextOut(XValue - (Canvas.TextWidth(LabelText) div 2),
+          ChartArea.Bottom + 7, LabelText);
+      end;
+    end;
+
+    GroupHeight := Max(16, (ChartArea.Bottom - ChartArea.Top) div Max(1, DataCount));
+    BarHeight := Max(6, (GroupHeight - 6) div Max(1, Length(Series)));
+    for J := 0 to DataCount - 1 do
+    begin
+      CategoryTop := ChartArea.Top + (J * GroupHeight);
+      if (Length(Series[0].Data) > J) then
+      begin
+        Canvas.Font.Color := Options.AxisLabelColor;
+        Canvas.TextOut(ChartArea.Left - Canvas.TextWidth(Series[0].Data[J].XValue) - 8,
+          CategoryTop + ((GroupHeight - Canvas.TextHeight(Series[0].Data[J].XValue)) div 2),
+          Series[0].Data[J].XValue);
+      end;
+      for I := 0 to High(Series) do
+      begin
+        if J > High(Series[I].Data) then
+          Continue;
+        BarTop := CategoryTop + 3 + (I * BarHeight);
+        XValue := ValueToX(Series[I].Data[J].YValue);
+        BarRect := Rect(Min(ChartArea.Left, XValue), BarTop,
+          Max(ChartArea.Left, XValue), BarTop + BarHeight - 2);
+        Canvas.Brush.Style := bsSolid;
+        Canvas.Brush.Color := ItemColor(I, J);
+        Canvas.Pen.Color := Series[I].BarPenColor;
+        Canvas.Pen.Style := Series[I].BarPenStyle;
+        Canvas.Pen.Width := Max(1, Series[I].BarPenWidth);
+        if Series[I].BarStyle = cbsCylinder then
+          Canvas.RoundRect(BarRect.Left, BarRect.Top, BarRect.Right, BarRect.Bottom,
+            Max(2, BarHeight div 2), Max(2, BarHeight div 2))
+        else
+          Canvas.Rectangle(BarRect);
+        if Series[I].MarkStyle <> cmsNone then
+          DrawValueBox(Canvas, MarkText(I, J), XValue + 6,
+            Max(ChartArea.Top, BarTop - 2));
+      end;
+    end;
+    Canvas.Font.Style := [];
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Width := 1;
+    DrawLegend;
+  end;
+
   procedure DrawBarChart;
   var
-    DrawValues: Boolean;
-    J,I:integer;
+    J, I, Radius: Integer;
+    BarRect: TRect;
   begin
     DrawAxes;
     GroupWidth := Max(14, ChartArea.Width div Max(1, DataCount));
     BarWidth := Max(5, (GroupWidth - 10) div Max(1, Length(Series)));
-    DrawValues := (BarWidth >= 18) and ((DataCount * Max(1, Length(Series))) <= 16);
 
     for J := 0 to DataCount - 1 do
     begin
@@ -618,11 +891,22 @@ var
         YPos := ValueToY(Series[I].Data[J].YValue);
         Canvas.Brush.Style := bsSolid;
         Canvas.Brush.Color := ItemColor(I, J);
-        Canvas.Pen.Color := clGray;
-        Canvas.Rectangle(XPos, Min(YPos, ZeroY), XPos + BarWidth - 2, Max(YPos, ZeroY));
-        if DrawValues and (Series[I].Data[J].YValue > 0) then
+        Canvas.Pen.Color := Series[I].BarPenColor;
+        Canvas.Pen.Style := Series[I].BarPenStyle;
+        Canvas.Pen.Width := Max(1, Series[I].BarPenWidth);
+        BarRect := Rect(XPos, Min(YPos, ZeroY), XPos + BarWidth - 2, Max(YPos, ZeroY));
+        if Series[I].BarStyle = cbsCylinder then
         begin
-          S := FormatYValue(Series[I].Data[J].YValue);
+          Radius := Max(2, Min(BarWidth div 2, 8));
+          Canvas.RoundRect(BarRect.Left, BarRect.Top, BarRect.Right, BarRect.Bottom,
+            Radius, Radius);
+        end
+        else
+          Canvas.Rectangle(BarRect);
+        if (Series[I].MarkStyle <> cmsNone) and
+           (Series[I].Data[J].YValue > 0) then
+        begin
+          S := MarkText(I, J);
           DrawValueBox(Canvas, S, XPos + Max(0, (BarWidth div 2) - (Canvas.TextWidth(S) div 2)), Max(ChartArea.Top, YPos - 22));
         end;
       end;
@@ -630,6 +914,8 @@ var
         DrawXAxisLabel(Series[0].Data[J].XValue,
           BarLeft + (GroupWidth div 2), XAxisLabelY(J));
     end;
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Width := 1;
     DrawLegend;
   end;
 
@@ -642,7 +928,8 @@ var
     DrawAllValues := DataCount <= 8;
     for I := 0 to High(Series) do
     begin
-      Canvas.Pen.Width := 3;
+      Canvas.Pen.Width := Max(1, Series[I].LineWidth);
+      Canvas.Pen.Style := Series[I].LineStyle;
       Canvas.Pen.Color := ItemColor(I, 0);
       PrevX := 0;
       PrevY := 0;
@@ -656,6 +943,8 @@ var
         YPos := ValueToY(Series[I].Data[J].YValue);
         if J > 0 then
         begin
+          Canvas.Pen.Width := Max(1, Series[I].LineWidth);
+          Canvas.Pen.Style := Series[I].LineStyle;
           Canvas.Pen.Color := ItemColor(I, J);
           Canvas.MoveTo(PrevX, PrevY);
           Canvas.LineTo(XPos, YPos);
@@ -664,13 +953,18 @@ var
         Canvas.Brush.Color := ItemColor(I, J);
         Canvas.Pen.Color := clGray;
         Canvas.Ellipse(XPos - 4, YPos - 4, XPos + 4, YPos + 4);
-        DrawThisValue := (Series[I].Data[J].YValue > 0) and (DrawAllValues or (J = LastIdx));
+        DrawThisValue := (Series[I].MarkStyle <> cmsNone) and
+          (Series[I].Data[J].YValue > 0) and
+          (DrawAllValues or (J = LastIdx));
         if DrawThisValue then
-          DrawValueBox(Canvas, FormatYValue(Series[I].Data[J].YValue), XPos + 7, Max(ChartArea.Top, YPos - 12));
+          DrawValueBox(Canvas, MarkText(I, J), XPos + 7,
+            Max(ChartArea.Top, YPos - 12));
         PrevX := XPos;
         PrevY := YPos;
       end;
     end;
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Width := 1;
     if ShowXAxisLabels and (DataCount > 0) then
       for J := 0 to High(Series[0].Data) do
       begin
@@ -739,18 +1033,56 @@ var
   end;
 
 begin
-  Canvas.Brush.Style := bsSolid;
-  Canvas.Brush.Color := BackgroundColor;
-  Canvas.FillRect(Rect(0, 0, Width, Height));
+  if Options.UseBackgroundGradient then
+    FillVerticalGradient(Canvas, Rect(0, 0, Width, Height),
+      Options.BackgroundStartColor, Options.BackgroundEndColor)
+  else
+  begin
+    Canvas.Brush.Style := bsSolid;
+    Canvas.Brush.Color := BackgroundColor;
+    Canvas.FillRect(Rect(0, 0, Width, Height));
+  end;
+  if Options.BorderWidth > 0 then
+  begin
+    Canvas.Brush.Style := bsClear;
+    Canvas.Pen.Style := psSolid;
+    Canvas.Pen.Color := Options.BorderColor;
+    Canvas.Pen.Width := Options.BorderWidth;
+    Canvas.Rectangle(0, 0, Width - 1, Height - 1);
+  end;
   if not HasData then
     Exit;
   CalculateMetrics;
-  DrawTitle(Canvas, Title, Width);
+  DrawTitle(Canvas, Title, Width, Options);
   case ChartType of
     ctBar: DrawBarChart;
     ctLine: DrawLineChart;
     ctPie: DrawPieChart;
+    ctHorizontalBar: DrawHorizontalBarChart;
   end;
+end;
+
+procedure GenerateStyledMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
+  ChartType: TChartType; Width, Height: Integer; const Title: string;
+  const Options: TChartRenderOptions; ShowXAxisLabels: Boolean;
+  ShowYAxisLabels: Boolean; DashboardLegend: Boolean);
+begin
+  GenerateMultiSeriesChartInternal(Canvas, Series, ChartType, Width, Height,
+    Title, Options.BackgroundStartColor, ShowXAxisLabels, ShowYAxisLabels,
+    Options.LegendBySeries, DashboardLegend, Options);
+end;
+
+procedure GenerateMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
+  ChartType: TChartType; Width, Height: Integer; Title: string;
+  BackgroundColor: TColor; ShowXAxisLabels: Boolean; ShowYAxisLabels: Boolean;
+  LegendBySeriesForBars: Boolean; DashboardLegend: Boolean);
+var
+  Options: TChartRenderOptions;
+begin
+  Options := DefaultChartRenderOptions(BackgroundColor);
+  Options.LegendBySeries := LegendBySeriesForBars;
+  GenerateStyledMultiSeriesChart(Canvas, Series, ChartType, Width, Height,
+    Title, Options, ShowXAxisLabels, ShowYAxisLabels, DashboardLegend);
 end;
 
 procedure GenerateChart(Canvas: TCanvas; Data: TChartDataArray;
@@ -765,6 +1097,14 @@ begin
   SetLength(Series, 1);
   Series[0].Title := Title;
   Series[0].Color := clNavy;
+  Series[0].LineStyle := psSolid;
+  Series[0].LineWidth := 2;
+  Series[0].BarPenColor := clNavy;
+  Series[0].BarPenStyle := psSolid;
+  Series[0].BarPenWidth := 1;
+  Series[0].BarStyle := cbsRectangle;
+  Series[0].MarkStyle := cmsNone;
+  Series[0].ColorEachPoint := False;
   SetLength(Series[0].Data, Length(Data));
   for I := 0 to High(Data) do
   begin
@@ -930,12 +1270,3 @@ begin
 end;
 
 end.
-
-
-
-
-
-
-
-
-
