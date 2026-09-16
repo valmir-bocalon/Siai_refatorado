@@ -3842,6 +3842,12 @@ initialization
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemidRecebimento', 'idRecebimento', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemRefBaixa', 'RefBaixa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemrefvinda', 'refvinda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemdocumento', 'documento', TWideStringField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemdt_entrada', 'dt_entrada', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemdt_vencimento', 'dt_vencimento', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemvalor', 'valor', TFloatField, fkData, 0, 0, False, '', '###,###,##0.00', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemtipdoc', 'tipdoc', TWideStringField, fkData, 2, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmCad_Recebimento, 'ZQOrigem', 'ZQOrigemrecpag', 'recpag', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeDataSet(TFrmCad_Recebimento, 'ZQTempDivid', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQTempDivid', 'ZQTempDivididdividido', 'iddividido', TLargeintField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmCad_Recebimento, 'ZQTempDivid', 'ZQTempDividparticipante', 'participante', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

@@ -1,4 +1,4 @@
-unit usimulaAditamento;
+﻿unit usimulaAditamento;
 
 interface
 
@@ -96,6 +96,17 @@ end;
 
 procedure Tfrmsimulaaditamento.dxButton5Click(Sender: TObject);
 begin
+  if not CdsAditamento.Active then
+  begin
+    ShowMessage('Informe uma quantidade de parcelas valida para gerar a simulacao antes de imprimir.');
+    Exit;
+  end;
+  if CdsAditamento.IsEmpty then
+  begin
+    ShowMessage('Nao ha dados na simulacao para imprimir.');
+    Exit;
+  end;
+
   try
     CdsAditamento.DisableControls;
     if frm_SimulacaoAditamento=nil then
@@ -105,8 +116,6 @@ begin
     frm_SimulacaoAditamento.RLReport1.PreviewModal;
   finally
     FreeAndNil(frm_SimulacaoAditamento);
-    if not CdsAditamento.Active then
-      CdsAditamento.Open;
     if CdsAditamento.Active then
       CdsAditamento.First;
     CdsAditamento.EnableControls;

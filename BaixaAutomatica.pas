@@ -45,51 +45,10 @@ type
     Label6: TLabel;
     DBEdit2: TDBEdit;
     CDSArqRetornoordem: TStringField;
-
     DS_ComisTemp: TDataSource;
     ZQComisTemp: TZQuery;
-
-
-
-
-
-
-
-
-
-
-
-
-
     XBanner7: TXBanner;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     CDSArqRetornodesc_motivo: TStringField;
-
-
     datacredito: TXDateEdit;
     CDSArqRetornodt_credito: TDateField;
     CDSArqRetornonossonumero: TStringField;
@@ -99,10 +58,7 @@ type
     Panel1: TPanel;
     ProgressBar2: TProgressBar;
     CDSArqRetornoNomecliente: TStringField;
-
-
     CDSArqRetornoquadralote: TStringField;
-
     ACBrBoleto1: TACBrBoleto;
     CDSArqRetornobanco: TStringField;
     CDSArqRetornoadversa: TIntegerField;

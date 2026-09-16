@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids;
+  Dialogs, StdCtrls, ExtCtrls, Grids, DBGrids, Data.DB;
 
 type
   TFrmAlerta = class(TForm)
