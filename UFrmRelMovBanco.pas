@@ -134,7 +134,7 @@ var
   varregi : integer;
 begin
   if XDEInicial.Date <= 0 then begin
-    showmessage('a data não pode ficar em branco....');
+    mensagem('a data não pode ficar em branco....');
     XDEInicial.SetFocus;
     exit
   end;

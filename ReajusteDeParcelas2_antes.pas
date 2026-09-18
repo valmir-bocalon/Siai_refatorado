@@ -902,7 +902,7 @@ begin
      end;
   end;
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.');
+      mensagem('Sem Filtro Definido.');
   percent.SetFocus;
 end;
 
@@ -1069,7 +1069,7 @@ begin
   end
   else
   begin
-    showmessage('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
+    mensagem('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
     percent.SetFocus;
     exit;
   end;

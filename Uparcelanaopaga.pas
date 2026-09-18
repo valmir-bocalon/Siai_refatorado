@@ -75,7 +75,7 @@ begin
   ZQReceb_nao_pagas.Close;
   lprogress.Visible:=false;
   application.ProcessMessages;
-  showmessage('Processo Terminado!');
+  mensagem('Processo Terminado!');
 end;
 
 procedure Tfrmnaopaga.Button2Click(Sender: TObject);

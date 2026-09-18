@@ -127,6 +127,7 @@ type
     { Private declarations }
 
     procedure AfterConstruction; override;
+    procedure AbrirPesquisaMedida;
   public
     { Public declarations }
   end;
@@ -136,9 +137,22 @@ var
   limite,totreg:integer;
 implementation
 
-uses Tabelas, Cad_Recebimento, Funcoes, uRuntimeFields;
+uses Tabelas, Cad_Recebimento, Funcoes, uRuntimeFields, uSiaiPerformance;
 
 {$R *.dfm}
+
+procedure TFrmPesqCobranca.AbrirPesquisaMedida;
+var
+  LInicio: UInt64;
+begin
+  LInicio := PerformanceStart;
+  try
+    ZQTempCliReceb.Open;
+  finally
+    PerformanceElapsed('Pesquisa cobranca: abrir resultados', LInicio);
+    FlushPerformanceLog;
+  end;
+end;
 
 procedure TFrmPesqCobranca.FormShow(Sender: TObject);
 begin
@@ -154,7 +168,7 @@ begin
   ZQTempCliReceb.SQL.Add(' lt.apelido from recebimento as rec join participante as p1 on rec.cliente=p1.idpaticipante');
   ZQTempCliReceb.SQL.Add(' join participante as p2 on rec.adversa=p2.idpaticipante join loteamento as lt on lt.idloteamento=rec.idloteamento');
   ZQTempCliReceb.SQL.Add(' group by rec.quadralote ');
-  ZQTempCliReceb.Open;
+  AbrirPesquisaMedida;
   totreg:=ZQTempCliReceb.RecordCount;
   LReg.Caption := inttostr(totreg);
   if (ZQTempCliReceb.Active) and (ZQTempCliReceb.RecordCount>0) Then
@@ -209,7 +223,7 @@ begin
        ZQTempCliReceb.SQL.Add(' or rec.valor='+Edit1.Text);
     ZQTempCliReceb.SQL.Add(' or rec.numboleto like '+quotedstr('%'+Edit1.Text+'%')+')');
     ZQTempCliReceb.SQL.Add(' group by rec.quadralote');
-    ZQTempCliReceb.Open;
+    AbrirPesquisaMedida;
     totreg:=ZQTempCliReceb.RecordCount;
     LReg.Caption := inttostr(totreg);
     if (ZQTempCliReceb.Active) and (ZQTempCliReceb.RecordCount>0) Then
@@ -263,7 +277,7 @@ begin
     begin
       ZQCheque.close;
       DBGrid2.Visible:=false;
-      showmessage('Número de Cheque não Encontrado.');
+      mensagem('Número de Cheque não Encontrado.');
     end;
   end;
 end;
@@ -318,7 +332,7 @@ begin
       ZQTempCliReceb.SQL.Add(' lt.apelido from recebimento as rec join participante as p1 on rec.cliente=p1.idpaticipante');
       ZQTempCliReceb.SQL.Add(' join participante as p2 on rec.adversa=p2.idpaticipante join loteamento as lt on lt.idloteamento=rec.idloteamento');
       ZQTempCliReceb.SQL.Add(' group by rec.quadralote');
-      ZQTempCliReceb.Open;
+      AbrirPesquisaMedida;
     end;
     veio.Caption:='N';  
     totreg:=totreg+ZQTempCliReceb.RecordCount;
@@ -359,10 +373,10 @@ initialization
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebusuario', 'usuario', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebDt_Entrada', 'Dt_Entrada', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebDt_Vencimento', 'Dt_Vencimento', TDateField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebValor', 'Valor', TFloatField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebValor', 'Valor', TFloatField, fkData, 0, 0, False, '', '###,###,##0.00', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebordem', 'ordem', TWideStringField, fkData, 14, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebTipDoc', 'TipDoc', TWideStringField, fkData, 2, 0, False, '', '', '', '', 0, '', '', '', '', False);
-  RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebsaldo', 'saldo', TFloatField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
+  RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebsaldo', 'saldo', TFloatField, fkData, 0, 0, False, '', '###,###,##0.00', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebmarcar', 'marcar', TWideStringField, fkData, 1, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebRefBaixa', 'RefBaixa', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);
   RegisterRuntimeField(TFrmPesqCobranca, 'ZQTempCliReceb', 'ZQTempCliRecebrefvinda', 'refvinda', TIntegerField, fkData, 0, 0, False, '', '', '', '', 0, '', '', '', '', False);

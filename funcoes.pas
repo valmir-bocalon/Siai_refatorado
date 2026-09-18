@@ -485,6 +485,8 @@ Begin
   else if DM_Tabelas.ZQAchaContaBanc.RecordCount=1 Then
     Result := True
   else Begin
+    if Frm_Acha_Contabancaria = nil then
+      Frm_Acha_Contabancaria := TFrm_Acha_Contabancaria.Create(Application);
     Frm_Acha_Contabancaria.showmodal;
     if Frm_Acha_Contabancaria.Label2.Caption = 'T' then
       Result := True
@@ -550,6 +552,8 @@ Begin
   if DM_tabelas.ZQAchaCidade.RecordCount=1 Then
     Result := True
   else Begin
+    if Frm_AchaCidade = nil then
+      Frm_AchaCidade := TFrm_AchaCidade.Create(Application);
     Frm_AchaCidade.ECidade.Text := varcidade;
     Frm_AchaCidade.ShowModal;
     varcidade:=DM_Tabelas.ZQAchaCidade.FieldByName('nomecid').AsString;
@@ -670,12 +674,12 @@ Begin
     if Digito <> StrToInt( Copy( varsemmasc, 13, 2 ) ) then Begin
       Result := False;
       if vermens Then
-        showmessage('C.N.P.J. invalido...   Tente outra vez!!');
+        mensagem('C.N.P.J. invalido...   Tente outra vez!!');
     end;
   end
   else Begin
     if vermens Then
-      showmessage('Documento invalido...');
+      mensagem('Documento invalido...');
     Result := False;
   end;
 end;
@@ -834,7 +838,7 @@ begin
   end;}
   DM_Tabelas.ZQEmpresa.FieldByName('dia').AsDateTime := date;
   DM_Tabelas.ZQEmpresa.Post;
-//  showmessage( datetostr(descripto_data(DM_Tabelas.ZQEmpresalimite.Value)));
+//  mensagem( datetostr(descripto_data(DM_Tabelas.ZQEmpresalimite.Value)));
   if descripto_data(DM_Tabelas.ZQEmpresa.FieldByName('limite').AsString)<=date+5 Then
   Begin
     FrmContraSenha.showmodal;
@@ -919,6 +923,8 @@ Begin
   end
   else
   begin
+    if Frm_AchaParticipante = nil then
+      Frm_AchaParticipante := TFrm_AchaParticipante.Create(Application);
     Frm_AchaParticipante.Top := PL;
     Frm_AchaParticipante.Left := PC;
     DM_Tabelas.ZQAchaParticip.close;
@@ -938,7 +944,7 @@ Begin
     end;
     IF DM_Tabelas.ZQAchaParticip.RecordCount=0 Then
     begin
-      showmessage('Participante não encontrado.');
+      mensagem('Participante não encontrado.');
       exit;
     end;
     if (Frm_AchaParticipante.Label1.Caption = 'F') or (DM_tabelas.ZQAchaParticip.RecordCount=0)  Then
@@ -951,6 +957,8 @@ End;
 Function AchaCorretor(PL, PC: integer; Corr :String) : boolean;
 Begin
   result := True;
+  if Frm_AchaCorretor = nil then
+    Frm_AchaCorretor := TFrm_AchaCorretor.Create(Application);
   Frm_AchaCorretor.Top := PL;
   Frm_AchaCorretor.Left := PC;
   DM_Tabelas.ZQAchacorretor.SQL.Clear;
@@ -1058,6 +1066,8 @@ Begin
   else if DM_Tabelas.ZQAchaPlanoDeContas.RecordCount=0 then
     Result := False
   else Begin
+    if Frm_AchaPlanoDeContas = nil then
+      Frm_AchaPlanoDeContas := TFrm_AchaPlanoDeContas.Create(Application);
     Frm_AchaPlanoDeContas.LCD.Caption := varcd;
     Frm_AchaPlanoDeContas.Label3.Caption := varclas;
     Frm_AchaPlanoDeContas.Eplano.Text:=pln;
@@ -1460,15 +1470,105 @@ end;
 
 procedure Mensagem( Texto: string );
 var
-  Largura: integer;
+  Formulario: TFormMensagem;
+  procedure AjustarTamanho;
+  const
+    LarguraTextoPadrao = 446;
+    AlturaTextoPadrao = 132;
+    LarguraFormularioPadrao = 550;
+    AlturaFormularioPadrao = 211;
+    MargemHorizontal = 104;
+    MargemVertical = 79;
+    MargemTela = 40;
+  var
+    Linhas: TStringList;
+    Retangulo: TRect;
+    LarguraMaxima, AlturaMaxima, LarguraTexto, AlturaTexto,
+    LarguraFormulario, AlturaFormulario, MaiorLinha, LarguraLinha,
+    I: Integer;
+  begin
+    Formulario.Frase.Caption := Texto;
+    Formulario.Frase.AutoSize := False;
+    Formulario.Frase.WordWrap := True;
+    Formulario.Frase.Canvas.Font.Assign(Formulario.Frase.Font);
+
+    LarguraMaxima := Screen.WorkAreaWidth - MargemTela;
+    if LarguraMaxima < LarguraFormularioPadrao then
+      LarguraMaxima := LarguraFormularioPadrao;
+    AlturaMaxima := Screen.WorkAreaHeight - MargemTela;
+    if AlturaMaxima < AlturaFormularioPadrao then
+      AlturaMaxima := AlturaFormularioPadrao;
+
+    MaiorLinha := 0;
+    Linhas := TStringList.Create;
+    try
+      Linhas.Text := Texto;
+      for I := 0 to Linhas.Count - 1 do
+      begin
+        LarguraLinha := Formulario.Frase.Canvas.TextWidth(Linhas[I]);
+        if LarguraLinha > MaiorLinha then
+          MaiorLinha := LarguraLinha;
+      end;
+    finally
+      Linhas.Free;
+    end;
+
+    LarguraTexto := LarguraTextoPadrao;
+    if MaiorLinha + 24 > LarguraTexto then
+      LarguraTexto := MaiorLinha + 24;
+    if LarguraTexto > LarguraMaxima - MargemHorizontal then
+      LarguraTexto := LarguraMaxima - MargemHorizontal;
+    if LarguraTexto < LarguraTextoPadrao then
+      LarguraTexto := LarguraTextoPadrao;
+
+    repeat
+      Retangulo := Rect(0, 0, LarguraTexto, 0);
+      DrawText(Formulario.Frase.Canvas.Handle, PChar(Texto), Length(Texto),
+        Retangulo, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX);
+      AlturaTexto := Retangulo.Bottom - Retangulo.Top;
+      if AlturaTexto < AlturaTextoPadrao then
+        AlturaTexto := AlturaTextoPadrao;
+      if (AlturaTexto + MargemVertical <= AlturaMaxima) or
+         (Formulario.Frase.Font.Size <= 10) then
+        Break;
+      Formulario.Frase.Font.Size := Formulario.Frase.Font.Size - 1;
+    until False;
+
+    LarguraFormulario := LarguraTexto + MargemHorizontal;
+    if LarguraFormulario < LarguraFormularioPadrao then
+      LarguraFormulario := LarguraFormularioPadrao;
+    if LarguraFormulario > LarguraMaxima then
+      LarguraFormulario := LarguraMaxima;
+
+    AlturaFormulario := AlturaTexto + MargemVertical;
+    if AlturaFormulario < AlturaFormularioPadrao then
+      AlturaFormulario := AlturaFormularioPadrao;
+    if AlturaFormulario > AlturaMaxima then
+      AlturaFormulario := AlturaMaxima;
+
+    Formulario.Width := LarguraFormulario;
+    Formulario.Height := AlturaFormulario;
+    Formulario.Frase.Width := Formulario.ClientWidth - Formulario.Frase.Left - 31;
+    Formulario.Frase.Height := Formulario.ClientHeight -
+      Formulario.Frase.Top - Formulario.BtnOk.Height - 21;
+    if Formulario.Frase.Height < AlturaTextoPadrao then
+      Formulario.Frase.Height := AlturaTextoPadrao;
+    Formulario.BtnOk.Left := (Formulario.ClientWidth - Formulario.BtnOk.Width) div 2;
+    Formulario.BtnOk.Top := Formulario.ClientHeight -
+      Formulario.BtnOk.Height - 10;
+  end;
 begin
-  Largura := 70 + ( length( Texto ) * 7 );
-  if Largura < 250 then Largura := 250;
-  FormMensagem.Width := Largura;
-  FormMensagem.BtnOk.Left := ( FormMensagem.Width - 80 ) div 2;
-  FormMensagem.Frase.Caption := Texto;
-  MessageBeep(0);
-  FormMensagem.ShowModal;
+  Formulario := TFormMensagem.Create(Application);
+  FormMensagem := Formulario;
+  try
+    AjustarTamanho;
+    MessageBeep(0);
+    Formulario.ShowModal;
+  finally
+    if FormMensagem = Formulario then
+      FormMensagem := nil;
+    Formulario.Free;
+  end;
 end;
 
 function MesExtenso( Mes:Word ) : string; const meses : array[0..11] of PChar = ('Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro','Outubro', 'Novembro', 'Dezembro');
@@ -1478,6 +1578,8 @@ End;
 
 Function SIMNAO(texto, opcao:string) : Boolean; //
 Begin
+  if FrmPerguntaSIMNAO = nil then
+    FrmPerguntaSIMNAO := TFrmPerguntaSIMNAO.Create(Application);
   FrmperguntaSIMNAO.Label1.Caption := Texto;
   frmperguntaSIMNAO.Label2.Caption := opcao;
   FrmperguntaSIMNAO.ShowModal;
@@ -1488,6 +1590,8 @@ End;
 
 function pergunta(texto,resp : string) :string;
 Begin
+  if FrmPergunta = nil then
+    FrmPergunta := TFrmPergunta.Create(Application);
   FrmPergunta.label5.caption := texto;
   Frmpergunta.XEdit1.Text := resp;
   Frmpergunta.showmodal;

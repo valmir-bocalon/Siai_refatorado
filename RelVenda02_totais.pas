@@ -1,4 +1,4 @@
-﻿unit RelVenda02_totais;
+unit RelVenda02_totais;
 
 interface
 
@@ -83,6 +83,7 @@ type
     procedure RLBand1BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
     { Private declarations }
+    FQuantidadeVendasGrupo: Integer;
 
     procedure AfterConstruction; override;
   public
@@ -93,7 +94,7 @@ var
   Frm_RelVenda02_totais: TFrm_RelVenda02_totais;
 implementation
 
-uses RelVenda,funcoes, tabelas, principal, uRuntimeFields;
+uses RelVenda,funcoes, tabelas, principal, uRuntimeFields, uSiaiReportPerformance;
 {$R *.dfm}
 procedure TFrm_RelVenda02_totais.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
@@ -110,11 +111,17 @@ begin
   rvista.Value:=0;
   rentra.Value:=0;
   rpar.Value:=0;
+  FQuantidadeVendasGrupo:=0;
 end;
 
 procedure TFrm_RelVenda02_totais.RLBand10BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
+  // O resumo somente e impresso quando a banda de detalhe processou uma venda.
+  PrintIt := PrintIt and (FQuantidadeVendasGrupo > 0);
+  if not PrintIt then
+    Exit;
+
   RLLabel59.Caption:=transform(geral.Value,'###,###,##0.00');
   RLLabel62.Caption:=transform(tabela.Value,'###,###,##0.00');
   RLLabel22.Caption:=transform(rvista.Value,'###,###,##0.00');
@@ -126,11 +133,14 @@ begin
   rvista.Value:=0;
   rentra.Value:=0;
   rpar.Value:=0;
+  FQuantidadeVendasGrupo:=0;
 end;
 
 procedure TFrm_RelVenda02_totais.RLBand3BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
+  if PrintIt then
+    Inc(FQuantidadeVendasGrupo);
   if (Frm_RelVenda.cvendavr_parcela.Value>0) and (Frm_RelVenda.cvendavr_entrada.Value>0) then
   begin
     RLDBText10.Visible:=false;
@@ -169,7 +179,7 @@ end;
 procedure TFrm_RelVenda02_totais.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
 end;
 
 
@@ -177,6 +187,7 @@ procedure TFrm_RelVenda02_totais.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Relatorio administrativo - totais');
 end;
 
 end.

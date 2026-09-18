@@ -648,7 +648,7 @@ begin
   entrada:='N';
   edicao:='N';
   if DM_Tabelas.ZQVenda.FieldByName('imovel').Value=0 Then Begin
-    showmessage('Deve ser indicado um lote para ser vendido...');
+    mensagem('Deve ser indicado um lote para ser vendido...');
     Pag_Venda.PageIndex := 0;
     DXBAchaLote.SetFocus;
     exit;

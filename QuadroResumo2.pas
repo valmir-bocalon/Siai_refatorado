@@ -1,4 +1,4 @@
-Ôªøunit QuadroResumo2;
+unit QuadroResumo2;
 
 interface
 
@@ -279,7 +279,7 @@ var
 
 implementation
 
-uses tabelas, funcoes, Venda, principal, uRuntimeFields;
+uses tabelas, funcoes, Venda, principal, uRuntimeFields, uSiaiReportPerformance;
 
 {$R *.dfm}
 
@@ -316,7 +316,7 @@ begin
   RLLabel61.Caption := DM_Tabelas.ZQvnd_quadro.FieldByName('nomecid').AsString+' / '+DM_Tabelas.ZQvnd_quadro.FieldByName('estado').AsString+', '+dataporextenso(DM_Tabelas.ZQVenda.FieldByName('datavenda').AsDateTime);
   RLLabel58.Caption := numeroporextenso(nm);
   DM_Tabelas.ZQvnd_quadro.close;
-  RLLabel3.Caption:='Usu√°rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usu·rio:'+Frm_principal.xusuario.Caption;
   RLLabel90.Caption := RLLabel61.Caption;
 end;
 
@@ -350,7 +350,7 @@ begin
   RLMemo1.Lines.Clear;
   if DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat>0 then
   begin
-    RLMemo1.Lines.Add('Valor de Tabela: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat)+'). '+#13+'Valor de Comiss√£o: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat)+') pago pelo Compromiss√°rio Comprador a Madrid Im√≥veis Ltda. EPP, inscrita no CNPJ n. 10.593.342/0001-16.'+#13+'Valor a Vista: R$ '+alltrim(transform((DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat),'###,###,###,##0.00'))+' ('+extenso((DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat))+'). '+#13+'Valor Total a Prazo: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat)+'). ');
+    RLMemo1.Lines.Add('Valor de Tabela: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat)+'). '+#13+'Valor de Comiss„o: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat)+') pago pelo Compromiss·rio Comprador a Madrid ImÛveis Ltda. EPP, inscrita no CNPJ n. 10.593.342/0001-16.'+#13+'Valor a Vista: R$ '+alltrim(transform((DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat),'###,###,###,##0.00'))+' ('+extenso((DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat))+'). '+#13+'Valor Total a Prazo: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat)+'). ');
   end
   else
     RLMemo1.Lines.Add('Valor a Vista: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat)+'). '+#13+'Valor Total a Prazo: R$ '+alltrim(transform(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat,'###,###,###,##0.00'))+' ('+extenso(DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat)+'). ');
@@ -459,7 +459,7 @@ begin
              varlinha := varlinha +space(tam8)+ '      Cc. '+DM_Tabelas.CDSPagEntradaconta.Value+space(tam9);
           end;
           ant3:=length(DM_Tabelas.CDSPagEntradaconta.Value);
-          varlinha := varlinha +space(tam8)+ '      n¬∫. '+DM_Tabelas.CDSPagEntradanumero.Value;
+          varlinha := varlinha +space(tam8)+ '      n∫. '+DM_Tabelas.CDSPagEntradanumero.Value;
 
         end;
 
@@ -617,7 +617,7 @@ begin
               varlinha := varlinha +space(tam8)+ '      Cc. '+cheque.FieldByName('conta').AsString+space(tam9);
             end;
             ant3:=length(cheque.FieldByName('conta').AsString);
-            varlinha := varlinha +space(tam8)+ '      n¬∫. '+cheque.FieldByName('numero').AsString;
+            varlinha := varlinha +space(tam8)+ '      n∫. '+cheque.FieldByName('numero').AsString;
 
           end;
 
@@ -776,7 +776,7 @@ begin
           varlinha := varlinha + ' Bc.'+chequebanco.Value;
           varlinha := varlinha + ' Ag.'+chequeagencia.Value;
           varlinha := varlinha + ' Cc.'+chequeconta.Value;
-          varlinha := varlinha + ' n¬∫ '+chequenumero.Value;
+          varlinha := varlinha + ' n∫ '+chequenumero.Value;
         end;
         recebimento.Next;
         IF not recebimento.Eof Then
@@ -839,7 +839,7 @@ texto:string;
 begin
   if (not empty(DM_Tabelas.ZQVenda.FieldByName('linha').AsString)) and (DM_Tabelas.ZQVenda.FieldByName('linha').AsString<>'0') then
   begin
-    texto:='Im√≥vel distante '+alltrim(DM_Tabelas.ZQVenda.FieldByName('linha').AsString)+' m em linha reta e '+alltrim(DM_Tabelas.ZQVenda.FieldByName('curva').AsString)+' m em curva da '+alltrim(DM_Tabelas.ZQVenda.FieldByName('esquina').AsString);
+    texto:='ImÛvel distante '+alltrim(DM_Tabelas.ZQVenda.FieldByName('linha').AsString)+' m em linha reta e '+alltrim(DM_Tabelas.ZQVenda.FieldByName('curva').AsString)+' m em curva da '+alltrim(DM_Tabelas.ZQVenda.FieldByName('esquina').AsString);
     RLLabel57.Lines.Clear;
     RLLabel57.Lines.Add(texto);
     RLLabel57.Visible:=true;
@@ -1041,7 +1041,7 @@ begin
    RLDBText25.Visible:=true;
    RLLabel54.Visible:=true;
    RLDBText39.Visible:=true;
-   if (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='UNI√ÉO EST√ÅVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='uni√£o est√°vel') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel') then
+   if (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='UNI√O EST¡VEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='uni„o est·vel') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel') then
    begin
     RLLabel28.Visible:=true;
     RLDBText20.Visible:=true;
@@ -1966,7 +1966,7 @@ begin
    end;
  end;
 
- if (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='UNI√ÉO EST√ÅVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='uni√£o est√°vel') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel') then
+ if (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='CASADO(A)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='casado(a)') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='UNI√O EST¡VEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='uni„o est·vel') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='REL.ESTAVEL') or (DM_Tabelas.ZQCompr_Dados.FieldByName('estadocivil').AsString='rel.estavel') then
  begin
     RLLabel28.Visible:=true;
     RLDBText20.Visible:=true;
@@ -2484,6 +2484,7 @@ procedure TFrm_QuadroResumo2.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Proposta de venda');
 end;
 
 initialization

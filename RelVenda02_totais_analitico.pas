@@ -1,4 +1,4 @@
-﻿unit RelVenda02_totais_analitico;
+unit RelVenda02_totais_analitico;
 
 interface
 
@@ -213,7 +213,7 @@ var
   
 implementation
 
-uses RelVenda,funcoes, tabelas, principal, uRuntimeFields;
+uses RelVenda,funcoes, tabelas, principal, uRuntimeFields, uSiaiReportPerformance;
 {$R *.dfm}
 procedure TFrm_RelVenda02_totais_analitico.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
@@ -439,7 +439,7 @@ end;
 procedure TFrm_RelVenda02_totais_analitico.RLBand1BeforePrint(
   Sender: TObject; var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usu�rio:'+Frm_principal.xusuario.Caption;
 end;
 
 
@@ -447,6 +447,7 @@ procedure TFrm_RelVenda02_totais_analitico.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Relatorio administrativo - totais analiticos');
 end;
 
 end.

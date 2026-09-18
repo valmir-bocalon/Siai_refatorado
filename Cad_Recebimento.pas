@@ -277,6 +277,8 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure Atualiza_Telas;
     procedure Atualiza_DBcobranca;
+    procedure FinalizarPesquisaCobranca;
+    procedure CobrancaAntesReabrir(DataSet: TDataSet);
     procedure DBGRecebTitleClick(Column: TColumn);
     procedure DBGRecebKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -368,6 +370,16 @@ type
     procedure JBProcessoItems9Click(Sender: TObject);
     procedure JBProcessoItems10Click(Sender: TObject);
   private
+    FCobrancaAtualizada: Boolean;
+    FTaxasTotaisCobranca: TZQuery;
+    FTitulosTotaisCobranca: TZQuery;
+    FContextoCobranca: string;
+    procedure AbrirTitulosTotaisCobranca;
+    procedure PrepararTaxasVendaCobranca(const AIdVenda: Int64);
+    procedure PrepararTaxasTituloCobranca;
+    procedure GarantirVendaCobranca(const AIdVenda: string);
+    function ContextoCobranca: string;
+  private
     { Private declarations }
 
     FPaintBoxGrafico1: TPaintBox;
@@ -400,7 +412,7 @@ uses tabelas, Funcoes, Inc_Recebimento, RecebBaixa, UAchaReceb,
   BaixaAutomatica, Aditamento, quitacao, Cessao, principal,
   ReajusteDeParcelas2, PesqCobranca, RelCobranca, RecebBaixa_subst,
   RelCobranca2, Uobs_estorno, trocar_lote, Uparcelanaopaga, Balao, Ucobranca,
-  trocar_empreendimento, zerarNossoNumero, uRuntimeFields, ChartGenerator;
+  trocar_empreendimento, zerarNossoNumero, uRuntimeFields, ChartGenerator, uSiaiPerformance;
 
 type
   { A API publica de TDataSet nao expoe GetCalcFields, mas este metodo e o
@@ -413,6 +425,21 @@ begin
   if (ADataSet = nil) or (not ADataSet.Active) or ADataSet.IsEmpty then
     Exit;
   TDataSetCalcFieldsAccess(ADataSet).GetCalcFields(ADataSet.ActiveBuffer);
+end;
+
+procedure CalcularValoresCobranca(const ASaldo, AMultaContrato, AMoraContrato,
+  ATabelaPrice: Double; const ADias: Integer; const AUsarTabelaPrice: Boolean;
+  out AMulta, AMora, ACorrigido: Double);
+var
+  LTaxaMora: Double;
+begin
+  if AUsarTabelaPrice then
+    LTaxaMora := ATabelaPrice
+  else
+    LTaxaMora := AMoraContrato;
+  AMora := ExRound(((((ASaldo / 30) * LTaxaMora) / 100) * ADias), 2);
+  AMulta := ExRound(ExRound(ASaldo * AMultaContrato, 2) / 100, 2);
+  ACorrigido := ASaldo + AMulta + AMora;
 end;
 
 {$R *.dfm}
@@ -464,7 +491,10 @@ begin
         begin
           FrmCad_Recebimento.CDnegocio2.Insert;
           FrmCad_Recebimento.CDnegocio2nparcela.value:=FrmCad_Recebimento.ZQRecebimento.FieldByName('Dias').AsInteger;
-          FrmCad_Recebimento.CDnegocio2vencimento.value:=FrmCad_Recebimento.ZQRecebimento.FieldByName('Dt_Vencimento').AsDateTime;
+          if FrmCad_Recebimento.ZQRecebimento.FieldByName('Dt_Vencimento').IsNull then
+            FrmCad_Recebimento.CDnegocio2vencimento.Clear
+          else
+            FrmCad_Recebimento.CDnegocio2vencimento.Value := FrmCad_Recebimento.ZQRecebimento.FieldByName('Dt_Vencimento').AsDateTime;
           FrmCad_Recebimento.CDnegocio2vr_parcela.value:=FrmCad_Recebimento.ZQRecebimento.FieldByName('saldo').AsFloat;
           FrmCad_Recebimento.CDnegocio2Juros.value:=FrmCad_Recebimento.ZQRecebimento.FieldByName('Multa_Contrato').AsFloat+FrmCad_Recebimento.ZQRecebimento.FieldByName('mora_dia').AsFloat;
           FrmCad_Recebimento.CDnegocio2vr_parcela_corrigida.value:=FrmCad_Recebimento.ZQRecebimento.FieldByName('parcela_corrigida').AsFloat;
@@ -718,7 +748,7 @@ var
 ql:string;
 begin
   if not (DM_tabelas.ZQRecebimento.State in [DsInsert, DsEdit]) Then Begin
-    showmessage('Houve problema de controle de tabelas...  Registro não será gravado...');
+    mensagem('Houve problema de controle de tabelas...  Registro não será gravado...');
     Desativa_campos;
     DBGReceb.SetFocus;
     exit;
@@ -1013,50 +1043,53 @@ Begin
     GBCheque.Visible := False;
 end;
 
-
-
 procedure TFrmCad_Recebimento.PrepararLookupsCobranca;
 begin
   { A cobrança usa campos calculados que dependem destes dois lookups.
     Abra-os somente neste fluxo, sem alterar o estado global das demais telas. }
   if not DM_Tabelas.ZqParticipante.Active then
-    DM_Tabelas.ZqParticipante.Open;
+        DM_Tabelas.ZqParticipante.Open;
   if not DM_Tabelas.ZQLoteamento.Active then
-    DM_Tabelas.ZQLoteamento.Open;
+       DM_Tabelas.ZQLoteamento.Open;
 end;
 
 procedure TFrmCad_Recebimento.PreencherLookupsCobranca;
 var
-  LChave: TField;
-  LDestino: TField;
-  LOrigem: TField;
-  LValor: Variant;
+  LChave, LDestino, LOrigem: TField;
+  LValor, LNome, LDocumento: Variant;
+  LStep: UInt64;
 begin
   if (not ZQRecebimento.Active) or (DM_Tabelas = nil) then
     Exit;
-  { Este método escreve campos calculados. Nunca tente alterar o registro
-    enquanto o dataset estiver apenas em modo de consulta. }
   if not (ZQRecebimento.State in [dsEdit, dsInsert, dsCalcFields]) then
     Exit;
 
-  { Estes campos pertencem somente ao dataset local da aba Cobranca.
-    O preenchimento explicito evita que o grid e o relatorio dependam da
-    ordem em que o registro foi acessado para recalcular os lookups. }
+  LNome := Null;
+  LDocumento := Null;
   LChave := ZQRecebimento.FindField('adversa');
+  if (LChave <> nil) and (not LChave.IsNull) and (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
+  begin
+    { Um unico acesso ao participante, sem reter valores entre operacoes. }
+    LStep := PerformanceStart;
+    try
+      LValor := DM_Tabelas.ZqParticipante.Lookup('idpaticipante', LChave.AsLargeInt, 'nome_parte;doc1');
+    finally
+      PerformanceSample(smLookupParticipante, LStep);
+    end;
+    if VarIsArray(LValor) then
+    begin
+      LNome := LValor[0];
+      LDocumento := LValor[1];
+    end;
+  end;
+
   LDestino := ZQRecebimento.FindField('adversanome');
   if LDestino <> nil then
   begin
     LDestino.Clear;
-    if (LChave <> nil) and (not LChave.IsNull) and
-       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
-    begin
-      LValor := DM_Tabelas.ZqParticipante.Lookup(
-        'idpaticipante', LChave.AsLargeInt, 'nome_parte');
-      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
-        LDestino.AsString := VarToStr(LValor);
-    end;
-    { Titulos antigos podem ter o ID do participante inconsistente, mas
-      ainda conservar o nome gravado no proprio recebimento. }
+    if not VarIsNull(LNome) and not VarIsEmpty(LNome) then
+      LDestino.AsString := VarToStr(LNome);
+    { Preserva o nome do titulo antigo quando o cadastro nao fornece nome. }
     if LDestino.AsString = '' then
     begin
       LOrigem := ZQRecebimento.FindField('nomeadversa');
@@ -1069,14 +1102,8 @@ begin
   if LDestino <> nil then
   begin
     LDestino.Clear;
-    if (LChave <> nil) and (not LChave.IsNull) and
-       (LChave.AsLargeInt <> 0) and DM_Tabelas.ZqParticipante.Active then
-    begin
-      LValor := DM_Tabelas.ZqParticipante.Lookup(
-        'idpaticipante', LChave.AsLargeInt, 'doc1');
-      if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
-        LDestino.AsString := VarToStr(LValor);
-    end;
+    if not VarIsNull(LDocumento) and not VarIsEmpty(LDocumento) then
+      LDestino.AsString := VarToStr(LDocumento);
   end;
 
   LChave := ZQRecebimento.FindField('idloteamento');
@@ -1087,11 +1114,45 @@ begin
     if (LChave <> nil) and (not LChave.IsNull) and
        (LChave.AsLargeInt <> 0) and DM_Tabelas.ZQLoteamento.Active then
     begin
-      LValor := DM_Tabelas.ZQLoteamento.Lookup(
-        'idloteamento', LChave.AsLargeInt, 'apelido');
+      LStep := PerformanceStart;
+      try
+        LValor := DM_Tabelas.ZQLoteamento.Lookup('idloteamento', LChave.AsLargeInt, 'apelido');
+      finally
+        PerformanceSample(smLookupLoteamento, LStep);
+      end;
       if not VarIsNull(LValor) and not VarIsEmpty(LValor) then
-        LDestino.AsString := VarToStr(LValor);
+          LDestino.AsString := VarToStr(LValor);
     end;
+  end;
+end;
+
+procedure TFrmCad_Recebimento.CobrancaAntesReabrir(DataSet: TDataSet);
+begin
+  FCobrancaAtualizada := False;
+  ZQVenda_cobr.Close;
+end;
+
+function TFrmCad_Recebimento.ContextoCobranca: string;
+begin
+  Result := '';
+  if ZQRecebimento.Active and not ZQRecebimento.IsEmpty then
+     Result := ZQRecebimento.FieldByName('adversa').AsString + '|' + Label52.Caption + '|' + Lmora.Caption + '|' + DateToStr(Date);
+end;
+
+procedure TFrmCad_Recebimento.GarantirVendaCobranca(const AIdVenda: string);
+var
+  LInicio: UInt64;
+begin
+  { Preserva o dataset local tambem utilizado pela negociacao. }
+  if ZQVenda_cobr.Active and not ZQVenda_cobr.IsEmpty and (ZQVenda_cobr.FieldByName('idvenda').Text = AIdVenda) then
+    Exit;
+  LInicio := PerformanceStart;
+  try
+    ZQVenda_cobr.Close;
+    ZQVenda_cobr.SQL.Text := 'Select idvenda,multa,mora from venda where idvenda=' + QuotedStr(AIdVenda);
+    ZQVenda_cobr.Open;
+  finally
+    PerformanceElapsed('Cobranca: consultar venda para calculo', LInicio);
   end;
 end;
 
@@ -1101,36 +1162,120 @@ var
   LNomeLoteamento: string;
   LComprador: string;
   LCPF: string;
+  LInicio, LStep: UInt64;
 begin
   if (not ZQRecebimento.Active) or ZQRecebimento.IsEmpty then
     Exit;
 
+  PerformanceCheckpoint('Cobranca: inicio do recalculo completo');
+  FlushPerformanceLog;
+  LInicio := PerformanceStart;
   LIdRecebimento := ZQRecebimento.FieldByName('idrecebimento').AsLargeInt;
   ZQRecebimento.DisableControls;
   try
+    LStep := PerformanceStart;
     ZQRecebimento.First;
+    PerformanceSample(smPrimeiroTitulo, LStep);
     while not ZQRecebimento.Eof do
     begin
-      { Recalcula o buffer atual no ciclo correto do dataset, sem colocar o
-        registro em edicao nem gravar qualquer valor na tabela. }
-      RecalcularCamposAtuais(ZQRecebimento);
+      { First e Next ja executam OnCalcFields quando AutoCalcFields esta
+        habilitado. Nao chame GetCalcFields novamente: isso repetia todo o
+        calculo e os lookups do registro sem alterar o resultado. }
       LNomeLoteamento := ZQRecebimento.FieldByName('nome_loteamento').AsString;
       LComprador := ZQRecebimento.FieldByName('adversanome').AsString;
       LCPF := ZQRecebimento.FieldByName('CPF').AsString;
+      LStep := PerformanceStart;
       ZQRecebimento.Next;
+      PerformanceSample(smProximoTitulo, LStep);
     end;
   finally
+    LStep := PerformanceStart;
     ZQRecebimento.EnableControls;
+    PerformanceSample(smReativarControles, LStep);
   end;
+  LStep := PerformanceStart;
   ZQRecebimento.Locate('idrecebimento', LIdRecebimento, []);
+  PerformanceSample(smRestaurarTitulo, LStep);
+  PerformanceElapsed('Cobranca: recalcular todos os titulos', LInicio);
+  FlushPerformanceLog;
+end;
+
+procedure TFrmCad_Recebimento.AbrirTitulosTotaisCobranca;
+var
+  LSQL: string;
+begin
+  if FTitulosTotaisCobranca = nil then
+  begin
+    FTitulosTotaisCobranca := TZQuery.Create(Self);
+    FTitulosTotaisCobranca.Connection := ZQRecebimento4.Connection;
+  end;
+  FTitulosTotaisCobranca.Close;
+  { A origem e exatamente o SQL ja montado para ZQRecebimento4; somente os
+    campos que participam da soma sao trazidos. }
+  LSQL := StringReplace(ZQRecebimento4.SQL.Text, 'Select *',
+    'Select venda_idvenda,Dt_Vencimento,saldo', [rfReplaceAll, rfIgnoreCase]);
+  FTitulosTotaisCobranca.SQL.Text := LSQL;
+  FTitulosTotaisCobranca.ParamByName('dt').AsDate :=
+    ZQRecebimento4.ParamByName('dt').AsDate;
+  FTitulosTotaisCobranca.Open;
+end;
+
+procedure TFrmCad_Recebimento.PrepararTaxasVendaCobranca(
+  const AIdVenda: Int64);
+begin
+  { Consulta exclusiva dos totais: nao muda a venda usada pela negociacao. }
+  if FTaxasTotaisCobranca = nil then
+  begin
+    FTaxasTotaisCobranca := TZQuery.Create(Self);
+    FTaxasTotaisCobranca.Connection := ZQRecebimento4.Connection;
+    FTaxasTotaisCobranca.SQL.Text :=
+      'select idvenda,multa,mora,tabela_price from venda where idvenda=:id';
+  end;
+  if FTaxasTotaisCobranca.Active and not FTaxasTotaisCobranca.IsEmpty and
+     (FTaxasTotaisCobranca.FieldByName('idvenda').AsLargeInt = AIdVenda) then
+    Exit;
+  FTaxasTotaisCobranca.Close;
+  FTaxasTotaisCobranca.ParamByName('id').AsLargeInt := AIdVenda;
+  FTaxasTotaisCobranca.Open;
+  if FTaxasTotaisCobranca.IsEmpty then
+    raise EDatabaseError.Create(
+      'Venda do titulo nao encontrada para calcular a cobranca.');
+end;
+
+procedure TFrmCad_Recebimento.PrepararTaxasTituloCobranca;
+begin
+  PrepararTaxasVendaCobranca(
+    ZQRecebimento4.FieldByName('venda_idvenda').AsLargeInt);
+end;
+procedure TFrmCad_Recebimento.FinalizarPesquisaCobranca;
+var
+  LStep: UInt64;
+begin
+  { O Refresh invalida os calculos. Concluir a atualizacao somente depois dele,
+    mesmo quando SetFocus nao dispara OnEnter porque o grid ja tem o foco. }
+  LStep := PerformanceStart;
+  ZQRecebimento.Refresh;
+  PerformanceElapsed('Cobranca: Refresh apos pesquisa', LStep);
+  DBcobrancaEnter(nil);
 end;
 
 procedure TFrmCad_Recebimento.Atualiza_DBcobranca;
 var
-zmora:double;
-Zdias:integer;
+Zdias: Integer;
+LDias: Integer;
+LMulta, LMoraCalculada, LCorrigido: Double;
+LInicio, LStep: UInt64;
 Begin
+  FCobrancaAtualizada := False;
+  if FTaxasTotaisCobranca <> nil then
+    FTaxasTotaisCobranca.Close;
+  if FTitulosTotaisCobranca <> nil then
+    FTitulosTotaisCobranca.Close;
+  LInicio := PerformanceStart;
+  try
+  LStep := PerformanceStart;
   PrepararLookupsCobranca;
+  PerformanceElapsed('Cobranca: abrir bases dos lookups', LStep);
   nparcelas.Value:=0;
   vencidos.Value:=0;
   Xmulta.Value:=0;
@@ -1150,7 +1295,9 @@ Begin
    ZQRecebimento2.SQL.Add('Select venda_idvenda,multa,mora,idloteamento,adversa,quadralote,saldo, count(quadralote) as parcelas, sum(saldo) as titulos from Recebimento where idloteamento='+quotedstr(Label52.Caption)+' and Dt_Vencimento< :dt and saldo>''0'' and adversa='+quotedstr(ZQRecebimento.FieldByName('adversa').text)+' group by adversa');
   end;
   ZQRecebimento2.ParamByName('dt').AsDate:=date;
+  LStep := PerformanceStart;
   ZQRecebimento2.Open;
+  PerformanceElapsed('Cobranca: consulta de quantidade e saldo', LStep);
   ZQRecebimento2.First;
   nparcelas.Value:=ZQRecebimento2.FieldByName('parcelas').AsLargeInt;
   vencidos.Value:=ZQRecebimento2.FieldByName('titulos').AsFloat;
@@ -1158,12 +1305,16 @@ Begin
   ZQRecebimento3.close;
   ZQRecebimento3.SQL.Clear;
   ZQRecebimento3.SQL.Add('DROP TABLE IF EXISTS cobranca');
+  LStep := PerformanceStart;
   ZQRecebimento3.ExecSQL;
+  PerformanceElapsed('Cobranca: DROP da tabela auxiliar', LStep);
 
   ZQVenda_cobr.Close;
   ZQVenda_cobr.SQL.Clear;
   ZQVenda_cobr.SQL.Add('Select idvenda,datavenda,imovel,valorvenda,forma_reajuste,tabela_Price,Escriturado,marca,codigo_contrato_ref,Multa,Mora,Perc_comissao,vlr_comissao from venda where idvenda='+quotedstr(ZQRecebimento2.FieldByName('venda_idvenda').Text));
+  LStep := PerformanceStart;
   ZQVenda_cobr.open;
+  PerformanceElapsed('Cobranca: venda para totais', LStep);
 
   ZQRecebimento3.close;
   ZQRecebimento3.SQL.Clear;
@@ -1178,7 +1329,9 @@ Begin
     ZQRecebimento3.SQL.Add('CREATE TABLE IF NOT EXISTS cobranca SELECT * FROM recebimento where idloteamento='+quotedstr(Label52.Caption)+' and Dt_Vencimento< :dt and saldo>''0'' and adversa='+quotedstr(ZQRecebimento.FieldByName('adversa').text));
   end;
   ZQRecebimento3.ParamByName('dt').AsDate:=date;
+  LStep := PerformanceStart;
   ZQRecebimento3.ExecSQL;
+  PerformanceElapsed('Cobranca: CREATE e copia dos titulos', LStep);
 
 
   ZQRecebimento4.close;
@@ -1194,32 +1347,68 @@ Begin
     ZQRecebimento4.SQL.Add('Select * from Cobranca where idloteamento='+quotedstr(Label52.Caption)+' and Dt_Vencimento< :dt and saldo>''0'' and adversa='+quotedstr(ZQRecebimento.FieldByName('adversa').text)+' order by nomeadversa,DT_Vencimento');
   end;
   ZQRecebimento4.ParamByName('dt').AsDate:=date;
+  { Mantem ZQRecebimento4 aberto para seus consumidores existentes, mas nao
+    percorre seus campos lookup somente para calcular tres totais. }
+  LStep := PerformanceStart;
   ZQRecebimento4.Open;
-  ZQRecebimento4.First;
+  PerformanceElapsed('Cobranca: abrir titulos dos totais', LStep);
+  LStep := PerformanceStart;
+  AbrirTitulosTotaisCobranca;
+  PerformanceElapsed('Cobranca: abrir titulos para soma sem lookups', LStep);
 
-  Bar1.Max:=ZQRecebimento4.RecordCount;
-  Bar1.Position:=0;
-  ZQRecebimento4.DisableControls;
-  while not ZQRecebimento4.Eof do
-  begin
-     Bar1.Position    :=ZQRecebimento4.RecNo;
-     XMora.Value      :=XMora.Value+ZQRecebimento4.FieldByName('mora_dia').AsFloat;
-     XMulta.Value     :=XMulta.Value+ZQRecebimento4.FieldByName('Multa_Contrato').AsFloat;
-     Xcorrigido.Value :=Xcorrigido.Value+ZQRecebimento4.FieldByName('parcela_corrigida').AsFloat;
-     ZQRecebimento4.Next;
+  Bar1.Max := FTitulosTotaisCobranca.RecordCount;
+  Bar1.Position := 0;
+  LStep := PerformanceStart;
+  FTitulosTotaisCobranca.DisableControls;
+  try
+    FTitulosTotaisCobranca.First;
+    while not FTitulosTotaisCobranca.Eof do
+    begin
+      Bar1.Position := FTitulosTotaisCobranca.RecNo;
+      PrepararTaxasVendaCobranca(
+        FTitulosTotaisCobranca.FieldByName('venda_idvenda').AsLargeInt);
+      LDias := StrToInt(DifDias(
+        FTitulosTotaisCobranca.FieldByName('Dt_Vencimento').AsDateTime, Date));
+      CalcularValoresCobranca(
+        FTitulosTotaisCobranca.FieldByName('saldo').AsFloat,
+        FTaxasTotaisCobranca.FieldByName('Multa').AsFloat,
+        FTaxasTotaisCobranca.FieldByName('Mora').AsFloat,
+        FTaxasTotaisCobranca.FieldByName('tabela_price').AsFloat, LDias,
+        Lmora.Caption <> 'N', LMulta, LMoraCalculada, LCorrigido);
+      XMora.Value := XMora.Value + LMoraCalculada;
+      XMulta.Value := XMulta.Value + LMulta;
+      XCorrigido.Value := XCorrigido.Value + LCorrigido;
+      FTitulosTotaisCobranca.Next;
+    end;
+  finally
+    FTitulosTotaisCobranca.EnableControls;
   end;
-  ZQRecebimento4.EnableControls;
-  Bar1.Position:=0;
-  ZQRecebimento4.First;
-  DBcobranca.Refresh;
-  DBcobranca.Repaint;
-  fpg.clear;
-  XN.Value:=0;
-  CDnegocio.close;
-  Application.ProcessMessages;
+  PerformanceElapsed('Cobranca: percorrer e somar totais', LStep);
+  Bar1.Position := 0;
+  ZQRecebimento4.First;    LStep := PerformanceStart;
+    DBcobranca.Refresh;
+    DBcobranca.Repaint;
+    PerformanceElapsed('Cobranca: atualizar desenho do grid', LStep);
+    fpg.clear;
+    XN.Value:=0;
+    CDnegocio.close;
+    PerformanceElapsed('Cobranca: totais e recriacao da tabela', LInicio);
+    Application.ProcessMessages;
+  except
+    { Uma falha nao pode deixar totais parciais disponiveis para negociacao. }
+    nparcelas.Value  := 0;
+    vencidos.Value   := 0;
+    Xmulta.Value     := 0;
+    XMora.Value      := 0;
+    XCorrigido.Value := 0;
+    Bar1.Position    := 0;
+    fpg.Clear;
+    XN.Value         := 0;
+    CDnegocio.Close;
+    CDnegocio2.Close;
+    raise;
+  end;
 end;
-
-
 
 procedure TFrmCad_Recebimento.DBGRecebTitleClick(Column: TColumn);
 Var
@@ -1299,8 +1488,6 @@ begin
     EAdversa.Text := DM_Tabelas.ZQRecebimento.FieldByName('adversanome').AsString;
     EContabil.Text:= DM_Tabelas.ZQRecebimento.FieldByName('contabil').Text;
   end;
-     
-
 end;
 
 procedure TFrmCad_Recebimento.DBGRecebMouseUp(Sender: TObject;
@@ -1815,7 +2002,7 @@ begin
     exit;
   end;
   if DM_Tabelas.ZQRecebBxTemp.RecordCount>0 Then Begin
-    showmessage('Este lançamento só pode ser excluido depois que todas as baixas dele forem excluidas!!!');
+    mensagem('Este lançamento só pode ser excluido depois que todas as baixas dele forem excluidas!!!');
     RGDelete.Visible := False;
     exit;
   end;
@@ -2563,7 +2750,7 @@ begin
     ZQResult1.ParamByName('dt2').AsDate:=XDEfim1.DateValue; //CDSResultdata.Value;
     ZQResult1.SQL.Add(' group by recpag');
     ZQResult1.Open;
-//    showmessage(transform(zqresult1soma.Value,'###,###,##0.00'));
+//    mensagem(transform(zqresult1soma.Value,'###,###,##0.00'));
 //    CDSResult.Edit;
     CDSResult.insert;
     CDSResultordem.Value:='1';
@@ -2586,7 +2773,7 @@ begin
     ZQFeito.ParamByName('dt2').AsDate:=XDEfim1.DateValue;//CDSResultdata.Value;
     ZQFeito.SQL.Add(' group by recpag');
     ZQFeito.Open;
- //   showmessage(transform(zqfeitosomafeito.Value,'###,###,##0.00'));
+ //   mensagem(transform(zqfeitosomafeito.Value,'###,###,##0.00'));
     if ZQFeito.FieldByName('somafeito').AsFloat>0 then
     begin
       CDSResult.insert;
@@ -2707,6 +2894,7 @@ end;
 procedure TFrmCad_Recebimento.ZQRecebimentoCalcFields(DataSet: TDataSet);
 var
 zmora:double;
+LStep: UInt64;
 begin
   { O evento de campos calculados só pode preencher campos calculados.
     Se algum código solicitar o cálculo fora do ciclo interno do dataset,
@@ -2718,10 +2906,8 @@ begin
   zmora:=0;
 
   // 03/09/2025
-  ZQVenda_cobr.Close;
-  ZQVenda_cobr.SQL.Clear;
-  ZQVenda_cobr.SQL.Add('Select idvenda,multa,mora from venda where idvenda='+quotedstr(ZQRecebimento.FieldByName('venda_idvenda').Text));
-  ZQVenda_cobr.open;
+  GarantirVendaCobranca(ZQRecebimento.FieldByName('venda_idvenda').Text);
+  LStep := PerformanceStart;
 
 {  ZQRecebimentoDias.Value:= strtoint(DifDias(ZQRecebimentoDt_Vencimento.Value, date));
   zmora:=ExRound(ExRound((DM_Tabelas.ZQConfiguracoesMora.value/30),2)*ZQRecebimentoDias.Value,2);
@@ -2741,6 +2927,7 @@ begin
   ZQRecebimento.FieldByName('Multa_Contrato').AsFloat:=ExRound(ExRound((ZQRecebimento.FieldByName('saldo').AsFloat*ZQVenda_cobr.FieldByName('Multa').AsFloat),2)/100,2);
   ZQRecebimento.FieldByName('parcela_corrigida').AsFloat:=ZQRecebimento.FieldByName('saldo').AsFloat+ZQRecebimento.FieldByName('Multa_Contrato').AsFloat+ZQRecebimento.FieldByName('mora_dia').AsFloat;
 
+  PerformanceSample(smCalculoFinanceiro, LStep);
   PreencherLookupsCobranca;
 
 end;
@@ -2762,9 +2949,22 @@ begin
   begin
     DBcobranca.Options:=DBcobranca.Options-[dgMultiSelect];
   end;
+  if FCobrancaAtualizada and (FContextoCobranca = ContextoCobranca) then
+  begin
+    PerformanceCheckpoint('Cobranca: retorno ao grid sem recarregar');
+    FlushPerformanceLog;
+    Exit;
+  end;
+  if not FCobrancaAtualizada then
+    PerformanceElapsed('Cobranca: atualizar por dados invalidados', PerformanceStart)
+  else
+    PerformanceElapsed('Cobranca: atualizar por participante/filtro/modo/data alterado', PerformanceStart);
   Atualiza_DBcobranca;
   AtualizarCamposCobranca;
+  FContextoCobranca := ContextoCobranca;
+  FCobrancaAtualizada := FContextoCobranca <> '';
   DBcobranca.Invalidate;
+  FlushPerformanceLog;
 end;
 
 procedure TFrmCad_Recebimento.fpgEnter(Sender: TObject);
@@ -2943,7 +3143,7 @@ begin
     end;
     if totpag<=0 then
     begin
-       showmessage('Informe os Vencimentos.');
+       mensagem('Informe os Vencimentos.');
        fpg.SetFocus;
        exit;
     end;
@@ -3007,7 +3207,38 @@ begin
   end
   else
   begin
+    { A linha corrente nao equivale a uma parcela selecionada no grid. }
+    if not ZQRecebimento.Active or ZQRecebimento.IsEmpty or
+       (DBcobranca.SelectedRows.Count = 0) then
+    begin
+      CDnegocio.Close;
+      CDnegocio2.Close;
+      XN.Value := 0;
+      ShowMessage('Selecione as parcelas no quadro de cobranca com Ctrl+clique antes de informar o vencimento.');
+      Exit;
+    end;
     GetSelectedRecord(ZQRecebimento, 'idrecebimento',DBcobranca.SelectedRows, ListBox1.Items);
+    if CDnegocio2.IsEmpty then
+    begin
+      CDnegocio.Close;
+      XN.Value := 0;
+      ShowMessage('Nenhuma parcela disponivel para negociar. Selecione novamente as parcelas.');
+      Exit;
+    end;
+    CDnegocio2.First;
+    while not CDnegocio2.Eof do
+    begin
+      if CDnegocio2vencimento.IsNull or (CDnegocio2vencimento.AsDateTime <= 0) or
+         CDnegocio2vr_parcela.IsNull or (CDnegocio2vr_parcela.AsFloat <= 0) then
+      begin
+        CDnegocio.Close;
+        CDnegocio2.Close;
+        XN.Value := 0;
+        ShowMessage('Existe parcela selecionada sem vencimento ou saldo valido. Confira as parcelas antes de negociar.');
+        Exit;
+      end;
+      CDnegocio2.Next;
+    end;
 
     wmora:=0;
     wMulta:=0;
@@ -3292,7 +3523,7 @@ begin
     end;
     if totpag<=0 then
     begin
-       showmessage('Informe os Vencimentos.');
+       mensagem('Informe os Vencimentos.');
        fpg.SetFocus;
        exit;
     end;
@@ -3442,10 +3673,14 @@ end;
 procedure TFrmCad_Recebimento.dxButton8Click(Sender: TObject);
 var
 posi:integer;
+LStep, LOperacao: UInt64;
 begin
   FrmPesqCobranca.Top := FrmCad_Recebimento.Top+100;
   FrmPesqCobranca.Left := FrmCad_Recebimento.Left;
   FrmPesqCobranca.showmodal;
+  LOperacao := PerformanceStart;
+  PerformanceCheckpoint('Cobranca: retorno da selecao na pesquisa');
+  FlushPerformanceLog;
   ZQRecebimento.close;
   ZQRecebimento.SQL.Clear;
   PrepararLookupsCobranca;
@@ -3471,7 +3706,9 @@ begin
        Label52.Caption:=copy(FrmPesqCobranca.ednome.Text,1,posi);
     end;
     ZQRecebimento.ParamByName('dt').AsDate:=date;
+    LStep := PerformanceStart;
     ZQRecebimento.open;
+    PerformanceElapsed('Cobranca: abrir titulos apos pesquisa', LStep);
     // 27/08/2012 tony pediu pra mudar
   //  ZQRecebimento.Locate('quadralote',FrmPesqCobranca.ZQTempCliRecebquadralote.Value,[]);
     ZQRecebimento.Locate('adversa',FrmPesqCobranca.ZQTempCliReceb.FieldByName('adversa').AsInteger,[]);
@@ -3498,14 +3735,16 @@ begin
        Label52.Caption:=copy(FrmPesqCobranca.ednome.Text,1,posi);
     end;
     ZQRecebimento.ParamByName('dt').AsDate:=date;
+    LStep := PerformanceStart;
     ZQRecebimento.open;
+    PerformanceElapsed('Cobranca: abrir titulos apos pesquisa', LStep);
     // 27/08/2012 tony pediu pra mudar
     ZQRecebimento.Locate('quadralote',FrmPesqCobranca.ZQTempCliReceb.FieldByName('quadralote').AsString,[]);
   //  ZQRecebimento.Locate('adversa',FrmPesqCobranca.ZQTempCliRecebadversa.Value,[]);
 
   end;
 
-  AtualizarCamposCobranca;
+  { A atualizacao completa ocorre depois do Refresh, uma unica vez. }
 
   ZQRecebimento_bancario.close;
   ZQRecebimento_bancario.SQL.Clear;
@@ -3517,7 +3756,9 @@ begin
   ZQRecebimento_bancario.SQL.Add('        cb.senha_interna,cb.senha_conta,cb.ativa,cb.jurosemboleto,cb.taxadiaria,cb.valoroupercent,cb.carteira,cb.boleto,cb.idparticipante,cb.n_dif_empreed,cb.convenio,cb.doc_titular,cb.data_maxima_desconto,cb.Perc_descontos ');
   ZQRecebimento_bancario.SQL.Add(' FROM recebimento as r join incorporador_loteamento as il on il.loteamento_idloteamento=r.idloteamento join conta_bancaria as cb on cb.idconta_bancaria=il.codcontabancaria where r.adversa='+quotedstr(FrmPesqCobranca.ZQTempCliReceb.FieldByName('adversa').Text)+' and r.Dt_Vencimento< :dt and r.saldo>0 group by r.idloteamento order by r.idloteamento ');
   ZQRecebimento_bancario.ParamByName('dt').AsDate:=date;
+  LStep := PerformanceStart;
   ZQRecebimento_bancario.open;
+  PerformanceElapsed('Cobranca: abrir dados bancarios', LStep);
 
   FrmPesqCobranca.ZQTempCliReceb.close;
   ZQVenda_cobr.Close;
@@ -3526,38 +3767,35 @@ begin
   ZQVenda_cobr.open;
   RGSelecao.Visible:=true;
 
-  ZQRecebimento.Refresh;
+  FinalizarPesquisaCobranca;
   DBcobranca.SetFocus;
+  PerformanceElapsed('Cobranca: preencher grid apos selecao (inclui subetapas)', LOperacao);
+  FlushPerformanceLog;
 
 end;
 
 procedure TFrmCad_Recebimento.ZQRecebimento4CalcFields(DataSet: TDataSet);
 var
-zmora:double;
-venc,hj:string;
+  LDias: Integer;
+  LMulta, LMoraCalculada, LCorrigido: Double;
+  LStep: UInt64;
 begin
-  zmora:=0;
-  venc:=datetostr(ZQRecebimento4.FieldByName('Dt_Vencimento').AsDateTime);
-  hj:=datetostr(date);
-{  ZQRecebimento4Dias.Value:= strtoint(DifDias(ZQRecebimento4Dt_Vencimento.Value, date));
-  zmora:=ExRound(ExRound((DM_Tabelas.ZQConfiguracoesMora.value/30),2)*ZQRecebimento4Dias.Value,2);
-  ZQRecebimento4mora_dia.Value:=ExRound((ZQRecebimento4saldo.Value*zmora)/100,2);
-  ZQRecebimento4Multa_Contrato.Value:=ExRound(ExRound((ZQRecebimento4saldo.Value*DM_Tabelas.ZQConfiguracoesMulta.value),2)/100,2);
-  ZQRecebimento4parcela_corrigida.Value:=ZQRecebimento4saldo.Value+ZQRecebimento4Multa_Contrato.Value+ZQRecebimento4mora_dia.Value;
- }
-  // Tony pediu para mudar a formula no dia 28/08/2012
-
-
-  ZQRecebimento4.FieldByName('Dias').AsInteger:= strtoint(DifDias(ZQRecebimento4.FieldByName('Dt_Vencimento').AsDateTime, date));
-//  zmora:=ExRound(ExRound((DM_Tabelas.ZQConfiguracoesMora.value/30),2)*ZQRecebimento4Dias.Value,2);
-  if Lmora.Caption='N' then
-     ZQRecebimento4.FieldByName('mora_dia').AsFloat:=ExRound(((((ZQRecebimento4.FieldByName('saldo').AsFloat/30)*ZQVenda_cobr.FieldByName('Mora').AsFloat)/100)*ZQRecebimento4.FieldByName('Dias').AsInteger),2)
-  else
-     ZQRecebimento4.FieldByName('mora_dia').AsFloat:=ExRound(((((ZQRecebimento4.FieldByName('saldo').AsFloat/30)*ZQRecebimento.FieldByName('tabela_price').AsFloat)/100)*ZQRecebimento4.FieldByName('Dias').AsInteger),2);
-  ZQRecebimento4.FieldByName('Multa_Contrato').AsFloat:=ExRound(ExRound((ZQRecebimento4.FieldByName('saldo').AsFloat*ZQVenda_cobr.FieldByName('Multa').AsFloat),2)/100,2);
-  ZQRecebimento4.FieldByName('parcela_corrigida').AsFloat:=ZQRecebimento4.FieldByName('saldo').AsFloat+ZQRecebimento4.FieldByName('Multa_Contrato').AsFloat+ZQRecebimento4.FieldByName('mora_dia').AsFloat;
+  PrepararTaxasTituloCobranca;
+  LStep := PerformanceStart;
+  LDias := StrToInt(DifDias(
+    ZQRecebimento4.FieldByName('Dt_Vencimento').AsDateTime, Date));
+  CalcularValoresCobranca(
+    ZQRecebimento4.FieldByName('saldo').AsFloat,
+    FTaxasTotaisCobranca.FieldByName('Multa').AsFloat,
+    FTaxasTotaisCobranca.FieldByName('Mora').AsFloat,
+    FTaxasTotaisCobranca.FieldByName('tabela_price').AsFloat, LDias,
+    Lmora.Caption <> 'N', LMulta, LMoraCalculada, LCorrigido);
+  ZQRecebimento4.FieldByName('Dias').AsInteger := LDias;
+  ZQRecebimento4.FieldByName('mora_dia').AsFloat := LMoraCalculada;
+  ZQRecebimento4.FieldByName('Multa_Contrato').AsFloat := LMulta;
+  ZQRecebimento4.FieldByName('parcela_corrigida').AsFloat := LCorrigido;
+  PerformanceSample(smCalculoFinanceiro, LStep);
 end;
-
 procedure TFrmCad_Recebimento.DBcobrancaDblClick(Sender: TObject);
 begin
   if cbmontante.Checked=true then
@@ -3630,7 +3868,10 @@ begin
 end;
 
 procedure TFrmCad_Recebimento.dxButton10Click(Sender: TObject);
+var
+  LStep: UInt64;
 begin
+  LStep := PerformanceStart;
   PrepararLookupsCobranca;
   AtualizarCamposCobranca;
   if FrmRelCobranca2=nil then
@@ -3670,7 +3911,12 @@ begin
   FrmRelCobranca2.RLDBResult1.DataField:='parcela_corrigida';
 
 
+  PerformanceElapsed('Relatorio do grid: preparar dados e componentes', LStep);
+  FlushPerformanceLog;
+  ZQRecebimento.DisableControls;
   FrmRelCobranca2.RLReport1.Previewmodal;
+  ZQRecebimento.First;
+  ZQRecebimento.EnableControls;
   FrmRelCobranca2:=nil;
 end;
 
@@ -3816,6 +4062,11 @@ end;
 procedure TFrmCad_Recebimento.AfterConstruction;
 begin
   inherited AfterConstruction;
+  { Estes eventos nao possuem manipuladores no DFM original. }
+  ZQRecebimento.BeforeOpen := CobrancaAntesReabrir;
+  ZQRecebimento.BeforeRefresh := CobrancaAntesReabrir;
+  ZQRecebimento.AfterPost := CobrancaAntesReabrir;
+  ZQRecebimento.AfterDelete := CobrancaAntesReabrir;
   { O DFM binario pode manter as aspas escapadas do texto-fonte dentro do
     SQL. Corrige somente a consulta local antes de preparar seus campos. }
   ZQRecebimento4.Close;

@@ -14,7 +14,7 @@ uses
   System.ImageList, dxCoreA, Vcl.Buttons,  DateUtils,
   Notification,
   System.JSON,IdSSLOpenSSL,
-  IdHTTP, acPNG;
+  IdHTTP, acPNG, uSiaiCotacoes;
  //RLConsts por causa da versao o fortes report no final das linhas tem mais
 type
   TFrm_principal = class(TForm)
@@ -199,6 +199,8 @@ type
       var Width, Height: Integer);
   private
     { Private declarations }
+    FCotacoesThread: TSiaiCotacoesThread;
+    procedure CotacoesConcluidas(Sender: TObject);
     procedure AplicarEstiloMenu(AItem: TMenuItem);
     procedure ConfigurarMenuModerno;
 
@@ -234,7 +236,7 @@ uses
   ProximoReajusteDeParcelas, Acerto_ano_reajuste, Participante2,
   acerta_remessa_recebida,alerta, Acerto_parcelas_reajuste,
   ProximoVectoParcelas, Ucobranca, UFrmPainel, UFrmDash, ipca,
-  zerarNossoNumero_em_recebimento, UAgenda, uRuntimeFields;
+  zerarNossoNumero_em_recebimento, UAgenda, uRuntimeFields, uSiaiPerformance;
 
 {$R *.dfm}
 
@@ -299,7 +301,7 @@ procedure PTela( Sender: Tobject );
     try
       ChangeDisplaySettings(sDispMode,0);
     except
-      ShowMessage('Não é possivel alterar configurações de vídeo.')
+      mensagem('Não é possivel alterar configurações de vídeo.')
     end;
 
   end;
@@ -565,17 +567,8 @@ var
   sAno, sMes, sDia: Word;
 
 begin
-   try
-     // Chama a procedure que busca as cotações
-     GetCurrenciesQuotation;
-     Panel6.Visible:=true;
-   except
-     Panel6.Visible:=false;
-   end;
-  if FrmApresentacao=nil then
-     FrmApresentacao:=TFrmApresentacao.Create(Application);
-  FrmApresentacao.Showmodal;
-
+  Panel6.Visible := False;
+  PerformanceCheckpoint('Principal: inicio da abertura');
 
   DM_Tabelas.ZQUsuario.Open;
   DM_Tabelas.ZQUsuTemp.Open;
@@ -587,6 +580,7 @@ begin
 
   { O DFM refatorado pode carregar os JOINs desta consulta corrompidos.
     Reconstroi o UPDATE antes da execucao, sem alterar sua finalidade. }
+  PerformanceCheckpoint('Consultas de acesso e configuracao abertas');
   ZQErro_Baixa.Close;
   ZQErro_Baixa.SQL.Clear;
   ZQErro_Baixa.SQL.Add('UPDATE receb_baixa AS RB');
@@ -595,13 +589,20 @@ begin
   ZQErro_Baixa.SQL.Add('SET RE.saldo = 0');
   ZQErro_Baixa.SQL.Add('WHERE RE.saldo > 0 AND RE.tip <> ''P''');
   ZQErro_Baixa.ExecSQL;
+  PerformanceCheckpoint('Atualizacao de saldos concluida');
+  FlushPerformanceLog;
 
-  if not Verif_senha(' Principal','Entrar no sistema','') Then Close;
+  if not Verif_senha(' Principal','Entrar no sistema','') Then
+  begin
+    Close;
+    Exit;
+  end;
   if not CSenha Then Begin
     Close;
     exit
   end;
 
+  PerformanceCheckpoint('Autenticacao e licenca: inclui espera do usuario');
   DecodeDate( Date, sAno, sMes, sDia );
   xAno := IntToStr(SAno);
                                                       //alt+184   alt+0174
@@ -611,7 +612,7 @@ begin
     DM_tabelas.ZQEmpresa.Edit;
     DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime:=GetFileDate('SIAI.exe');
     DM_TAbelas.ZQEmpresa.Post;
-    showmessage('Registrada nova versão do sistema...');
+    mensagem('Registrada nova versão do sistema...');
   End
   else if DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime>GetFileDate('SIAI.exe') then Begin
     Showmessage('A data do executavel usado neste terminal é de '+datetostr(GetFileDate('SIAI.exe'))+chr(13)+chr(13)
@@ -628,6 +629,7 @@ begin
   DM_Tabelas.ZQTipodoc.Open;
   DM_Tabelas.ZQLoteamento.Open;
   DM_Tabelas.ZQRemes_Receb.Open;
+  PerformanceCheckpoint('Consultas auxiliares da principal abertas');
 
   //chama resolução de tela
    PTela(Sender);
@@ -652,6 +654,7 @@ begin
               DM_Tabelas.qryAgenda.SQL.Clear;
               DM_Tabelas.qryAgenda.SQL.Add('SELECT * FROM agenda WHERE data = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', date))); //que é essa 27/11/2012 00:00:00
               DM_Tabelas.qryAgenda.Open;
+              PerformanceCheckpoint('Consulta da agenda concluida');
               if DM_Tabelas.qryAgenda.RecordCount>0 then
               begin
                 if FrmAgenda = nil then
@@ -663,45 +666,42 @@ begin
                FreeAndNil(FrmAgenda);
             end;
 //          end).start();
+  PerformanceCheckpoint('Principal pronta: agenda pode incluir espera do usuario');
+  FlushPerformanceLog;
+  GetCurrenciesQuotation;
 end;
 
 procedure TFrm_principal.GetCurrenciesQuotation;
-var
-  HTTPClient: TIdHTTP;
-  JSONResponse: string;
-  JSONObj: TJSONObject;
-  USD_Rate, EUR_Rate, BTC_Rate: string;
-  SSLHandler: TIdSSLIOHandlerSocketOpenSSL;
 begin
-  HTTPClient := TIdHTTP.Create(nil);
-  SSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+  if (FCotacoesThread <> nil) or (csDestroying in ComponentState) then Exit;
+  Panel6.Visible := False;
   try
-    SSLHandler.SSLOptions.Method     := sslvTLSv1_2;  // Força TLS 1.2
-    SSLHandler.SSLOptions.Mode       := sslmClient;
-    HTTPClient.IOHandler             := SSLHandler;
-    HTTPClient.HandleRedirects       := True;  // Permite redirecionamentos
-    HTTPClient.Request.UserAgent     := 'Mozilla/5.0';  // Alguns servidores rejeitam UserAgent vazio
-    // Faz a requisição GET
-    JSONResponse := HTTPClient.Get('https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL');
-
-    // Converte o response para JSON
-    JSONObj := TJSONObject.ParseJSONValue(JSONResponse) as TJSONObject;
-    try
-      // Extrai os valores das cotações
-      USD_Rate := JSONObj.GetValue<string>('USDBRL.bid');
-      EUR_Rate := JSONObj.GetValue<string>('EURBRL.bid');
-      BTC_Rate := JSONObj.GetValue<string>('BTCBRL.bid');
-
-      // Exibe as cotações
-      xdolar.Caption := USD_Rate;
-      xeuro.Caption  := EUR_Rate;
-      xbtc.Caption   := BTC_Rate;
-    finally
-      JSONObj.Free;
+    FCotacoesThread := TSiaiCotacoesThread.Create;
+    FCotacoesThread.OnTerminate := CotacoesConcluidas;
+    FCotacoesThread.Start;
+  except
+    if FCotacoesThread <> nil then
+    begin
+      FCotacoesThread.OnTerminate := nil;
+      FCotacoesThread.FreeOnTerminate := False;
+      FreeAndNil(FCotacoesThread);
     end;
-  finally
-    HTTPClient.Free;
-    SSLHandler.Free;
+  end;
+end;
+
+procedure TFrm_principal.CotacoesConcluidas(Sender: TObject);
+var
+  LCotacoes: TSiaiCotacoesThread;
+begin
+  LCotacoes := TSiaiCotacoesThread(Sender);
+  FCotacoesThread := nil;
+  if csDestroying in ComponentState then Exit;
+  Panel6.Visible := LCotacoes.Success;
+  if LCotacoes.Success then
+  begin
+    xdolar.Caption := LCotacoes.USD;
+    xeuro.Caption := LCotacoes.EUR;
+    xbtc.Caption := LCotacoes.BTC;
   end;
 end;
 
@@ -1863,6 +1863,13 @@ end;
 
 procedure TFrm_principal.FormDestroy(Sender: TObject);
 begin
+  if FCotacoesThread <> nil then
+  begin
+    // O trabalhador nao acessa forms; retirar o callback evita acesso apos fechar.
+    FCotacoesThread.Terminate;
+    FCotacoesThread.OnTerminate := nil;
+    FCotacoesThread := nil;
+  end;
   DM_Tabelas:=nil;
   //volta a resolução antiga
   PTela(Sender);
@@ -2015,19 +2022,9 @@ begin
 end;
 
 procedure TFrm_principal.Timer2Timer(Sender: TObject);
- var
- MainHandle : THandle;
-
 begin
- // liberar memoria
- try
-   MainHandle := OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessID) ;
-   SetProcessWorkingSetSize(MainHandle, $FFFFFFFF, $FFFFFFFF) ;
-   CloseHandle(MainHandle) ;
- except
- end;
- Application.ProcessMessages;
- StatusBar1.Panels[1].Text := FormatFloat('Mem. Usada: ,.# K', CurrentMemoryUsage / 1024);
+  // Apenas exibe o consumo; nao descarta paginas de memoria a cada 10 segundos.
+  StatusBar1.Panels[1].Text := FormatFloat('Mem. Usada: ,.# K', CurrentMemoryUsage / 1024);
 end;
 
 procedure TFrm_principal.Timer3Timer(Sender: TObject);

@@ -84,7 +84,7 @@ begin
   ZQRecebimento.close;
   ZQRecebimento.SQL.clear;
   ZQRecebimento.SQL.Add('Select * from Recebimento where quadralote='+quotedstr(ql.Text)+' and documento like '+quotedstr(dc)+' order by DT_Vencimento');
-//  showmessage(ZQRecebimento.SQL.Text);
+//  mensagem(ZQRecebimento.SQL.Text);
   ZQRecebimento.open;
   ZQRecebimento.First;
   tn:=ZQRecebimento.RecordCount;

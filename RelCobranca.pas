@@ -77,7 +77,7 @@ var
   varvar : string;
 implementation
 
-uses Tabelas, Funcoes, Cad_Recebimento, principal, uRuntimeFields;
+uses Tabelas, Funcoes, Cad_Recebimento, principal, uRuntimeFields, uSiaiReportPerformance;
 {$R *.dfm}
 
 procedure TFrmRelCobranca.RLBand1BeforePrint(Sender: TObject;
@@ -91,6 +91,7 @@ procedure TFrmRelCobranca.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Relatorio da negociacao');
 end;
 
 end.

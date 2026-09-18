@@ -1485,7 +1485,7 @@ uses Tabelas, Funcoes, Principal, RelReceb02, Cad_Recebimento,
   RelRecebGerencial, CobrancaBancaria, Recebi03, RelReceb02_total,
   RelReceb02_mensal, RelReceb02_mensal_ab, RelReceb02_carteira,
   rel_diario_lote, rel_financiamento, Relajuste2, RelReceb04, RelReceb05,
-  RelReceb02_total_ab, Recebitotpago, RelReceb02_total_ab_lt, uRuntimeFields;
+  RelReceb02_total_ab, Recebitotpago, RelReceb02_total_ab_lt, uRuntimeFields, uSiaiPerformance;
 
 {$R *.dfm}
 
@@ -1607,8 +1607,12 @@ Var
   ListaTemporaria: TStrings;
   Task : Itask;
   I:integer;
+  LInicio, LStep: UInt64;
 begin
+  LInicio := PerformanceStart;
+  LStep := PerformanceStart;
   PrepararLookupsReajuste;
+  PerformanceElapsed('RelRecebimento: preparar lookups', LStep);
   xquadraLote.Lines.Clear;
   VarPath := ExtractFilePath( Application.ExeName );
   ArqIni2 := tIniFile.Create(varpath+'siai.Ini');
@@ -1623,7 +1627,9 @@ begin
     CBDesconsidera.Visible := True
   else
     CBDesconsidera.Visible := False;
+  LStep := PerformanceStart;
   ZQTemp2Cl.Open;
+  PerformanceElapsed('RelRecebimento: abrir filtro temporario', LStep);
   CDSQuadraLote.Close;
   CDSQuadraLote.CreateDataSet;
   CDSCli.Close;
@@ -1648,7 +1654,9 @@ begin
 //    CLBEmpree.Checked[I] := True;
 //  end;
 
+  LStep := PerformanceStart;
   DM_Tabelas.ZQincorp_loteame.open;
+  PerformanceElapsed('RelRecebimento: abrir empreendimentos', LStep);
   CLBDoc.Clear;
   ListaTemporaria := ListaDoc;
   try
@@ -1664,6 +1672,8 @@ begin
   end;
 
   RGContas.SetFocus;
+  PerformanceElapsed('RelRecebimento: preparar formulario', LInicio);
+  FlushPerformanceLog;
 end;
 
 procedure TFrmRelRecebimento.DXBFecharClick(Sender: TObject);

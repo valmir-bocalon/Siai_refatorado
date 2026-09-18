@@ -915,7 +915,7 @@ begin
      end;
   end;
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.');
+      mensagem('Sem Filtro Definido.');
   dxbutton3.Enabled:=true;
   dxButton13.Enabled:=true;
   dxButton14.Enabled:=true;

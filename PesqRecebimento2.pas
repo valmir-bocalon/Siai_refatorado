@@ -254,7 +254,7 @@ begin
     ZQTempCliReceb.SQL.Add(' or rec.numboleto like '+quotedstr('%'+Edit1.Text+'%')+')');
     ZQTempCliReceb.SQL.Add(' group by rec.idrecebimento');
     ZQTempCliReceb.Open;
-//    showmessage(ZQTempCliReceb.SQL.Text);
+//    mensagem(ZQTempCliReceb.SQL.Text);
     totreg:=ZQTempCliReceb.RecordCount;
     LReg.Caption := inttostr(totreg);
     if (ZQTempCliReceb.Active) and (ZQTempCliReceb.RecordCount>0) Then
@@ -348,7 +348,7 @@ begin
     begin
       ZQCheque.close;
       DBGrid2.Visible:=false;
-      showmessage('Número de Cheque não Encontrado.');
+      mensagem('Número de Cheque não Encontrado.');
     end;
   end;
 end;

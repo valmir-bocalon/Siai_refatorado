@@ -295,7 +295,7 @@ begin
   VarPath := copy(SaveDialog1.FileName,tam2+1,11);
   if trim(VarPath)<>'remessa.rem' then
   begin
-    showmessage('O nome do Arquivo tem que ser remessa.rem');
+    mensagem('O nome do Arquivo tem que ser remessa.rem');
     exit;
   end;
 
@@ -306,7 +306,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
   if empty(trim(VarPath)) then
   begin
-    showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+    mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
     exit;
   end;
 
@@ -415,7 +415,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+      mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
     else Begin
 
       if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -708,7 +708,7 @@ begin
   DM_Tabelas.ZQRemes_Receb_atualiza.close;
   Gauge1.Progress:=0;
   Gauge1.Visible := false;
-  showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+  mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
 end;
 
 procedure TFrmCobrancaBancaria.SICOOB_240;
@@ -746,7 +746,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -757,7 +757,7 @@ begin
     //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -970,7 +970,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+      mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
     else Begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
@@ -1293,7 +1293,7 @@ begin
     Gauge1.Progress:=0;
     Gauge1.Visible := false;
     if cb2via.Checked=false then
-       showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+       mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
 
 
@@ -1337,7 +1337,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -1348,7 +1348,7 @@ begin
     //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -1564,7 +1564,7 @@ begin
     if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
     else
     if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-      showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+      mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
     else Begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
@@ -1893,7 +1893,7 @@ begin
     DM_Tabelas.ZQContaBancaria.refresh;
     DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
     if cb2via.Checked=false then
-       showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+       mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
 
 End;
@@ -1953,7 +1953,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -1963,7 +1963,7 @@ begin
 
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -2124,7 +2124,7 @@ begin
         if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
         else
          if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+            mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
         else
         Begin
           if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -2531,7 +2531,7 @@ begin
       zqcarne.Close;
 
       inc(varregistro);
-      showmessage('Remessa de Boletos gerado com sucesso!!!'+chr(13)+'A remessa foi gravado em '+VARARQ);
+      mensagem('Remessa de Boletos gerado com sucesso!!!'+chr(13)+'A remessa foi gravado em '+VARARQ);
     end;
   end
   else
@@ -2626,7 +2626,7 @@ begin
         if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
         else
          if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-            showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+            mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
         else
         Begin
           if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -2985,7 +2985,7 @@ begin
       FrmRelRecebimento.CDS_MarcaTit.EnableControls;
     //  ACBrBoleto1.GerarRemessa( varremes );
       inc(varregistro);
-  //    showmessage('Remessa de Boletos gerado com sucesso!!!'+chr(13)+'A remessa foi gravado em '+VARARQ);
+  //    mensagem('Remessa de Boletos gerado com sucesso!!!'+chr(13)+'A remessa foi gravado em '+VARARQ);
   end;
 
 
@@ -3120,7 +3120,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -3132,7 +3132,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -3303,7 +3303,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -3348,7 +3348,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -3615,7 +3615,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+      mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
     end;
   end
   else
@@ -3696,7 +3696,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -3741,7 +3741,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -4175,7 +4175,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -4187,7 +4187,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -4336,7 +4336,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -4380,7 +4380,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -4644,7 +4644,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+      mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
     end;
   end
   else
@@ -4745,7 +4745,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -4790,7 +4790,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -5142,7 +5142,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -5154,7 +5154,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -5302,7 +5302,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -5346,7 +5346,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -5636,7 +5636,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+      mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
     end;
   end
   else
@@ -5718,7 +5718,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -5763,7 +5763,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -6144,7 +6144,7 @@ begin
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
       if trim(VarPath)<>'remessa.rem' then
       begin
-        showmessage('O nome do Arquivo tem que ser remessa.rem');
+        mensagem('O nome do Arquivo tem que ser remessa.rem');
         exit;
       end;
 
@@ -6156,7 +6156,7 @@ begin
   //    vardir := vardir +'\'+varpastabanco;
       if empty(trim(VarPath)) then
       begin
-        showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+        mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
         exit;
       end;
 
@@ -6328,7 +6328,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -6377,7 +6377,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -6670,7 +6670,7 @@ begin
       zqcarne.FieldByName('n_seq').AsInteger                                           :=carne;
       zqcarne.post;
       zqcarne.Close;
-      showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+      mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
     end;
   end
   else
@@ -6772,7 +6772,7 @@ begin
           begin
             if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
             begin
-               showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+               mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
             end
             else
             begin
@@ -6821,7 +6821,7 @@ begin
                  ACBrBoleto1.Cedente.TipoInscricao                 := pFisica
               else
               begin
-                showmessage('Falta o documento (CNPJ/CPF) do cedente');
+                mensagem('Falta o documento (CNPJ/CPF) do cedente');
                 exit;
               end;
               ACBrBoleto1.Cedente.CNPJCPF                          := tiramascara(DM_tabelas.ZQContaBancaria.FieldByName('doc_titular').AsString);
@@ -7197,7 +7197,7 @@ begin
     VarPath := copy(SaveDialog1.FileName,tam2+1,11);
     if trim(VarPath)<>'remessa.rem' then
     begin
-      showmessage('O nome do Arquivo tem que ser remessa.rem');
+      mensagem('O nome do Arquivo tem que ser remessa.rem');
       exit;
     end;
 
@@ -7209,7 +7209,7 @@ begin
 //    vardir := vardir +'\'+varpastabanco;
     if empty(trim(VarPath)) then
     begin
-      showmessage('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
+      mensagem('O nome do Arquivo não pode ficar em branco, tem que ser remessa.rem');
       exit;
     end;
 
@@ -7340,7 +7340,7 @@ begin
       if FrmRelRecebimento.CDS_MarcaTitmarca.Value = '1' Then
       else
         if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
-           showmessage('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
+           mensagem('A parcela '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente')
       else
       Begin
         if DM_Tabelas.ZQContaBancaria.FieldByName('valoroupercent').AsString = 'F' Then
@@ -7640,7 +7640,7 @@ begin
     Writeln(f,inttostrZero(varregistro,6)); //  nº seguencial
     Closefile(f); //fecha o handle de arquivo
 
-    showmessage('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
+    mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
   end;
 
@@ -7663,7 +7663,7 @@ begin
         begin
           if empty(tiramascara(FrmRelRecebimento.CDS_MarcaTitdoc1.Value)) Then
           begin
-             showmessage('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
+             mensagem('O boleto '+FrmRelRecebimento.CDS_MarcaTitordem.Value+' do cliente '+FrmRelRecebimento.CDS_MarcaTitnome_parte.Value+chr(13)+'não será anexada a cobrança bancaria,'+chr(13)+'pois está com o cadastro incompleto da documentação do cliente');
           end
           else
           begin
@@ -7960,7 +7960,7 @@ begin
  FrmRelRecebimento.CDSEmpreendimento.First;
  FrmRelRecebimento.CDS_MarcaTit.First;
   if copy(FrmRelRecebimento.XDEVencimentoInicio.DateText,1,2)='00' Then Begin
-    showmessage('A data de vencimento não foi informada...  Arquivo não será gerado....');
+    mensagem('A data de vencimento não foi informada...  Arquivo não será gerado....');
     close;
     exit;
   end;
@@ -7982,7 +7982,7 @@ begin
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='SICOOB_240' Then SICOOB_240
         else if FrmRelRecebimento.CDSEmpreendimentolayoutBoleto.Value='CAIXA_240' Then caixa_240
 
-        else showmessage('Este banco não esta configurado para gerar arquivo magnético...');
+        else mensagem('Este banco não esta configurado para gerar arquivo magnético...');
       end;
 //    end;
     FrmRelRecebimento.CDSEmpreendimento.Next;
@@ -8042,7 +8042,7 @@ begin
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='SICOOB_240' Then SICOOB_240
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='BRASIL_400' Then BRASIL_400
   else if DM_Tabelas.ZQContaBancaria.FieldByName('boleto').AsString='SANTANDER_400' Then santander_400
-  else showmessage('Este banco não esta configurado para gerar arquivo magnético...');
+  else mensagem('Este banco não esta configurado para gerar arquivo magnético...');
 //  XBRelat.Enabled := true;
 //  XBRelat.SetFocus;
 end;

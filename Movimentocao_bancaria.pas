@@ -417,7 +417,7 @@ procedure TFrm_MovimentoBancario.EConfirmaSenhaBancoExit(Sender: TObject);
 begin
   DBGBanco.Enabled := false;
   if EConfirmaSenhaBanco.Text<>DM_tabelas.ZQConta_bancaria.FieldByName('senha_interna').Text then Begin
-    showmessage('Senha incorreta....');
+    mensagem('Senha incorreta....');
     CXBDefiniContaBancaria.SetFocus;
     FPAchaBanco.Visible := False;
     DM_tabelas.ZQConta_Bancaria.Locate('cod_banco',VarContaAtiva,[]);

@@ -887,7 +887,7 @@ begin
      end;
   end;
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.');
+      mensagem('Sem Filtro Definido.');
   percent.SetFocus;
 end;
 
@@ -1089,7 +1089,7 @@ begin
 
           if trim(varquadra)=emptystr then
           begin
-            showmessage('Você não selecionou nada no grid ao lado.'+#13+#10+' Clique no botão Selecionar Todas !');
+            mensagem('Você não selecionou nada no grid ao lado.'+#13+#10+' Clique no botão Selecionar Todas !');
             exit
           end;
 
@@ -1142,7 +1142,7 @@ begin
   end
   else if (percent.Value=0) and (ZQRecebtmp2.RecordCount>0) then
   begin
-    showmessage('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
+    mensagem('Informe o Percentual; Adicione os Títulos Selecionados no Grid !');
     percent.SetFocus;
     exit;
   end;
@@ -1350,7 +1350,7 @@ begin
     end
     else
     begin
-      showmessage('Nenhuma quadra e lote Selecionada. Clique em SELECIONAR TODAS');
+      mensagem('Nenhuma quadra e lote Selecionada. Clique em SELECIONAR TODAS');
       exit;
     end;
 
@@ -1712,7 +1712,7 @@ begin
   end;
   lbreg.Caption:=inttostr(ZQRecebimento.RecordCount);
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.')
+      mensagem('Sem Filtro Definido.')
   else
      dxButton3.Enabled:=false;
 end;
@@ -1989,7 +1989,7 @@ begin
   end;
   lbreg.Caption:=inttostr(ZQRecebimento.RecordCount);  
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.')
+      mensagem('Sem Filtro Definido.')
   else
      dxButton3.Enabled:=true;
   

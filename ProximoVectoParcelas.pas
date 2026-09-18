@@ -819,7 +819,7 @@ begin
   end;
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
   begin
-    showmessage('Sem Filtro Definido.');
+    mensagem('Sem Filtro Definido.');
   end
   else
   begin
@@ -881,11 +881,11 @@ begin
   ZQProximo_vcto.SQL.Add('UPDATE recebimento SET dt_vencimento = DATE_FORMAT(dt_vencimento,'+quotedstr('%Y-%m-'+copy(xdatavcto.Text,1,2))+') where dt_vencimento>= :dt and quadralote in ('+varquadra+')');
   ZQProximo_vcto.ParamByName('dt').AsDate:=strtodate(ms);
 
-  //showmessage(ZQProximo_vcto.SQL.Text);
+  //mensagem(ZQProximo_vcto.SQL.Text);
 
   ZQProximo_vcto.ExecSQL;
 
-  showmessage('Data Alterada !');
+  mensagem('Data Alterada !');
   ZQRecebimento.Refresh;
 
 //  dxButton13.Enabled:=false;

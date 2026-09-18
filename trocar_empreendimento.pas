@@ -575,7 +575,7 @@ var
 begin
   if simnao('Confirma a Operação ?','SIM')=false then
   begin
-    showmessage('O Processo não será executado.');
+    mensagem('O Processo não será executado.');
     JDEntrada.SetFocus;
     exit;
   end;
@@ -587,7 +587,7 @@ begin
   historico:='';
   historico2:='';
   if DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt=0 Then Begin
-    showmessage('Deve ser indicado um lote para ser vendido...');
+    mensagem('Deve ser indicado um lote para ser vendido...');
     Pag_Venda.PageIndex := 0;
     DXBAchaLote.SetFocus;
     exit;

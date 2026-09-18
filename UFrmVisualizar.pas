@@ -1,4 +1,4 @@
-unit UFrmVisualizar;
+﻿unit UFrmVisualizar;
 
 interface
 

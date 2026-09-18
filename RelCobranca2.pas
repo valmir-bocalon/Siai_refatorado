@@ -84,7 +84,7 @@ var
   varvar : string;
 implementation
 
-uses Tabelas, Funcoes, Cad_Recebimento, principal, uRuntimeFields;
+uses Tabelas, Funcoes, Cad_Recebimento, principal, uRuntimeFields, uSiaiReportPerformance;
 {$R *.dfm}
 
 procedure TFrmRelCobranca2.RLBand1BeforePrint(Sender: TObject;
@@ -106,6 +106,7 @@ procedure TFrmRelCobranca2.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Relatorio do grid');
 end;
 
 end.

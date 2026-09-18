@@ -1131,6 +1131,7 @@ var
 implementation
 
 uses tabelas, Funcoes, AchaLoteVenda, RelVenda, QuadroResumo, AchaVenda,
+  uSiaiPerformance,
   Loteamento, principal, quitacao, Resumo_quita, QuadroMemorialt, QuadroResumo2,
   usimulaAditamento, UnPdf, uRuntimeFields;
 
@@ -1212,7 +1213,10 @@ var
 Task : Itask;
 I:integer;
 Lista: TStrings;
+  LStarted, LStep: UInt64;
 begin
+  LStarted := PerformanceStart;
+  LStep := PerformanceStart;
   Pag_Venda.PageIndex := 0;
   Frm_principal.Panel1.Visible:=true;
   //Application.ProcessMessages;
@@ -1226,24 +1230,32 @@ begin
   DM_tabelas.ZQContaBancaria.SQL.Add('  from conta_bancaria');
   if DM_tabelas.ZQContaBancaria.Active=false then
      DM_tabelas.ZQContaBancaria.open;
+  PerformanceElapsed('Venda: abrir contas bancarias', LStep);
+  LStep := PerformanceStart;
 
   DM_tabelas.ZQQuadras.Close;
   DM_tabelas.ZQQuadras.SQL.Clear;
   DM_tabelas.ZQQuadras.SQL.Add('select idquadras,loteamento_idLoteamento,descricao,apedlido from quadras order by descricao');
   if DM_tabelas.ZQQuadras.Active=false then
      DM_tabelas.ZQQuadras.open;
+  PerformanceElapsed('Venda: abrir quadras', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQReBxHi.Close;
   DM_Tabelas.ZQReBxHi.SQL.Clear;
   DM_Tabelas.ZQReBxHi.SQL.Add('select idrecbxhist,refer,idrecib,valor,descon,juros,percent_usado,data,sq,valor_parcela from RecBxHist limit 1');
   if DM_Tabelas.ZQReBxHi.Active=false then
      DM_Tabelas.ZQReBxHi.open;
+  PerformanceElapsed('Venda: abrir historico de baixa', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQincorp_loteame.Close;
   DM_Tabelas.ZQincorp_loteame.SQL.Clear;
   DM_Tabelas.ZQincorp_loteame.SQL.Add('Select incorporador_idincorporador,loteamento_idloteamento,percent_parte,codcontabancaria,digito_dif from incorporador_loteamento');
   if DM_Tabelas.ZQincorp_loteame.Active=false then
      DM_Tabelas.ZQincorp_loteame.Open;
+  PerformanceElapsed('Venda: abrir incorporadores', LStep);
+  LStep := PerformanceStart;
 
 
   DM_Tabelas.ZQLoteamento.Close;
@@ -1253,6 +1265,8 @@ begin
   DM_Tabelas.ZQLoteamento.SQL.Add('  from loteamento');
   if DM_Tabelas.ZQLoteamento.Active=false then
      DM_Tabelas.ZQLoteamento.Open;
+  PerformanceElapsed('Venda: abrir empreendimentos', LStep);
+  LStep := PerformanceStart;
 
 
   DM_Tabelas.zqprocuradores.Close;
@@ -1260,6 +1274,8 @@ begin
   DM_Tabelas.zqprocuradores.SQL.Add('Select idProcuradores,idloteamento,idparti,nome,assina from  Procuradores');
   if DM_Tabelas.zqprocuradores.Active=false then
      DM_Tabelas.zqprocuradores.Open;
+  PerformanceElapsed('Venda: abrir procuradores', LStep);
+  LStep := PerformanceStart;
 
 
   DM_tabelas.ZQNumOrdem.Close;
@@ -1267,6 +1283,8 @@ begin
   DM_tabelas.ZQNumOrdem.SQL.Add('select idnumordem from numordem');
   if DM_tabelas.ZQNumOrdem.Active=false then
      DM_tabelas.ZQNumOrdem.Open;
+  PerformanceElapsed('Venda: abrir numeracao', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQImovel.Close;
   DM_Tabelas.ZQImovel.SQL.Clear;
@@ -1275,12 +1293,16 @@ begin
   DM_Tabelas.ZQImovel.SQL.Add(' from Imovel');
   if DM_Tabelas.ZQImovel.Active = false then
      DM_Tabelas.ZQImovel.open;
+  PerformanceElapsed('Venda: abrir imoveis', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQVendedor.Close;
   DM_Tabelas.ZQVendedor.SQL.Clear;
   DM_Tabelas.ZQVendedor.SQL.Add('Select idvendedor,corretor_idcorretor,venda_idvenda,PComissao_corretor from vendedor');
   if DM_Tabelas.ZQVendedor.Active=false then
      DM_Tabelas.ZQVendedor.open;
+  PerformanceElapsed('Venda: abrir vendedores', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQRecebimento.Close;
   DM_Tabelas.ZQRecebimento.SQL.Clear;
@@ -1291,30 +1313,40 @@ begin
   DM_Tabelas.ZQRecebimento.SQL.Add(' from Recebimento order by DT_Vencimento limit 200, 20');
   if DM_Tabelas.ZQRecebimento.Active=false then
      DM_Tabelas.ZQRecebimento.open;
+  PerformanceElapsed('Venda: abrir recebimentos', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQVenda.Close;
   DM_Tabelas.ZQVenda.SQL.Clear;
   DM_Tabelas.ZQVenda.SQL.Add('Select idvenda,datavenda,imovel,valorvenda,forma_reajuste,tabela_Price,Escriturado,marca,codigo_contrato_ref,Multa,Mora,Perc_comissao,vlr_comissao,path_pdf from venda limit 50');
   if DM_Tabelas.ZQVenda.Active=false then
      DM_Tabelas.ZQVenda.open;
+  PerformanceElapsed('Venda: abrir vendas', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQComprador.Close;
   DM_Tabelas.ZQComprador.SQL.Clear;
   DM_Tabelas.ZQComprador.SQL.Add('Select idcomprador,paticipante_idpaticipante,venda_idvenda,promissario,percentual,Marcar from comprador');
   if DM_Tabelas.ZQComprador.Active=false then
      DM_Tabelas.ZQComprador.open;
+  PerformanceElapsed('Venda: abrir compradores', LStep);
+  LStep := PerformanceStart;
 
   DM_tabelas.ZQCheque.Close;
   DM_tabelas.ZQCheque.SQL.Clear;
   DM_tabelas.ZQCheque.SQL.Add('select Banco,Dono,CPF_CNPJ,valor,emissao,deposito,alias,prorrogado,conta,idrecebimento,idpagamento,idcheque,idvinculo,numero,agencia,Substituicao,sq from cheque_rec');
   if DM_tabelas.ZQCheque.Active=false then
      DM_tabelas.ZQCheque.open;
+  PerformanceElapsed('Venda: abrir cheques', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQTipoDoc.Close;
   DM_Tabelas.ZQTipoDoc.SQL.Clear;
   DM_Tabelas.ZQTipoDoc.SQL.Add('select idtipodocumento,tipodoc,descricao,vend_receb,vend_caixa,receb_receb,receb_caixa,dados_chequ,so_avista,lancabanco,somapaga,lancinclus from tipodocumento');
   if DM_Tabelas.ZQTipoDoc.Active=false then
      DM_Tabelas.ZQTipoDoc.open;
+  PerformanceElapsed('Venda: abrir tipos de documento', LStep);
+  LStep := PerformanceStart;
 
   DM_Tabelas.ZQTipoDoc.First;
   DBCBDocVenda.Clear;
@@ -1359,6 +1391,8 @@ begin
 
 
   DM_TAbelas.ZQmemorial.open;
+  PerformanceElapsed('Venda: abrir memorial', LStep);
+  LStep := PerformanceStart;
   DesativaCampos;
   DBGVenda.SetFocus;
   Frm_principal.Panel1.Visible:=false;
@@ -1376,6 +1410,9 @@ begin
   xvrdesconto.Value:=0;
   xdliquidado.Value:=0;
   vrfinal.Value:=0;
+  PerformanceElapsed('Venda: preparar controles', LStep);
+  PerformanceElapsed('Venda: abertura completa', LStarted);
+  FlushPerformanceLog;
 end;
 
 procedure TFrm_Venda.botoes;
@@ -1590,7 +1627,7 @@ begin
     end;
 
     if DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt=0 Then Begin
-      showmessage('Deve ser indicado um lote para ser vendido...');
+      mensagem('Deve ser indicado um lote para ser vendido...');
       Pag_Venda.PageIndex := 0;
       DXBAchaLote.SetFocus;
       exit;
@@ -1764,7 +1801,7 @@ begin
                                                 quotedstr(DM_Tabelas.CDSCompradorTempnomeparticipante.Value)+',''R'','+quotedstr(inttostr(varnumordemE))+','+quotedstr(inttostr(DM_Tabelas.ZQVenda.FieldByName('idvenda').AsLargeInt))+','+
                                                 quotedstr(DM_Tabelas.ZQVenda.FieldByName('quadra').AsString+'-'+DM_Tabelas.ZQVenda.FieldByName('lote').AsString)+','+quotedstr('Empreendimento: '+DM_Tabelas.ZQVenda.FieldByName('nometoeam').AsString+chr(13)+'Quadra: '+DM_Tabelas.ZQVenda.FieldByName('quadra').AsString+chr(13)+'Lote: '+DM_Tabelas.ZQVenda.FieldByName('lote').AsString)+','+
                                                 quotedstr(fx)+')');
-  //         showmessage(DM_tabelas.ZQRecebimento.sql.text);
+  //         mensagem(DM_tabelas.ZQRecebimento.sql.text);
 
             DM_tabelas.ZQRecebimento.ExecSQL;
 
@@ -2485,7 +2522,7 @@ begin
         DM_Tabelas.ZQCheque.Open;
 
 
-        showmessage('Exclusão Efetuada Com Sucesso!');
+        mensagem('Exclusão Efetuada Com Sucesso!');
 
 
       end;
@@ -2610,7 +2647,7 @@ begin
       DM_Tabelas.ZQVendedor_proposta.SQL.Add('select * from Vendedor_proposta ');
       DM_Tabelas.ZQVendedor_proposta.Open;
       
-      showmessage('Exclusão Efetuada Com Sucesso!');
+      mensagem('Exclusão Efetuada Com Sucesso!');
 
     end;
   end;
@@ -2724,7 +2761,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato não encontrado');
+      mensagem('PDF do Contrato não encontrado');
     end;
   end
   else
@@ -2739,7 +2776,7 @@ begin
     end
     else
     begin
-      showmessage('PDF do Contrato não encontrado');
+      mensagem('PDF do Contrato não encontrado');
     end;
   end;
 end;
@@ -3944,7 +3981,7 @@ begin
    ZQInandimplencia.First;
    if (ZQInandimplencia.RecordCount>0) and (ZQInandimplencia.FieldByName('Parcela_corrigida').AsFloat>0) then
    begin
-     showmessage('Cliente com Parcela(s) Atrasada(s)');
+     mensagem('Cliente com Parcela(s) Atrasada(s)');
      Showmessage('Aguarde! Vou Atualizar os Saldos Atrazados.');
      ZQInandimplencia.close;
      ZQInandimplencia.sql.Clear;
@@ -5409,7 +5446,7 @@ begin
 
   cds_comprador2.Close;
 
-  showmessage('Arquivos Importados!');
+  mensagem('Arquivos Importados!');
   JvXPBar2.Visible:=false;
 //  cds_participante2.Filtered:=false;
 end;
@@ -5438,9 +5475,9 @@ begin
   caminho:=ExtractFilePath(Application.ExeName);
                                     //SW_ShowNormal                                                                                                                                                                     //SW_ShowNormal
   if WinExecAndWait32(comando,caminho,SW_Hide) = 0 then
-     showmessage('Exportação Foi Realizada!')
+     mensagem('Exportação Foi Realizada!')
   else
-     showmessage('Exportação Não Foi Realizada!');
+     mensagem('Exportação Não Foi Realizada!');
 end;
 
 procedure TFrm_Venda.dxButton4Click(Sender: TObject);
@@ -5757,7 +5794,7 @@ begin
   DM_Tabelas.ZQimovel.open;
   if DM_Tabelas.ZQimovel.RecordCount>0 then
   begin
-    showmessage('Imóvel Não Disponível !');
+    mensagem('Imóvel Não Disponível !');
     exit;
   end;
 
@@ -6129,7 +6166,7 @@ begin
   Label85.caption:='';
   application.ProcessMessages;
   Gauge2.Progress:=0;
-  showmessage('Transferência Completa.');
+  mensagem('Transferência Completa.');
 end;
 
 procedure TFrm_Venda.dxButton5Click(Sender: TObject);
@@ -6147,7 +6184,7 @@ procedure TFrm_Venda.Button2Click(Sender: TObject);
 begin
   if mdata.Text='  /  /    ' then
   begin
-    showmessage('Informe a data de Rescisão!');
+    mensagem('Informe a data de Rescisão!');
     mdata.SetFocus;
     exit;
   end;  
@@ -6318,12 +6355,12 @@ begin
       DM_Tabelas.ZQCheque.SQL.Clear;
       DM_Tabelas.ZQCheque.SQL.Add('select * from cheque_rec ');
       DM_Tabelas.ZQCheque.Open;
-      showmessage('Rescisão Efetuada Com Sucesso!');
+      mensagem('Rescisão Efetuada Com Sucesso!');
     end;
   end
   else
   begin
-    showmessage('Rescisão Não Efetuada. Parcelas todas pagas e inadimplentes!');
+    mensagem('Rescisão Não Efetuada. Parcelas todas pagas e inadimplentes!');
   end;  
   mdata.Clear;
   gbrescisao.Visible:=false;

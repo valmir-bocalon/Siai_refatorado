@@ -72,7 +72,7 @@ begin
   DM_Tabelas.ZQUsuTemp.SQL.Add('where apelido = '+quotedstr(EUsuario.Text));
   DM_Tabelas.ZQUsuTemp.Open;
   if DM_Tabelas.ZQUsuTemp.RecordCount=0 Then Begin
-    showmessage('Usuário não cadastrado...');
+    mensagem('Usuário não cadastrado...');
     EUsuario.Text := '';
     EUsuario.SetFocus;
   end;
@@ -120,7 +120,7 @@ begin
       end
       else
       begin
-        showmessage('Você não está autorizado a executar este procedimento!!!!');
+        mensagem('Você não está autorizado a executar este procedimento!!!!');
       end;
       Close;
     end;

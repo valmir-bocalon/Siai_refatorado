@@ -722,7 +722,7 @@ Var
 begin
   if empty(CBTipobaixa.Text) then
   begin
-    showmessage('Selecione o tipo de operação !');
+    mensagem('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     exit;
   end;
@@ -1231,7 +1231,7 @@ begin
     DM_tabelas.ZQTipodoc.Locate('tipodoc',DBCBTipDoc.Text,[]);
     if DM_tabelas.ZQTipoDoc.FieldByName('so_avista').AsString='S' Then Begin
       if (datetostr(CDSParcelasVenci.Value)<>JDEntrada.DateText) and ((CDSParcelasTipDoc.Value<>'DP')) Then BEgin
-        showmessage('Este tipo de documento só aceita pagamento a vista!!!');
+        mensagem('Este tipo de documento só aceita pagamento a vista!!!');
         EContabil.SetFocus;
         Exit;
       end;
@@ -1364,7 +1364,7 @@ procedure TFrmRecebBaixa_subst.EContabilExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
     if empty(Econtabil.text) Then Begin
-      showmessage('A descrição contábil não pode ficar em branco....');
+      mensagem('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -1391,23 +1391,23 @@ procedure TFrmRecebBaixa_subst.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
+      mensagem('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
+      mensagem('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.Value),VarDoc)>0) Then Begin
-      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
+      mensagem('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo Nº do cheque deve ser preenchido...');
+      mensagem('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}
@@ -2329,7 +2329,7 @@ begin
     ZQRecBai.ParamByName('dt1').AsString:=FormatDateTime('YYYY-MM-DD',strtodate(PIni.text));
     ZQRecBai.ParamByName('dt2').AsString:=FormatDateTime('YYYY-MM-DD',strtodate(PFim.text));
   end;
-//  showmessage(zqrecbai.sql.text);
+//  mensagem(zqrecbai.sql.text);
   ZQRecBai.ExecSQL;
 
   ZQRecBai.Close;

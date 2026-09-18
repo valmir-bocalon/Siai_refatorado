@@ -1,4 +1,4 @@
-ï»¿unit RelVenda02;
+unit RelVenda02;
 
 interface
 
@@ -284,7 +284,10 @@ type
     procedure RLBand1BeforePrint(Sender: TObject; var PrintIt: Boolean);
     procedure RLBand3BeforePrint(Sender: TObject; var PrintIt: Boolean);
   private
-    { Private declarations }
+    { A consulta usada por RLBand3 nao tem parametro nem referencia ao
+      registro corrente. O resultado e constante durante uma impressao. }
+    FTotalEntradasParcelasPronto: Boolean;
+    FTotalEntradasParcelas: Double;
 
     procedure AfterConstruction; override;
   public
@@ -297,7 +300,7 @@ var
   abp,bxp,dscp,jrp,salp:double;
 implementation
 
-uses RelVenda,funcoes, tabelas, principal, uRuntimeFields;
+uses RelVenda,funcoes, tabelas, principal, uRuntimeFields, uSiaiReportPerformance;
 {$R *.dfm}
 procedure TFrm_RelVenda02.RLBand2BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
@@ -347,7 +350,7 @@ begin
     vixi:=vixi+Frm_RelVenda.ZQEntradaValor.value+Frm_RelVenda.baixaVr_rec.value;}
 
 
-    // para nao somar a substituiÃ§Ã£o, basta Habilitar a linha de baixo
+    // para nao somar a substituição, basta Habilitar a linha de baixo
 //  if Frm_RelVenda.ZQEntradasubstituicao.Value<>'S' then
      vixi:=vixi+ExRound(Frm_RelVenda.ZQEntrada.FieldByName('Valor').AsFloat,2);
 
@@ -386,6 +389,8 @@ end;
 procedure TFrm_RelVenda02.RLReport1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
+  FTotalEntradasParcelasPronto := False;
+  FTotalEntradasParcelas := 0;
   ZQincorp_loteame.open;
   PQincorp_loteame.open;
   vixi:=0;
@@ -438,10 +443,14 @@ end;
 
 procedure TFrm_RelVenda02.RLBand16BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
+var
+  LBaixasParcela, LChequesParcela: TDataSet;
 begin
+  LBaixasParcela := Frm_RelVenda.DS_BsParcela.DataSet;
+  LChequesParcela := Frm_RelVenda.DataZQcheque_rec_p.DataSet;
   if Frm_RelVenda.ZQParcela.FieldByName('Substituicao').AsString='S' then
   begin
-    if Frm_RelVenda.ZQcheque_rec_p.RecordCount>0 then
+    if LChequesParcela.RecordCount>0 then
     begin
       RLSubDetail7.Visible:=true;
     end
@@ -473,26 +482,26 @@ begin
 
   abp:=abp+ExRound(Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat,2);
   salp:=salp+ExRound(Frm_RelVenda.ZQParcela.FieldByName('saldo').AsFloat,2);
-  bxp:=bxp+ExRound(Frm_RelVenda.ZQBxParcela.FieldByName('vr').AsFloat,2);
+  bxp:=bxp+ExRound(LBaixasParcela.FieldByName('vr').AsFloat,2);
 //  dscp:=dscp+ExRound(Frm_RelVenda.ZQBxParcelade.Value,2);
-  if (ExRound(Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-Frm_RelVenda.ZQBxParcela.FieldByName('vr').AsFloat,2)>0) and (Frm_RelVenda.ZQBxParcela.FieldByName('vr').AsFloat>0) then
+  if (ExRound(Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-LBaixasParcela.FieldByName('vr').AsFloat,2)>0) and (LBaixasParcela.FieldByName('vr').AsFloat>0) then
   begin
-     rldesconto.Caption:=trim(transform(ExRound((Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-Frm_RelVenda.ZQBxParcela.FieldByName('vr').AsFloat),2),'###,###,###,##0.00'));
-     dscp:=dscp+ExRound((Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-Frm_RelVenda.ZQBxParcela.FieldByName('vr').AsFloat),2);
+     rldesconto.Caption:=trim(transform(ExRound((Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-LBaixasParcela.FieldByName('vr').AsFloat),2),'###,###,###,##0.00'));
+     dscp:=dscp+ExRound((Frm_RelVenda.ZQParcela.FieldByName('Valor').AsFloat-LBaixasParcela.FieldByName('vr').AsFloat),2);
   end
   else
     rldesconto.Caption:='0.00';
-  jrp:=jrp+ExRound(Frm_RelVenda.ZQBxParcela.FieldByName('jr').AsFloat,2);
+  jrp:=jrp+ExRound(LBaixasParcela.FieldByName('jr').AsFloat,2);
 
   // cor do grid
   RLBand16.Color  := clWhite;
-  if (Frm_RelVenda.ZQBxParcela.FieldByName('data').AsDateTime=0) and (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime>date) then
+  if (LBaixasParcela.FieldByName('data').AsDateTime=0) and (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime>date) then
      RLBand16.Color  := clWhite;
- if (Frm_RelVenda.ZQBxParcela.FieldByName('data').AsDateTime=0) and (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime<date) then     
+ if (LBaixasParcela.FieldByName('data').AsDateTime=0) and (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime<date) then
      RLBand16.Color  := $00D7D7FF; //$00ECECFF; // vermelho
-  if (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime>=Frm_RelVenda.ZQBxParcela.FieldByName('data').AsDateTime) and  ( Frm_RelVenda.ZQBxParcela.FieldByName('data').AsDateTime>0) then
+  if (Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime>=LBaixasParcela.FieldByName('data').AsDateTime) and  ( LBaixasParcela.FieldByName('data').AsDateTime>0) then
      RLBand16.Color  := $00C4FFC4; //$00ECFFEC;  //verde
-  if Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime<Frm_RelVenda.ZQBxParcela.FieldByName('data').AsDateTime then
+  if Frm_RelVenda.ZQParcela.FieldByName('Dt_Vencimento').AsDateTime<LBaixasParcela.FieldByName('data').AsDateTime then
      RLBand16.Color  := $007DFFFF; //$00DFFFFF; // amarelo
 
 end;
@@ -573,25 +582,33 @@ begin
     RLLabel68.Visible:=false;
     RLDBText61.Visible:=false;
   end;
-  valortotal.Value:=0;
-  ZQAux.Close;
-  ZQAux.SQL.Clear;
-  ZQAux.SQL.Add('Select h.idrecib,h.valor,sum(h.valor) as entradas,idvenda,valorvenda,somar,numordem, cliente,RefBaixa,idloteamento,quadralote,Substituicao,idrecebimento,venda_idvenda,documento,r.Valor,ordem,Dt_Vencimento,TipDoc,saldo,numboleto from recebimento as r  '+
-                ' join venda as v on r.venda_idvenda=v.idvenda join recbxhist as h on h.idrecib=r.idrecebimento '+
-                ' where documento like  ''%-E-%''  group by idvenda order by Dt_Vencimento,numordem,ordem ');
-  ZQAux.Open;
-  valortotal.Value:= ZQAux.FieldByName('entradas').AsFloat;
+  { Estas duas consultas nao usam campo, parametro ou relacionamento da
+    venda corrente. Antes eram repetidas para cada banda impressa. Calcule o
+    mesmo valor uma vez e atribua-o em todas as bandas, sem alterar o total
+    apresentado. }
+  if not FTotalEntradasParcelasPronto then
+  begin
+    FTotalEntradasParcelas := 0;
+    ZQAux.Close;
+    ZQAux.SQL.Clear;
+    ZQAux.SQL.Add('Select h.idrecib,h.valor,sum(h.valor) as entradas,idvenda,valorvenda,somar,numordem, cliente,RefBaixa,idloteamento,quadralote,Substituicao,idrecebimento,venda_idvenda,documento,r.Valor,ordem,Dt_Vencimento,TipDoc,saldo,numboleto from recebimento as r  '+
+                  ' join venda as v on r.venda_idvenda=v.idvenda join recbxhist as h on h.idrecib=r.idrecebimento '+
+                  ' where documento like  ''%-E-%''  group by idvenda order by Dt_Vencimento,numordem,ordem ');
+    ZQAux.Open;
+    FTotalEntradasParcelas := ZQAux.FieldByName('entradas').AsFloat;
 
-  ZQAux.Close;
-  ZQAux.SQL.Clear;
-  ZQAux.SQL.Add('Select h.idrecib,h.valor,sum(h.valor) as entradas,idvenda,valorvenda,somar,numordem, cliente,RefBaixa,idloteamento,quadralote,Substituicao,idrecebimento,venda_idvenda,documento,r.Valor,ordem,Dt_Vencimento,TipDoc,saldo,numboleto from recebimento as r  '+
-                ' join venda as v on r.venda_idvenda=v.idvenda join recbxhist as h on h.idrecib=r.idrecebimento '+
-                ' where documento like  ''%-P-%''  group by idvenda order by Dt_Vencimento,numordem,ordem ');
-  ZQAux.Open;
-  valortotal.Value:= valortotal.Value+ZQAux.FieldByName('entradas').AsFloat;
-  ZQAux.Close;
-  RLLabel75.Caption:=trim(transform(valortotal.Value,'###,###,###,##0.00'));
-end;
+    ZQAux.Close;
+    ZQAux.SQL.Clear;
+    ZQAux.SQL.Add('Select h.idrecib,h.valor,sum(h.valor) as entradas,idvenda,valorvenda,somar,numordem, cliente,RefBaixa,idloteamento,quadralote,Substituicao,idrecebimento,venda_idvenda,documento,r.Valor,ordem,Dt_Vencimento,TipDoc,saldo,numboleto from recebimento as r  '+
+                  ' join venda as v on r.venda_idvenda=v.idvenda join recbxhist as h on h.idrecib=r.idrecebimento '+
+                  ' where documento like  ''%-P-%''  group by idvenda order by Dt_Vencimento,numordem,ordem ');
+    ZQAux.Open;
+    FTotalEntradasParcelas := FTotalEntradasParcelas + ZQAux.FieldByName('entradas').AsFloat;
+    ZQAux.Close;
+    FTotalEntradasParcelasPronto := True;
+  end;
+  valortotal.Value := FTotalEntradasParcelas;
+  RLLabel75.Caption:=trim(transform(valortotal.Value,'###,###,###,##0.00'));end;
 
 procedure TFrm_RelVenda02.RLSubDetail4BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
@@ -627,7 +644,7 @@ end;
 procedure TFrm_RelVenda02.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='UsuÃ¡rio:'+Frm_principal.xusuario.Caption;
+  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 
@@ -635,8 +652,43 @@ procedure TFrm_RelVenda02.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  MeasureReport(RLReport1, 'Relatorio administrativo - detalhado');
+  if Assigned(Frm_RelVenda) then
+  begin
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQEntrada,
+      'Relatorio administrativo: paginas - entradas');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQBxEntrada,
+      'Relatorio administrativo: paginas - baixas de entrada');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQcheque_rec_e,
+      'Relatorio administrativo: paginas - cheques de entrada');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.baixa,
+      'Relatorio administrativo: paginas - baixas DN');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQParcela,
+      'Relatorio administrativo: paginas - parcelas');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQBxParcela,
+      'Relatorio administrativo: paginas - baixas de parcela');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQcheque_rec_p,
+      'Relatorio administrativo: paginas - cheques de parcela');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQParticip,
+      'Relatorio administrativo: paginas - participantes');
+    MeasureReportDataSet(RLReport1, Frm_RelVenda.ZQVendedor,
+      'Relatorio administrativo: paginas - vendedores');
+  end;
+  MeasureReportBand(RLReport1, RLBand1,
+    'Relatorio administrativo: cabecalho');
+  MeasureReportBand(RLReport1, RLBand3,
+    'Relatorio administrativo: venda');
+  MeasureReportBand(RLReport1, RLBand7,
+    'Relatorio administrativo: linha de entrada');
+  MeasureReportBand(RLReport1, RLBand9,
+    'Relatorio administrativo: total de entrada');
+  MeasureReportBand(RLReport1, RLBand16,
+    'Relatorio administrativo: linha de parcela');
+  MeasureReportBand(RLReport1, RLBand10,
+    'Relatorio administrativo: total de parcela');
+  MeasureReportBand(RLReport1, RLBand17,
+    'Relatorio administrativo: historico');
 end;
-
 initialization
   RegisterRuntimeDataSet(TFrm_RelVenda02, 'ZQincorp_loteame', False);
   RegisterRuntimeField(TFrm_RelVenda02, 'ZQincorp_loteame', 'ZQincorp_loteameincorporador_idincorporador', 'incorporador_idincorporador', TLargeintField, fkData, 0, 0, True, '', '', '', '', 0, '', '', '', '', False);

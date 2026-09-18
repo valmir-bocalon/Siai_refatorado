@@ -2,7 +2,7 @@ unit RelVenda;
 
 interface
 
-uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+uses uSiaiPerformance, ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, XBanner, Mask, XDate, ExtCtrls, Grids, DBGrids, CheckLst, DB, ZAbstractRODataset, ZAbstractDataset,
   ZDataset, DBClient, TFlatRadioButtonUnit, IniFiles, Gauges,system.Threading,
   FnpNumericEdit;
@@ -1271,8 +1271,25 @@ type
     procedure CBRescisaoClick(Sender: TObject);
     procedure CBquitadosClick(Sender: TObject);
   private
-    { Private declarations }
-
+    { Cache privado usado somente durante a emissao do relatorio detalhado.
+      Os dados sao copiados da consulta ja aberta; nenhum valor financeiro e
+      recalculado e os vinculos Zeos originais sao restaurados ao fechar a
+      visualizacao. }
+    FCacheDetalheAtivo: Boolean;
+    FCacheBaixasParcela: TClientDataSet;
+    FCacheChequesParcela: TClientDataSet;
+    FDataSetBaixasOriginal: TDataSet;
+    FDataSetChequesOriginal: TDataSet;
+    FMasterSourceBaixasOriginal: TDataSource;
+    FMasterSourceChequesOriginal: TDataSource;
+    FMasterFieldsBaixasOriginal: string;
+    FMasterFieldsChequesOriginal: string;
+    FLinkedFieldsBaixasOriginal: string;
+    FLinkedFieldsChequesOriginal: string;
+    procedure PrepararCacheDetalheRelatorio;
+    procedure RestaurarCacheDetalheRelatorio;
+    procedure CriarCacheBaixasParcela;
+    procedure CriarCacheChequesParcela;
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -1323,11 +1340,183 @@ begin
   end;
 end;
 
+procedure TFrm_RelVenda.CriarCacheBaixasParcela;
+var
+  LOrdem: Integer;
+begin
+  if not ZQBxParcela.Active then
+    Exit;
+
+  FCacheBaixasParcela := TClientDataSet.Create(Self);
+  FCacheBaixasParcela.FieldDefs.Add('idrecebimento', ftInteger);
+  FCacheBaixasParcela.FieldDefs.Add('data', ftDate);
+  FCacheBaixasParcela.FieldDefs.Add('vr', ftFloat);
+  FCacheBaixasParcela.FieldDefs.Add('jr', ftFloat);
+  FCacheBaixasParcela.FieldDefs.Add('de', ftFloat);
+  FCacheBaixasParcela.FieldDefs.Add('ordem_cache', ftInteger);
+  FCacheBaixasParcela.CreateDataSet;
+  TFloatField(FCacheBaixasParcela.FieldByName('vr')).DisplayFormat := '###,###,###,##0.00';
+  TFloatField(FCacheBaixasParcela.FieldByName('jr')).DisplayFormat := '###,###,###,##0.00';
+  TFloatField(FCacheBaixasParcela.FieldByName('de')).DisplayFormat := '###,###,###,##0.00';
+
+  LOrdem := 0;
+  ZQBxParcela.First;
+  while not ZQBxParcela.Eof do
+  begin
+    Inc(LOrdem);
+    FCacheBaixasParcela.Append;
+    FCacheBaixasParcela.FieldByName('idrecebimento').Value :=
+      ZQBxParcela.FieldByName('idrecib').Value;
+    FCacheBaixasParcela.FieldByName('data').Value :=
+      ZQBxParcela.FieldByName('data').Value;
+    FCacheBaixasParcela.FieldByName('vr').Value :=
+      ZQBxParcela.FieldByName('vr').Value;
+    FCacheBaixasParcela.FieldByName('jr').Value :=
+      ZQBxParcela.FieldByName('jr').Value;
+    FCacheBaixasParcela.FieldByName('de').Value :=
+      ZQBxParcela.FieldByName('de').Value;
+    FCacheBaixasParcela.FieldByName('ordem_cache').AsInteger := LOrdem;
+    FCacheBaixasParcela.Post;
+    ZQBxParcela.Next;
+  end;
+  FCacheBaixasParcela.IndexFieldNames := 'idrecebimento;ordem_cache';
+  FCacheBaixasParcela.MasterSource := DS_Parcela;
+  FCacheBaixasParcela.MasterFields := 'idrecebimento';
+  DS_BsParcela.DataSet := FCacheBaixasParcela;
+end;
+
+procedure TFrm_RelVenda.CriarCacheChequesParcela;
+var
+  LOrdem: Integer;
+begin
+  if not ZQcheque_rec_p.Active then
+    Exit;
+
+  FCacheChequesParcela := TClientDataSet.Create(Self);
+  FCacheChequesParcela.FieldDefs.Add('idrecebimento', ftInteger);
+  FCacheChequesParcela.FieldDefs.Add('banco', ftWideString, 255);
+  FCacheChequesParcela.FieldDefs.Add('agencia', ftWideString, 255);
+  FCacheChequesParcela.FieldDefs.Add('conta', ftWideString, 255);
+  FCacheChequesParcela.FieldDefs.Add('valor', ftFloat);
+  FCacheChequesParcela.FieldDefs.Add('emissao', ftDate);
+  FCacheChequesParcela.FieldDefs.Add('ordem_cache', ftInteger);
+  FCacheChequesParcela.CreateDataSet;
+  TFloatField(FCacheChequesParcela.FieldByName('valor')).DisplayFormat := '###,###,###,##0.00';
+
+  LOrdem := 0;
+  ZQcheque_rec_p.First;
+  while not ZQcheque_rec_p.Eof do
+  begin
+    Inc(LOrdem);
+    FCacheChequesParcela.Append;
+    FCacheChequesParcela.FieldByName('idrecebimento').Value :=
+      ZQcheque_rec_p.FieldByName('idrecebimento').Value;
+    FCacheChequesParcela.FieldByName('banco').Value :=
+      ZQcheque_rec_p.FieldByName('banco').Value;
+    FCacheChequesParcela.FieldByName('agencia').Value :=
+      ZQcheque_rec_p.FieldByName('agencia').Value;
+    FCacheChequesParcela.FieldByName('conta').Value :=
+      ZQcheque_rec_p.FieldByName('conta').Value;
+    FCacheChequesParcela.FieldByName('valor').Value :=
+      ZQcheque_rec_p.FieldByName('valor').Value;
+    FCacheChequesParcela.FieldByName('emissao').Value :=
+      ZQcheque_rec_p.FieldByName('emissao').Value;
+    FCacheChequesParcela.FieldByName('ordem_cache').AsInteger := LOrdem;
+    FCacheChequesParcela.Post;
+    ZQcheque_rec_p.Next;
+  end;
+  FCacheChequesParcela.IndexFieldNames := 'idrecebimento;ordem_cache';
+  FCacheChequesParcela.MasterSource := DS_Parcela;
+  FCacheChequesParcela.MasterFields := 'idrecebimento';
+  DataZQcheque_rec_p.DataSet := FCacheChequesParcela;
+end;
+
+procedure TFrm_RelVenda.PrepararCacheDetalheRelatorio;
+var
+  LStarted: UInt64;
+begin
+  RestaurarCacheDetalheRelatorio;
+  LStarted := PerformanceStart;
+
+  FDataSetBaixasOriginal := DS_BsParcela.DataSet;
+  FDataSetChequesOriginal := DataZQcheque_rec_p.DataSet;
+  FMasterSourceBaixasOriginal := ZQBxParcela.MasterSource;
+  FMasterSourceChequesOriginal := ZQcheque_rec_p.MasterSource;
+  FMasterFieldsBaixasOriginal := ZQBxParcela.MasterFields;
+  FMasterFieldsChequesOriginal := ZQcheque_rec_p.MasterFields;
+  FLinkedFieldsBaixasOriginal := ZQBxParcela.LinkedFields;
+  FLinkedFieldsChequesOriginal := ZQcheque_rec_p.LinkedFields;
+
+  try
+    { TZQuery aplica MasterSource percorrendo todas as linhas carregadas a
+      cada parcela. Ao remover o vinculo somente para esta impressao, a copia
+      privada recebe exatamente as linhas ja consultadas uma unica vez. }
+    ZQBxParcela.MasterSource := nil;
+    ZQBxParcela.MasterFields := '';
+    ZQBxParcela.LinkedFields := '';
+    ZQcheque_rec_p.MasterSource := nil;
+    ZQcheque_rec_p.MasterFields := '';
+    ZQcheque_rec_p.LinkedFields := '';
+
+    CriarCacheBaixasParcela;
+    CriarCacheChequesParcela;
+    FCacheDetalheAtivo := Assigned(FCacheBaixasParcela) or
+      Assigned(FCacheChequesParcela);
+    PerformanceElapsed('Relatorio administrativo: preparar cache local de parcelas',
+      LStarted);
+  except
+    { Se uma base antiga nao tiver algum campo esperado, a emissao continua
+      com a consulta original. Assim a otimizacao nunca altera o resultado. }
+    RestaurarCacheDetalheRelatorio;
+  end;
+end;
+
+procedure TFrm_RelVenda.RestaurarCacheDetalheRelatorio;
+begin
+  if not FCacheDetalheAtivo and not Assigned(FCacheBaixasParcela) and
+    not Assigned(FCacheChequesParcela) and not Assigned(FDataSetBaixasOriginal) and
+    not Assigned(FDataSetChequesOriginal) and not Assigned(FMasterSourceBaixasOriginal) and
+    not Assigned(FMasterSourceChequesOriginal) then
+    Exit;
+
+  if Assigned(FCacheBaixasParcela) then
+    FCacheBaixasParcela.MasterSource := nil;
+  if Assigned(FCacheChequesParcela) then
+    FCacheChequesParcela.MasterSource := nil;
+
+  DS_BsParcela.DataSet := FDataSetBaixasOriginal;
+  DataZQcheque_rec_p.DataSet := FDataSetChequesOriginal;
+
+  ZQBxParcela.MasterFields := FMasterFieldsBaixasOriginal;
+  ZQBxParcela.LinkedFields := FLinkedFieldsBaixasOriginal;
+  ZQBxParcela.MasterSource := FMasterSourceBaixasOriginal;
+  ZQcheque_rec_p.MasterFields := FMasterFieldsChequesOriginal;
+  ZQcheque_rec_p.LinkedFields := FLinkedFieldsChequesOriginal;
+  ZQcheque_rec_p.MasterSource := FMasterSourceChequesOriginal;
+
+  FreeAndNil(FCacheBaixasParcela);
+  FreeAndNil(FCacheChequesParcela);
+  FDataSetBaixasOriginal := nil;
+  FDataSetChequesOriginal := nil;
+  FMasterSourceBaixasOriginal := nil;
+  FMasterSourceChequesOriginal := nil;
+  FMasterFieldsBaixasOriginal := '';
+  FMasterFieldsChequesOriginal := '';
+  FLinkedFieldsBaixasOriginal := '';
+  FLinkedFieldsChequesOriginal := '';
+  FCacheDetalheAtivo := False;
+end;
 procedure TFrm_RelVenda.DXBImprimirClick(Sender: TObject);
 var
   ql,VarEmpree, VarImovel, varParte, varvendedor, TempTableName : String;
   tm,posi,varcontador, x, y : integer;
+  LMasterSourceVendaOriginal: TDataSource;
+  LMasterFieldsVendaOriginal, LLinkedFieldsVendaOriginal: string;
+  LVendaDesvinculada: Boolean;
+  LStarted: UInt64;
 begin
+  LStarted := PerformanceStart;
+  LVendaDesvinculada := False;
    DXBImprimir.Enabled:=false;
 
 
@@ -1521,7 +1710,7 @@ begin
     ZQRescisao.ParamByName('dt1').AsDate:=XDEEntradaInicio.DateValue;
     ZQRescisao.ParamByName('dt2').AsDate:=XDEEntradaFinal.DateValue;
 
-   // showmessage(zqrescisao.sql.Text);
+   // mensagem(zqrescisao.sql.Text);
 
     ZQRescisao.Open;
     ZQRescisao.First;
@@ -1927,6 +2116,19 @@ begin
     end
     else
     begin
+      try
+        if CBtotais.Checked then
+        begin
+          LMasterSourceVendaOriginal := ZQVenda.MasterSource;
+          LMasterFieldsVendaOriginal := ZQVenda.MasterFields;
+          LLinkedFieldsVendaOriginal := ZQVenda.LinkedFields;
+          LVendaDesvinculada := True;
+          ZQVenda.Close;
+          ZQVenda.MasterSource := nil;
+          ZQVenda.MasterFields := '';
+          ZQVenda.LinkedFields := '';
+        end;
+
       if CBquitados.Checked=false then
       begin
         if Frm_RelVenda02=nil then
@@ -1950,6 +2152,8 @@ begin
           if not empty(varvendedor) Then
             ZQVenda.SQL.Add(' and exists(select idvendedor,corretor_idcorretor,venda_idvenda from vendedor  where corretor_idcorretor in ('+varvendedor+') and venda_idvenda=idvenda) order by quadra,lote');
         end;
+        if not empty(VarEmpree) Then
+          ZQVenda.SQL.Add(' and i.loteamento_idloteamento in ('+VarEmpree+')');
         ZQVenda.ParamByName('dt1').AsDate:=XDEEntradaInicio.DateValue;
         ZQVenda.ParamByName('dt2').AsDate:=XDEEntradaFinal.DateValue;
         ZQVenda.Open;
@@ -2344,8 +2548,15 @@ begin
         begin
           if Frm_RelVenda02=nil then
              Frm_RelVenda02:=TFrm_RelVenda02.Create(Application);
-          Frm_RelVenda02.RLReport1.PreviewModal;
-          Frm_RelVenda02:=nil;
+          PrepararCacheDetalheRelatorio;
+          try
+            PerformanceElapsed('Relatorio administrativo: preparar detalhado', LStarted);
+            FlushPerformanceLog;
+            Frm_RelVenda02.RLReport1.PreviewModal;
+          finally
+            RestaurarCacheDetalheRelatorio;
+            Frm_RelVenda02:=nil;
+          end;
         end
         else
         begin
@@ -2686,7 +2897,7 @@ begin
 
           ZQTemp4.close;
           ZQTemp4.sql.clear;
-          ZQTemp4.sql.Add('select * from tempmensal group by quadra,lote order by ano,mes');
+          ZQTemp4.sql.Add('select * from tempmensal group by idloteamento,quadra,lote order by ano,mes,idloteamento,quadra,lote');
           ZQTemp4.Open;
 
           ZQEntrada.close;
@@ -2712,6 +2923,8 @@ begin
             Frm_RelVenda02_totais_analitico.RLSubDetail4.Visible:=true;
           end;
 
+          PerformanceElapsed('Relatorio administrativo: preparar totais analiticos', LStarted);
+          FlushPerformanceLog;
           Frm_RelVenda02_totais_analitico.RLReport1.PreviewModal;
           Frm_RelVenda02_totais_analitico:=nil;
           ZQEntrada.close;
@@ -2735,6 +2948,8 @@ begin
              Frm_RelVenda02_totais:=TFrm_RelVenda02_totais.Create(Application);
           Frm_RelVenda02_totais.inicial.Caption:=XDEEntradaInicio.Text;
           Frm_RelVenda02_totais.Final.Caption:=XDEEntradaFinal.Text;
+          PerformanceElapsed('Relatorio administrativo: preparar totais', LStarted);
+          FlushPerformanceLog;
           Frm_RelVenda02_totais.RLReport1.PreviewModal;
           Frm_RelVenda02_totais:=nil;
           //  Frm_RelVenda02_totais.RLReport1.Print;
@@ -2742,7 +2957,7 @@ begin
         else
         begin
           if CBanalitico.Checked=false then
-             showmessage('Nenhuma Venda Nesse Período!');
+             mensagem('Nenhuma Venda Nesse Período!');
         end;
       end;
       baixa.close;
@@ -2779,6 +2994,16 @@ begin
 
      if (CDSQuadraLote.RecordCount=0) and (DM_Tabelas.CDSCompradorTemp.RecordCount=0) then
        Corretor.Enabled:=true;
+      finally
+        if LVendaDesvinculada then
+        begin
+          ZQVenda.Close;
+          ZQVenda.MasterFields := LMasterFieldsVendaOriginal;
+          ZQVenda.LinkedFields := LLinkedFieldsVendaOriginal;
+          ZQVenda.MasterSource := LMasterSourceVendaOriginal;
+          LVendaDesvinculada := False;
+        end;
+      end;
 
     end;
     DXBImprimir.Enabled:=true;
@@ -2792,7 +3017,10 @@ Var
   VarPath : string;
   ArqIni2 : tIniFile;
   Task : Itask;
+  LStarted, LStep: UInt64;
 begin
+  LStarted := PerformanceStart;
+  LStep := PerformanceStart;
   VarPath := ExtractFilePath( Application.ExeName );
   ArqIni2 := tIniFile.Create(varpath+'siai.Ini');
   try
@@ -2804,19 +3032,29 @@ begin
   DM_Tabelas.CDSVendedorTemp.CreateDataSet;
   DM_Tabelas.CDSCompradorTemp.Close;
   DM_Tabelas.CDSCompradorTemp.CreateDataSet;
-  CLBEmpree.Clear;
-  DM_Tabelas.ZQLoteamento.close;
-  if DM_Tabelas.ZQLoteamento.active=false then
-     DM_Tabelas.ZQLoteamento.open;
-  DM_Tabelas.ZQLoteamento.First;
+  { A consulta ja terminou antes de esta lista ser preenchida. Suspenda a
+    repintura durante a carga para preservar as mesmas opcoes marcadas sem
+    redesenhar cada empreendimento individualmente. }
+  CLBEmpree.Items.BeginUpdate;
+  try
+    CLBEmpree.Clear;
+    DM_Tabelas.ZQLoteamento.close;
+    if DM_Tabelas.ZQLoteamento.active=false then
+       DM_Tabelas.ZQLoteamento.open;
+    PerformanceElapsed('Relatorio administrativo: abrir empreendimentos', LStep);
+    LStep := PerformanceStart;
+    DM_Tabelas.ZQLoteamento.First;
 //  Task := TTask.create(procedure
 //                       begin
-                          while not DM_Tabelas.ZQLoteamento.Eof do begin
-                            CLBEmpree.Items.Add(DM_TAbelas.ZQLoteamento.FieldByName('apelido').AsString+' | '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text);
-                            CLBEmpree.Checked[CLBEmpree.Count-1] := True;
-                            DM_Tabelas.ZQLoteamento.Next;
-                          end;
+                            while not DM_Tabelas.ZQLoteamento.Eof do begin
+                              CLBEmpree.Items.Add(DM_TAbelas.ZQLoteamento.FieldByName('apelido').AsString+' | '+DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text);
+                              CLBEmpree.Checked[CLBEmpree.Count-1] := True;
+                              DM_Tabelas.ZQLoteamento.Next;
+                            end;
 //                       end);
+  finally
+    CLBEmpree.Items.EndUpdate;
+  end;
 //  Task.Start;
 //  XDEEntradaInicio.DateValue := date;
 
@@ -2824,6 +3062,9 @@ begin
   CDSQuadraLote.Close;
   CDSQuadraLote.CreateDataSet;
   GBEmpree.Enabled := True;
+  PerformanceElapsed('Relatorio administrativo: preparar filtros', LStep);
+  PerformanceElapsed('Relatorio administrativo: abertura completa', LStarted);
+  FlushPerformanceLog;
 end;
 
 procedure TFrm_RelVenda.DXBMarcEmpreeClick(Sender: TObject);
@@ -2962,6 +3203,7 @@ end;
 procedure TFrm_RelVenda.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
+  RestaurarCacheDetalheRelatorio;
   ZQdiaria.Close;
   ZQcheque_rec_p.close;
   ZQcheque_rec_e.close;

@@ -295,7 +295,7 @@ begin
    if Ecodcli.Text<>Emptystr then
       ZQCalculoEst.SQL.Add(' and i.loteamento_idloteamento in ('+Ecodcli.Text+')');
    ZQCalculoEst.SQL.Add(' group by i.loteamento_idloteamento)');
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;
@@ -347,7 +347,7 @@ begin
    ZQCalculoEst.ParamByName('dt1').AsDate :=dtinicio.DateValue;
    ZQCalculoEst.ParamByName('dt2').AsDate :=dtfinal.DateValue;
 
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;
@@ -389,7 +389,7 @@ begin
    ZQCalculoEst.ParamByName('dt1').AsDate :=dtinicio.DateValue;
    ZQCalculoEst.ParamByName('dt2').AsDate :=dtfinal.DateValue;
 
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;
@@ -446,7 +446,7 @@ begin
   finally
     Captura.Free;
   end;
-  showmessage('O printe foi gravado na pasta do sistema com nome "Dashboard.jpg"');
+  mensagem('O printe foi gravado na pasta do sistema com nome "Dashboard.jpg"');
 end;
 
 procedure TFrmDash.EParticipanteExit(Sender: TObject);

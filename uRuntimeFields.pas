@@ -27,6 +27,8 @@ procedure EnsureRuntimeFields(AOwner: TComponent);
 
 implementation
 
+uses uSiaiPerformance, uSiaiMetadata;
+
 type
   TFieldSetting = class
   public
@@ -518,13 +520,41 @@ procedure RebuildDataSet(AOwner: TComponent; ADataSet: TDataSet; ASpec: TDataSet
 var
   LWasActive: Boolean;
   LFieldSpec: TFieldSpec;
+  LStarted: UInt64;
 begin
   LWasActive := ADataSet.Active;
   if LWasActive then
     ADataSet.Close;
   try
     try
-      ADataSet.FieldDefs.Update;
+      LStarted := PerformanceStart;
+      try
+        { Use the isolated metadata probe only for forms already measured.
+          If a query is not compatible, TryUpdateMetadataOnly returns False
+          and this immediately retains the original FieldDefs.Update path. }
+        if not (((AOwner.ClassName = 'TDM_Tabelas') or
+          (AOwner.ClassName = 'TFrmPesqRecebimento_bx') or
+          (AOwner.ClassName = 'TFrmPesqRecebimento2') or
+          (AOwner.ClassName = 'TFrmPesqEndereco') or
+          (AOwner.ClassName = 'TFrmPesqCobranca') or
+          (AOwner.ClassName = 'TFrmPesqRecebimento') or
+          (AOwner.ClassName = 'TFrmCad_Recebimento') or
+          (AOwner.ClassName = 'TFrmRelRecebimento') or
+          { Formularios medidos no diagnostico de vendas. Todos possuem
+            campos recriados por esta unidade; a sonda privada apenas evita
+            buscar linhas para descobrir a estrutura. Consultas dinamicas ou
+            incompativeis continuam, individualmente, no FieldDefs.Update. }
+          (AOwner.ClassName = 'TFrm_Venda') or
+          (AOwner.ClassName = 'TFrm_RelVenda') or
+          (AOwner.ClassName = 'TFrm_RelVenda02') or
+          (AOwner.ClassName = 'TFrm_QuadroResumo') or
+          (AOwner.ClassName = 'TFrm_QuadroResumo2') or
+          (AOwner.ClassName = 'TFrmRelReceb03')) and
+          TryUpdateMetadataOnly(ADataSet)) then
+          ADataSet.FieldDefs.Update;
+      finally
+        PerformanceElapsed(AOwner.ClassName + '.' + ADataSet.Name + ': metadados', LStarted);
+      end;
     except
       { The requested field classes remain the fallback when metadata is unavailable. }
     end;
@@ -635,9 +665,11 @@ var
   LDataSet: TDataSet;
   LSpec: TDataSetSpec;
   LMarker: TRuntimeFieldsMarker;
+  LStarted: UInt64;
 begin
   if (AOwner = nil) or HasRuntimeFieldsMarker(AOwner) then
     Exit;
+  LStarted := PerformanceStart;
   LDataSets := TObjectList<TDataSet>.Create(False);
   LPreviouslyActive := TList<TDataSet>.Create;
   try
@@ -663,6 +695,8 @@ begin
   finally
     LPreviouslyActive.Free;
     LDataSets.Free;
+    PerformanceElapsed(AOwner.ClassName + ': preparacao de campos', LStarted);
+    FlushPerformanceLog;
   end;
 end;
 

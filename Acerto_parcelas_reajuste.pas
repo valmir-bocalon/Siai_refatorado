@@ -894,7 +894,7 @@ begin
      end;
   end;}
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
-      showmessage('Sem Filtro Definido.');
+      mensagem('Sem Filtro Definido.');
 {  dxbutton3.Enabled:=true;
   dxButton13.Enabled:=true;
   dxButton14.Enabled:=true;
@@ -1228,7 +1228,7 @@ begin
         ZQRecebimento.SQL.Add(' Select * from Recebimento where ((numboleto is null) or (numboleto='''')) and (Parcelas_fixas<>''S'') and (TipDoc=''BO'') and (saldo>''0'') and (idloteamento in ('+varloteamento+')'+') and (quadralote in ('+varquadra+')'+')  order by DT_Vencimento');
     ZQRecebimento.open;
   end;
-  showmessage('Atualização completada !');
+  mensagem('Atualização completada !');
 {      varquadra := '';
       ZQRecebtmp2.First;
       barra2.Position:=0;

@@ -1815,7 +1815,7 @@ begin
   application.ProcessMessages;
   msg1.Caption:='Processo                ';
   application.ProcessMessages;
-  showmessage('Fim de Processo');
+  mensagem('Fim de Processo');
 //  inc(nlt);
 //  xlote.Text:=inttostr(nlt);
 //  Button1Click(self);

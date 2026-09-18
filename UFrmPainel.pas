@@ -49,7 +49,7 @@ var
 
 implementation
 
-uses Tabelas, Principal, uRuntimeFields;
+uses Tabelas, Principal, uRuntimeFields, Finanmsg, funcoes;
 
 {$R *.dfm}
 
@@ -72,13 +72,13 @@ begin
   end;
   if varcontador=0 then
   begin
-    showmessage('Seleciona um empreendimento !');
+    mensagem('Seleciona um empreendimento !');
     exit;
   end;
 
   if varcontador>1 then
   begin
-    showmessage('Mais de um empreendimento selecionado. Deixe apenas um ! ');
+    mensagem('Mais de um empreendimento selecionado. Deixe apenas um ! ');
     exit;
   end;
    Button3.Enabled:=false;
@@ -133,7 +133,7 @@ begin
    if VarEmpree<>Emptystr then
       ZQCalculoEst.SQL.Add(' and i.loteamento_idloteamento in ('+VarEmpree+')');
    ZQCalculoEst.SQL.Add(' group by i.loteamento_idloteamento)');
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;
@@ -201,7 +201,7 @@ begin
    ZQCalculoEst.ParamByName('dt1').AsDate :=dtinicio.Date;
    ZQCalculoEst.ParamByName('dt2').AsDate :=dtfinal.Date;
 
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;
@@ -238,7 +238,7 @@ begin
    ZQCalculoEst.ParamByName('dt1').AsDate :=dtinicio.Date;
    ZQCalculoEst.ParamByName('dt2').AsDate :=dtfinal.Date;
 
- //  showmessage(ZQCalculoEst.SQL.Text);
+ //  mensagem(ZQCalculoEst.SQL.Text);
    ZQCalculoEst.ExecSQL;
 
    ZQCalculoEst.Close;

@@ -1,6 +1,9 @@
 ﻿program SIAI;
 
 uses
+  uSiaiPerformance in 'uSiaiPerformance.pas',
+  uSiaiCotacoes in 'uSiaiCotacoes.pas',
+  SysUtils,
   Forms,
   Classes,
   RLReport,
@@ -172,6 +175,7 @@ var
   Aplicativo : THandle;
 
 begin
+  PerformanceCheckpoint('Units inicializadas; inicio do DPR');
 
     // nao executar mais de uma vez
 
@@ -197,52 +201,56 @@ begin
         Classes.RegisterClass(TRLReport);
       Application.Title := 'Gerenciamento de Loteamento';
       Application.CreateForm(TFrm_principal, Frm_principal);
-      Application.CreateForm(TDM_Tabelas, DM_Tabelas);
-      EnsureLoteamentoNomeCidadeField(DM_Tabelas);
-      EnsureImovelLoteamentoField(DM_Tabelas);
-      EnsureCorretorLookupFields(DM_Tabelas);
-      EnsureContaBancariaLookupFields(DM_Tabelas);
-      EnsureVendaLookupFields(DM_Tabelas);
-      EnsureCompradorLookupFields(DM_Tabelas);
-      EnsureRecebimentoCalculatedFields(DM_Tabelas);
-      EnsureRecebimentoTempAggregateField(DM_Tabelas);
-      EnsureRecebBxTempCalculatedFields(DM_Tabelas);
-      EnsureDivididoLookupFields(DM_Tabelas);
-      EnsureRecebimentoLookupFields(DM_Tabelas);
-      EnsureEmpresaLookupFields(DM_Tabelas);
-      EnsureParticipanteLookupFields(DM_Tabelas);
-      EnsureResponsavelLookupFields(DM_Tabelas);
-      EnsureIncorpLoteamentoLookupFields(DM_Tabelas);
-      EnsureRelVendaPartiFields(DM_Tabelas);
-      EnsureRuntimeFields(DM_Tabelas);
+      PerformanceCheckpoint('Formulario principal criado');
+      FrmApresentacao := TFrmApresentacao.Create(nil);
+      try
+        FrmApresentacao.Timer1.Enabled := False;
+        FrmApresentacao.Show;
+        FrmApresentacao.Update;
+        PerformanceCheckpoint('Apresentacao exibida');
+        FlushPerformanceLog;
+        Application.CreateForm(TDM_Tabelas, DM_Tabelas);
+        PerformanceCheckpoint('DataModule criado: conexao e campos');
+        EnsureLoteamentoNomeCidadeField(DM_Tabelas);
+        EnsureImovelLoteamentoField(DM_Tabelas);
+        EnsureCorretorLookupFields(DM_Tabelas);
+        EnsureContaBancariaLookupFields(DM_Tabelas);
+        EnsureVendaLookupFields(DM_Tabelas);
+        EnsureCompradorLookupFields(DM_Tabelas);
+        EnsureRecebimentoCalculatedFields(DM_Tabelas);
+        EnsureRecebimentoTempAggregateField(DM_Tabelas);
+        EnsureRecebBxTempCalculatedFields(DM_Tabelas);
+        EnsureDivididoLookupFields(DM_Tabelas);
+        EnsureRecebimentoLookupFields(DM_Tabelas);
+        EnsureEmpresaLookupFields(DM_Tabelas);
+        EnsureParticipanteLookupFields(DM_Tabelas);
+        EnsureResponsavelLookupFields(DM_Tabelas);
+        EnsureIncorpLoteamentoLookupFields(DM_Tabelas);
+        EnsureRelVendaPartiFields(DM_Tabelas);
+        EnsureRuntimeFields(DM_Tabelas);
 
-      Application.CreateForm(TFrm_Funcoes, Frm_Funcoes);
-      Application.CreateForm(TFrm_DigSenha, Frm_DigSenha);
-      Application.CreateForm(TFrm_NovaSenha, Frm_NovaSenha);
-      Application.CreateForm(TFrm_AchaIpca, Frm_AchaIpca);
-      Application.CreateForm(TFrmContraSenha, FrmContraSenha);
-      Application.CreateForm(TFrm_AchaParticipante, Frm_AchaParticipante);
-      Application.CreateForm(TFrm_Achaloteamento, Frm_Achaloteamento);
-      Application.CreateForm(TFrm_AchaImovel, Frm_AchaImovel);
-      Application.CreateForm(TFrm_AchaCorretor, Frm_AchaCorretor);
-      Application.CreateForm(TFrm_AchaPlanoDeContas, Frm_AchaPlanoDeContas);
-      Application.CreateForm(TFrm_Configuracoes, Frm_Configuracoes);
-      Application.CreateForm(TFrmPesqRecebimento_bx, FrmPesqRecebimento_bx);
-      Application.CreateForm(TFrm_Acha_Contabancaria, Frm_Acha_Contabancaria);
-      Application.CreateForm(TFrm_NumRemessa, Frm_NumRemessa);
-      Application.CreateForm(TFrm_AchaLoteVenda, Frm_AchaLoteVenda);
-      Application.CreateForm(TFrm_AchaVenda, Frm_AchaVenda);
-      Application.CreateForm(TFormMensagem, FormMensagem);
-      Application.CreateForm(TFrmPerguntaSIMNAO, FrmPerguntaSIMNAO);
-      Application.CreateForm(TFrmPergunta, FrmPergunta);
-      Application.CreateForm(TFrm_Achaimoveis, Frm_Achaimoveis);
-      Application.CreateForm(TFrm_Achavendas, Frm_Achavendas);
-      Application.CreateForm(TFrm_AchaCidade, Frm_AchaCidade);
-      Application.CreateForm(TFrmPesqRecebimento2, FrmPesqRecebimento2);
-      Application.CreateForm(TFrmPesqEndereco, FrmPesqEndereco);
-      Application.CreateForm(TFrmPesqCobranca, FrmPesqCobranca);
-      Application.CreateForm(TFrmPesqRecebimento, FrmPesqRecebimento);
-      Application.CreateForm(TFrm_AchaIgpm, Frm_AchaIgpm);
+        PerformanceCheckpoint('Campos complementares preparados');
+        Application.CreateForm(TFrm_DigSenha, Frm_DigSenha);
+        Application.CreateForm(TFrm_NovaSenha, Frm_NovaSenha);
+        Application.CreateForm(TFrm_AchaIpca, Frm_AchaIpca);
+        Application.CreateForm(TFrmContraSenha, FrmContraSenha);
+        Application.CreateForm(TFrm_Achaloteamento, Frm_Achaloteamento);
+        Application.CreateForm(TFrm_Configuracoes, Frm_Configuracoes);
+        Application.CreateForm(TFrmPesqRecebimento_bx, FrmPesqRecebimento_bx);
+        Application.CreateForm(TFrm_NumRemessa, Frm_NumRemessa);
+        Application.CreateForm(TFrm_AchaLoteVenda, Frm_AchaLoteVenda);
+        Application.CreateForm(TFrm_AchaVenda, Frm_AchaVenda);
+        Application.CreateForm(TFrm_Achaimoveis, Frm_Achaimoveis);
+        Application.CreateForm(TFrmPesqRecebimento2, FrmPesqRecebimento2);
+        Application.CreateForm(TFrmPesqEndereco, FrmPesqEndereco);
+        Application.CreateForm(TFrmPesqCobranca, FrmPesqCobranca);
+        Application.CreateForm(TFrmPesqRecebimento, FrmPesqRecebimento);
+        Application.CreateForm(TFrm_AchaIgpm, Frm_AchaIgpm);
+        PerformanceCheckpoint('Autocreate auxiliar concluido');
+      finally
+        FreeAndNil(FrmApresentacao);
+        FlushPerformanceLog;
+      end;
       Application.Run;
     end
     Else

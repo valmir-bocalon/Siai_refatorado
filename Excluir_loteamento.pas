@@ -382,7 +382,7 @@ procedure TFrm_Excluir.BTFecharClick(Sender: TObject);
 begin
   if empty(cdlt.Text) then
   begin
-    showmessage('Informe o Código do Loteamento.');
+    mensagem('Informe o Código do Loteamento.');
     cdlt.SetFocus;
     exit;
   end;

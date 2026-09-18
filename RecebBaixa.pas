@@ -2118,7 +2118,7 @@ begin
       begin
         if (CDSParcelasVenci.Value<>CDSParcelasData_Quitacao.Value) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
+          mensagem('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2127,7 +2127,7 @@ begin
       begin
         if (datetostr(CDSParcelasVenci.Value)<>JDEntrada.DateText) and ((CDSParcelasTipDoc.Value<>'DP')) Then
         BEgin
-          showmessage('Este tipo de documento só aceita pagamento a vista!!!');
+          mensagem('Este tipo de documento só aceita pagamento a vista!!!');
           EContabil.SetFocus;
           Exit;
         end;
@@ -2290,7 +2290,7 @@ begin
   Begin
     if empty(Econtabil.text) Then
     Begin
-      showmessage('A descrição contábil não pode ficar em branco....');
+      mensagem('A descrição contábil não pode ficar em branco....');
       Econtabil.SetFocus;
       exit;
     end;
@@ -2333,23 +2333,23 @@ procedure TFrmRecebBaixa.DBEBaixaDocumExit(Sender: TObject);
 begin
   if not DXBFechar.Focused Then Begin
 {    if (not empty(DBEBaixaDocum.Text)) and (DM_tabelas.ZQRecebimento.Locate('documento',DBEBaixaDocum.Text,[])) Then Begin
-      showmessage('Este documento já foi lançado anteriormente... corrija a numeração.....');
+      mensagem('Este documento já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     End;
     if DM_tabelas.ZQCheque.Locate('CH_Conta',DBEBaixaDocum.Text,[]) Then Begin
-      showmessage('Este cheque já foi lançado anteriormente... corrija a numeração.....');
+      mensagem('Este cheque já foi lançado anteriormente... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     DM_tabelas.ZQTipodoc.Locate('tipodoc',CDSParcelasTipDoc.Value,[]);
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (pos(quotedstr(CDSParcelasDocum.AsString),VarDoc)>0) Then Begin
-      showmessage('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
+      mensagem('Este cheque já foi lançado nesta inclusão... corrija a numeração.....');
       DBEBaixaDocum.SetFocus;
       exit;
     end;
     if (DM_tabelas.ZQTipodocdados_chequ.Value='S') and (empty(CDSParcelasDocum.Value)) Then Begin
-      showmessage('o campo Nº do cheque deve ser preenchido...');
+      mensagem('o campo Nº do cheque deve ser preenchido...');
       DBEBaixaDocum.SetFocus;
       exit;
     end;}
@@ -2465,7 +2465,7 @@ Begin
        end
        else
        begin
-         showmessage('Dados Nao Encontrados!');
+         mensagem('Dados Nao Encontrados!');
          vazio:='T';
          exit;
        end;  
@@ -2526,7 +2526,7 @@ Begin
        end
        else
        begin
-         showmessage('Dados Nao Encontrados!');
+         mensagem('Dados Nao Encontrados!');
          vazio:='T';
          exit;
        end;
@@ -2896,7 +2896,7 @@ begin
 //   end
 //   else
 //   begin
-//     showmessage('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
+//     mensagem('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
 //     sleep(12000);
 //     if Task.Status = TTaskStatus.Completed then
 //     begin
@@ -2922,7 +2922,7 @@ begin
 //     end
 //     else
 //     begin
-//       showmessage('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
+//       mensagem('Aguarde a Leitura dos Dados. Fechará Automaticamente em Seguida.');
 //       sleep(15000);
 //       if Task.Status = TTaskStatus.Completed then
 //       begin
@@ -3348,7 +3348,7 @@ begin
     Begin
 //      if Lpassou.Caption<>'S' then
 //      begin
-//       showmessage('Aguarde o Carregamento dos Dados e Tente Novamente');
+//       mensagem('Aguarde o Carregamento dos Dados e Tente Novamente');
 //       Eadversa.SetFocus;
 //       exit;
 //      end;
@@ -3555,7 +3555,7 @@ begin
  begin
 //   if Lpassou.Caption<>'S' then
 //   begin
-//     showmessage('Aguarde o Carregamento dos Dados e Tente Novamente');
+//     mensagem('Aguarde o Carregamento dos Dados e Tente Novamente');
 //     Elote.SetFocus;
 //     exit;
 //   end;
@@ -3653,7 +3653,7 @@ procedure TFrmRecebBaixa.EDLoteamentoDropDown(Sender: TObject);
 begin
 //   if Lpassou.Caption<>'S' then
 //   begin
-//     showmessage('Aguarde o Carregamento dos Dados e Tente Novamente');
+//     mensagem('Aguarde o Carregamento dos Dados e Tente Novamente');
 //     EDLoteamento.SetFocus;
 //     exit;
 //   end;
@@ -3676,7 +3676,7 @@ begin
   begin
 //   if Lpassou.Caption<>'S' then
 //   begin
-//     showmessage('Aguarde o Carregamento dos Dados e Tente Novamente');
+//     mensagem('Aguarde o Carregamento dos Dados e Tente Novamente');
 //     Edit2.SetFocus;
 //     exit;
 //   end;
@@ -3717,11 +3717,11 @@ begin
     else
     begin
       ZQCheque.close;
-      showmessage('Número de Cheque não Encontrado.');
+      mensagem('Número de Cheque não Encontrado.');
       dxbfechar.setfocus;
     end;
   end;
-  showmessage('Cheque não Encontrado nas Parcelas em Aberto.');
+  mensagem('Cheque não Encontrado nas Parcelas em Aberto.');
   DM_tabelas.ZQRecebimento.Close;
   DM_tabelas.ZQRecebimento.SQL.Clear;
   DM_Tabelas.ZQRecebimento.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
@@ -4023,7 +4023,7 @@ begin
  begin
 //   if Lpassou.Caption<>'S' then
 //   begin
-//     showmessage('Aguarde o Carregamento dos Dados e Tente Novamente');
+//     mensagem('Aguarde o Carregamento dos Dados e Tente Novamente');
 //     pfim.SetFocus;
 //     exit;
 //   end;

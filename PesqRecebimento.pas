@@ -289,7 +289,7 @@ begin
     begin
       ZQCheque.close;
       DBGrid2.Visible:=false;
-      showmessage('Número de Cheque não Encontrado.');
+      mensagem('Número de Cheque não Encontrado.');
     end;
   end;
 end;

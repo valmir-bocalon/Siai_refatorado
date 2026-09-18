@@ -174,7 +174,7 @@ begin
     ZQRecebimento.SQL.Add(' not in (''ne.12.09.17-14'',''ne.12.09.17-15'',''ne.12.09.17-16'',''ne.12.09.17-17'',''ne.12.09.17-18'',''ne.12.09.17-19'')');
     ZQRecebimento.ExecSQL;
 
-    showmessage('Exclusão Efetuada Com Sucesso!');
+    mensagem('Exclusão Efetuada Com Sucesso!');
     close;
 end;
 

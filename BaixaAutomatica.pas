@@ -196,8 +196,8 @@ begin
       if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
       begin
   //      if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
-        showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
+    //       mensagem('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
+        mensagem('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
         DM_TAbelas.ZQRemesRec.Open;
         DM_TAbelas.ZQBancRemes2.First;
         ProgressBar1.position:=0;
@@ -260,8 +260,8 @@ begin
       if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
       begin
   //      if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-    //       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
-        showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
+    //       mensagem('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
+        mensagem('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2.FieldByName('gerado').Text+' prosseguindo...');
         DM_TAbelas.ZQRemesRec.Open;
         DM_TAbelas.ZQBancRemes2.First;
         ProgressBar1.position:=0;
@@ -950,7 +950,7 @@ begin
               end
               else
               begin
-                showmessage('Código do Recebimento em Branco ou inválido. Coluna 39.');
+                mensagem('Código do Recebimento em Branco ou inválido. Coluna 39.');
               end;
           end;
         end;
@@ -1111,7 +1111,7 @@ begin
               end
               else
               begin
-             //   showmessage('Código do Recebimento em Branco. Coluna 38.');
+             //   mensagem('Código do Recebimento em Branco. Coluna 38.');
               end;
             end;
           end;
@@ -1266,7 +1266,7 @@ begin
               end
               else
               begin
-                showmessage('Código do Recebimento em Branco. Coluna 39.');
+                mensagem('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1603,7 +1603,7 @@ begin
               end
               else
               begin
-                showmessage('Código do Recebimento em Branco. Coluna 39.');
+                mensagem('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1765,7 +1765,7 @@ begin
               end
               else
               begin
-                showmessage('Código do Recebimento em Branco. Coluna 39.');
+                mensagem('Código do Recebimento em Branco. Coluna 39.');
               end;
           end;
         end;
@@ -1947,8 +1947,8 @@ begin
   if DM_TAbelas.ZQBancRemes2.RecordCount>0 then
   begin
     if DM_TAbelas.ZQBancRemes.locate('nomearq;gerado',VarArrayOf([varnome,vardata]),[]) Then Begin
-       showmessage('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
-      // showmessage('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+' prosseguindo...');
+       mensagem('Este arquivo ja foi baixado no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+', ele não pode mais ser baixado!!!!');
+      // mensagem('Existe baixa com o mesmo nome do arquivo no dia '+DM_Tabelas.ZQBancRemes2gerado.Text+' prosseguindo...');
        DM_TAbelas.ZQBancRemes2.close;
        exit;
     end
@@ -2107,7 +2107,7 @@ begin
           DM_tabelas.ZQReceb_Baixa.Close;
           DM_tabelas.ZQReceb_Baixa.SQL.Clear;
           DM_tabelas.ZQReceb_Baixa.SQL.Add('delete from  Receb_Baixa where refbaixa='+quotedstr(inttostr(xref)));
-    //      showmessage(DM_tabelas.ZQReceb_Baixa.SQL.Text);
+    //      mensagem(DM_tabelas.ZQReceb_Baixa.SQL.Text);
           DM_tabelas.ZQReceb_Baixa.ExecSQL;
           xref:=0;
 
@@ -2137,7 +2137,7 @@ begin
 
 
           end;
-    //      showmessage(DM_tabelas.ZQReceb_Baixa.SQL.Text);
+    //      mensagem(DM_tabelas.ZQReceb_Baixa.SQL.Text);
           DM_tabelas.ZQReceb_Baixa.ExecSQL;
           DM_tabelas.ZQReceb_Baixa.Close;
 

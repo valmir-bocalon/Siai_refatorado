@@ -523,7 +523,7 @@ begin
   ZQLoteamento.first;
   if ZQLoteamento.RecordCount=0 then
   begin
-    showmessage('Fim de Processo !');
+    mensagem('Fim de Processo !');
     exit;
   end;
   ProgressBar1.Position:=0;

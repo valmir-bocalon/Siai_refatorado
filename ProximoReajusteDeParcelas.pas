@@ -785,7 +785,7 @@ begin
   end;
   if (CDSQuadraLote.RecordCount=0) and (CDSAdversaTemp2.RecordCount=0) and (CDSLoteamento.RecordCount=0) Then
   begin
-    showmessage('Sem Filtro Definido.');
+    mensagem('Sem Filtro Definido.');
   end
   else
   begin
@@ -884,7 +884,7 @@ begin
   end
   else
   begin
-    showmessage('Adicione os Títulos Selecionados no Grid !');
+    mensagem('Adicione os Títulos Selecionados no Grid !');
     dxButton3.SetFocus;
     exit;
   end;

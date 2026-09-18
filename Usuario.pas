@@ -147,7 +147,7 @@ end;
 procedure TFrm_Usuario.Esenha2Exit(Sender: TObject);
 begin
   if Esenha2.Text <> DM_Tabelas.ZQUsuario.FieldByName('senha').AsString Then Begin
-    showmessage('Senha não confere...  Confirme a senha!!');
+    mensagem('Senha não confere...  Confirme a senha!!');
     DBEUsuSenha.SetFocus;
   end;
 end;

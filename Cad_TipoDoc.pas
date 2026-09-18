@@ -1,4 +1,4 @@
-unit Cad_TipoDoc;
+﻿unit Cad_TipoDoc;
 
 interface
 

@@ -571,7 +571,7 @@ var
 begin
   if simnao('Confirma a Operação ?','SIM')=false then
   begin
-    showmessage('O Processo não será executado.');
+    mensagem('O Processo não será executado.');
     JDEntrada.SetFocus;
     exit;
   end;
@@ -583,7 +583,7 @@ begin
   historico:='';
   historico2:='';
   if DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt=0 Then Begin
-    showmessage('Deve ser indicado um lote para ser vendido...');
+    mensagem('Deve ser indicado um lote para ser vendido...');
     Pag_Venda.PageIndex := 0;
     DXBAchaLote.SetFocus;
     exit;
@@ -807,7 +807,7 @@ begin
   DM_Tabelas.ZQRecebimento.SQL.Clear;
   DM_Tabelas.ZQRecebimento.SQL.Add('update recebimento set quadralote='+quotedstr(DBEdit6.Text+traco+DBELote.text));
   DM_Tabelas.ZQRecebimento.SQL.Add(' Where documento like'+quotedstr(Edvenda.Text+'-%'));
- // showmessage(DM_Tabelas.ZQRecebimento.SQL.Text);
+ // mensagem(DM_Tabelas.ZQRecebimento.SQL.Text);
   DM_Tabelas.ZQRecebimento.ExecSQL;
 
   // ate aqui

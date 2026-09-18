@@ -380,7 +380,7 @@ begin
        RLLabel54.caption:='';
 
 //     if FrmRelRecebimento.ZROQReceb1Juros_Vr.Value>0 then
-//        showmessage('aqui');
+//        mensagem('aqui');
 
 //  end;
 

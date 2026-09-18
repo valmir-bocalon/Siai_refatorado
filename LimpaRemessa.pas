@@ -1923,7 +1923,7 @@ begin
       DM_Tabelas.ZQRecebParticp.SQL.Add(' and not exists (select * from remessa_receb where idrec=idrecebimento)');
       
     DM_Tabelas.ZQRecebParticp.Open;
-//    showmessage(DM_Tabelas.ZQRecebParticp.SQL.Text);
+//    mensagem(DM_Tabelas.ZQRecebParticp.SQL.Text);
     if DM_Tabelas.ZQRecebParticp.RecordCount>0 then
        JSP1.Maximum := DM_Tabelas.ZQRecebParticp.RecordCount;
 

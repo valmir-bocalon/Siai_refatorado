@@ -1197,7 +1197,7 @@ begin
         end
         else
         begin
-          showmessage('Nada Encontrado para o Relatório');
+          mensagem('Nada Encontrado para o Relatório');
           QReceb1.close;
           exit;
         end;
