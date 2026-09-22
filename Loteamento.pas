@@ -182,6 +182,33 @@ end;
 
 procedure TFrm_Loteamento.botoes;
 Begin
+  if DM_Tabelas = nil then
+  begin
+    BtPrimeiro.Enabled := False;
+    BtAnterior.Enabled := False;
+    BtProximo.Enabled := False;
+    BtUltimo.Enabled := False;
+    Exit;
+  end;
+  if not DM_Tabelas.ZQLoteamento.Active then
+  begin
+    BtPrimeiro.Enabled := False;
+    BtAnterior.Enabled := False;
+    BtProximo.Enabled := False;
+    BtUltimo.Enabled := False;
+    atualiza_lotes;
+    Exit;
+  end;
+  if DM_Tabelas.ZQLoteamento.IsEmpty then
+  begin
+    BtPrimeiro.Enabled := False;
+    BtAnterior.Enabled := False;
+    BtProximo.Enabled := False;
+    BtUltimo.Enabled := False;
+    atualiza_lotes;
+    Exit;
+  end;
+
   BtPrimeiro.Enabled := True;
   BtAnterior.Enabled := True;
   BtProximo.Enabled := True;
@@ -338,7 +365,7 @@ begin
      Frm_RelLoteamento   := TFrm_RelLoteamento.Create(Application);
   Frm_RelLoteamento.Top  := Frm_RelLoteamento.Top+105;
   Frm_RelLoteamento.Left := Frm_RelLoteamento.Left-5+(Frm_RelLoteamento.Width-Frm_RelLoteamento.Width);
-  Frm_RelLoteamento.showmodal;
+  AbrirModal(Self, Frm_RelLoteamento);
   freeandnil(Frm_RelLoteamento);
   Frm_Loteamento.FormStyle:=fsStayOnTop;
 end;
@@ -416,6 +443,8 @@ procedure TFrm_Loteamento.FormShow(Sender: TObject);
 begin
   EnsureLoteamentoNomeCidadeField(DM_Tabelas);
   Pag_Loteamento.PageIndex := 0;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    DM_Tabelas.ZQLoteamento.Open;
   if not DM_Tabelas.ZQCidade.Active then
     DM_Tabelas.ZQCidade.Open;
   DM_Tabelas.ZQincorp_loteame.open;
@@ -519,6 +548,25 @@ end;
 
 Procedure TFrm_Loteamento.atualiza_lotes_incorp;
 Begin
+  if DM_Tabelas = nil then
+  begin
+    Eparticipante.Clear;
+    EContaBancaria.Clear;
+    Exit;
+  end;
+  if not DM_Tabelas.CDSIncorp.Active then
+  begin
+    Eparticipante.Clear;
+    EContaBancaria.Clear;
+    Exit;
+  end;
+  if DM_Tabelas.CDSIncorp.IsEmpty then
+  begin
+    Eparticipante.Clear;
+    EContaBancaria.Clear;
+    Exit;
+  end;
+
   Eparticipante.Text := DM_Tabelas.CDSIncorpnomeparti.Value;
   EContaBancaria.Text := DM_Tabelas.CDSIncorpcontabancaria.Value+'|'+DM_Tabelas.CDSIncorpdigito_dif.Value;
 //  if DM_TAbelas.ZQContaBancaria.Locate('idconta_bancaria',DM_TAbelas.CDSIncorpcodcontabancaria.Value,[]) Then
@@ -534,6 +582,30 @@ var
 Begin
   EUsuCidade.Clear;
   EEstado.Clear;
+  if DM_Tabelas = nil then
+  begin
+    GroupBox1.Caption := 'Quadras  (0)';
+    Eparticipante.Clear;
+    EContaBancaria.Clear;
+    Exit;
+  end;
+  if not DM_Tabelas.ZQLoteamento.Active then
+  begin
+    GroupBox1.Caption := 'Quadras  (0)';
+    DM_Tabelas.CDSQuadrasTemp.Close;
+    DM_Tabelas.CDSIncorp.Close;
+    atualiza_lotes_incorp;
+    Exit;
+  end;
+  if DM_Tabelas.ZQLoteamento.IsEmpty then
+  begin
+    GroupBox1.Caption := 'Quadras  (0)';
+    DM_Tabelas.CDSQuadrasTemp.Close;
+    DM_Tabelas.CDSIncorp.Close;
+    atualiza_lotes_incorp;
+    Exit;
+  end;
+
   FCidade := DM_Tabelas.ZQLoteamento.FindField('cidade_idcidade');
   if (FCidade <> nil) and not FCidade.IsNull then
   begin
@@ -622,12 +694,21 @@ var
   TextoCidade: Variant;
   EstiloPincel: TBrushStyle;
 begin
+  if DM_Tabelas = nil then
+    Exit;
+  if not DM_Tabelas.ZQLoteamento.Active then
+    Exit;
+  if DM_Tabelas.ZQLoteamento.IsEmpty then
+    Exit;
+  if (Column = nil) or (Column.Field = nil) then
+    Exit;
+
   if DBECod.Text = DM_Tabelas.ZQLoteamento.FieldByName('idloteamento').Text Then Begin
     DBGLotemamento.Canvas.Brush.Color :=$006CFFFF;
     DBGLotemamento.Canvas.Font.Color := $00A80000;
     DBGLotemamento.Canvas.Font.Style := [FsBold];
   end;
-  DBGLotemamento.DefaultDrawDataCell(Rect, DBGLotemamento.columns[datacol].field, State);
+  DBGLotemamento.DefaultDrawDataCell(Rect, Column.Field, State);
 
   { Estas duas colunas nao podem depender do valor calculado pelo dataset:
     na primeira linha ele ainda pode estar vazio. O desenho usa a mesma chave
@@ -702,16 +783,10 @@ end;
 procedure TFrm_Loteamento.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  DM_Tabelas.ZQAchaContaBanc.close;
-  DM_tabelas.ZQQuadras.close;
-  DM_tabelas.ZQLoteamento.close;
-  DM_Tabelas.ZQincorp_loteame.close;
-  DM_TAbelas.ZQContaBancaria.close;
-  DM_Tabelas.zqprocuradores.close;
-  DM_Tabelas.zqloteamento.Close;
+  // Shared data module datasets stay active. Vendas and Financeiro can still
+  // receive grid notifications while this form is being destroyed.
   Frm_Loteamento := nil;
-  Action:=Cafree;
-
+  Action := caFree;
 end;
 
 procedure TFrm_Loteamento.DBGrid3KeyUp(Sender: TObject; var Key: Word;

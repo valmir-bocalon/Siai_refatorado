@@ -2170,7 +2170,7 @@ procedure TFrmRecebBaixa_subst.DXBPesquisarClick(Sender: TObject);
 begin
   FrmPesqRecebimento_bx.Top := FrmRecebBaixa_subst.Top+100;
   FrmPesqRecebimento_bx.Left := FrmRecebBaixa_subst.Left;
-  FrmPesqRecebimento_bx.showmodal;
+  AbrirModal(Self, FrmPesqRecebimento_bx);
 
 
   JDEntrada.DateText := datetostr(Date);

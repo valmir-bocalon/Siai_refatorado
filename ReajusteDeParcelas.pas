@@ -764,7 +764,7 @@ begin
   FrmPesqRecebimento2.Left := Frm_ReajusteDeParcelas.Left;
   FrmPesqRecebimento2Target := Self;
   try
-    FrmPesqRecebimento2.showmodal;
+    AbrirModal(Self, FrmPesqRecebimento2);
   finally
     FrmPesqRecebimento2Target := nil;
   end;
@@ -2141,7 +2141,7 @@ begin
   begin
     Frm_AchaIgpm.ECidade.Text := mes_anos;
     DM_tabelas.ZQAchaIgpm.open;
-    Frm_AchaIgpm.ShowModal;
+    AbrirModal(Self, Frm_AchaIgpm);
     percent.Value:=DM_tabelas.ZQAchaIgpm.FieldByName('percentual').AsFloat;
     DM_tabelas.ZQAchaIgpm.close;
   end
@@ -2149,7 +2149,7 @@ begin
   begin
     Frm_AchaIpca.ECidade.Text := mes_anos;
     DM_tabelas.ZQAchaIpca.open;
-    Frm_AchaIpca.ShowModal;
+    AbrirModal(Self, Frm_AchaIpca);
     percent.Value:=DM_tabelas.ZQAchaIpca.FieldByName('percentual').AsFloat;
     DM_tabelas.ZQAchaIpca.close;
   end;

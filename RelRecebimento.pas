@@ -3363,7 +3363,7 @@ begin
     CDS_MarcaTit.IndexName:='nome_venc';
 //    FrmCobrancaBancaria.Top := FrmRelRecebimento.Top + 40;
   //  FrmCobrancaBancaria.Left :=FrmRelRecebimento.Left+30;
-    FrmCobrancaBancaria.showmodal;
+    AbrirModal(Self, FrmCobrancaBancaria);
     CDS_MarcaTit.IndexName:='';
     CDS_MarcaTit.Close;
     CDS_MarcaTit.CreateDataSet;
@@ -4493,7 +4493,7 @@ begin
     CDS_MarcaTit.IndexName:='nome_venc';
     FrmCobrancaBancaria.Top := FrmRelRecebimento.Top + 40;
     FrmCobrancaBancaria.Left :=FrmRelRecebimento.Left+30;
-    FrmCobrancaBancaria.showmodal;
+    AbrirModal(Self, FrmCobrancaBancaria);
     CDS_MarcaTit.IndexName:='';}    
 end;
 

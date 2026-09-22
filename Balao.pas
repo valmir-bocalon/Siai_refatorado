@@ -2813,7 +2813,7 @@ procedure TFrmbalao.DXBPesquisarClick(Sender: TObject);
 begin
   FrmPesqRecebimento_bx.Top := Frmbalao.Top+100;
   FrmPesqRecebimento_bx.Left := Frmbalao.Left;
-  FrmPesqRecebimento_bx.showmodal;
+  AbrirModal(Self, FrmPesqRecebimento_bx);
 
 
   JDEntrada.Datetext := datetostr(Date);

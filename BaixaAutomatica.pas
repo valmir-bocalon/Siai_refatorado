@@ -1867,7 +1867,7 @@ begin
      Frm_TabelasDeMensagens:=TFrm_TabelasDeMensagens.Create(Self);
   Frm_TabelasDeMensagens.Left := Frm_BaixaAutomatica.Left;
   Frm_TabelasDeMensagens.Top := Frm_BaixaAutomatica.Top+60;
-  Frm_TabelasDeMensagens.showmodal;
+  AbrirModal(Self, Frm_TabelasDeMensagens);
   Frm_TabelasDeMensagens:=nil;
 end;
 

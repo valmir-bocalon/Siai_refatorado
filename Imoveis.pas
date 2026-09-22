@@ -318,12 +318,12 @@ procedure TFrm_Imoveis.BTPesquisarClick(Sender: TObject);
 begin
 {  Frm_AchaImovel.Top := Frm_Imoveis.Top+105;
   Frm_AchaImovel.Left := Frm_Imoveis.Left+(Frm_Imoveis.Width-Frm_AchaImovel.Width)  ;
-  Frm_AchaImovel.showmodal;
+  AbrirModal(Self, Frm_AchaImovel);
   DBGImovel.SetFocus;}
 
   Frm_AchaImoveis.Top := Frm_Imoveis.Top+105;
   Frm_AchaImoveis.Left := Frm_Imoveis.Left+(Frm_Imoveis.Width-Frm_AchaImoveis.Width)  ;
-  Frm_AchaImoveis.showmodal;
+  AbrirModal(Self, Frm_AchaImoveis);
   DBGImovel.SetFocus;
 
 
@@ -336,7 +336,7 @@ begin
 //  Frm_RelImovel.Left := Frm_Imoveis.Left-5+(Frm_Imoveis.Width-Frm_RelImovel.Width);
   if Frm_RelImovel=nil then
      Frm_RelImovel:=TFrm_RelImovel.Create(Application);
-  Frm_RelImovel.showmodal;
+  AbrirModal(Self, Frm_RelImovel);
   Frm_RelImovel:=nil;
 end;
 

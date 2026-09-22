@@ -816,7 +816,7 @@ begin
      Frm_Inc_Recebimento:=TFrm_Inc_Recebimento.Create(Self);
   Frm_Inc_Recebimento.Label20.Caption := 'DIRETA';
   Frm_Inc_Recebimento.Label23.Caption := '';
-  Frm_Inc_Recebimento.showmodal;
+  AbrirModal(Self, Frm_Inc_Recebimento);
   Frm_Inc_Recebimento:=nil;
   Panel1.Visible:=true;
   Panel2.Visible:=true;
@@ -844,7 +844,7 @@ begin
 //  FrmAchaReceb.showmodal;
   FrmPesqRecebimento.Top := FrmCad_Recebimento.Top+100;
   FrmPesqRecebimento.Left := FrmCad_Recebimento.Left;
-  FrmPesqRecebimento.showmodal;
+  AbrirModal(Self, FrmPesqRecebimento);
   FrmPesqRecebimento.ZQTempCliReceb.close;
   DBGReceb.SetFocus;
 end;
@@ -857,7 +857,7 @@ begin
   FrmRelRecebimento.Top := FrmCad_Recebimento.Top+100;
   FrmRelRecebimento.Left := FrmCad_Recebimento.Left;
 //  FrmRelRecebimento.showmodal;
-  FrmRelRecebimento.showModal;
+  AbrirModal(Self, FrmRelRecebimento);
   FrmRelRecebimento:=nil;
 end;
 
@@ -1618,7 +1618,7 @@ begin
     FrmRecebBaixa.Label9.Caption := 'Baixando Títulos em Aberto do Contas a Receber';
     FrmRecebBaixa.Label9.Color := ClRed;
   end;
-  FrmRecebBaixa.showmodal;
+  AbrirModal(Self, FrmRecebBaixa);
   Panel1.Visible:=true;
   Panel2.Visible:=true;
   Application.ProcessMessages;
@@ -1738,7 +1738,7 @@ begin
     if (DM_tabelas.ZQRecebimento.FieldByName('TipDoc').AsString='CH') then
     begin
       FrmObs_estorno.obs_est.Text:=DM_tabelas.ZQRecebimento.FieldByName('observ_estorno').AsString;
-      FrmObs_estorno.showmodal;
+      AbrirModal(Self, FrmObs_estorno);
     end;
 //    if DM_tabelas.ZQRecebBxTemprefer.Value=0 then
 //    begin
@@ -2165,7 +2165,7 @@ begin
     FrmImpRecibo.Memoobs.Text := DM_Tabelas.ZQRecebBxTemp.FieldByName('obsebx').AsString
   else
     FrmImpRecibo.Memoobs.Text := DM_Tabelas.ZQRecebimento.FieldByName('Observ').AsString;
-  FrmImpRecibo.showmodal;
+  AbrirModal(Self, FrmImpRecibo);
   FreeAndNil(FrmImpRecibo);
   FrmImpRecibo:=nil;
 end;
@@ -2501,7 +2501,7 @@ begin
     end;
     JBBaixa.Visible:=false;
 
-    FrmRecebBaixa.showmodal;
+    AbrirModal(Self, FrmRecebBaixa);
   finally
     Panel1.Visible:=true;
     Panel2.Visible:=true;
@@ -2548,7 +2548,7 @@ begin
      if Frm_ReajusteDeParcelas2=nil then
         Frm_ReajusteDeParcelas2:=TFrm_ReajusteDeParcelas2.Create(Self);
      Frm_ReajusteDeParcelas2.Top := FrmCad_Recebimento.Top + 110;
-     Frm_ReajusteDeParcelas2.showmodal;
+     AbrirModal(Self, Frm_ReajusteDeParcelas2);
    finally
      FreeAndNil(Frm_ReajusteDeParcelas2);
      JBProcesso.Visible:=false;
@@ -2561,7 +2561,7 @@ begin
      if Frm_ReajusteDeParcelas=nil then
         Frm_ReajusteDeParcelas:=TFrm_ReajusteDeParcelas.Create(Self);
      Frm_ReajusteDeParcelas.Top := FrmCad_Recebimento.Top + 110;
-     Frm_ReajusteDeParcelas.showmodal;
+     AbrirModal(Self, Frm_ReajusteDeParcelas);
    finally
      FreeAndNil(Frm_ReajusteDeParcelas);
      JBProcesso.Visible:=false;
@@ -2590,7 +2590,7 @@ begin
        Frm_BaixaAutomatica := TFrm_BaixaAutomatica.Create(self);
     Frm_BaixaAutomatica.Left := Frm_principal.Left+7;
     Frm_BaixaAutomatica.Top := Frm_principal.Top+135;
-    Frm_BaixaAutomatica.showModal;
+    AbrirModal(Self, Frm_BaixaAutomatica);
   finally
     Frm_BaixaAutomatica:=nil;
     Frm_BaixaAutomatica.Free;
@@ -3677,7 +3677,7 @@ LStep, LOperacao: UInt64;
 begin
   FrmPesqCobranca.Top := FrmCad_Recebimento.Top+100;
   FrmPesqCobranca.Left := FrmCad_Recebimento.Left;
-  FrmPesqCobranca.showmodal;
+  AbrirModal(Self, FrmPesqCobranca);
   LOperacao := PerformanceStart;
   PerformanceCheckpoint('Cobranca: retorno da selecao na pesquisa');
   FlushPerformanceLog;
@@ -3838,7 +3838,7 @@ begin
     FrmRecebBaixa_subst.Label9.Color := ClRed;
   end;
   JBProcesso.Visible:=false;
-  FrmRecebBaixa_subst.showmodal;
+  AbrirModal(Self, FrmRecebBaixa_subst);
   FreeAndNil(FrmRecebBaixa_subst);
   FrmRecebBaixa_subst:=nil;
   Panel1.Visible:=true;
@@ -3962,7 +3962,7 @@ begin
   if not Verif_senha('Recebimento','Parcelas não Pagas no Mês','') then exit;
      if frmnaopaga=nil then
         frmnaopaga:=Tfrmnaopaga.Create(Self);
-     frmnaopaga.showmodal;
+     AbrirModal(Self, frmnaopaga);
 end;
 
 procedure TFrmCad_Recebimento.JBProcessoItems7Click(Sender: TObject);
@@ -3987,7 +3987,7 @@ begin
   frmcobranca.Left := FrmCad_Recebimento.Left+7;
   frmcobranca.codcli.text:=DM_Tabelas.ZQRecebimento.FieldByName('adversa').Text;
   frmcobranca.nomecli.text:=DM_Tabelas.ZQRecebimento.FieldByName('adversanome').AsString;
-  frmcobranca.showModal;
+  AbrirModal(Self, frmcobranca);
   frmcobranca:=nil;
   JBProcesso.Visible:=false;
 end;

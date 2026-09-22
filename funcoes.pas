@@ -80,6 +80,7 @@ function Ano( Data: TDateTime ): string;
 function UltimoDiaDoMes( MesAno: string ): string;
 { Janela para mensagens }
 procedure Mensagem( Texto: string );
+procedure AbrirModal(Origem, Formulario: TCustomForm);
 {mes por extenso}
 function MesExtenso( Mes:Word ) : string;
 Function SIMNAO(texto, opcao:string) : Boolean; //
@@ -124,6 +125,19 @@ uses principal, tabelas, DigSenha, NovaSenha, AchaCidade, Estrutura,
 {$R *.dfm}
 
 
+procedure AbrirModal(Origem, Formulario: TCustomForm);
+begin
+  if Formulario = nil then
+    Exit;
+
+  if (Origem <> nil) and (Origem <> Formulario) then
+  begin
+    Formulario.PopupMode := pmExplicit;
+    Formulario.PopupParent := Origem;
+  end;
+
+  Formulario.ShowModal;
+end;
 function SomenteNumeros(const S: string): Boolean;
 var
   I: Integer;
@@ -487,7 +501,7 @@ Begin
   else Begin
     if Frm_Acha_Contabancaria = nil then
       Frm_Acha_Contabancaria := TFrm_Acha_Contabancaria.Create(Application);
-    Frm_Acha_Contabancaria.showmodal;
+    Frm_Acha_Contabancaria.ShowModal;
     if Frm_Acha_Contabancaria.Label2.Caption = 'T' then
       Result := True
     else
@@ -580,12 +594,12 @@ Begin
     DM_Tabelas.ZQLoc_Senha.Post;
     Frm_NovaSenha.Label3.Caption := 'Grupo....: '+vargrupo;
     Frm_NovaSenha.Label4.Caption := 'Descricao: '+vardescricao;
-    Frm_NovaSenha.showmodal;
+    Frm_NovaSenha.ShowModal;
   end;
   result := True;
   if DM_Tabelas.ZQLoc_Senha.FieldByName('pedesenha').AsString = 'S' Then Begin
     Frm_DigSenha.Label4.Caption := 'Grupo: '+Vargrupo+' - Descricao: '+vardescricao;
-    Frm_DigSenha.Showmodal;
+    Frm_DigSenha.ShowModal;
     if Frm_DigSenha.Label6.Caption = 'F' Then
       Result := False;
     DM_Tabelas.ZQLogin.Insert;
@@ -720,7 +734,7 @@ end;
 Function atualizar_estrutra : boolean;
 Begin
   senhaestrut := false;
-  FrmEstrutura.Showmodal;
+  FrmEstrutura.ShowModal;
 End;
 
 
@@ -841,7 +855,7 @@ begin
 //  mensagem( datetostr(descripto_data(DM_Tabelas.ZQEmpresalimite.Value)));
   if descripto_data(DM_Tabelas.ZQEmpresa.FieldByName('limite').AsString)<=date+5 Then
   Begin
-    FrmContraSenha.showmodal;
+    FrmContraSenha.ShowModal;
     VarCSenha := FrmContraSenha.XEContraSenha.Text;
     VarSSenha := FrmContraSenha.LMasterSenha.Caption;
     VarFinal := 1;
@@ -940,7 +954,7 @@ Begin
     begin
       Frm_AchaParticipante.FormStyle := fsStayOnTop;
       Frm_AchaParticipante.BringToFront;
-      Frm_AchaParticipante.showmodal;
+      Frm_AchaParticipante.ShowModal;
     end;
     IF DM_Tabelas.ZQAchaParticip.RecordCount=0 Then
     begin
@@ -969,7 +983,7 @@ Begin
   DM_Tabelas.ZQAchacorretor.Open;
   Frm_AchaCorretor.Ecorretor.Text := corr;
   IF DM_Tabelas.ZQAchacorretor.RecordCount>1 Then
-     Frm_AchaCorretor.showmodal;
+     Frm_AchaCorretor.ShowModal;
   if (Frm_AchaCorretor.Label1.Caption = 'F') or (DM_tabelas.ZQAchacorretor.RecordCount=0)  Then
       Result := false
   else
@@ -1594,7 +1608,7 @@ Begin
     FrmPergunta := TFrmPergunta.Create(Application);
   FrmPergunta.label5.caption := texto;
   Frmpergunta.XEdit1.Text := resp;
-  Frmpergunta.showmodal;
+  Frmpergunta.ShowModal;
   result := Frmpergunta.XEdit1.Text ;
 End;
 

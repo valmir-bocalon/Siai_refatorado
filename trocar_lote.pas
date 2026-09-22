@@ -1028,7 +1028,7 @@ procedure TFrm_Trocar.DXBAchaLoteClick(Sender: TObject);
 begin
   imovelant.text:=DM_Tabelas.ZQVenda.FieldByName('imovel').text;
   Edvenda.Text:=DM_Tabelas.ZQVenda.FieldByName('idvenda').Text;
-  Frm_AchaLoteVenda.showmodal;
+  AbrirModal(Self, Frm_AchaLoteVenda);
   edloteamento.Text:=DM_Tabelas.ZQImovelTemp.FieldByName('loteamento_idloteamento').Text;
 
 //  JDEntrada.Enabled:=true;
@@ -1143,7 +1143,7 @@ procedure TFrm_Trocar.BTPesquisarClick(Sender: TObject);
 begin
   Frm_AchaVenda.Top := Frm_Trocar.Top+100;
   Frm_AchaVenda.Left := Frm_Trocar.Left+(Frm_Trocar.Width-Frm_AchaVenda.Width)  ;
-  Frm_AchaVenda.showmodal;
+  AbrirModal(Self, Frm_AchaVenda);
   DBGVenda.SetFocus;
 end;
 

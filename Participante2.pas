@@ -136,7 +136,7 @@ begin
   frmgoogle.Rua.Text:=DBEEnde.Text;
   frmgoogle.Cep.Text:=charrem(DBECep.Text);
   frmgoogle.Button1click(Nil);  
-  frmgoogle.ShowModal;
+  AbrirModal(Self, frmgoogle);
   frmgoogle:=nil;
 end;
 

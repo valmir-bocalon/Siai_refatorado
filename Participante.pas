@@ -1003,7 +1003,7 @@ begin
       begin
         FrmPesqEndereco.Top := Self.Top+100;
         FrmPesqEndereco.Left := Self.Left;
-        FrmPesqEndereco.showmodal;
+        AbrirModal(Self, FrmPesqEndereco);
         DM_tabelas.ZqParticipante.FieldByName('endereco').AsString:=DM_tabelas.localizacao.FieldByName('log_tipo_logradouro').AsString+' '+DM_tabelas.localizacao.FieldByName('log_no').AsString;
         DM_tabelas.ZqParticipante.FieldByName('bairro').AsString:=DM_tabelas.localizacao.FieldByName('bai_no').AsString;
         ECidEnder.Text:=DM_tabelas.localizacao.FieldByName('loc_no').AsString;
@@ -1638,7 +1638,7 @@ begin
   Self.FormStyle:=fsNormal;
   if frmMain=nil then
      frmMain:=TfrmMain.create(Application);
-  frmMain.showmodal;
+  AbrirModal(Self, frmMain);
   frmMain:=nil;
   Self.FormStyle:=fsStayOnTop;
 end;
@@ -1651,7 +1651,7 @@ begin
     begin
       FrmPesqEndereco.Top := Self.Top+100;
       FrmPesqEndereco.Left := Self.Left;
-      FrmPesqEndereco.showmodal;
+      AbrirModal(Self, FrmPesqEndereco);
       DM_tabelas.ZqParticipante.FieldByName('endereco').AsString:=DM_tabelas.localizacao.FieldByName('log_tipo_logradouro').AsString+' '+DM_tabelas.localizacao.FieldByName('log_no').AsString;
       DM_tabelas.ZqParticipante.FieldByName('bairro').AsString:=DM_tabelas.localizacao.FieldByName('bai_no').AsString;
       ECidEnder.Text:=DM_tabelas.localizacao.FieldByName('loc_no').AsString;
@@ -1666,7 +1666,7 @@ begin
       begin
         FrmPesqEndereco.Top := Self.Top+100;
         FrmPesqEndereco.Left := Self.Left;
-        FrmPesqEndereco.showmodal;
+        AbrirModal(Self, FrmPesqEndereco);
         DM_tabelas.ZqParticipante.FieldByName('endereco').AsString:=DM_tabelas.localizacao.FieldByName('log_tipo_logradouro').AsString+' '+DM_tabelas.localizacao.FieldByName('log_no').AsString;
         DM_tabelas.ZqParticipante.FieldByName('bairro').AsString:=DM_tabelas.localizacao.FieldByName('bai_no').AsString;
         ECidEnder.Text:=DM_tabelas.localizacao.FieldByName('loc_no').AsString;
@@ -1784,7 +1784,7 @@ begin
   frmgoogle.Rua.Text:=DBEEnde.Text;
   frmgoogle.Cep.Text:=charrem(DBECep.Text);
   frmgoogle.Button1click(Nil);
-  frmgoogle.ShowModal;
+  AbrirModal(Self, frmgoogle);
   frmgoogle:=nil;
   frmgoogle.Free;
   Self.FormStyle:=fsStayOnTop;
@@ -1797,7 +1797,7 @@ begin
   Self.FormStyle:=fsNormal;
   if frmMain2=nil then
      frmMain2:=TfrmMain2.create(Application);
-  frmMain2.showModal;
+  AbrirModal(Self, frmMain2);
   frmMain2:=nil;
   Self.FormStyle:=fsStayOnTop;
 end;

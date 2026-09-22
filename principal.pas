@@ -659,7 +659,7 @@ begin
               begin
                 if FrmAgenda = nil then
                    FrmAgenda:=TFrmAgenda.create(self);
-                FrmAgenda.showmodal;
+                AbrirModal(Self, FrmAgenda);
               end;
             finally
                DM_Tabelas.qryAgenda.Close;
@@ -780,7 +780,7 @@ begin
        Frm_Usuario := TFrm_Usuario.Create(self);
     Frm_Usuario.Left := Frm_principal.Left+7;
     Frm_Usuario.Top := Frm_principal.Top+135;
-    Frm_Usuario.showModal;
+    AbrirModal(Self, Frm_Usuario);
   finally
     Frm_Usuario:=nil;
     Frm_Usuario.Free;
@@ -803,7 +803,7 @@ begin
        Frm_Loteamento := TFrm_Loteamento.Create(self);
     Frm_Loteamento.Left := Frm_principal.Left+7;
     Frm_Loteamento.Top := Frm_principal.Top+135;
-    Frm_Loteamento.showModal;
+    AbrirModal(Self, Frm_Loteamento);
   finally
     Frm_Loteamento:=nil;
     Frm_Loteamento.Free;
@@ -831,7 +831,7 @@ begin
        Frm_ipca := TFrm_ipca.Create(self);
     Frm_ipca.Left := Frm_principal.Left+7;
     Frm_ipca.Top := Frm_principal.Top+135;
-    Frm_ipca.showModal;
+    AbrirModal(Self, Frm_ipca);
   finally
     Frm_ipca:=nil;
     Frm_ipca.Free;
@@ -876,7 +876,7 @@ begin
        Frm_Imoveis := TFrm_Imoveis.Create(self);
     Frm_Imoveis.Left := Frm_principal.Left+7;
     Frm_Imoveis.Top := Frm_principal.Top+135;
-    Frm_Imoveis.showModal;
+    AbrirModal(Self, Frm_Imoveis);
   finally
     Frm_Imoveis:=nil;
     Frm_Imoveis.Free;
@@ -896,7 +896,7 @@ begin
        Frm_Corretor := TFrm_Corretor.Create(self);
     Frm_Corretor.Left := Frm_principal.Left+7;
     Frm_Corretor.Top := Frm_principal.Top+135;
-    Frm_Corretor.showModal;
+    AbrirModal(Self, Frm_Corretor);
   finally
     Frm_Corretor:=nil;
     Frm_Corretor.Free;
@@ -911,7 +911,7 @@ begin
        FrmCad_ContasBancarias := TFrmCad_ContasBancarias.Create(self);
     FrmCad_ContasBancarias.Left := Frm_principal.Left+7;
     FrmCad_ContasBancarias.Top := Frm_principal.Top+135;
-    FrmCad_ContasBancarias.showModal;
+    AbrirModal(Self, FrmCad_ContasBancarias);
   finally
     FrmCad_ContasBancarias:=nil;
     FrmCad_ContasBancarias.Free;
@@ -929,7 +929,7 @@ begin
      FrmCad_TipoDoc:=TFrmCad_TipoDoc.Create(Self);
   FrmCad_TipoDoc.Left := Frm_principal.Left+7;
   FrmCad_TipoDoc.Top := Frm_principal.Top+135;
-  FrmCad_TipoDoc.showmodal;
+  AbrirModal(Self, FrmCad_TipoDoc);
   FrmCad_TipoDoc:=nil;
   FrmCad_TipoDoc.Free;
 end;
@@ -950,7 +950,7 @@ begin
        Frm_Cidade := TFrm_Cidade.Create(self);
     Frm_Cidade.Left := Frm_principal.Left+7;
     Frm_Cidade.Top := Frm_principal.Top+135;
-    Frm_Cidade.showModal;
+    AbrirModal(Self, Frm_Cidade);
   finally
     Frm_Cidade:=nil;
     Frm_Cidade.Free;
@@ -980,7 +980,7 @@ begin
        FrmCad_PlanodeContas := TFrmCad_PlanodeContas.Create(self);
     FrmCad_PlanodeContas.Left := Frm_principal.Left+7;
     FrmCad_PlanodeContas.Top := Frm_principal.Top+135;
-    FrmCad_PlanodeContas.showModal;
+    AbrirModal(Self, FrmCad_PlanodeContas);
   finally
     FrmCad_PlanodeContas:=nil;
     FrmCad_PlanodeContas.Free;
@@ -1001,7 +1001,7 @@ begin
        FrmCad_Empresa := TFrmCad_Empresa.Create(self);
     FrmCad_Empresa.Left := Frm_principal.Left+7;
     FrmCad_Empresa.Top := Frm_principal.Top+135;
-    FrmCad_Empresa.showModal;
+    AbrirModal(Self, FrmCad_Empresa);
   finally
     FrmCad_Empresa:=nil;
     FrmCad_Empresa.Free;
@@ -1073,7 +1073,7 @@ begin
      JXBarraCad_Diversos.Visible := False;
     if FrmAgenda = nil then
        FrmAgenda:=TFrmAgenda.create(self);
-    FrmAgenda.showmodal;
+    AbrirModal(Self, FrmAgenda);
   finally
     FreeAndNil(FrmAgenda);
   end;
@@ -1149,7 +1149,7 @@ begin
        Frm_acertavenda_em_recebimento   := TFrm_acertavenda_em_recebimento.Create(self);
     Frm_acertavenda_em_recebimento.Left := Frm_principal.Left+7;
     Frm_acertavenda_em_recebimento.Top  := Frm_principal.Top+135;
-    Frm_acertavenda_em_recebimento.showModal;
+    AbrirModal(Self, Frm_acertavenda_em_recebimento);
   finally
     Frm_acertavenda_em_recebimento:=nil;
     Frm_acertavenda_em_recebimento.Free;
@@ -1217,7 +1217,7 @@ begin
        Frm_Imoveis := TFrm_Imoveis.Create(self);
     Frm_Imoveis.Left := Frm_principal.Left+7;
     Frm_Imoveis.Top := Frm_principal.Top+135;
-    Frm_Imoveis.showModal;
+    AbrirModal(Self, Frm_Imoveis);
   finally
     Frm_Imoveis:=nil;
     Frm_Imoveis.Free;
@@ -1236,7 +1236,7 @@ begin
        Frm_Corretor := TFrm_Corretor.Create(self);
     Frm_Corretor.Left := Frm_principal.Left+7;
     Frm_Corretor.Top := Frm_principal.Top+135;
-    Frm_Corretor.showModal;
+    AbrirModal(Self, Frm_Corretor);
   finally
     Frm_Corretor:=nil;
     Frm_Corretor.Free;
@@ -1249,7 +1249,7 @@ begin
    if not Verif_senha('Estatíticas','DashBoard','') then exit;
   if FrmDash=nil then
      FrmDash:=TFrmDash.create(self);
-  FrmDash.showmodal;
+  AbrirModal(Self, FrmDash);
   FreeAndNil(FrmDash);
 end;
 
@@ -1264,7 +1264,7 @@ begin
        Frm_Usuario := TFrm_Usuario.Create(self);
     Frm_Usuario.Left := Frm_principal.Left+7;
     Frm_Usuario.Top := Frm_principal.Top+135;
-    Frm_Usuario.showModal;
+    AbrirModal(Self, Frm_Usuario);
   finally
     Frm_Usuario:=nil;
     Frm_Usuario.Free;
@@ -1284,7 +1284,7 @@ begin
        Frm_Loteamento := TFrm_Loteamento.Create(self);
     Frm_Loteamento.Left := Frm_principal.Left+7;
     Frm_Loteamento.Top := Frm_principal.Top+135;
-    Frm_Loteamento.showModal;
+    AbrirModal(Self, Frm_Loteamento);
   finally
     Frm_Loteamento:=nil;
     Frm_Loteamento.Free;
@@ -1302,7 +1302,7 @@ begin
        FrmCad_ContasBancarias := TFrmCad_ContasBancarias.Create(self);
     FrmCad_ContasBancarias.Left := Frm_principal.Left+7;
     FrmCad_ContasBancarias.Top := Frm_principal.Top+135;
-    FrmCad_ContasBancarias.showModal;
+    AbrirModal(Self, FrmCad_ContasBancarias);
   finally
     FrmCad_ContasBancarias:=nil;
     FrmCad_ContasBancarias.Free;
@@ -1315,7 +1315,7 @@ begin
    if not Verif_senha('Estatíticas','Painel','') then exit;
   if frmPainel=nil then
      frmPainel:=TfrmPainel.create(self);
-  frmPainel.showmodal;
+  AbrirModal(Self, frmPainel);
   FreeAndNil(frmPainel);
 end;
 
@@ -1328,7 +1328,7 @@ begin
        FrmCad_PlanodeContas := TFrmCad_PlanodeContas.Create(self);
     FrmCad_PlanodeContas.Left := Frm_principal.Left+7;
     FrmCad_PlanodeContas.Top := Frm_principal.Top+135;
-    FrmCad_PlanodeContas.showModal;
+    AbrirModal(Self, FrmCad_PlanodeContas);
   finally
     FrmCad_PlanodeContas:=nil;
     FrmCad_PlanodeContas.Free;
@@ -1347,7 +1347,7 @@ begin
        Frm_Cidade := TFrm_Cidade.Create(self);
     Frm_Cidade.Left := Frm_principal.Left+7;
     Frm_Cidade.Top := Frm_principal.Top+135;
-    Frm_Cidade.showModal;
+    AbrirModal(Self, Frm_Cidade);
   finally
     Frm_Cidade:=nil;
     Frm_Cidade.Free;
@@ -1363,7 +1363,7 @@ begin
        FrmCad_Empresa := TFrmCad_Empresa.Create(self);
     FrmCad_Empresa.Left := Frm_principal.Left+7;
     FrmCad_Empresa.Top := Frm_principal.Top+135;
-    FrmCad_Empresa.showModal;
+    AbrirModal(Self, FrmCad_Empresa);
  finally
     FrmCad_Empresa:=nil;
     FrmCad_Empresa.Free;
@@ -1390,7 +1390,7 @@ begin
        Frm_acertavenda_em_recebimento := TFrm_acertavenda_em_recebimento.Create(self);
     Frm_acertavenda_em_recebimento.Left := Frm_principal.Left+7;
     Frm_acertavenda_em_recebimento.Top := Frm_principal.Top+135;
-    Frm_acertavenda_em_recebimento.showModal;
+    AbrirModal(Self, Frm_acertavenda_em_recebimento);
   finally
     Frm_acertavenda_em_recebimento:=nil;
     Frm_acertavenda_em_recebimento.Free;
@@ -1448,7 +1448,7 @@ begin
        Frm_ReajusteDeParcelas := TFrm_ReajusteDeParcelas.Create(self);
     Frm_ReajusteDeParcelas.Left := Frm_principal.Left+7;
     Frm_ReajusteDeParcelas.Top := Frm_principal.Top+135;
-    Frm_ReajusteDeParcelas.showModal;
+    AbrirModal(Self, Frm_ReajusteDeParcelas);
   finally
     Frm_ReajusteDeParcelas:=nil;
     Frm_ReajusteDeParcelas.Free;
@@ -1549,7 +1549,7 @@ begin
        Frm_Price := TFrm_Price.Create(self);
     Frm_Price.Left := Frm_principal.Left+7;
     Frm_Price.Top := Frm_principal.Top+135;
-    Frm_Price.showModal;
+    AbrirModal(Self, Frm_Price);
   finally
     Frm_Price:=nil;
     Frm_Price.Free;
@@ -1567,7 +1567,7 @@ begin
        Frm_Price := TFrm_Price.Create(self);
     Frm_Price.Left := Frm_principal.Left+7;
     Frm_Price.Top := Frm_principal.Top+135;
-    Frm_Price.showModal;
+    AbrirModal(Self, Frm_Price);
   finally
     Frm_Price:=nil;
     Frm_Price.Free;
@@ -1584,7 +1584,7 @@ begin
        Frm_acertaorigem_em_recebimento := TFrm_acertaorigem_em_recebimento.Create(self);
     Frm_acertaorigem_em_recebimento.Left := Frm_principal.Left+7;
     Frm_acertaorigem_em_recebimento.Top := Frm_principal.Top+135;
-    Frm_acertaorigem_em_recebimento.showModal;
+    AbrirModal(Self, Frm_acertaorigem_em_recebimento);
   finally
     Frm_acertaorigem_em_recebimento:=nil;
     Frm_acertaorigem_em_recebimento.Free;
@@ -1601,7 +1601,7 @@ begin
        Frm_acertaadversa_recebimento := TFrm_acertaadversa_recebimento.Create(self);
     Frm_acertaadversa_recebimento.Left := Frm_principal.Left+7;
     Frm_acertaadversa_recebimento.Top := Frm_principal.Top+135;
-    Frm_acertaadversa_recebimento.showModal;
+    AbrirModal(Self, Frm_acertaadversa_recebimento);
   finally
     Frm_acertaadversa_recebimento:=nil;
     Frm_acertaadversa_recebimento.Free;
@@ -1618,7 +1618,7 @@ begin
        Frm_Acerto_parcelas := TFrm_Acerto_parcelas.Create(self);
     Frm_Acerto_parcelas.Left := Frm_principal.Left+7;
     Frm_Acerto_parcelas.Top := Frm_principal.Top+135;
-    Frm_Acerto_parcelas.showModal;
+    AbrirModal(Self, Frm_Acerto_parcelas);
   finally
     Frm_Acerto_parcelas:=nil;
     Frm_Acerto_parcelas.Free;
@@ -1636,7 +1636,7 @@ begin
        Frm_ProximoVctoParcelas := TFrm_ProximoVctoParcelas.Create(self);
     Frm_ProximoVctoParcelas.Left := Frm_principal.Left+7;
     Frm_ProximoVctoParcelas.Top := Frm_principal.Top+135;
-    Frm_ProximoVctoParcelas.showModal;
+    AbrirModal(Self, Frm_ProximoVctoParcelas);
   finally
     Frm_ProximoVctoParcelas:=nil;
     Frm_ProximoVctoParcelas.Free;
@@ -1650,7 +1650,7 @@ begin
   try
     if FrmAgenda = nil then
        FrmAgenda:=TFrmAgenda.create(self);
-    FrmAgenda.showmodal;
+    AbrirModal(Self, FrmAgenda);
   finally
     FreeAndNil(FrmAgenda);
   end;
@@ -1667,7 +1667,7 @@ begin
        Frm_igpm := TFrm_igpm.Create(self);
     Frm_igpm.Left := Frm_principal.Left+7;
     Frm_igpm.Top := Frm_principal.Top+135;
-    Frm_igpm.showModal;
+    AbrirModal(Self, Frm_igpm);
   finally
     Frm_igpm:=nil;
     Frm_igpm.Free;
@@ -1683,7 +1683,7 @@ begin
        Frm_acertaproximo_reajuste_em_recebimento := TFrm_acertaproximo_reajuste_em_recebimento.Create(self);
     Frm_acertaproximo_reajuste_em_recebimento.Left := Frm_principal.Left+7;
     Frm_acertaproximo_reajuste_em_recebimento.Top := Frm_principal.Top+135;
-    Frm_acertaproximo_reajuste_em_recebimento.showModal;
+    AbrirModal(Self, Frm_acertaproximo_reajuste_em_recebimento);
   finally
     Frm_acertaproximo_reajuste_em_recebimento:=nil;
     Frm_acertaproximo_reajuste_em_recebimento.Free;
@@ -1699,7 +1699,7 @@ begin
        FrmCad_TipoDoc := TFrmCad_TipoDoc.Create(self);
     FrmCad_TipoDoc.Left := Frm_principal.Left+7;
     FrmCad_TipoDoc.Top := Frm_principal.Top+135;
-    FrmCad_TipoDoc.showModal;
+    AbrirModal(Self, FrmCad_TipoDoc);
   finally
     FrmCad_TipoDoc:=nil;
     FrmCad_TipoDoc.Free;
@@ -1715,7 +1715,7 @@ begin
        Frm_acertavalor_final_venda := TFrm_acertavalor_final_venda.Create(self);
     Frm_acertavalor_final_venda.Left := Frm_principal.Left+7;
     Frm_acertavalor_final_venda.Top := Frm_principal.Top+135;
-    Frm_acertavalor_final_venda.showModal;
+    AbrirModal(Self, Frm_acertavalor_final_venda);
   finally
     Frm_acertavalor_final_venda:=nil;
     Frm_acertavalor_final_venda.Free;
@@ -1730,7 +1730,7 @@ begin
        Frm_Excluir := TFrm_Excluir.Create(self);
     Frm_Excluir.Left := Frm_principal.Left+7;
     Frm_Excluir.Top := Frm_principal.Top+135;
-    Frm_Excluir.showModal;
+    AbrirModal(Self, Frm_Excluir);
   finally
     Frm_Excluir:=nil;
     Frm_Excluir.Free;
@@ -1748,7 +1748,7 @@ begin
        Frm_acertaaditamento := TFrm_acertaaditamento.Create(self);
     Frm_acertaaditamento.Left := Frm_principal.Left+7;
     Frm_acertaaditamento.Top := Frm_principal.Top+135;
-    Frm_acertaaditamento.showModal;
+    AbrirModal(Self, Frm_acertaaditamento);
   finally
     Frm_acertaaditamento:=nil;
     Frm_acertaaditamento.Free;
@@ -1766,7 +1766,7 @@ begin
        Frm_ProximoReajusteDeParcelas := TFrm_ProximoReajusteDeParcelas.Create(self);
     Frm_ProximoReajusteDeParcelas.Left := Frm_principal.Left+7;
     Frm_ProximoReajusteDeParcelas.Top := Frm_principal.Top+135;
-    Frm_ProximoReajusteDeParcelas.showModal;
+    AbrirModal(Self, Frm_ProximoReajusteDeParcelas);
   finally
     Frm_ProximoReajusteDeParcelas:=nil;
     Frm_ProximoReajusteDeParcelas.Free;
@@ -1784,7 +1784,7 @@ begin
        Frm_Acerto_ano := TFrm_Acerto_ano.Create(self);
     Frm_Acerto_ano.Left := Frm_principal.Left+7;
     Frm_Acerto_ano.Top := Frm_principal.Top+135;
-    Frm_Acerto_ano.showModal;
+    AbrirModal(Self, Frm_Acerto_ano);
   finally
     Frm_Acerto_ano:=nil;
     Frm_Acerto_ano.Free;
@@ -1800,7 +1800,7 @@ begin
        Frm_Zerar_nosso_numero   := TFrm_Zerar_nosso_numero.Create(self);
     Frm_Zerar_nosso_numero.Left := Frm_principal.Left+7;
     Frm_Zerar_nosso_numero.Top  := Frm_principal.Top+135;
-    Frm_Zerar_nosso_numero.showModal;
+    AbrirModal(Self, Frm_Zerar_nosso_numero);
   finally
     Frm_Zerar_nosso_numero:=nil;
     Frm_Zerar_nosso_numero.Free;
@@ -1816,7 +1816,7 @@ begin
        Frm_Acerto_ano := TFrm_Acerto_ano.Create(self);
     Frm_Acerto_ano.Left := Frm_principal.Left+7;
     Frm_Acerto_ano.Top := Frm_principal.Top+135;
-    Frm_Acerto_ano.showModal;
+    AbrirModal(Self, Frm_Acerto_ano);
   finally
     Frm_Acerto_ano:=nil;
     Frm_Acerto_ano.Free;
@@ -1887,7 +1887,7 @@ begin
        FrmParticipante2 := TFrmParticipante2.Create(self);
     FrmParticipante2.Left := Frm_principal.Left+7;
     FrmParticipante2.Top := Frm_principal.Top+135;
-    FrmParticipante2.showModal;
+    AbrirModal(Self, FrmParticipante2);
   finally
     FrmParticipante2:=nil;
     FrmParticipante2.Free;
@@ -1904,7 +1904,7 @@ begin
          frm_acerta_remessa := Tfrm_acerta_remessa.Create(self);
       frm_acerta_remessa.Left := Frm_principal.Left+7;
       frm_acerta_remessa.Top := Frm_principal.Top+135;
-      frm_acerta_remessa.showModal;
+      AbrirModal(Self, frm_acerta_remessa);
     finally
       frm_acerta_remessa:=nil;
       frm_acerta_remessa.Free;
@@ -1941,7 +1941,7 @@ begin
        FrmCad_ContasBancarias := TFrmCad_ContasBancarias.Create(self);
     FrmCad_ContasBancarias.Left := Frm_principal.Left+7;
     FrmCad_ContasBancarias.Top := Frm_principal.Top+135;
-    FrmCad_ContasBancarias.showModal;
+    AbrirModal(Self, FrmCad_ContasBancarias);
   finally
     FrmCad_ContasBancarias:=nil;
     FrmCad_ContasBancarias.Free;
@@ -1959,7 +1959,7 @@ begin
        FrmCad_TipoDoc := TFrmCad_TipoDoc.Create(self);
     FrmCad_TipoDoc.Left := Frm_principal.Left+7;
     FrmCad_TipoDoc.Top := Frm_principal.Top+135;
-    FrmCad_TipoDoc.showModal;
+    AbrirModal(Self, FrmCad_TipoDoc);
   finally
     FrmCad_TipoDoc:=nil;
     FrmCad_TipoDoc.Free;

@@ -3487,7 +3487,7 @@ procedure TFrmRecebBaixa.DXBPesquisarClick(Sender: TObject);
 begin
   FrmPesqRecebimento_bx.Top := FrmRecebBaixa.Top+100;
   FrmPesqRecebimento_bx.Left := FrmRecebBaixa.Left;
-  FrmPesqRecebimento_bx.showmodal;
+  AbrirModal(Self, FrmPesqRecebimento_bx);
 
 
 //  JDEntrada.Date := Date;

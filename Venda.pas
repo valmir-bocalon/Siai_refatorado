@@ -2676,7 +2676,7 @@ end;
 
 procedure TFrm_Venda.DXBAchaLoteClick(Sender: TObject);
 begin
-  Frm_AchaLoteVenda.showmodal;
+  AbrirModal(Self, Frm_AchaLoteVenda);
   Perform(WM_NEXTDLGCTL, 0, 0);
 end;
 
@@ -2756,7 +2756,7 @@ begin
       if FrmVisualizarPdf=nil then
          FrmVisualizarPdf:=TFrmVisualizarPdf.create(self);
       FrmVisualizarPdf.PathPdf.Caption  := ExtractFilePath(Application.ExeName)+'Contratos\'+DM_Tabelas.ZQVenda.FieldByName('idvenda').Text+'.pdf';
-      FrmVisualizarPdf.showmodal;
+      AbrirModal(Self, FrmVisualizarPdf);
       FreeAndNil(FrmVisualizarPdf);
     end
     else
@@ -2771,7 +2771,7 @@ begin
       if FrmVisualizarPdf=nil then
          FrmVisualizarPdf:=TFrmVisualizarPdf.create(self);
       FrmVisualizarPdf.PathPdf.Caption  := ExtractFilePath(Application.ExeName)+'Contratos\'+DM_Tabelas.ZQVenda.FieldByName('idvenda').Text+'.pdf';
-      FrmVisualizarPdf.showmodal;
+      AbrirModal(Self, FrmVisualizarPdf);
       FreeAndNil(FrmVisualizarPdf);
     end
     else
@@ -3856,7 +3856,7 @@ begin
      Frm_RelVenda:=TFrm_RelVenda.Create(Application);
   Frm_RelVenda.Top := Frm_Venda.Top+100;
   Frm_RelVenda.Left := Frm_Venda.Left-4+(Frm_Venda.Width-Frm_RelVenda.Width);
-  Frm_RelVenda.Showmodal;
+  AbrirModal(Self, Frm_RelVenda);
 //  Frm_RelVenda.Show;
   Frm_RelVenda:=nil;
 //  Atualiza;
@@ -3874,7 +3874,7 @@ procedure TFrm_Venda.BTPesquisarClick(Sender: TObject);
 begin
   Frm_AchaVenda.Top := Frm_Venda.Top+100;
   Frm_AchaVenda.Left := Frm_Venda.Left+(Frm_Venda.Width-Frm_AchaVenda.Width)  ;
-  Frm_AchaVenda.showmodal;
+  AbrirModal(Self, Frm_AchaVenda);
   tprice.Text:=DM_Tabelas.ZQVenda.FieldByName('tabela_Price').Text+'0';  
   DBGVenda.SetFocus;
 end;
@@ -4544,7 +4544,7 @@ begin
   Frm_RelVenda.Top := Frm_Venda.Top+100;
   Frm_RelVenda.Left := Frm_Venda.Left-4+(Frm_Venda.Width-Frm_RelVenda.Width);
 
-  Frm_RelVenda.Showmodal;
+  AbrirModal(Self, Frm_RelVenda);
   Frm_RelVenda:=nil;
 //  Frm_RelVenda.Show;
 //  Atualiza;
@@ -6174,7 +6174,7 @@ begin
   try
   if frmsimulaaditamento=nil  then
      frmsimulaaditamento:=Tfrmsimulaaditamento.create(self);
-     frmsimulaaditamento.showmodal;
+     AbrirModal(Self, frmsimulaaditamento);
   finally
     FreeAndNil(frmsimulaaditamento);
   end;

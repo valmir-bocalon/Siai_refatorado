@@ -346,7 +346,7 @@ begin
   Frm_NumRemessa.Label2.Caption := VARARQ;
   Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
   Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
-  Frm_NumRemessa.showmodal;
+  AbrirModal(Self, Frm_NumRemessa);
   varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 //  DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria;n_dif_empreed',VarArrayOf([FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, DM_Tabelas.CDSEmpreendimentodigito_dif.Value]), []);
 
@@ -808,7 +808,7 @@ begin
       Frm_NumRemessa.Label2.Caption := VARARQ;
       Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
 
       varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -1400,7 +1400,7 @@ begin
       Frm_NumRemessa.Label2.Caption := VARARQ;
       Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
 
       varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -2020,7 +2020,7 @@ begin
       Frm_NumRemessa.Label2.Caption      := VARARQ;
       Frm_NumRemessa.Top                 := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left                := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
 
       varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -3190,7 +3190,7 @@ begin
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
       Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 
@@ -4245,7 +4245,7 @@ begin
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
       Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 
@@ -5212,7 +5212,7 @@ begin
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
       Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 
@@ -6214,7 +6214,7 @@ begin
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
       Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
       Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
-      Frm_NumRemessa.showmodal;
+      AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 
@@ -7266,7 +7266,7 @@ begin
     Frm_NumRemessa.Label2.Caption := VARARQ;
     Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
     Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
-    Frm_NumRemessa.showmodal;
+    AbrirModal(Self, Frm_NumRemessa);
     //numero da remessa
     varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 

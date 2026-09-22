@@ -912,7 +912,7 @@ end;
 
 procedure TFrm_Cessao.DXBAchaLoteClick(Sender: TObject);
 begin
-  Frm_AchaLoteVenda.showmodal;
+  AbrirModal(Self, Frm_AchaLoteVenda);
   Perform(WM_NEXTDLGCTL, 0, 0);
 end;
 
@@ -1019,7 +1019,7 @@ procedure TFrm_Cessao.BTPesquisarClick(Sender: TObject);
 begin
   Frm_AchaVenda.Top := Frm_Cessao.Top+100;
   Frm_AchaVenda.Left := Frm_Cessao.Left+(Frm_Cessao.Width-Frm_AchaVenda.Width)  ;
-  Frm_AchaVenda.showmodal;
+  AbrirModal(Self, Frm_AchaVenda);
   DBGVenda.SetFocus;
 end;
 

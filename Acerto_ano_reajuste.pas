@@ -752,7 +752,7 @@ begin
   FrmPesqRecebimento2.Left := Frm_Acerto_ano.Left;
   FrmPesqRecebimento2Target := Self;
   try
-    FrmPesqRecebimento2.showmodal;
+    AbrirModal(Self, FrmPesqRecebimento2);
   finally
     FrmPesqRecebimento2Target := nil;
   end;

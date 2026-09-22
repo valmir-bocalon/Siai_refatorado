@@ -55,7 +55,7 @@ var
   xtexto:String;
 
 implementation
-uses tabelas, UAgenda_mov, uRuntimeFields;
+uses tabelas, UAgenda_mov, uRuntimeFields, Funcoes;
 
 {$R *.dfm}
 
@@ -320,7 +320,7 @@ begin
   try
     if FrmAgenda_Mov = nil then
        FrmAgenda_Mov:=TFrmAgenda_Mov.create(self);
-    FrmAgenda_Mov.showmodal;
+    AbrirModal(Self, FrmAgenda_Mov);
   finally
     FreeAndNil(FrmAgenda_Mov);
   end;

@@ -724,7 +724,7 @@ begin
   rg := DM_Tabelas.ZQBancRemes.GetBookMark;
   if Frm_RelREMESSA=nil then
      Frm_RelREMESSA:=TFrm_RelREMESSA.Create(Self);
-  Frm_RelREMESSA.showmodal;
+  AbrirModal(Self, Frm_RelREMESSA);
   Frm_RelREMESSA:=nil;
   Frm_RelREMESSA.Free;
   DM_Tabelas.ZQBancRemes.GotoBookMark(rg);
