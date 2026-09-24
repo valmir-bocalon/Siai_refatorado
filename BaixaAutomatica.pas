@@ -601,6 +601,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := copy(varnome,15,20);
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -801,6 +804,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime     := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString    := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -970,6 +976,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1131,6 +1140,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1285,6 +1297,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1467,6 +1482,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := copy(varnome,10,20);
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1622,6 +1640,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1784,6 +1805,9 @@ begin
         // gravar o nome do arquivo e a data
         DM_TAbelas.ZQBancRemes.Open;
         DM_TAbelas.ZQBancRemes.Insert;
+        DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger := 0;
+        DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger :=
+          DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsInteger;
         DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := Edata.DateValue;
         DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString := varnome;
         DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := digit;
@@ -1897,14 +1921,107 @@ begin
 end;
 
 procedure TFrm_BaixaAutomatica.DXBProcessarClick(Sender: TObject);
+type
+  TRemessaPorConta = record
+    idConta: Int64;
+    idRemessa: Int64;
+  end;
 Var
   xref,Varx : integer;
   bco,ctbl,perc,varnome, vardata : string;
   saldo:double;
+  idbancoRemessaAtual: Int64;
+  indiceRetorno: Integer;
+  idsBancoRemessa: array of Int64;
+  ignorarCedido: array of Boolean;
+  cacheRemessas: array of TRemessaPorConta;
+  indiceCache: Integer;
+  idsRetorno, idsRecebAtual, idsPendentes, idsCessao: TStringList;
+  temTabelaCessao: Boolean;
+  indiceLista: Integer;
+  QPreValidacao: TZQuery;
+  contaSemRemessa, parcelaSemRemessa: string;
+
+  function LocalizarIdBancoRemessa: Int64;
+  var
+    nomeArquivoRemessa: string;
+    sqlBase: string;
+  begin
+    Result := 0;
+    if CDSArqRetornoidconta_bancaria.AsLargeInt <= 0 then
+      Exit;
+
+    nomeArquivoRemessa := varnome;
+    if bco = '756' then
+      nomeArquivoRemessa := Copy(varnome, 15, 20);
+
+    sqlBase := 'Select idbanco_remessa,remessa,idbanco,gerado,nomearq,arquivo,digito_dif,remessa2 from banco_remessa where idbanco=' +
+      IntToStr(CDSArqRetornoidconta_bancaria.AsLargeInt) + ' and gerado=' + QuotedStr(vardata) +
+      ' and nomearq=' + QuotedStr(nomeArquivoRemessa);
+
+    DM_Tabelas.ZQBancRemes2.Close;
+    DM_Tabelas.ZQBancRemes2.SQL.Clear;
+    DM_Tabelas.ZQBancRemes2.SQL.Add(sqlBase + ' and digito_dif=' + QuotedStr(Trim(CDSArqRetornoDigito.AsString)) +
+      ' order by idbanco_remessa desc limit 1');
+    DM_Tabelas.ZQBancRemes2.Open;
+    if not DM_Tabelas.ZQBancRemes2.IsEmpty then
+      Result := DM_Tabelas.ZQBancRemes2.FieldByName('idbanco_remessa').AsLargeInt;
+
+    if Result <= 0 then
+    begin
+      DM_Tabelas.ZQBancRemes2.Close;
+      DM_Tabelas.ZQBancRemes2.SQL.Clear;
+      DM_Tabelas.ZQBancRemes2.SQL.Add(sqlBase + ' order by idbanco_remessa desc limit 1');
+      DM_Tabelas.ZQBancRemes2.Open;
+      if not DM_Tabelas.ZQBancRemes2.IsEmpty then
+        Result := DM_Tabelas.ZQBancRemes2.FieldByName('idbanco_remessa').AsLargeInt;
+    end;
+  end;
+
+  function MontarListaSql(ALista: TStringList): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to ALista.Count - 1 do
+    begin
+      if Result <> '' then
+        Result := Result + ',';
+      Result := Result + ALista[I];
+    end;
+  end;
+
+  procedure ConsultarIds(const ATabela, ACampo: string; AIds, AResultado: TStringList);
+  begin
+    if AIds.Count = 0 then
+      Exit;
+    QPreValidacao.Close;
+    QPreValidacao.SQL.Clear;
+    QPreValidacao.SQL.Add('select ' + ACampo + ' from ' + ATabela + ' where ' + ACampo + ' in (' + MontarListaSql(AIds) + ')');
+    QPreValidacao.Open;
+    while not QPreValidacao.Eof do
+    begin
+      AResultado.Add(QPreValidacao.FieldByName(ACampo).AsString);
+      QPreValidacao.Next;
+    end;
+    QPreValidacao.Close;
+  end;
+
+  procedure RestaurarConsultaRemessa;
+  begin
+    DM_Tabelas.ZQBancRemes2.Close;
+    DM_Tabelas.ZQBancRemes2.SQL.Clear;
+    DM_Tabelas.ZQBancRemes2.SQL.Add('Select idbanco_remessa,remessa,idbanco,gerado,nomearq,arquivo,digito_dif,remessa2 from banco_remessa');
+  end;
 begin
   DXBProcessar.Enabled:=false;
   processou:='S';
-  if not Verif_senha('Recebimento','Processa baixa automática','') then exit;
+  if not Verif_senha('Recebimento','Processa baixa automática','') then
+  begin
+    DXBProcessar.Enabled:=true;
+    processou:='N';
+    Exit;
+  end;
   DM_TAbelas.ZQBancRemes2.Open;
 {  for varx := length(OpenDialog1.FileName) to 1 do
     if copy(OpenDialog1.FileName,varx,1)='/' Then
@@ -1970,19 +2087,143 @@ begin
 //  DM_Tabelas.ZQRemesRec.SQL.Add('select idremessa_receb,remessa,idrec,retorno_motivo,acao,nossonumero,ocorrencia,desc_motivo,credito,dt_ocorrencia from remessa_receb');
 //  DM_Tabelas.ZQRemesRec.Open;
 
+  idsRetorno := TStringList.Create;
+  idsRecebAtual := TStringList.Create;
+  idsPendentes := TStringList.Create;
+  idsCessao := TStringList.Create;
+  QPreValidacao := TZQuery.Create(nil);
+  try
+    QPreValidacao.Connection := ZQReceb.Connection;
+    idsRetorno.Sorted := true;
+    idsRetorno.Duplicates := dupIgnore;
+    idsRecebAtual.Sorted := true;
+    idsRecebAtual.Duplicates := dupIgnore;
+    idsPendentes.Sorted := true;
+    idsPendentes.Duplicates := dupIgnore;
+    idsCessao.Sorted := true;
+    idsCessao.Duplicates := dupIgnore;
+
+    SetLength(idsBancoRemessa, CDSArqRetorno.RecordCount);
+    SetLength(ignorarCedido, CDSArqRetorno.RecordCount);
+    SetLength(cacheRemessas, 0);
+
+    CDSArqRetorno.First;
+    while not CDSArqRetorno.Eof do
+    begin
+      idsRetorno.Add(CDSArqRetornoidrece.AsString);
+      CDSArqRetorno.Next;
+    end;
+
+    ConsultarIds('recebimento', 'idrecebimento', idsRetorno, idsRecebAtual);
+    for indiceLista := 0 to idsRetorno.Count - 1 do
+      if idsRecebAtual.IndexOf(idsRetorno[indiceLista]) < 0 then
+        idsPendentes.Add(idsRetorno[indiceLista]);
+
+    if idsPendentes.Count > 0 then
+    begin
+      QPreValidacao.Close;
+      QPreValidacao.SQL.Clear;
+      QPreValidacao.SQL.Add('select TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA=DATABASE() and TABLE_NAME=''recebimento_id_cessao''');
+      QPreValidacao.Open;
+      temTabelaCessao := not QPreValidacao.IsEmpty;
+      QPreValidacao.Close;
+      if temTabelaCessao then
+        ConsultarIds('recebimento_id_cessao', 'id_antigo', idsPendentes, idsCessao);
+    end;
+
+    CDSArqRetorno.First;
+    indiceRetorno := 0;
+    while not CDSArqRetorno.Eof do
+    begin
+      if idsRecebAtual.IndexOf(CDSArqRetornoidrece.AsString) >= 0 then
+        ignorarCedido[indiceRetorno] := false
+      else if idsCessao.IndexOf(CDSArqRetornoidrece.AsString) >= 0 then
+        ignorarCedido[indiceRetorno] := true
+      else
+      begin
+        parcelaSemRemessa := CDSArqRetornoidrece.AsString;
+        CDSArqRetorno.First;
+        RestaurarConsultaRemessa;
+        ProgressBar1.Visible := false;
+        DXBProcessar.Enabled := true;
+        processou := 'N';
+        mensagem('A parcela ' + parcelaSemRemessa + ' não foi encontrada em recebimento nem em recebimento_id_cessao.id_antigo. Nenhum registro financeiro foi alterado.');
+        Exit;
+      end;
+      Inc(indiceRetorno);
+      CDSArqRetorno.Next;
+    end;
+
+    CDSArqRetorno.First;
+    indiceRetorno := 0;
+    while not CDSArqRetorno.Eof do
+    begin
+      if not ignorarCedido[indiceRetorno] then
+      begin
+        indiceCache := 0;
+        while (indiceCache < Length(cacheRemessas)) and
+          (cacheRemessas[indiceCache].idConta <> CDSArqRetornoidconta_bancaria.AsLargeInt) do
+          Inc(indiceCache);
+
+        if indiceCache < Length(cacheRemessas) then
+          idbancoRemessaAtual := cacheRemessas[indiceCache].idRemessa
+        else
+        begin
+          idbancoRemessaAtual := LocalizarIdBancoRemessa;
+          if idbancoRemessaAtual <= 0 then
+          begin
+            contaSemRemessa := CDSArqRetornoidconta_bancaria.AsString;
+            parcelaSemRemessa := CDSArqRetornoidrece.AsString;
+            CDSArqRetorno.First;
+            RestaurarConsultaRemessa;
+            ProgressBar1.Visible := false;
+            DXBProcessar.Enabled := true;
+            processou := 'N';
+            mensagem('Não foi localizada a remessa deste arquivo antes de iniciar a baixa. Nenhum registro financeiro foi alterado. Conta: ' +
+              contaSemRemessa + ', data: ' + vardata + ', arquivo: ' + varnome + ', parcela: ' + parcelaSemRemessa + '.');
+            Exit;
+          end;
+
+          SetLength(cacheRemessas, Length(cacheRemessas) + 1);
+          cacheRemessas[High(cacheRemessas)].idConta := CDSArqRetornoidconta_bancaria.AsLargeInt;
+          cacheRemessas[High(cacheRemessas)].idRemessa := idbancoRemessaAtual;
+        end;
+        idsBancoRemessa[indiceRetorno] := idbancoRemessaAtual;
+      end;
+      Inc(indiceRetorno);
+      CDSArqRetorno.Next;
+    end;
+
+    RestaurarConsultaRemessa;
+    CDSArqRetorno.First;
+  finally
+    QPreValidacao.Close;
+    QPreValidacao.Free;
+    idsCessao.Free;
+    idsPendentes.Free;
+    idsRecebAtual.Free;
+    idsRetorno.Free;
+  end;
   CDSArqRetorno.First;
   ProgressBar1.Position:=0;
   ProgressBar1.Max:=CDSArqRetorno.RecordCount;
   ProgressBar1.Visible:=true;
   CDSArqRetorno.DisableControls;
-
-
+  indiceRetorno := 0;
 
   while not CDSArqRetorno.Eof do
   begin
+    ProgressBar1.Position:=CDSArqRetorno.RecNo;
+    if ignorarCedido[indiceRetorno] then
+    begin
+      Inc(indiceRetorno);
+      CDSArqRetorno.Next;
+      Continue;
+    end;
+    idbancoRemessaAtual := idsBancoRemessa[indiceRetorno];
+    Inc(indiceRetorno);
     saldo:=0;
     application.ProcessMessages;
-    ProgressBar1.Position:=CDSArqRetorno.RecNo;
     if CDSArqRetornoacao.Value = 'R' Then
     Begin
 {      DM_Tabelas.ZQRemesRec.SQL.Clear;
@@ -2225,14 +2466,6 @@ begin
     begin
 
       application.ProcessMessages;
-      DM_TAbelas.ZQBancRemes2.close;
-      DM_Tabelas.ZQBancRemes2.SQL.Clear;
-      if (bco<>'756') then
-         DM_Tabelas.ZQBancRemes2.SQL.Add('Select idbanco_remessa,remessa,idbanco,gerado,nomearq,arquivo,digito_dif,remessa2 from banco_remessa where idbanco='+quotedstr(CDSArqRetornoidconta_bancaria.Text)+' and digito_dif='+quotedstr(trim(CDSArqRetornoDigito.Value))+' and gerado='+quotedstr(vardata)+' and nomearq='+quotedstr(varnome))
-      else
-         DM_Tabelas.ZQBancRemes2.SQL.Add('Select idbanco_remessa,remessa,idbanco,gerado,nomearq,arquivo,digito_dif,remessa2 from banco_remessa where idbanco='+quotedstr(CDSArqRetornoidconta_bancaria.Text)+' and digito_dif='+quotedstr(trim(CDSArqRetornoDigito.Value))+' and gerado='+quotedstr(vardata)+' and nomearq='+quotedstr(copy(varnome,15,20)));
-      DM_TAbelas.ZQBancRemes2.open;
-      DM_TAbelas.ZQBancRemes2.RecordCount;
       application.ProcessMessages;
 
       DM_Tabelas.ZQRemesRec.Close;
@@ -2242,13 +2475,13 @@ begin
       if CDSArqRetornodt_credito.value>0 then
       begin
         DM_Tabelas.ZQRemesRec.SQL.Add('INSERT INTO  remessa_receb (remessa,idrec,nossonumero,ocorrencia,desc_motivo,credito,dt_ocorrencia) VALUES ('+
-                                          quotedstr(DM_Tabelas.ZQBancRemes2.FieldByName('idbanco_remessa').AsString)+','+quotedstr(CDSArqRetornoidrece.Value.ToString)+','+quotedstr(CDSArqRetornonossonumero.Value)+','+quotedstr(CDSArqRetornodesc_ocorr.Value)+','+
+                                          IntToStr(idbancoRemessaAtual)+','+quotedstr(CDSArqRetornoidrece.Value.ToString)+','+quotedstr(CDSArqRetornonossonumero.Value)+','+quotedstr(CDSArqRetornodesc_ocorr.Value)+','+
                                           quotedstr(copy(CDSArqRetornodesc_motivo.Value,1,100))+','+quotedstr(FormatDateTime('yyyy/mm/dd',CDSArqRetornodt_credito.value))+','+quotedstr(FormatDateTime('yyyy/mm/dd',EData.DateValue))+')');
       end
       else
       begin
         DM_Tabelas.ZQRemesRec.SQL.Add('INSERT INTO  remessa_receb (remessa,idrec,nossonumero,ocorrencia,desc_motivo,dt_ocorrencia) VALUES ('+
-                                          quotedstr(DM_Tabelas.ZQBancRemes2.FieldByName('idbanco_remessa').AsString)+','+quotedstr(CDSArqRetornoidrece.Value.ToString)+','+quotedstr(CDSArqRetornonossonumero.Value)+','+quotedstr(CDSArqRetornodesc_ocorr.Value)+','+
+                                          IntToStr(idbancoRemessaAtual)+','+quotedstr(CDSArqRetornoidrece.Value.ToString)+','+quotedstr(CDSArqRetornonossonumero.Value)+','+quotedstr(CDSArqRetornodesc_ocorr.Value)+','+
                                           quotedstr(copy(CDSArqRetornodesc_motivo.Value,1,100))+','+quotedstr(FormatDateTime('yyyy/mm/dd',EData.DateValue))+')');
       end;
       DM_Tabelas.ZQRemesRec.ExecSQL;
