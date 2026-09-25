@@ -611,7 +611,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

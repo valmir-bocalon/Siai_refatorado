@@ -82,7 +82,7 @@ var
 
 implementation
 
-uses PerguntaSIMNAO, uRuntimeFields;
+uses PerguntaSIMNAO, uRuntimeFields, Funcoes;
 
 
 {$R *.dfm}
@@ -315,7 +315,7 @@ begin
   ENomeArquivo.Text := copy(OpenDialog1.FileName,tamanhonome+1,length(OpenDialog1.FileName));;
   Perform(WM_NEXTDLGCTL, 0, 0);
   if pos(' ',EDestino.Text)>0 Then Begin
-    Showmessage('Não pode existir espaço em branco no meio do nome do DESTINO');
+    Mensagem('Não pode existir espaço em branco no meio do nome do DESTINO');
     EDestino.SetFocus;
   end;
 end;

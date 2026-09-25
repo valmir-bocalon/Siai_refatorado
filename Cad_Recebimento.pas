@@ -1801,7 +1801,7 @@ begin
         if DM_tabelas.ZQReBxHi.ControlsDisabled then
           DM_tabelas.ZQReBxHi.EnableControls;
         DM_tabelas.zconeccao.Rollback;
-        ShowMessage('Erro ao excluir baixa: ' + E.Message);
+        mensagem('Erro ao excluir baixa: ' + E.Message);
         Exit;
       end;
     end;
@@ -2153,7 +2153,7 @@ begin
     LReferencia := DM_Tabelas.ZQRecebimento.FieldByName('refvinda').AsString;
   if Empty(LReferencia) then
   begin
-    ShowMessage('Nao foi encontrada uma baixa para reimprimir o recibo deste titulo.');
+    mensagem('Nao foi encontrada uma baixa para reimprimir o recibo deste titulo.');
     Exit;
   end;
 
@@ -3214,7 +3214,7 @@ begin
       CDnegocio.Close;
       CDnegocio2.Close;
       XN.Value := 0;
-      ShowMessage('Selecione as parcelas no quadro de cobranca com Ctrl+clique antes de informar o vencimento.');
+      mensagem('Selecione as parcelas no quadro de cobranca com Ctrl+clique antes de informar o vencimento.');
       Exit;
     end;
     GetSelectedRecord(ZQRecebimento, 'idrecebimento',DBcobranca.SelectedRows, ListBox1.Items);
@@ -3222,7 +3222,7 @@ begin
     begin
       CDnegocio.Close;
       XN.Value := 0;
-      ShowMessage('Nenhuma parcela disponivel para negociar. Selecione novamente as parcelas.');
+      mensagem('Nenhuma parcela disponivel para negociar. Selecione novamente as parcelas.');
       Exit;
     end;
     CDnegocio2.First;
@@ -3234,7 +3234,7 @@ begin
         CDnegocio.Close;
         CDnegocio2.Close;
         XN.Value := 0;
-        ShowMessage('Existe parcela selecionada sem vencimento ou saldo valido. Confira as parcelas antes de negociar.');
+        mensagem('Existe parcela selecionada sem vencimento ou saldo valido. Confira as parcelas antes de negociar.');
         Exit;
       end;
       CDnegocio2.Next;

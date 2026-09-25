@@ -463,19 +463,19 @@ begin
     exit;
   end;
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').Value<DM_Tabelas.ZQVenda.FieldByName('valorvenal').Value Then Begin
-    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
+    Mensagem('O valor de VENDA não deve ser menor que o valor venal...');
     Pag_Venda.PageIndex := 1;
     DBEVrvenda.SetFocus;
     exit;
   end;
   if DM_Tabelas.CDSCompradorTemp.RecordCount=0 Then Begin
-    Showmessage('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
+    Mensagem('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
     Pag_Venda.PageIndex := 0;
     EComprador.SetFocus;
     exit;
   end;
   if DM_Tabelas.CDSVendedorTemp.RecordCount=0 Then Begin
-    Showmessage('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
+    Mensagem('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
     Pag_Venda.PageIndex := 0;
     Ecorretor.SetFocus;
     exit;
@@ -1268,7 +1268,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').Value<DM_Tabelas.ZQVenda.FieldByName('valorvenal').Value Then
-    Showmessage('O valor de venda é menor que o valor venal...');
+    Mensagem('O valor de venda é menor que o valor venal...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);

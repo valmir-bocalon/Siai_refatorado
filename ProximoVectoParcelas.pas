@@ -526,7 +526,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -827,7 +827,7 @@ begin
   //  dxButton13.Enabled:=true;
     //dxButton14.Enabled:=true;
 //    dxButton14.SetFocus;
-    Showmessage('Seleção Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
+    Mensagem('Seleção Feita. Para Atualizar o Vcto. Clique em PROCESSAR !');
     DBGrid2.DataSource:=DS_Recebimento;
     dxButton1.Enabled:=true;
     dxButton1.SetFocus;

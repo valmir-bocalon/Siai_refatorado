@@ -74,7 +74,9 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
-
+    FTextoAvisoParcela: string;
+    procedure FecharAvisoParcelaPorTempo(Sender: TObject);
+    procedure MensagemParcelaComPrazo(const Texto: string);
     procedure AfterConstruction; override;
   public
     { Public declarations }
@@ -86,7 +88,7 @@ var
   
 implementation
 
-uses Tabelas, funcoes, TabelasDeMensagens, RelRetorno,
+uses Tabelas, funcoes, FINANmsg, TabelasDeMensagens, RelRetorno,
      StrUtils, math,
       DateUtils, FileCtrl,
       ACBrUtil, uRuntimeFields;
@@ -94,6 +96,32 @@ uses Tabelas, funcoes, TabelasDeMensagens, RelRetorno,
 
 
 {$R *.dfm}
+
+procedure TFrm_BaixaAutomatica.FecharAvisoParcelaPorTempo(Sender: TObject);
+begin
+  TTimer(Sender).Enabled := False;
+  if Assigned(FormMensagem) then
+    if FormMensagem.Frase.Caption = FTextoAvisoParcela then
+      FormMensagem.Close;
+end;
+
+procedure TFrm_BaixaAutomatica.MensagemParcelaComPrazo(const Texto: string);
+var
+  Temporizador: TTimer;
+begin
+  Temporizador := TTimer.Create(nil);
+  try
+    FTextoAvisoParcela := Texto;
+    Temporizador.Enabled := False;
+    Temporizador.Interval := 5000;
+    Temporizador.OnTimer := FecharAvisoParcelaPorTempo;
+    Temporizador.Enabled := True;
+    mensagem(Texto);
+  finally
+    Temporizador.Free;
+    FTextoAvisoParcela := '';
+  end;
+end;
 
 procedure TFrm_BaixaAutomatica.DXBFecharClick(Sender: TObject);
 begin
@@ -1934,6 +1962,7 @@ Var
   indiceRetorno: Integer;
   idsBancoRemessa: array of Int64;
   ignorarCedido: array of Boolean;
+  recebimentoNaoEncontrado: array of Boolean;
   cacheRemessas: array of TRemessaPorConta;
   indiceCache: Integer;
   idsRetorno, idsRecebAtual, idsPendentes, idsCessao: TStringList;
@@ -2105,6 +2134,7 @@ begin
 
     SetLength(idsBancoRemessa, CDSArqRetorno.RecordCount);
     SetLength(ignorarCedido, CDSArqRetorno.RecordCount);
+    SetLength(recebimentoNaoEncontrado, CDSArqRetorno.RecordCount);
     SetLength(cacheRemessas, 0);
 
     CDSArqRetorno.First;
@@ -2136,19 +2166,19 @@ begin
     while not CDSArqRetorno.Eof do
     begin
       if idsRecebAtual.IndexOf(CDSArqRetornoidrece.AsString) >= 0 then
-        ignorarCedido[indiceRetorno] := false
+      begin
+        ignorarCedido[indiceRetorno] := false;
+        recebimentoNaoEncontrado[indiceRetorno] := false;
+      end
       else if idsCessao.IndexOf(CDSArqRetornoidrece.AsString) >= 0 then
-        ignorarCedido[indiceRetorno] := true
+      begin
+        ignorarCedido[indiceRetorno] := true;
+        recebimentoNaoEncontrado[indiceRetorno] := false;
+      end
       else
       begin
-        parcelaSemRemessa := CDSArqRetornoidrece.AsString;
-        CDSArqRetorno.First;
-        RestaurarConsultaRemessa;
-        ProgressBar1.Visible := false;
-        DXBProcessar.Enabled := true;
-        processou := 'N';
-        mensagem('A parcela ' + parcelaSemRemessa + ' não foi encontrada em recebimento nem em recebimento_id_cessao.id_antigo. Nenhum registro financeiro foi alterado.');
-        Exit;
+        ignorarCedido[indiceRetorno] := false;
+        recebimentoNaoEncontrado[indiceRetorno] := true;
       end;
       Inc(indiceRetorno);
       CDSArqRetorno.Next;
@@ -2158,7 +2188,7 @@ begin
     indiceRetorno := 0;
     while not CDSArqRetorno.Eof do
     begin
-      if not ignorarCedido[indiceRetorno] then
+      if not ignorarCedido[indiceRetorno] and not recebimentoNaoEncontrado[indiceRetorno] then
       begin
         indiceCache := 0;
         while (indiceCache < Length(cacheRemessas)) and
@@ -2216,6 +2246,13 @@ begin
     ProgressBar1.Position:=CDSArqRetorno.RecNo;
     if ignorarCedido[indiceRetorno] then
     begin
+      Inc(indiceRetorno);
+      CDSArqRetorno.Next;
+      Continue;
+    end;
+    if recebimentoNaoEncontrado[indiceRetorno] then
+    begin
+      MensagemParcelaComPrazo('A parcela ' + CDSArqRetornoidrece.AsString + ' não foi encontrada em recebimento nem em recebimento_id_cessao.id_antigo.'+sLineBreak+' Esta linha será ignorada e o processamento continuará.');
       Inc(indiceRetorno);
       CDSArqRetorno.Next;
       Continue;

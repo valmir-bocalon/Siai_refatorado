@@ -105,7 +105,7 @@ begin
   Label6.Caption := 'F';
   if not empty(ESenha.Text) Then Begin
     if DM_Tabelas.ZQUsuTemp.FieldByName('senha').AsString<>ESenha.Text Then Begin
-      Showmessage('Senha INCORRETA'+chr(13)+'Tentativa ' +inttostr(vartentativa));
+      Mensagem('Senha INCORRETA'+chr(13)+'Tentativa ' +inttostr(vartentativa));
       if vartentativa<4 Then
         ESenha.SetFocus
       else

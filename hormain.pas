@@ -505,7 +505,7 @@ begin
 
     if varlote = '' then
     begin
-      ShowMessage('Nenhum Cliente Selecionado!');
+      mensagem('Nenhum Cliente Selecionado!');
       Exit;
     end;
 

@@ -400,7 +400,7 @@ begin
   begin
     if veio.Caption='S' then
     begin
-      Showmessage('Dados da Pesquisa Não Encontrados.');
+      Mensagem('Dados da Pesquisa Não Encontrados.');
     end
     else
     begin

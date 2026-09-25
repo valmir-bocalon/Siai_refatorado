@@ -664,7 +664,7 @@ Begin
     Check := IntToStr(Digito1) + IntToStr(Digito2);
     if Check <> copy(dados,succ(length(dados)-2),2) then begin
       if vermens Then
-        Showmessage('C.P.F. invalido...   Tente outra vez!!');
+        Mensagem('C.P.F. invalido...   Tente outra vez!!');
       Result := False;
     end;
   end
@@ -846,7 +846,7 @@ begin
   end;
   {if date<DM_Tabelas.ZQEmpresadia.Value Then
   Begin
-    Showmessage('Data do computador está incorreta, acerte a data antes de usar o sistema...');
+    Mensagem('Data do computador está incorreta, acerte a data antes de usar o sistema...');
     Result := False;
     exit;
   end;}
@@ -884,7 +884,7 @@ begin
     End
     else
     Begin
-      Showmessage('Contra-Senha incorreta...');
+      Mensagem('Contra-Senha incorreta...');
       if descripto_data(DM_Tabelas.ZQEmpresa.FieldByName('limite').AsString)<=date Then
         Result := False;
     End;
@@ -1946,7 +1946,7 @@ Delete(S,Pos(delchar,S),1);
 Result := S;
 end;
 {Remover todas as letras 's':
-ShowMessage(TrimChar(Edit1.Text,'s'));}
+mensagem(TrimChar(Edit1.Text,'s'));}
 
 
 function Formatar(Texto : string; TamanhoDesejado : integer; AcrescentarADireita : boolean = true; CaracterAcrescentar : char = ' ') : string;

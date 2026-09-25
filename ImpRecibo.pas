@@ -58,7 +58,7 @@ var
 begin
   if not TryStrToInt(Trim(N_Baixa.Text), LReferencia) then
   begin
-    ShowMessage('Referencia de baixa invalida para a reimpressao do recibo.');
+    mensagem('Referencia de baixa invalida para a reimpressao do recibo.');
     Close;
     Exit;
   end;

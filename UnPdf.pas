@@ -25,7 +25,7 @@ var
 
 implementation
 uses
-  uRuntimeFields;
+  uRuntimeFields, Funcoes;
 
 {$R *.dfm}
 
@@ -34,7 +34,7 @@ begin
     if FileExists(CaminhoPDF) then
       WebBrowser1.Navigate(CaminhoPDF)
     else
-      ShowMessage('PDF do contrato não encontrado: ' + CaminhoPDF);
+      mensagem('PDF do contrato não encontrado: ' + CaminhoPDF);
 end;
 procedure TFrmVisualizarPdf.FormShow(Sender: TObject);
 begin

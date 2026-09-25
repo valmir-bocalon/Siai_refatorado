@@ -75,7 +75,7 @@ procedure PTela( Sender: Tobject );
     try
       ChangeDisplaySettings(sDispMode,0);
     except
-      ShowMessage('Não é possível alterar configurações de vídeo.')
+      mensagem('Não é possível alterar configurações de vídeo.')
     end;
 
   end;

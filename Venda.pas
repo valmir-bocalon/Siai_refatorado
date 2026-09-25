@@ -1633,26 +1633,26 @@ begin
       exit;
     end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
+//    Mensagem('O valor de VENDA não deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
 //  end;
     if DM_Tabelas.CDSCompradorTemp.RecordCount=0 Then Begin
-      Showmessage('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
+      Mensagem('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
       Pag_Venda.PageIndex := 0;
       EComprador.SetFocus;
       exit;
     end;
     if DM_Tabelas.CDSVendedorTemp.RecordCount=0 Then Begin
-      Showmessage('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
+      Mensagem('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
       Pag_Venda.PageIndex := 0;
       Ecorretor.SetFocus;
       exit;
     end;
 
     if fp.ItemIndex=-1 then begin
-       Showmessage('Deve indicar o tipo de reajuste das parcelas!');
+       Mensagem('Deve indicar o tipo de reajuste das parcelas!');
        fp.SetFocus;
        exit;
     end;
@@ -3200,7 +3200,7 @@ Begin
   if Pag_Venda.PageIndex=2 then
   begin
     if xdqtdeparcelas.Value=xdparpagas.Value then
-       Showmessage('Não há Valores para Quitação.');
+       Mensagem('Não há Valores para Quitação.');
   end;
 end;
 
@@ -3493,7 +3493,7 @@ end;
 procedure TFrm_Venda.DBEVrvendaExit(Sender: TObject);
 begin
   if DM_Tabelas.ZQVenda.FieldByName('valorvenda').AsFloat<(DM_Tabelas.ZQVenda.FieldByName('valorvenal').AsFloat-DM_Tabelas.ZQVenda.FieldByName('vlr_comissao').AsFloat) Then
-    Showmessage('O valor de venda é menor que o valor de tabela + Comissão...');
+    Mensagem('O valor de venda é menor que o valor de tabela + Comissão...');
 end;
 
 procedure TFrm_Venda.DBCBDocVendaParcExit(Sender: TObject);
@@ -3982,7 +3982,7 @@ begin
    if (ZQInandimplencia.RecordCount>0) and (ZQInandimplencia.FieldByName('Parcela_corrigida').AsFloat>0) then
    begin
      mensagem('Cliente com Parcela(s) Atrasada(s)');
-     Showmessage('Aguarde! Vou Atualizar os Saldos Atrazados.');
+     Mensagem('Aguarde! Vou Atualizar os Saldos Atrazados.');
      ZQInandimplencia.close;
      ZQInandimplencia.sql.Clear;
      if Lmora.Caption='N' then

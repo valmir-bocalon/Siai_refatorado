@@ -255,13 +255,13 @@ Var
 begin
 //  if not Verif_senha('Loteamento','Gravar inclusão ou edição','Loteamento: '+DM_Tabelas.ZQLoteamentoidloteamento.Text+' - '+DM_Tabelas.ZQLoteamentomatriculaloteamento.Value) Then Exit;
 //  if empty(DM_Tabelas.ZQLoteamentomatriculaloteamento.Value) Then Begin
-//    Showmessage('A matricula do loteamento não pode ficar em branco!!!...');
+//    Mensagem('A matricula do loteamento não pode ficar em branco!!!...');
 //    Pag_Loteamento.PageIndex := 0;
 //    DBEMatricula.SetFocus;
 //    exit;
 //  end;
   if DM_Tabelas.ZQLoteamento.FieldByName('cidade_idcidade').AsLargeInt=0 Then Begin
-    Showmessage('A cidade do loteamento não pode ficar em branco!!!...');
+    Mensagem('A cidade do loteamento não pode ficar em branco!!!...');
     Pag_Loteamento.PageIndex := 0;
     EUsuCidade.SetFocus;
     exit;
@@ -273,7 +273,7 @@ begin
     DM_Tabelas.CDSIncorp.Next;
   end;
   if vary<100 Then Begin
-    Showmessage('A soma do % de participação deve ser igual a 100!!!...');
+    Mensagem('A soma do % de participação deve ser igual a 100!!!...');
     Pag_Loteamento.PageIndex := 1;
     DBEPercent.SetFocus;
     exit;

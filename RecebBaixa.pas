@@ -1484,7 +1484,7 @@ begin
   // --------------------------------------------------------------------------
   if Empty(CBTipobaixa.Text) then
   begin
-    ShowMessage('Selecione o tipo de operação !');
+    mensagem('Selecione o tipo de operação !');
     CBTipobaixa.SetFocus;
     Exit;
   end;
@@ -2066,7 +2066,7 @@ begin
     begin
       // ROLLBACK em caso de erro — banco volta ao estado anterior
       DM_tabelas.zconeccao.Rollback;
-      ShowMessage('Erro ao gravar baixa: ' + E.Message +
+      mensagem('Erro ao gravar baixa: ' + E.Message +
                   #13#10 + 'A operação foi cancelada.');
       DXBBaixaGravar.Enabled := True;
       DXBFechar.Enabled      := True;
@@ -2100,7 +2100,7 @@ begin
   if FrmImpRecibo <> nil then
     FreeAndNil(FrmImpRecibo);
 
-  ShowMessage('Operação Terminada!');
+  mensagem('Operação Terminada!');
 end;
 procedure TFrmRecebBaixa.DBCBTIPDOCExit(Sender: TObject);
 begin

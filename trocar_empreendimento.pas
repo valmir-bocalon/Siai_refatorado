@@ -593,19 +593,19 @@ begin
     exit;
   end;
 //  if DM_Tabelas.ZQVendavalorvenda.Value<DM_Tabelas.ZQVendavalorvenal.Value Then Begin
-//    Showmessage('O valor de VENDA não deve ser menor que o valor venal...');
+//    Mensagem('O valor de VENDA não deve ser menor que o valor venal...');
 //    Pag_Venda.PageIndex := 1;
 //    DBEVrvenda.SetFocus;
 //    exit;
 //  end;
   if DM_Tabelas.CDSCompradorTemp.RecordCount=0 Then Begin
-    Showmessage('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
+    Mensagem('Ao menos um COMPRADOR deve ser informado para que a venda possa ser concluida..');
     Pag_Venda.PageIndex := 0;
     EComprador.SetFocus;
     exit;
   end;
   if DM_Tabelas.CDSVendedorTemp.RecordCount=0 Then Begin
-    Showmessage('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
+    Mensagem('Ao menos um VENDEDOR deve ser informado para que a venda possa ser concluida..');
     Pag_Venda.PageIndex := 0;
     Ecorretor.SetFocus;
     exit;

@@ -602,7 +602,7 @@ begin
     StrToDate(DBEDataLanc.Text);
     except
     on EConvertError do
-    ShowMessage ('Data Inválida!');
+    mensagem ('Data Inválida!');
     end;
   end;
 end;

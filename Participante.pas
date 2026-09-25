@@ -1275,9 +1275,9 @@ begin
         if FieldByName('idpaticipante').AsLargeInt <> DM_Tabelas.ZqParticipante.FieldByName('idpaticipante').AsLargeInt then
         begin
           if DM_Tabelas.ZqParticipante.FieldByName('tipopessoa').AsString = 'F' then
-            ShowMessage('CPF já cadastrado!')
+            mensagem('CPF já cadastrado!')
           else
-            ShowMessage('CNPJ já cadastrado!');
+            mensagem('CNPJ já cadastrado!');
 
           DBEDoc1.SetFocus;
           close;

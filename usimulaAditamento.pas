@@ -98,12 +98,12 @@ procedure Tfrmsimulaaditamento.dxButton5Click(Sender: TObject);
 begin
   if not CdsAditamento.Active then
   begin
-    ShowMessage('Informe uma quantidade de parcelas valida para gerar a simulacao antes de imprimir.');
+    mensagem('Informe uma quantidade de parcelas valida para gerar a simulacao antes de imprimir.');
     Exit;
   end;
   if CdsAditamento.IsEmpty then
   begin
-    ShowMessage('Nao ha dados na simulacao para imprimir.');
+    mensagem('Nao ha dados na simulacao para imprimir.');
     Exit;
   end;
 

@@ -1600,7 +1600,7 @@ begin
     end
     else
     begin
-      Showmessage('Não há Venda nesse Período.');
+      Mensagem('Não há Venda nesse Período.');
     end;
     DXBImprimir.Enabled:=true;
     ZQdiaria.Close;
@@ -1662,7 +1662,7 @@ begin
     end
     else
     begin
-      Showmessage('Não há Cessão nesse período.');
+      Mensagem('Não há Cessão nesse período.');
     end;
     ZQcessao.Close;
   end
@@ -1724,7 +1724,7 @@ begin
     end
     else
     begin
-      Showmessage('Não há Rescisão nesse período.');
+      Mensagem('Não há Rescisão nesse período.');
     end;
     ZQRescisao.Close;
   end
@@ -3147,7 +3147,7 @@ begin
       end;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

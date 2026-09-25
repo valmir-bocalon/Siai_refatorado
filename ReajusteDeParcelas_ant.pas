@@ -540,7 +540,7 @@ begin
       CDSQuadraLote.Post;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
@@ -1149,7 +1149,7 @@ begin
   Panel1.Visible:=false;
   application.ProcessMessages;
 
-  Showmessage('Reajuste Terminado Com Sucesso!');
+  Mensagem('Reajuste Terminado Com Sucesso!');
 end;
 
 procedure TFrm_ReajusteDeParcelas.xmesExit(Sender: TObject);

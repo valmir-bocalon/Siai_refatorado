@@ -422,7 +422,7 @@ begin
     CDSParcelas.Next;
   end;
   if floattostr(varsoma) <> floattostr(XNEValor.Value) Then Begin
-    Showmessage('Há uma diferença de '+floattostr(varsoma-XNEValor.Value)+' no valor das parcelas...  Refaça as parcelas...');
+    Mensagem('Há uma diferença de '+floattostr(varsoma-XNEValor.Value)+' no valor das parcelas...  Refaça as parcelas...');
     XNEParcelas.Setfocus;
     exit;
   end;

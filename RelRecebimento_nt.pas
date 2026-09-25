@@ -1629,7 +1629,7 @@ begin
         XDEEntradaFinal.DateValue := ZQVen1.FieldByName('datavenda').Value;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;

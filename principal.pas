@@ -615,7 +615,7 @@ begin
     mensagem('Registrada nova versão do sistema...');
   End
   else if DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime>GetFileDate('SIAI.exe') then Begin
-    Showmessage('A data do executavel usado neste terminal é de '+datetostr(GetFileDate('SIAI.exe'))+chr(13)+chr(13)
+    Mensagem('A data do executavel usado neste terminal é de '+datetostr(GetFileDate('SIAI.exe'))+chr(13)+chr(13)
     +'A data do executavel mais atual usado por esta empresa é de '+datetostr(DM_TAbelas.ZQEmpresa.FieldByName('cad_empresa').AsDateTime)
     +chr(13)+chr(13)+'Providencie uma atualização URGENTE, para evitar danos ao banco de dados!!')
   end;
@@ -1160,7 +1160,7 @@ procedure TFrm_principal.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
 //if (ssCtrl in Shift) and (chr(Key) in ['A', 'a']) then
-//  SHOWMESSAGE('');
+//  Mensagem('');
 end;
 
 procedure TFrm_principal.Vendas1Click(Sender: TObject);

@@ -885,7 +885,7 @@ begin
         CDSParcelasnomedoempreendimento.AsString);
       if LIdLoteamento = 0 then
       begin
-        ShowMessage('Nao foi possivel identificar o loteamento da venda ' +
+        mensagem('Nao foi possivel identificar o loteamento da venda ' +
           CDSParcelasvenda_idvenda.AsString +
           '. A quitacao nao foi gravada.');
         Exit;

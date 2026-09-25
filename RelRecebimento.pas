@@ -1959,7 +1959,7 @@ begin
     zqfinanciamento.SQL.Add(' group by RE.quadralote order by lt.apelido,re.nomeadversa,re.quadralote');
 //    zqfinanciamento.SQL.Add(' group by RE.quadralote,re.saldo  order by re.quadralote,re.saldo desc,RE.'+VArOrdem);
 //    zqfinanciamento.SQL.Add(' group by RE.quadralote order by RE.nomeadversa');
-//    showmessage(zqfinanciamento.SQL.Text);
+//    Mensagem(zqfinanciamento.SQL.Text);
     zqfinanciamento.Open;
     zqfinanciamento.First;
     if zqfinanciamento.recordcount>0 then
@@ -3274,7 +3274,7 @@ begin
       DM_Tabelas.ZQRecebParticp.SQL.Add(' and not exists (select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec=idrecebimento)');
 
     DM_Tabelas.ZQRecebParticp.Open;
-//    showmessage(DM_Tabelas.ZQRecebParticp.SQL.Text);
+//    Mensagem(DM_Tabelas.ZQRecebParticp.SQL.Text);
     if DM_Tabelas.ZQRecebParticp.RecordCount>0 then
        JSP1.Maximum := DM_Tabelas.ZQRecebParticp.RecordCount;
 
@@ -4100,7 +4100,7 @@ begin
       end
       else
       begin
-        ShowMessage('Formato inválido: ' + Linha);
+        mensagem('Formato inválido: ' + Linha);
         Continue;
       end;
 
@@ -4128,7 +4128,7 @@ begin
       end
       else
       begin
-        ShowMessage('Não encontrado: ' + Linha);
+        mensagem('Não encontrado: ' + Linha);
       end;
     end;
 
@@ -4463,7 +4463,7 @@ begin
 //        XDEEntradaFinal.DateValue := ZQVen1datavenda.Value;
     end
     else
-      Showmessage('Esta Quadra e lote não foram vendidos!!!!');
+      Mensagem('Esta Quadra e lote não foram vendidos!!!!');
     Equadra.Text := '';
     Elote.text := '';
     Equadra.SetFocus;
