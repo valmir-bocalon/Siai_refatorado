@@ -1688,6 +1688,7 @@ var
   ano1,ano2,mes1,mes2,varcontador, x, x2, y, varvezes, posi : Integer;
   QTeste: TZQuery;
   TemDuplicidade: Boolean;
+  PerfStage: UInt64;
 const
   vartama : array[1..5] of integer = (1,3,6,10,15);
 
@@ -3175,6 +3176,7 @@ begin
 
     
 
+    PerfStage := PerformanceStart;
     CDSEmpreendimento.Close;
     CDSEmpreendimento.CreateDataSet;
     CDSEmpreendimento.open;
@@ -3220,6 +3222,8 @@ begin
       ZQincorp_loteame.Next;
     end;
     ZQincorp_loteame.EnableControls;
+    PerformanceElapsed('Boletos abrir: preparar loteamentos e formulario', PerfStage);
+    PerfStage := PerformanceStart;
     FrmCobrancaBancaria.CDSEmpreendimento.Close;
     FrmCobrancaBancaria.CDSEmpreendimento.CreateDataSet;
     FrmCobrancaBancaria.CDSEmpreendimento.open;
@@ -3230,6 +3234,8 @@ begin
     JSP1.position:=0;
     JSP1.visible:=false;
     application.ProcessMessages;
+    PerformanceElapsed('Boletos abrir: copiar loteamentos para formulario', PerfStage);
+    PerfStage := PerformanceStart;
     DM_Tabelas.ZQRecebParticp.SQL.Clear;
     DM_Tabelas.ZQRecebParticp.SQL.Add('select * from recebimento as r join participante as p  on r.adversa=p.idpaticipante join cidade as c on c.idcidade=p.cidade_cob');
     DM_Tabelas.ZQRecebParticp.SQL.Add(' where r.recpag = '+quotedstr('R'));
@@ -3274,6 +3280,8 @@ begin
       DM_Tabelas.ZQRecebParticp.SQL.Add(' and not exists (select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec=idrecebimento)');
 
     DM_Tabelas.ZQRecebParticp.Open;
+    PerformanceElapsed('Boletos abrir: consulta titulos Open', PerfStage);
+    PerfStage := PerformanceStart;
 //    Mensagem(DM_Tabelas.ZQRecebParticp.SQL.Text);
     if DM_Tabelas.ZQRecebParticp.RecordCount>0 then
        JSP1.Maximum := DM_Tabelas.ZQRecebParticp.RecordCount;
@@ -3303,6 +3311,8 @@ begin
     JSP1.visible:=true;
     JSP1.maximum:=DM_Tabelas.ZQRecebParticp.recordcount;
     JSP1.position:=0;
+    PerformanceElapsed('Boletos abrir: contar titulos', PerfStage);
+    PerfStage := PerformanceStart;
 
     DM_Tabelas.ZQRecebParticp.DisableControls;
     while not DM_Tabelas.ZQRecebParticp.Eof do
@@ -3342,6 +3352,8 @@ begin
       DM_Tabelas.ZQRecebParticp.Next;
     end;
     DM_Tabelas.ZQRecebParticp.EnableControls;
+    PerformanceElapsed('Boletos abrir: preencher titulos no grid', PerfStage);
+    PerfStage := PerformanceStart;
     if CDS_MarcaTit.Active=false then
     begin
       CDS_MarcaTit.Close;
@@ -3361,6 +3373,8 @@ begin
 //    CDS_MarcaTit.recordcount;
     dxbSelecionar.enabled:=false;
     CDS_MarcaTit.IndexName:='nome_venc';
+    PerformanceElapsed('Boletos abrir: vincular e ordenar grid', PerfStage);
+    if PerformanceEnabled then FlushPerformanceLog;
 //    FrmCobrancaBancaria.Top := FrmRelRecebimento.Top + 40;
   //  FrmCobrancaBancaria.Left :=FrmRelRecebimento.Left+30;
     AbrirModal(Self, FrmCobrancaBancaria);

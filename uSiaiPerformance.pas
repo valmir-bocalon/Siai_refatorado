@@ -7,7 +7,9 @@ uses Winapi.Windows;
 type
   TSiaiMetric = (smLookupNome, smLookupCPF, smLookupLoteamento,
     smCalculoFinanceiro, smRecalculoExplicito, smPrimeiroTitulo,
-    smProximoTitulo, smRestaurarTitulo, smReativarControles, smLookupParticipante);
+    smProximoTitulo, smRestaurarTitulo, smReativarControles, smLookupParticipante,
+    smItauRemessaRec, smItauRemessaTemp, smItauAtualizaReceb,
+    smSicoobRemessaRec, smBancoobRemessaRec);
 
 function PerformanceEnabled: Boolean;
 function PerformanceStart: UInt64;
@@ -33,7 +35,10 @@ const
     'lookup participante/nome', 'lookup participante/CPF', 'lookup loteamento',
     'formulas financeiras (sem lookups)', 'recalculo explicito (inclui calculos e lookups)',
     'First (inclui eventos)', 'Next (inclui eventos)', 'Locate (inclui eventos)',
-    'EnableControls (inclui eventos)', 'lookup participante/nome e CPF juntos');
+    'EnableControls (inclui eventos)', 'lookup participante/nome e CPF juntos',
+    'Itau remessa_receb por titulo', 'Itau Remessa_temp por titulo',
+    'Itau update recebimento por titulo', 'Sicoob remessa_receb por titulo',
+    'Bancoob remessa_receb por titulo');
 
 function PerformanceEnabled: Boolean;
 begin

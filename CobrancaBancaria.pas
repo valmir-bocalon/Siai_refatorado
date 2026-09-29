@@ -242,7 +242,7 @@ var
   zqaux :TZQuery;
 implementation
 
-uses funcoes, RelRecebimento, Tabelas, RelBolBanco, NumRemessa, uRuntimeFields;
+uses funcoes, RelRecebimento, Tabelas, RelBolBanco, NumRemessa, uRuntimeFields, uSiaiPerformance;
 
 {$R *.dfm}
 
@@ -275,7 +275,12 @@ Var
   varnossnum, varmora, vardoc, varcpfcnpj, varendereco, varhoje, VarNomepasta,
   varhostname, vardir, varpastabanco,VarPath, ext,VarDif,ql : string;
   sq,eita,codcli,carne,tam,tam2,varregistro, varremes, varx, vary : integer;
+  PerfStage, PerfDetail: UInt64;
+  PerfTitleCount, PerfFinalRows: Integer;
+  OriginalRemesRecSQL: string;
+  RemesRecScoped: Boolean;
 begin
+  PerfTitleCount := 0;
   eita:=0;
   codcli:=0;
   carne:=0;
@@ -344,8 +349,8 @@ begin
 
   Frm_NumRemessa.XNENumRemessa.Value := varremes;
   Frm_NumRemessa.Label2.Caption := VARARQ;
-  Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
-  Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
+//  Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
+//  Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
   AbrirModal(Self, Frm_NumRemessa);
   varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
 //  DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria;n_dif_empreed',VarArrayOf([FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, DM_Tabelas.CDSEmpreendimentodigito_dif.Value]), []);
@@ -408,6 +413,10 @@ begin
   inc(carne);
   //detalhe
   FrmRelRecebimento.CDS_MarcaTit.DisableControls;
+  OriginalRemesRecSQL := ZQRemesRec.SQL.Text;
+  RemesRecScoped := False;
+  PerfStage := PerformanceStart;
+  try
   while not FrmRelRecebimento.CDS_MarcaTit.Eof do
   begin
    if FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value = FrmRelRecebimento.CDSEmpreendimentodigito_dif.Value then
@@ -467,7 +476,13 @@ begin
         varnossnum := inttostrZero(codcli,11)+inttostr(vary);
       codcli:=0;
       eita:=0;
+      if PerformanceEnabled then Inc(PerfTitleCount);
+      PerfDetail := PerformanceStart;
       ZQRemesRec.Filtered:=false;
+      ZQRemesRec.Close;
+      ZQRemesRec.SQL.Text := 'select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
+      RemesRecScoped := True;
+      ZQRemesRec.Open;
       ZQRemesRec.Filter:='idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
       ZQRemesRec.Filtered:=true;
       if ZQRemesRec.RecordCount>0 then
@@ -494,6 +509,7 @@ begin
         ZQRemesRec.Post;
       end;
       ZQRemesRec.Filtered:=false;
+      PerformanceSample(smBancoobRemessaRec, PerfDetail);
       VarDif :=FrmRelRecebimento.CDS_MarcaTitdigito_dif.Value;
 
       Write(f,'1'); // Identificação do Registro
@@ -660,7 +676,21 @@ begin
      FrmRelRecebimento.CDS_MarcaTit.Next;
    end;
   end;
-  FrmRelRecebimento.CDS_MarcaTit.EnableControls;
+  finally
+    try
+      if RemesRecScoped then
+      begin
+        ZQRemesRec.Filtered := false;
+        ZQRemesRec.Close;
+        ZQRemesRec.SQL.Text := OriginalRemesRecSQL;
+        ZQRemesRec.Open;
+      end;
+    finally
+      FrmRelRecebimento.CDS_MarcaTit.EnableControls;
+    end;
+  end;
+  PerformanceElapsed('Bancoob boleto: montar ' + IntToStr(PerfTitleCount) +
+    ' titulos e gravar remessa_receb (inclui mensagens)', PerfStage);
   zqcarne.Edit;
   zqcarne.FieldByName('n_seq').AsInteger:=carne;
   zqcarne.post;
@@ -675,12 +705,21 @@ begin
 
   Gauge1.Visible := True;
   Gauge1.Progress:=0;
-  ZQRemesRec.First;
-  Gauge1.MaxValue := ZQRemesRec.RecordCount;
+  PerfStage := PerformanceStart;
+  OriginalRemesRecSQL := ZQRemesRec.SQL.Text;
+  ZQRemesRec.Filtered := false;
+  ZQRemesRec.Close;
+  ZQRemesRec.SQL.Text := 'select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where remessa='+IntToStr(DM_Tabelas.ZQBancRemes.FieldByName('idbanco_remessa').AsLargeInt);
+  try
+    ZQRemesRec.Open;
+    ZQRemesRec.First;
+    Gauge1.MaxValue := ZQRemesRec.RecordCount;
+    PerfFinalRows := Gauge1.MaxValue;
 //  DM_Tabelas.ZQRemes_Receb_atualiza.open;
 //  DM_Tabelas.ZQRemes_Receb_atualiza.first;
 
-  ZQRemesRec.DisableControls;
+    ZQRemesRec.DisableControls;
+    try
   while not ZQRemesRec.Eof do
   begin
     Gauge1.Progress := ZQRemesRec.RecNo;
@@ -702,12 +741,23 @@ begin
     end;}
     ZQRemesRec.Next;
   end;
-  ZQRemesRec.EnableControls;
+    finally
+      ZQRemesRec.EnableControls;
+    end;
+  finally
+    ZQRemesRec.Filtered := false;
+    ZQRemesRec.Close;
+    ZQRemesRec.SQL.Text := OriginalRemesRecSQL;
+    ZQRemesRec.Open;
+  end;
+  PerformanceElapsed('Bancoob boleto: atualizar recebimento de ' +
+    IntToStr(PerfFinalRows) + ' linhas de remessa_receb', PerfStage);
 //  DM_Tabelas.ZQRemes_Receb_atualiza.refresh;
 //  DM_Tabelas.ZQRecebimento.refresh;
   DM_Tabelas.ZQRemes_Receb_atualiza.close;
   Gauge1.Progress:=0;
   Gauge1.Visible := false;
+  if PerformanceEnabled then FlushPerformanceLog;
   mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
 end;
 
@@ -721,7 +771,12 @@ Var
   vpar,NN,sq,eita,codcli,carne,tam,tam2,varregistro, varremes, varx, vary : integer;
   Titulo : TACBrTitulo;
   I : TACBrBolLayOut ;
+  PerfStage, PerfDetail: UInt64;
+  PerfTitleCount: Integer;
+  OriginalRemesRecSQL: string;
+  RemesRecScoped: Boolean;
 begin
+  PerfTitleCount := 0;
   eita:=0;
   codcli:=0;
   carne:=0;
@@ -806,8 +861,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value := varremes;
       Frm_NumRemessa.Label2.Caption := VARARQ;
-      Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
 
@@ -962,6 +1017,10 @@ begin
 
   DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
   NN:=DM_Tabelas.ZQContaBancaria.FieldByName('nosso_numero').AsLargeInt;
+  OriginalRemesRecSQL := ZQRemesRec.SQL.Text;
+  RemesRecScoped := False;
+  PerfStage := PerformanceStart;
+  try
   while not FrmRelRecebimento.CDS_MarcaTit.Eof do
   begin
 
@@ -975,6 +1034,7 @@ begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
         Titulo := ACBrBoleto1.CriarTituloNaLista;
+        if PerformanceEnabled then Inc(PerfTitleCount);
         with Titulo do
         begin
                 {TACBrTipoCobranca = (cobNenhum, cobBancoDoBrasil, cobSantander, cobCaixaEconomica, cobCaixaSicob, cobBradesco, cobItau, cobBancoMercantil, cobSicred,
@@ -1027,7 +1087,13 @@ begin
          if cb2via.Checked=false then
          begin
 
+          PerfDetail := PerformanceStart;
           ZQRemesRec.Filtered:=false;
+          ZQRemesRec.Close;
+          ZQRemesRec.SQL.Clear;
+          ZQRemesRec.SQL.Add('Select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text));
+          RemesRecScoped := True;
+          ZQRemesRec.Open;
           ZQRemesRec.Filter:='idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
           ZQRemesRec.Filtered:=true;
           if ZQRemesRec.RecordCount>0 then
@@ -1054,6 +1120,7 @@ begin
             ZQRemesRec.Post;
           end;
           ZQRemesRec.Filtered:=false;
+          PerformanceSample(smSicoobRemessaRec, PerfDetail);
 
          end;
 
@@ -1234,12 +1301,27 @@ begin
      FrmRelRecebimento.CDS_MarcaTit.Next;
    end;
   end;
+  finally
+    if RemesRecScoped then
+    begin
+      ZQRemesRec.Filtered := false;
+      ZQRemesRec.Close;
+      ZQRemesRec.SQL.Text := OriginalRemesRecSQL;
+      ZQRemesRec.Open;
+    end;
+  end;
+  PerformanceElapsed('Sicoob boleto: montar ' + IntToStr(PerfTitleCount) +
+    ' titulos e gravar remessa_receb', PerfStage);
   try
+    PerfStage := PerformanceStart;
     if cb2via.Checked=false then
        ACBrBoleto1.GerarRemessa( varremes );
+    PerformanceElapsed('Sicoob boleto: ACBr GerarRemessa', PerfStage);
     if CBBancoemite.State=cbUnChecked then
     begin
+       PerfStage := PerformanceStart;
        ACBrBoleto1.Imprimir;
+       PerformanceElapsed('Sicoob boleto: ACBr Imprimir (inclui visualizacao)', PerfStage);
  //      tam:=pos('.',vardir+'\'+Vararqnome);
  //      dec(tam);
  //      ACBrBoletoFCFortes1.NomeArquivo:=copy(vardir+'\'+Vararqnome,1,tam)+'.pdf';
@@ -1248,6 +1330,7 @@ begin
 
     end;
   finally
+    PerfStage := PerformanceStart;
     FrmRelRecebimento.CDS_MarcaTit.EnableControls;
     if cb2via.Checked=false then
     begin
@@ -1292,6 +1375,8 @@ begin
     DM_Tabelas.ZQRemes_Receb_atualiza.close;
     Gauge1.Progress:=0;
     Gauge1.Visible := false;
+    PerformanceElapsed('Sicoob boleto: gravacoes apos visualizacao', PerfStage);
+    if PerformanceEnabled then FlushPerformanceLog;
     if cb2via.Checked=false then
        mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
@@ -1312,7 +1397,12 @@ Var
   vpar,NN,sq,eita,codcli,carne,tam,tam2,varregistro, varremes, varx, vary : integer;
   Titulo : TACBrTitulo;
   I : TACBrBolLayOut ;
+  PerfStage, PerfDetail: UInt64;
+  PerfTitleCount: Integer;
+  OriginalRemesRecSQL: string;
+  RemesRecScoped: Boolean;
 begin
+  PerfTitleCount := 0;
   eita:=0;
   codcli:=0;
   carne:=0;
@@ -1331,7 +1421,10 @@ begin
   if cb2via.Checked=false then
   begin
 
+      PerfStage := PerformanceStart;
       SaveDialog1.Execute;
+      PerformanceElapsed('Itau boleto: escolher arquivo (inclui usuario)', PerfStage);
+      PerfStage := PerformanceStart;
       tam2:=length(SaveDialog1.FileName);
       tam2:=tam2-11;
       VarPath := copy(SaveDialog1.FileName,tam2+1,11);
@@ -1398,9 +1491,12 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value := varremes;
       Frm_NumRemessa.Label2.Caption := VARARQ;
-      Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
+      PerformanceElapsed('Itau boleto: preparar pasta e sequencia', PerfStage);
+      PerfStage := PerformanceStart;
       AbrirModal(Self, Frm_NumRemessa);
+      PerformanceElapsed('Itau boleto: confirmar numero remessa (inclui usuario)', PerfStage);
       //numero da remessa
 
       varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -1408,6 +1504,7 @@ begin
   DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
   if cb2via.Checked=false then
   begin
+    PerfStage := PerformanceStart;
     DM_Tabelas.ZQBancRemes.Close;
     DM_Tabelas.ZQBancRemes.SQL.Clear;
     DM_Tabelas.ZQBancRemes.SQL.Add(' select idbanco_remessa,remessa,idbanco,gerado,nomearq,arquivo,digito_dif,remessa2 from banco_remessa ');
@@ -1420,6 +1517,7 @@ begin
     DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime := date;
     DM_Tabelas.ZQBancRemes.FieldByName('digito_dif').AsString := FrmRelRecebimento.CDSEmpreendimentodigito_dif.Value;
     DM_Tabelas.ZQBancRemes.Post;
+    PerformanceElapsed('Itau boleto: abrir e gravar banco_remessa', PerfStage);
   end;
 
 //  if not DirectoryExists(ExtractFileDir(Application.ExeName)+'\REMESSAS\SICOOB') then
@@ -1482,10 +1580,12 @@ begin
   if cb2via.Checked=false then
   begin
 
+    PerfStage := PerformanceStart;
     if zqcarne.active=false then
        zqcarne.open;
     zqcarne.last;
     carne:=zqcarne.FieldByName('n_seq').AsInteger;
+    PerformanceElapsed('Itau boleto: ler carne ate Last', PerfStage);
     inc(carne);
   end;
 
@@ -1530,6 +1630,7 @@ begin
 //         ACBrBoleto1.Cedente.NumeroRes     := SoNumero(Trim(DM_Tabelas.zqempresaendereco.Value))
 //    else
 //     ACBrBoleto1.Cedente.NumeroRes     := 'SN';
+  PerfStage := PerformanceStart;
   try
     zqaux:= tzquery.Create(nil);
     zqaux.Connection := DM_Tabelas.zconeccao;
@@ -1551,11 +1652,16 @@ begin
     zqaux.Close;
     zqaux.free;
   end;
+  PerformanceElapsed('Itau boleto: consultar endereco cedente', PerfStage);
 
   DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
 
   NN:=DM_Tabelas.ZQContaBancaria.FieldByName('nosso_numero').AsLargeInt;
 
+  OriginalRemesRecSQL := ZQRemesRec.SQL.Text;
+  RemesRecScoped := False;
+  PerfStage := PerformanceStart;
+  try
   while not FrmRelRecebimento.CDS_MarcaTit.Eof do
   begin
 
@@ -1569,6 +1675,7 @@ begin
 
         DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
         Titulo := ACBrBoleto1.CriarTituloNaLista;
+        if PerformanceEnabled then Inc(PerfTitleCount);
         with Titulo do
         begin
                 {TACBrTipoCobranca = (cobNenhum, cobBancoDoBrasil, cobSantander, cobCaixaEconomica, cobCaixaSicob, cobBradesco, cobItau, cobBancoMercantil, cobSicred,
@@ -1617,7 +1724,13 @@ begin
          if cb2via.Checked=false then
          begin
 
+          PerfDetail := PerformanceStart;
           ZQRemesRec.Filtered:=false;
+          ZQRemesRec.Close;
+          ZQRemesRec.SQL.Clear;
+          ZQRemesRec.SQL.Add('Select idremessa_receb,remessa,idrec,nossonumero from remessa_receb where idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text));
+          RemesRecScoped := True;
+          ZQRemesRec.Open;
           ZQRemesRec.Filter:='idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
           ZQRemesRec.Filtered:=true;
           if ZQRemesRec.RecordCount>0 then
@@ -1644,6 +1757,7 @@ begin
             ZQRemesRec.Post;
           end;
           ZQRemesRec.Filtered:=false;
+          PerformanceSample(smItauRemessaRec, PerfDetail);
 
          end;
 
@@ -1651,6 +1765,7 @@ begin
          if cb2via.Checked=false then
          begin
 
+            PerfDetail := PerformanceStart;
             Remessa_temp.Filtered:=false;
             Remessa_temp.Filter:='idrec='+quotedstr(FrmRelRecebimento.CDS_MarcaTitIdreceb.text);
             Remessa_temp.Filtered:=true;
@@ -1678,6 +1793,7 @@ begin
               Remessa_temp.Post;
             end;
             Remessa_temp.Filtered:=false;
+            PerformanceSample(smItauRemessaTemp, PerfDetail);
 
          end;
 
@@ -1832,12 +1948,27 @@ begin
      FrmRelRecebimento.CDS_MarcaTit.Next;
    end;
   end;
+  finally
+    if RemesRecScoped then
+    begin
+      ZQRemesRec.Filtered := false;
+      ZQRemesRec.Close;
+      ZQRemesRec.SQL.Text := OriginalRemesRecSQL;
+      ZQRemesRec.Open;
+    end;
+  end;
+  PerformanceElapsed('Itau boleto: montar ' + IntToStr(PerfTitleCount) +
+    ' titulos e gravar remessa_receb', PerfStage);
   try
+    PerfStage := PerformanceStart;
     if cb2via.Checked=false then
        ACBrBoleto1.GerarRemessa( varremes );
+    PerformanceElapsed('Itau boleto: ACBr GerarRemessa', PerfStage);
     if CBBancoemite.State=cbUnChecked then
     begin
+       PerfStage := PerformanceStart;
        ACBrBoleto1.Imprimir;
+       PerformanceElapsed('Itau boleto: ACBr Imprimir (inclui visualizacao)', PerfStage);
  //      tam:=pos('.',vardir+'\'+Vararqnome);
  //      dec(tam);
  //      ACBrBoletoFCFortes1.NomeArquivo:=copy(vardir+'\'+Vararqnome,1,tam)+'.pdf';
@@ -1846,6 +1977,7 @@ begin
 
     end;
   finally
+    PerfStage := PerformanceStart;
     FrmRelRecebimento.CDS_MarcaTit.EnableControls;
     if cb2via.Checked=false then
     begin
@@ -1866,10 +1998,12 @@ begin
       begin
         Gauge1.Progress := Remessa_temp.RecNo;
 
+        PerfDetail := PerformanceStart;
         DM_Tabelas.ZQRemes_Receb_atualiza.Close;
         DM_Tabelas.ZQRemes_Receb_atualiza.SQL.Clear;
         DM_Tabelas.ZQRemes_Receb_atualiza.SQL.Add('update  recebimento set numboleto=('+quotedstr(Remessa_tempnossonumero.Value)+') where idrecebimento='+quotedstr(Remessa_tempidrec.Text));
         DM_Tabelas.ZQRemes_Receb_atualiza.ExecSQL;
+        PerformanceSample(smItauAtualizaReceb, PerfDetail);
         Remessa_temp.Next;
       end;
     end;
@@ -1892,6 +2026,8 @@ begin
     Gauge1.Visible := false;
     DM_Tabelas.ZQContaBancaria.refresh;
     DM_Tabelas.ZQContaBancaria.Locate('idconta_bancaria',FrmRelRecebimento.CDSEmpreendimentocodcontabancaria.Value, []);
+    PerformanceElapsed('Itau boleto: gravacoes e refresh apos visualizacao', PerfStage);
+    if PerformanceEnabled then FlushPerformanceLog;
     if cb2via.Checked=false then
        mensagem('Relatório de Boletos gerado com sucesso!!!'+chr(13)+'O relatório foi gravado em '+VARARQ);
   end;
@@ -2018,8 +2154,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value := varremes;
       Frm_NumRemessa.Label2.Caption      := VARARQ;
-      Frm_NumRemessa.Top                 := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left                := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top                 := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left                := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
 
@@ -3188,8 +3324,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value                           := varremes;
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
-      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -4243,8 +4379,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value                           := varremes;
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
-      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -5210,8 +5346,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value                           := varremes;
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
-      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -6212,8 +6348,8 @@ begin
 
       Frm_NumRemessa.XNENumRemessa.Value                           := varremes;
       Frm_NumRemessa.Label2.Caption                                := VARARQ;
-      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
-      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
+//      Frm_NumRemessa.Top                                           := FrmCobrancaBancaria.Top + 30;
+//      Frm_NumRemessa.Left                                          := FrmCobrancaBancaria.Left + 300;
       AbrirModal(Self, Frm_NumRemessa);
       //numero da remessa
       varremes                                                     := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -7264,8 +7400,8 @@ begin
 
     Frm_NumRemessa.XNENumRemessa.Value := varremes;
     Frm_NumRemessa.Label2.Caption := VARARQ;
-    Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
-    Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
+//    Frm_NumRemessa.Top := FrmCobrancaBancaria.Top + 30;
+//    Frm_NumRemessa.Left := FrmCobrancaBancaria.Left + 300;
     AbrirModal(Self, Frm_NumRemessa);
     //numero da remessa
     varremes := strtoint(floattostr(Frm_NumRemessa.XNENumRemessa.value));
@@ -7926,12 +8062,21 @@ begin
 end;
 
 procedure TFrmCobrancaBancaria.FormShow(Sender: TObject);
+var
+  PerfStage: UInt64;
 begin
   DBGerar.Enabled := false;
 //  XBRelat.Enabled := False;
+  PerfStage := PerformanceStart;
   DM_Tabelas.ZQBancRemes.Open;
+  PerformanceElapsed('Boletos abrir: banco_remessa', PerfStage);
+  PerfStage := PerformanceStart;
   ZQRemesRec.Open;
+  PerformanceElapsed('Boletos abrir: remessa_receb completa', PerfStage);
+  PerfStage := PerformanceStart;
   DM_Tabelas.ZQBol_men.open;
+  PerformanceElapsed('Boletos abrir: mensagens banco', PerfStage);
+  if PerformanceEnabled then FlushPerformanceLog;
 
   CBIdentOcorr.ItemIndex := 1;
   DBGEmpre.SetFocus;
