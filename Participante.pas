@@ -370,7 +370,7 @@ implementation
 uses tabelas, funcoes, hormain, PesqEndereco, Relparticipante, Umapa,
   RelReceb02_mensal, hormain2, Relparticipante1, Relparticipante_empre,
   Relparticipante1_composta, Relparticipante_empre_completa,
-  Relparticipante_ficha, uRuntimeFields;
+  Relparticipante_ficha, uRuntimeFields, uSiaiPerformance;
 
 {$R *.dfm}
 
@@ -406,21 +406,41 @@ begin
 end;
 
 procedure TFrm_Participante.FormShow(Sender: TObject);
+var
+  PerfStage, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStage := PerformanceStart;
   if DM_Tabelas.ZQCidade.Active then
     DM_Tabelas.ZQCidade.Close;
   DM_Tabelas.ZQCidade.Open;
+  PerformanceElapsed('Participante abrir: reabrir cidades global', PerfStage);
+  PerfStage := PerformanceStart;
   DM_Tabelas.ZqParticipante.open;
+  PerformanceElapsed('Participante abrir: participantes global', PerfStage);
+  PerfStage := PerformanceStart;
   DM_Tabelas.ZQresponsavel.open;
+  PerformanceElapsed('Participante abrir: responsaveis global', PerfStage);
+  PerfStage := PerformanceStart;
   DM_TAbelas.ZQConjuge.Open;
+  PerformanceElapsed('Participante abrir: conjuges global', PerfStage);
 //  ZQContratos.open;
+  PerfStage := PerformanceStart;
   pagina.ActivePageIndex := 0;
   desativa_campos;
+  PerformanceElapsed('Participante abrir: preparar interface', PerfStage);
   { A abertura nao passa pelos botoes de navegacao. Atualize o primeiro
     registro depois que Participante, Responsaveis e Conjuge estiverem ativos. }
+  PerfStage := PerformanceStart;
   botoes;
+  PerformanceElapsed('Participante abrir: primeiro registro e responsaveis', PerfStage);
   DBGPart.SetFocus;
 //
+  finally
+    PerformanceElapsed('Participante abrir: total FormShow', PerfTotal);
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 procedure TFrm_Participante.FormClose(Sender: TObject;

@@ -55,6 +55,15 @@ type
     LegendBackColor: TColor;
     ShowLegend: Boolean;
     LegendBySeries: Boolean;
+    FitHorizontalValueLabels: Boolean;
+    FinancialLayout: Boolean;
+    CompactZeroSeries: Boolean;
+    ShowZeroSeriesValues: Boolean;
+    PrintLabelLines: Integer;
+    HorizontalCategoryPixels: Integer;
+    OverrideAxisScale: Boolean;
+    AxisMinimum: Double;
+    AxisMaximum: Double;
   end;
 
 procedure LoadChartDataFromSQL(Connection: TZConnection; SQLQuery: string;
@@ -69,6 +78,10 @@ procedure LoadChartSeriesFromDataSet(DataSet: TDataSet;
   const YFields: array of string; const SeriesColors: array of TColor;
   var Series: TChartSeriesArray); overload;
 function DefaultChartRenderOptions(BackgroundColor: TColor = clWhite): TChartRenderOptions;
+function ChartSeriesHasValue(const Series: TChartSeriesData): Boolean;
+function HorizontalSeriesCount(const Series: TChartSeriesArray;
+  CompactZeroSeries: Boolean): Integer;
+function WrapChartText(Canvas: TCanvas; const Text: string; MaxWidth: Integer): TStringList;
 procedure GenerateStyledMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
   ChartType: TChartType; Width, Height: Integer; const Title: string;
   const Options: TChartRenderOptions; ShowXAxisLabels: Boolean = True;
@@ -88,6 +101,7 @@ procedure GenerateMultiSeriesChart(Canvas: TCanvas; Series: TChartSeriesArray;
   DashboardLegend: Boolean = False);
 procedure PrintPaintBoxChart(PaintBox: TPaintBox; const Title: string = '';
   Landscape: Boolean = True);
+procedure PrintCompleteChartBitmap(Bitmap: TBitmap; const Title: string);
 
 implementation
 
@@ -120,6 +134,63 @@ begin
   Result.LegendBackColor := clWhite;
   Result.ShowLegend := True;
   Result.LegendBySeries := True;
+  Result.FitHorizontalValueLabels := False;
+  Result.FinancialLayout := False;
+  Result.CompactZeroSeries := False;
+  Result.ShowZeroSeriesValues := False;
+  Result.PrintLabelLines := 1;
+  Result.HorizontalCategoryPixels := 0;
+  Result.OverrideAxisScale := False;
+  Result.AxisMinimum := 0;
+  Result.AxisMaximum := 0;
+end;
+
+function ChartSeriesHasValue(const Series: TChartSeriesData): Boolean;
+var I: Integer;
+begin
+  Result := False;
+  for I := 0 to High(Series.Data) do
+    if Series.Data[I].YValue <> 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
+function HorizontalSeriesCount(const Series: TChartSeriesArray;
+  CompactZeroSeries: Boolean): Integer;
+var I: Integer;
+begin
+  Result := 0;
+  for I := 0 to High(Series) do
+    if (not CompactZeroSeries) or ChartSeriesHasValue(Series[I]) then
+      Inc(Result);
+  if Result < 1 then Result := 1;
+end;
+
+function WrapChartText(Canvas: TCanvas; const Text: string; MaxWidth: Integer): TStringList;
+var Remaining, Line: string; N, SpacePos: Integer;
+begin
+  Result := TStringList.Create;
+  Remaining := Trim(Text);
+  MaxWidth := Max(1, MaxWidth);
+  while Remaining <> '' do
+  begin
+    N := Length(Remaining);
+    while (N > 1) and (Canvas.TextWidth(Copy(Remaining, 1, N)) > MaxWidth) do
+      Dec(N);
+    if N < Length(Remaining) then
+    begin
+      SpacePos := N;
+      while (SpacePos > 1) and (Remaining[SpacePos] <> ' ') do Dec(SpacePos);
+      if Remaining[SpacePos] = ' ' then N := SpacePos;
+    end;
+    Line := Trim(Copy(Remaining, 1, N));
+    if Line <> '' then Result.Add(Line);
+    Delete(Remaining, 1, N);
+    Remaining := TrimLeft(Remaining);
+  end;
+  if Result.Count = 0 then Result.Add('');
 end;
 
 function SelecionarImpressoraPadraoWindows(out ANome: string): Boolean;
@@ -153,6 +224,7 @@ end;
 
 procedure DrawTitle(Canvas: TCanvas; const Title: string; Width: Integer;
   const Options: TChartRenderOptions);
+var Lines: TStringList; I: Integer;
 begin
   if Title <> '' then
   begin
@@ -161,7 +233,17 @@ begin
     Canvas.Font.Size := Options.TitleFontSize;
     Canvas.Font.Style := Options.TitleFontStyle;
     Canvas.Font.Color := Options.TitleColor;
-    Canvas.TextOut((Width - Canvas.TextWidth(Title)) div 2, 15, Title);
+    if Options.PrintLabelLines > 1 then
+    begin
+      Lines := WrapChartText(Canvas, Title, Max(1, Width - 24));
+      try
+        for I := 0 to Lines.Count - 1 do
+          Canvas.TextOut((Width - Canvas.TextWidth(Lines[I])) div 2,
+            15 + (I * Canvas.TextHeight('Ag')), Lines[I]);
+      finally Lines.Free end;
+    end
+    else
+      Canvas.TextOut((Width - Canvas.TextWidth(Title)) div 2, 15, Title);
     Canvas.Font.Style := [];
   end;
 end;
@@ -434,6 +516,8 @@ var
     Result := Series[SeriesIndex].Title;
     if SameText(Result, 'Pedido de Vendas') then
       Result := 'Ped. Venda';
+    if Options.ShowZeroSeriesValues and not ChartSeriesHasValue(Series[SeriesIndex]) then
+      Result := Result + ' (0,00)';
   end;
 
   function DataLegendText(SeriesIndex, DataIndex: Integer): string;
@@ -524,13 +608,34 @@ var
 
   procedure DrawXAxisLabel(const LabelText: string; CenterX, LabelY: Integer);
   var
-    LabelX, LabelWidth, MinLabelX, MaxLabelX: Integer;
+    LabelX, LabelWidth, MinLabelX, MaxLabelX, Row, SlotWidth: Integer;
+    Lines: TStringList;
   begin
     Canvas.Brush.Style := bsClear;
     Canvas.Font.Name := Options.AxisFontName;
     Canvas.Font.Color := Options.AxisLabelColor;
     Canvas.Font.Size := Options.AxisFontSize;
     Canvas.Font.Style := Options.AxisFontStyle;
+    if Options.PrintLabelLines > 1 then
+    begin
+      SlotWidth := Max(1, ChartArea.Width div Max(1, DataCount));
+      if (ChartType = ctLine) and (DataCount > 1) then
+        SlotWidth := Max(1, ChartArea.Width div (DataCount - 1));
+      Lines := WrapChartText(Canvas, LabelText, Max(1, SlotWidth - 12));
+      try
+        for Row := 0 to Lines.Count - 1 do
+        begin
+          LabelWidth := Canvas.TextWidth(Lines[Row]);
+          LabelX := CenterX - (LabelWidth div 2);
+          LabelX := Max(ChartArea.Left, Min(LabelX, ChartArea.Right - LabelWidth));
+          Canvas.TextOut(LabelX, LabelY + (Row * Canvas.TextHeight('Ag')), Lines[Row]);
+        end;
+      finally
+        Lines.Free;
+      end;
+      Canvas.Font.Style := [];
+      Exit;
+    end;
     LabelWidth := Canvas.TextWidth(LabelText);
     LabelX := CenterX - (LabelWidth div 2);
     { Mantem o texto inteiro dentro da area do grafico, sem invadir a
@@ -594,7 +699,7 @@ var
 
   procedure CalculateMetrics;
   var
-    I, J, LeftMargin, LegendCount, RowsAvailable, MaxTextWidth: Integer;
+    I, J, LeftMargin, RightMargin, LegendCount, RowsAvailable, MaxTextWidth: Integer;
   begin
     MinY := 0;
     MaxY := 0;
@@ -607,6 +712,11 @@ var
           MinY := Series[I].Data[J].YValue;
       end;
 
+    if Options.OverrideAxisScale then
+    begin
+      MinY := Options.AxisMinimum;
+      MaxY := Options.AxisMaximum;
+    end;
     if (MaxY = 0) and (MinY = 0) then
       MaxY := 1;
     RangeY := MaxY - MinY;
@@ -615,6 +725,9 @@ var
 
     Canvas.Font.Name := Options.AxisFontName;
     Canvas.Font.Size := Options.AxisFontSize;
+    if Options.FinancialLayout or
+       ((ChartType = ctHorizontalBar) and Options.FitHorizontalValueLabels) then
+      Canvas.Font.Style := Options.AxisFontStyle;
     LeftMargin := Max(62, Max(Canvas.TextWidth(FormatYValue(MaxY)), Canvas.TextWidth(FormatYValue(MinY))) + 16);
     if ChartType = ctHorizontalBar then
     begin
@@ -622,6 +735,26 @@ var
       for J := 0 to High(Series[0].Data) do
         LeftMargin := Max(LeftMargin,
           Canvas.TextWidth(Series[0].Data[J].XValue) + 16);
+    end;
+    RightMargin := 24;
+    if Options.FinancialLayout and (ChartType in [ctBar, ctLine]) then
+    begin
+      RightMargin := Max(RightMargin,
+        (Canvas.TextWidth(FormatYValue(MaxY)) div 2) + 8);
+      for I := 0 to High(Series) do
+        if Series[I].MarkStyle <> cmsNone then
+          for J := 0 to High(Series[I].Data) do
+            RightMargin := Max(RightMargin, Canvas.TextWidth(MarkText(I, J)) + 18);
+    end;
+    if (ChartType = ctHorizontalBar) and Options.FitHorizontalValueLabels then
+    begin
+      Canvas.Font.Style := Options.AxisFontStyle;
+      RightMargin := Max(RightMargin,
+        (Canvas.TextWidth(FormatYValue(MaxY)) div 2) + 8);
+      for I := 0 to High(Series) do
+        if Series[I].MarkStyle <> cmsNone then
+          for J := 0 to High(Series[I].Data) do
+            RightMargin := Max(RightMargin, Canvas.TextWidth(MarkText(I, J)) + 18);
     end;
     LegendMonthColumns := 2;
     LegendItemHeight := 16;
@@ -651,8 +784,10 @@ var
       LegendCount := LegendItemCount;
       LegendRows := Max(0, Ceil(LegendCount / LegendMonthColumns));
       ChartArea := Rect(LeftMargin, LegendTopPos,
-        Width - 24, Height - (LegendRows * LegendItemHeight) - 28);
+        Width - RightMargin, Height - (LegendRows * LegendItemHeight) - 28);
     end;
+    if (ChartType in [ctBar, ctLine]) and (Options.PrintLabelLines > 1) then
+      Dec(ChartArea.Bottom, (Options.PrintLabelLines - 1) * Canvas.TextHeight('Ag'));
     if (Width < 420) or (ChartArea.Right - ChartArea.Left < 120) then
       ChartArea.Right := Width - 25;
     if ChartArea.Right <= ChartArea.Left then
@@ -797,7 +932,7 @@ var
 
   procedure DrawHorizontalBarChart;
   var
-    I, J, XValue, CategoryTop, GroupHeight, BarHeight, BarTop: Integer;
+    I, J, XValue, CategoryTop, GroupHeight, BarHeight, BarTop, VisibleCount, BarIndex: Integer;
     LabelValueX: Double;
     LabelText: string;
     BarRect: TRect;
@@ -830,23 +965,36 @@ var
       end;
     end;
 
+    VisibleCount := HorizontalSeriesCount(Series, Options.CompactZeroSeries);
     GroupHeight := Max(16, (ChartArea.Bottom - ChartArea.Top) div Max(1, DataCount));
-    BarHeight := Max(6, (GroupHeight - 6) div Max(1, Length(Series)));
+    if Options.HorizontalCategoryPixels > 0 then
+      GroupHeight := Options.HorizontalCategoryPixels
+    else if Options.FitHorizontalValueLabels then
+    begin
+      if VisibleCount > 1 then
+        GroupHeight := Min(6 + (VisibleCount * 22), GroupHeight)
+      else
+        GroupHeight := Min(22, GroupHeight);
+    end;
+    BarHeight := Max(6, (GroupHeight - 6) div VisibleCount);
     for J := 0 to DataCount - 1 do
     begin
       CategoryTop := ChartArea.Top + (J * GroupHeight);
       if (Length(Series[0].Data) > J) then
       begin
+        if Options.FinancialLayout then Canvas.Brush.Style := bsClear;
         Canvas.Font.Color := Options.AxisLabelColor;
         Canvas.TextOut(ChartArea.Left - Canvas.TextWidth(Series[0].Data[J].XValue) - 8,
           CategoryTop + ((GroupHeight - Canvas.TextHeight(Series[0].Data[J].XValue)) div 2),
           Series[0].Data[J].XValue);
       end;
+      BarIndex := 0;
       for I := 0 to High(Series) do
       begin
-        if J > High(Series[I].Data) then
-          Continue;
-        BarTop := CategoryTop + 3 + (I * BarHeight);
+        if J > High(Series[I].Data) then Continue;
+        if Options.CompactZeroSeries and not ChartSeriesHasValue(Series[I]) then Continue;
+        BarTop := CategoryTop + 3 + (BarIndex * BarHeight);
+        Inc(BarIndex);
         XValue := ValueToX(Series[I].Data[J].YValue);
         BarRect := Rect(Min(ChartArea.Left, XValue), BarTop,
           Max(ChartArea.Left, XValue), BarTop + BarHeight - 2);
@@ -925,7 +1073,7 @@ var
     I,J,LastIdx: Integer;
   begin
     DrawAxes;
-    DrawAllValues := DataCount <= 8;
+    DrawAllValues := (DataCount <= 8) or Options.FinancialLayout;
     for I := 0 to High(Series) do
     begin
       Canvas.Pen.Width := Max(1, Series[I].LineWidth);
@@ -1266,6 +1414,63 @@ begin
     end;
   finally
     Bmp.Free;
+  end;
+end;
+
+procedure PrintCompleteChartBitmap(Bitmap: TBitmap; const Title: string);
+var
+  OldOrientation: TPrinterOrientation;
+  PrinterName: string;
+  PageW, PageH, DrawW, DrawH, Margin: Integer;
+  R: TRect;
+begin
+  if (Bitmap = nil) or (Bitmap.Width <= 0) or (Bitmap.Height <= 0) then
+    Exit;
+  if not SelecionarImpressoraPadraoWindows(PrinterName) then
+  begin
+    MessageDlg('Nenhuma impressora valida esta disponivel para imprimir o grafico.',
+      mtWarning, [mbOK], 0);
+    Exit;
+  end;
+  OldOrientation := Printer.Orientation;
+  try
+    Printer.Orientation := poLandscape;
+    Printer.Title := Title;
+    try
+      Printer.BeginDoc;
+      try
+        Margin := 100;
+        PageW := Printer.PageWidth - (Margin * 2);
+        PageH := Printer.PageHeight - (Margin * 2);
+        if (PageW <= 0) or (PageH <= 0) then
+          raise EPrinter.Create('Area de impressao insuficiente para o grafico.');
+        if (Int64(PageW) * Bitmap.Height) <= (Int64(PageH) * Bitmap.Width) then
+        begin
+          DrawW := PageW;
+          DrawH := MulDiv(PageW, Bitmap.Height, Bitmap.Width);
+        end
+        else
+        begin
+          DrawH := PageH;
+          DrawW := MulDiv(PageH, Bitmap.Width, Bitmap.Height);
+        end;
+        R := Rect(Margin + ((PageW - DrawW) div 2),
+          Margin + ((PageH - DrawH) div 2),
+          Margin + ((PageW - DrawW) div 2) + DrawW,
+          Margin + ((PageH - DrawH) div 2) + DrawH);
+        Printer.Canvas.StretchDraw(R, Bitmap);
+        Printer.EndDoc;
+      except
+        Printer.Abort;
+        raise;
+      end;
+    except
+      on E: EPrinter do
+        MessageDlg('Nao foi possivel imprimir o grafico na impressora padrao.',
+          mtWarning, [mbOK], 0);
+    end;
+  finally
+    Printer.Orientation := OldOrientation;
   end;
 end;
 

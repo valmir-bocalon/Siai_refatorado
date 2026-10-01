@@ -7,7 +7,7 @@ uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, 
   DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, Grids, DBGrids,
   wwdbdatetimepicker, XDate, XNum, XEdit, DBClient, ComCtrls, TabNotBk,
   XDBNum, JvExControls, JvArrayButton, GradBtn, JvXPCore, JvXPBar,
-  XDBDate, FnpNumericEdit, DBDateTimePicker, Vcl.Samples.Gauges;
+  XDBDate, FnpNumericEdit, DBDateTimePicker, Vcl.Samples.Gauges, ChartGenerator;
 
 type
   TFrmCad_Recebimento = class(TForm)
@@ -385,8 +385,18 @@ type
     FPaintBoxGrafico1: TPaintBox;
     FPaintBoxGrafico2: TPaintBox;
     FPaintBoxGrafico3: TPaintBox;
-    FPintandoGrafico1: Boolean;
-    FPintandoGrafico2: Boolean;
+    FPintandoGraficos: array[1..3] of Boolean;
+    FScrollGraficos: array[1..3] of TScrollBox;
+    FTipoGraficos: array[1..3] of TComboBox;
+    procedure TipoGraficoAlterado(Sender: TObject);
+    procedure RedimensionarGrafico(Sender: TObject);
+    procedure PintarGrafico(Indice: Integer);
+    function CriarImagemGrafico(Indice: Integer; Largura, Altura: Integer;
+      out Titulo: string): TBitmap;
+    procedure ImprimirGrafico(Indice: Integer);
+    procedure PrepararDadosGrafico(Indice: Integer; out Series: TChartSeriesArray;
+      out Options: TChartRenderOptions; out Tipo: TChartType; out Titulo: string);
+    procedure CompactarPrevisaoHorizontal(var Series: TChartSeriesArray);
     procedure CriarGraficosRuntime;
     procedure PintarGrafico1(Sender: TObject);
     procedure PintarGrafico2(Sender: TObject);
@@ -412,7 +422,7 @@ uses tabelas, Funcoes, Inc_Recebimento, RecebBaixa, UAchaReceb,
   BaixaAutomatica, Aditamento, quitacao, Cessao, principal,
   ReajusteDeParcelas2, PesqCobranca, RelCobranca, RecebBaixa_subst,
   RelCobranca2, Uobs_estorno, trocar_lote, Uparcelanaopaga, Balao, Ucobranca,
-  trocar_empreendimento, zerarNossoNumero, uRuntimeFields, ChartGenerator, uSiaiPerformance;
+  trocar_empreendimento, zerarNossoNumero, uRuntimeFields, uSiaiPerformance, uFinancialChartPrint;
 
 type
   { A API publica de TDataSet nao expoe GetCalcFields, mas este metodo e o
@@ -518,10 +528,17 @@ end;
 
 
 procedure TFrmCad_Recebimento.FormShow(Sender: TObject);
+var
+  PerfStep, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStep := PerformanceStart;
   DBELancamento.Enabled := False;
   DBCBTipDoc.Clear;
 
+  PerformanceElapsed('Recebimento abrir: preparar controles iniciais', PerfStep);
+  PerfStep := PerformanceStart;
   if ZQRecebimento_bancario.Active=false then
   begin
     ZQRecebimento_bancario.close;
@@ -536,6 +553,8 @@ begin
 //    ZQRecebimento_bancario.SQL.Add(' SELECT * FROM recebimento as r join incorporador_loteamento as il on il.loteamento_idloteamento=r.idloteamento join conta_bancaria as cb on cb.idconta_bancaria=il.codcontabancaria group by r.idloteamento order by r.idloteamento LIMIT 0, 10');
     ZQRecebimento_bancario.open;
   end;
+  PerformanceElapsed('Recebimento abrir: dados bancarios local', PerfStep);
+  PerfStep := PerformanceStart;
   if DM_tabelas.ZQTipodoc.Active= false then
   begin
     DM_tabelas.ZQTipodoc.close;
@@ -545,6 +564,8 @@ begin
     DM_tabelas.ZQTipodoc.First;
   end;
   DM_tabelas.ZQTipodoc.First;
+  PerformanceElapsed('Recebimento abrir: tipos de documento global', PerfStep);
+  PerfStep := PerformanceStart;
   if DM_tabelas.ZQPlanoDeContas.Active=false then
   begin
     DM_tabelas.ZQPlanoDeContas.close;
@@ -552,6 +573,8 @@ begin
     DM_tabelas.ZQPlanoDeContas.SQL.Add('Select codigo,doccomum,mascara,descricao,classificacao,valor,cod_reduzido,cred_debi,usoativo,CDPlano,DespFixVar from Plano_contas');
     DM_tabelas.ZQPlanoDeContas.open;
   end;
+  PerformanceElapsed('Recebimento abrir: plano de contas global', PerfStep);
+  PerfStep := PerformanceStart;
   if DM_tabelas.ZQReBxHi.Active=false then
   begin
     DM_tabelas.ZQReBxHi.close;
@@ -559,6 +582,8 @@ begin
     DM_tabelas.ZQReBxHi.SQL.Add('select idrecbxhist,refer,idrecib,valor,descon,juros,percent_usado,data,sq,valor_parcela from RecBxHist  LIMIT 10');
     DM_tabelas.ZQReBxHi.open;
   end;
+  PerformanceElapsed('Recebimento abrir: historico de baixas global', PerfStep);
+  PerfStep := PerformanceStart;
   if DM_TAbelas.ZQRecebBxTemp.Active=false then
   begin
     DM_TAbelas.ZQRecebBxTemp.Close;
@@ -570,6 +595,8 @@ begin
     DM_TAbelas.ZQRecebBxTemp.SQL.Add('  FROM recbxhist as H left join recebimento as R ON R.idrecebimento=H.idrecib join receb_baixa as B ON B.refbaixa=H.refer  LIMIT 10');
     DM_TAbelas.ZQRecebBxTemp.open;
   end;
+  PerformanceElapsed('Recebimento abrir: composicao das baixas global', PerfStep);
+  PerfStep := PerformanceStart;
   if DM_Tabelas.ZQCheque.Active=false then
   begin
     DM_Tabelas.ZQCheque.Close;
@@ -582,7 +609,11 @@ begin
     partir destes dois datasets. Eles precisam estar abertos antes do
     primeiro posicionamento do grid para que First/Last também calculem o
     registro atual. }
+  PerformanceElapsed('Recebimento abrir: cheques global', PerfStep);
+  PerfStep := PerformanceStart;
   PrepararLookupsRecebimento;
+  PerformanceElapsed('Recebimento abrir: participantes e loteamentos globais', PerfStep);
+  PerfStep := PerformanceStart;
 
   if DM_tabelas.ZQRecebimento.Active=false then
   begin
@@ -596,13 +627,19 @@ begin
     DM_tabelas.ZQRecebimento.Open;
 //     DM_tabelas.ZQRecebimento.Open;
   end;
+  PerformanceElapsed('Recebimento abrir: consulta principal global', PerfStep);
+  PerfStep := PerformanceStart;
   Panel1.Visible:=true;
   Panel2.Visible:=true;
   Application.ProcessMessages;
+  PerformanceElapsed('Recebimento abrir: desenhar paineis iniciais', PerfStep);
+  PerfStep := PerformanceStart;
   while not DM_tabelas.ZQTipodoc.Eof do Begin
     DBCBTipDoc.Items.Add(DM_tabelas.ZQTipoDoc.FieldByName('tipodoc').AsString);
     DM_tabelas.ZQTipodoc.Next;
   end;
+  PerformanceElapsed('Recebimento abrir: preencher lista de tipos', PerfStep);
+  PerfStep := PerformanceStart;
   DM_Tabelas.ZQContaBancaria.Close;
   DM_Tabelas.ZQContaBancaria.SQL.Clear;
   DM_Tabelas.ZQContaBancaria.SQL.Add('Select idconta_bancaria,n_banco,n_agencia,n_agencia_v,n_conta,n_conta_v,nomebanco,n_no_banco,nomeresposavel,nometitular,aberta,senha_interna,senha_conta,ativa,');
@@ -611,11 +648,21 @@ begin
   DM_Tabelas.ZQContaBancaria.SQL.Add('   from conta_bancaria');
   DM_Tabelas.ZQContaBancaria.Open;
 //  DM_Tabelas.ZQMovBancaria.Open;
+  PerformanceElapsed('Recebimento abrir: contas bancarias global', PerfStep);
+  PerfStep := PerformanceStart;
   ZQGerou.Open;
+  PerformanceElapsed('Recebimento abrir: titulos gerados local', PerfStep);
 
+  PerfStep := PerformanceStart;
   DM_Tabelas.ZQRecebimento.Last;
+  PerformanceElapsed('Recebimento abrir: Last e eventos dos detalhes', PerfStep);
+  PerfStep := PerformanceStart;
   AtualizarLookupsRecebimento;
+  PerformanceElapsed('Recebimento abrir: nomes do registro atual', PerfStep);
+  PerfStep := PerformanceStart;
   DBGReceb.SetFocus;
+  PerformanceElapsed('Recebimento abrir: foco do grid e eventos', PerfStep);
+  PerfStep := PerformanceStart;
   botoes_setas;
   Pag_Receb.PageIndex := 0;
   if Pag_Receb.PageIndex = 0 Then
@@ -629,14 +676,23 @@ begin
   Panel2.Visible:=false;
   Frm_principal.Panel1.Visible:=false;
 
+  PerformanceElapsed('Recebimento abrir: preparar campos e botoes finais', PerfStep);
+  PerfStep := PerformanceStart;
   DM_tabelas.ZQTipodoc.Locate('tipodoc',DM_Tabelas.ZQRecebimento.FieldByName('TipDoc').AsString,[]);
   IF DM_tabelas.ZQTipoDoc.FieldByName('dados_chequ').AsString = 'S' Then
     GBCheque.Visible := True
   else
     GBCheque.Visible := False;
 
+  PerformanceElapsed('Recebimento abrir: tipo de documento e painel de cheque', PerfStep);
+  PerfStep := PerformanceStart;
   Application.ProcessMessages;
+  PerformanceElapsed('Recebimento abrir: mensagens e desenho finais', PerfStep);
 
+  finally
+    PerformanceElapsed('Recebimento abrir: total FormShow (inclui subetapas)', PerfTotal);
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 procedure TFrmCad_Recebimento.Ativa_campos;
@@ -863,6 +919,7 @@ end;
 
 procedure TFrmCad_Recebimento.botoes_setas;
 Begin
+  LReg.Caption := IntToStr(DM_tabelas.ZQRecebimento.RecordCount);
   DXBPrimeiro.Enabled := True;
   DXBAnterior.Enabled := True;
   DXBProximo.Enabled := true;
@@ -2285,119 +2342,378 @@ begin
 end;
 
 procedure TFrmCad_Recebimento.CriarGraficosRuntime;
-  procedure CriarPaintBox(Container: TPanel; var PaintBox: TPaintBox;
-    PaintHandler: TNotifyEvent);
+  procedure CriarGrafico(Container: TPanel; var PaintBox: TPaintBox;
+    PaintHandler: TNotifyEvent; Indice, TipoPadrao: Integer);
+  var
+    Barra: TPanel;
+    Rotulo: TLabel;
   begin
-    if PaintBox <> nil then
+    if (PaintBox <> nil) or (Container = nil) then
       Exit;
-    if Container = nil then
-      Exit;
-    PaintBox := TPaintBox.Create(Container);
-    PaintBox.Parent := Container;
-    PaintBox.Align := alClient;
+    Barra := TPanel.Create(Container);
+    Barra.Name := 'BarraTipoGrafico' + IntToStr(Indice);
+    Barra.Caption := '';
+    Barra.Parent := Container;
+    Barra.Align := alTop;
+    Barra.Height := 30;
+    Barra.BevelOuter := bvNone;
+    Barra.Color := clWhite;
+    Rotulo := TLabel.Create(Barra);
+    Rotulo.Parent := Barra;
+    Rotulo.Left := 8;
+    Rotulo.Top := 8;
+    Rotulo.Font.Color := clBlack;
+    Rotulo.Caption := 'Tipo de gráfico:';
+    FTipoGraficos[Indice] := TComboBox.Create(Barra);
+    with FTipoGraficos[Indice] do
+    begin
+      Name := 'TipoGrafico' + IntToStr(Indice);
+      Parent := Barra;
+      Left := Rotulo.Left + Rotulo.Width + 12;
+      Top := 3;
+      Width := 185;
+      Style := csDropDownList;
+      Font.Color := clBlack;
+      Items.Add('Linhas');
+      Items.Add('Colunas');
+      Items.Add('Barras horizontais');
+      ItemIndex := TipoPadrao;
+      Tag := Indice;
+      OnChange := TipoGraficoAlterado;
+    end;
+    if FTipoGraficos[Indice].Top + FTipoGraficos[Indice].Height + 3 > Barra.Height then
+      Barra.Height := FTipoGraficos[Indice].Top + FTipoGraficos[Indice].Height + 3;
+    FScrollGraficos[Indice] := TScrollBox.Create(Container);
+    with FScrollGraficos[Indice] do
+    begin
+      Name := 'RolagemGrafico' + IntToStr(Indice);
+      Parent := Container;
+      Align := alClient;
+      BorderStyle := bsNone;
+      HorzScrollBar.Tracking := True;
+      VertScrollBar.Tracking := True;
+      Tag := Indice;
+      OnResize := RedimensionarGrafico;
+    end;
+    PaintBox := TPaintBox.Create(FScrollGraficos[Indice]);
+    PaintBox.Name := 'ImagemGrafico' + IntToStr(Indice);
+    PaintBox.Parent := FScrollGraficos[Indice];
+    PaintBox.Width := Container.ClientWidth;
+    PaintBox.Height := Container.ClientHeight - Barra.Height;
     PaintBox.OnPaint := PaintHandler;
   end;
 begin
-  CriarPaintBox(PnlGrafico1, FPaintBoxGrafico1, PintarGrafico1);
-  CriarPaintBox(PnlGrafico2, FPaintBoxGrafico2, PintarGrafico2);
-  CriarPaintBox(PnlGrafico3, FPaintBoxGrafico3, PintarGrafico3);
+  CriarGrafico(PnlGrafico1, FPaintBoxGrafico1, PintarGrafico1, 1, 0);
+  CriarGrafico(PnlGrafico2, FPaintBoxGrafico2, PintarGrafico2, 2, 1);
+  CriarGrafico(PnlGrafico3, FPaintBoxGrafico3, PintarGrafico3, 3, 2);
 end;
 
-procedure TFrmCad_Recebimento.PintarGrafico1(Sender: TObject);
+procedure TFrmCad_Recebimento.TipoGraficoAlterado(Sender: TObject);
 var
-  Series: TChartSeriesArray;
-  Options: TChartRenderOptions;
-  PaintBox: TPaintBox;
+  Indice: Integer;
 begin
-  if FPintandoGrafico1 or not (Sender is TPaintBox) then
+  if not (Sender is TComboBox) then
     Exit;
-  FPintandoGrafico1 := True;
+  Indice := TComboBox(Sender).Tag;
+  if (Indice < 1) or (Indice > 3) then
+    Exit;
+  FScrollGraficos[Indice].HorzScrollBar.Position := 0;
+  FScrollGraficos[Indice].VertScrollBar.Position := 0;
+  case Indice of
+    1: AtualizarGrafico(FPaintBoxGrafico1);
+    2: AtualizarGrafico(FPaintBoxGrafico2);
+    3: AtualizarGrafico(FPaintBoxGrafico3);
+  end;
+end;
+
+procedure TFrmCad_Recebimento.RedimensionarGrafico(Sender: TObject);
+begin
+  if not (Sender is TScrollBox) then
+    Exit;
+  case TScrollBox(Sender).Tag of
+    1: AtualizarGrafico(FPaintBoxGrafico1);
+    2: AtualizarGrafico(FPaintBoxGrafico2);
+    3: AtualizarGrafico(FPaintBoxGrafico3);
+  end;
+end;
+
+procedure TFrmCad_Recebimento.CompactarPrevisaoHorizontal(var Series: TChartSeriesArray);
+const Fields: array[0..2] of string = ('areceber', 'recebido', 'apagar');
+var
+  Flat: TChartSeriesArray;
+  Bookmark: TBookmark;
+  I, Row, N: Integer;
+  LabelText: string;
+begin
+  if not CDSResult.Active or CDSResult.IsEmpty then Exit;
+  SetLength(Flat, 1);
+  Flat[0].Title := 'Previsao';
+  Flat[0].ColorEachPoint := True;
+  Flat[0].MarkStyle := cmsValue;
+  Flat[0].BarPenWidth := 1;
+  Bookmark := CDSResult.GetBookmark;
+  CDSResult.DisableControls;
   try
-    PaintBox := TPaintBox(Sender);
-    LoadChartSeriesFromDataSet(CDSResult,['ordem', 'ordem', 'ordem', 'ordem'],['A Pagar', 'A Receber', 'Recebido', 'Pago'],
-                               ['apagar', 'areceber', 'recebido', 'pago'],[clRed, clTeal, clBlue, TColor(234)], Series);
-    Series[0].LineStyle := psDot;
-    Series[0].LineWidth := 4;
-    Series[1].LineStyle := psDash;
-    Series[1].LineWidth := 2;
-    Series[2].LineWidth := 2;
-    Series[3].LineWidth := 2;
-
-    Options := DefaultChartRenderOptions(clWhite);
-    Options.UseBackgroundGradient := True;
-    Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
-    Options.BackgroundEndColor := clWhite;
-    Options.BorderColor := clBlue;
-    Options.BorderWidth := 2;
-    GenerateStyledMultiSeriesChart(PaintBox.Canvas, Series, ctLine,PaintBox.ClientWidth, PaintBox.ClientHeight,
-                                   'Recebimentos e Pagamentos do Periodo Informado', Options, True, True);
+    CDSResult.First;
+    Row := 0;
+    while not CDSResult.Eof do
+    begin
+      for I := 0 to 2 do
+        if not CDSResult.FieldByName(Fields[I]).IsNull then
+        begin
+          N := Length(Flat[0].Data);
+          SetLength(Flat[0].Data, N + 1);
+          LabelText := Series[I].Title;
+          if (I = 2) and (CDSResultordem.AsString = '1') then
+            LabelText := 'A Pagar no Periodo';
+          Flat[0].Data[N].XValue := LabelText;
+          Flat[0].Data[N].YValue := Series[I].Data[Row].YValue;
+          Flat[0].Data[N].Color := Series[I].Color;
+        end;
+      Inc(Row);
+      CDSResult.Next;
+    end;
   finally
-    FPintandoGrafico1 := False;
+    if CDSResult.BookmarkValid(Bookmark) then CDSResult.GotoBookmark(Bookmark);
+    CDSResult.FreeBookmark(Bookmark);
+    CDSResult.EnableControls;
   end;
+  Series := Flat;
 end;
 
-procedure TFrmCad_Recebimento.PintarGrafico2(Sender: TObject);
-var
-  Series: TChartSeriesArray;
-  ChartTitle: string;
-  Options: TChartRenderOptions;
-  PaintBox: TPaintBox;
+procedure TFrmCad_Recebimento.PrepararDadosGrafico(Indice: Integer;
+  out Series: TChartSeriesArray; out Options: TChartRenderOptions;
+  out Tipo: TChartType; out Titulo: string);
+var I: Integer;
 begin
-  if FPintandoGrafico2 or not (Sender is TPaintBox) then
-    Exit;
-  FPintandoGrafico2 := True;
-  try
-    PaintBox := TPaintBox(Sender);
-    if Trim(EdNomeLoteamento.Text) = '' then
-      ChartTitle := 'Lot.: Todos - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text
-    else
-      ChartTitle := 'Lot.:' + EdNomeLoteamento.Text + ' - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text;
-    LoadChartSeriesFromDataSet(CDSResult,['pareceber', 'precebido', 'patrazado'],['A Receber no Periodo', 'Recebido no Periodo', 'Aberto no Periodo'],
-                              ['areceber', 'recebido', 'apagar'],[clLime, clBlue, clRed], Series);
-    Series[0].BarPenWidth := 2;
-    Series[0].MarkStyle := cmsValue;
-    Series[1].BarPenWidth := 2;
-    Series[1].MarkStyle := cmsValue;
-    Series[2].BarPenWidth := 2;
-    Series[2].MarkStyle := cmsValue;
-
-    Options := DefaultChartRenderOptions(clWhite);
-    Options.UseBackgroundGradient := True;
-    Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
-    Options.BackgroundEndColor := clWhite;
-    Options.BorderColor := clBlue;
-    Options.BorderWidth := 2;
-    GenerateStyledMultiSeriesChart(PaintBox.Canvas, Series, ctBar,PaintBox.ClientWidth, PaintBox.ClientHeight,ChartTitle, Options, True, True);
-  finally
-    FPintandoGrafico2 := False;
-  end;
-end;
-
-procedure TFrmCad_Recebimento.PintarGrafico3(Sender: TObject);
-var
-  Series: TChartSeriesArray;
-  Options: TChartRenderOptions;
-begin
-  if FPaintBoxGrafico3 = nil then
-    Exit;
-  SetLength(Series, 1);
-  Series[0].Title := 'Inadimplencia';
-  Series[0].Color := clRed;
-  SetLength(Series[0].Data, 0);
-  if ZQInadimplentes.Active and (ZQInadimplentes.FindField('nome_loteamento_sql') <> nil) and (ZQInadimplentes.FindField('inadimplente') <> nil) then
-     LoadChartSeriesFromDataSet(ZQInadimplentes, ['nome_loteamento_sql'],['Inadimplencia'], ['inadimplente'], [clRed], Series);
-  if Length(Series) > 0 then
-  begin
-    Series[0].ColorEachPoint := True;
-    Series[0].MarkStyle := cmsValue;
-  end;
-
   Options := DefaultChartRenderOptions(clWhite);
   Options.BorderColor := clBlue;
   Options.BorderWidth := 2;
-  Options.LegendBySeries := False;
-  GenerateStyledMultiSeriesChart(FPaintBoxGrafico3.Canvas, Series, ctHorizontalBar, FPaintBoxGrafico3.ClientWidth,
-                                 FPaintBoxGrafico3.ClientHeight,'Grafico de Inadimplencias ate a data de ' + DateToStr(Date - 1), Options, True, True);
+  Options.FinancialLayout := True;
+  case FTipoGraficos[Indice].ItemIndex of
+    0: Tipo := ctLine;
+    1: Tipo := ctBar;
+  else
+    Tipo := ctHorizontalBar;
+  end;
+  case Indice of
+    1:
+      begin
+        Titulo := 'Recebimentos e Pagamentos do Periodo Informado';
+        LoadChartSeriesFromDataSet(CDSResult,
+          ['ordem', 'ordem', 'ordem', 'ordem'],
+          ['A Pagar', 'A Receber', 'Recebido', 'Pago'],
+          ['apagar', 'areceber', 'recebido', 'pago'],
+          [clRed, clTeal, clBlue, clPurple], Series);
+        Series[0].LineStyle := psDot;
+        Series[0].LineWidth := 4;
+        Series[1].LineStyle := psDash;
+        Series[1].LineWidth := 2;
+        Series[2].LineWidth := 2;
+        Series[3].LineWidth := 2;
+      end;
+    2:
+      begin
+        if Trim(EdNomeLoteamento.Text) = '' then
+          Titulo := 'Lot.: Todos - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text
+        else
+          Titulo := 'Lot.:' + EdNomeLoteamento.Text + ' - Previsao de Recebimentos no Vencimento do Periodo de ' + XDEIni1.Text + ' a ' + XDEFim1.Text;
+        LoadChartSeriesFromDataSet(CDSResult,
+          ['pareceber', 'precebido', 'patrazado'],
+          ['A Receber no Periodo', 'Recebido no Periodo', 'Aberto no Periodo'],
+          ['areceber', 'recebido', 'apagar'], [clLime, clBlue, clRed], Series);
+        for I := 0 to High(Series) do
+        begin
+          Series[I].BarPenWidth := 2;
+          Series[I].MarkStyle := cmsValue;
+        end;
+      end;
+    3:
+      begin
+        Titulo := 'Grafico de Inadimplencias ate a data de ' + DateToStr(Date - 1);
+        SetLength(Series, 1);
+        Series[0].Title := 'Inadimplencia';
+        Series[0].Color := clRed;
+        if ZQInadimplentes.Active and
+           (ZQInadimplentes.FindField('nome_loteamento_sql') <> nil) and
+           (ZQInadimplentes.FindField('inadimplente') <> nil) then
+          LoadChartSeriesFromDataSet(ZQInadimplentes,
+            ['nome_loteamento_sql'], ['Inadimplencia'], ['inadimplente'], [clRed], Series);
+        Series[0].ColorEachPoint := True;
+        Series[0].MarkStyle := cmsValue;
+        Options.LegendBySeries := False;
+        Options.ShowLegend := False;
+      end;
+  end;
+  if Indice in [1, 2] then
+  begin
+    Options.UseBackgroundGradient := True;
+    Options.BackgroundStartColor := TColor(RGB(228, 239, 255));
+    Options.BackgroundEndColor := clWhite;
+  end;
+  Options.FitHorizontalValueLabels := Tipo = ctHorizontalBar;
+  Options.CompactZeroSeries := (Indice = 1) and (Tipo = ctHorizontalBar);
+  Options.ShowZeroSeriesValues := Indice = 1;
+  if (Indice = 2) and (Tipo = ctHorizontalBar) then
+  begin
+    CompactarPrevisaoHorizontal(Series);
+    Options.ShowLegend := False;
+  end;
+end;
+
+function TFrmCad_Recebimento.CriarImagemGrafico(Indice: Integer;
+  Largura, Altura: Integer; out Titulo: string): TBitmap;
+var
+  Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
+  Tipo: TChartType;
+  I, J, Quantidade, AlturaCategoria, LarguraCategoria, SeriesVisiveis: Integer;
+  MargemEsquerda, MargemDireita, LarguraTexto, Necessario: Integer;
+  LarguraMinima, AlturaMinima, LarguraUtil, AlturaUtil: Integer;
+  BarraHorizontal, BarraVertical: Boolean;
+  Texto: string;
+begin
+  Result := TBitmap.Create;
+  try
+    PrepararDadosGrafico(Indice, Series, Options, Tipo, Titulo);
+    Quantidade := 0;
+    if Length(Series) > 0 then
+      Quantidade := Length(Series[0].Data);
+    { Reserva espaco usando os mesmos dados, sem reabrir consultas. }
+    Result.Canvas.Font.Name := Options.AxisFontName;
+    Result.Canvas.Font.Size := Options.AxisFontSize;
+    Result.Canvas.Font.Style := Options.AxisFontStyle;
+    MargemEsquerda := 80;
+    MargemDireita := 24;
+    LarguraCategoria := 70;
+    for I := 0 to High(Series) do
+      for J := 0 to High(Series[I].Data) do
+      begin
+        LarguraTexto := Result.Canvas.TextWidth(Series[I].Data[J].XValue);
+        if LarguraTexto + 20 > LarguraCategoria then
+          LarguraCategoria := LarguraTexto + 20;
+        if LarguraTexto + 16 > MargemEsquerda then
+          MargemEsquerda := LarguraTexto + 16;
+        Texto := FormatFloat('#,##0.00', Series[I].Data[J].YValue);
+        LarguraTexto := Result.Canvas.TextWidth(Texto);
+        if LarguraTexto + 18 > MargemDireita then
+          MargemDireita := LarguraTexto + 18;
+        if (Series[I].MarkStyle <> cmsNone) and
+           ((LarguraTexto + 16) * Length(Series) > LarguraCategoria) then
+          LarguraCategoria := (LarguraTexto + 16) * Length(Series);
+      end;
+    if Tipo = ctHorizontalBar then
+    begin
+      SeriesVisiveis := HorizontalSeriesCount(Series, Options.CompactZeroSeries);
+      if SeriesVisiveis > 1 then
+        AlturaCategoria := 6 + (SeriesVisiveis * 22)
+      else
+        AlturaCategoria := 22;
+      Necessario := 110 + (Quantidade * AlturaCategoria);
+      if Options.ShowLegend then
+        Inc(Necessario, ((Length(Series) + 1) div 2) * 16);
+      AlturaMinima := Necessario;
+      LarguraMinima := MargemEsquerda + MargemDireita + 120;
+    end
+    else
+    begin
+      LarguraMinima := 120 + MargemDireita + (Quantidade * LarguraCategoria);
+      { O resumo em linhas continua ajustado a janela, como no padrao
+        anterior; o eixo ja seleciona as datas que cabem no espaco. }
+      if (Indice = 1) and (Tipo = ctLine) then
+        LarguraMinima := 240 + MargemDireita;
+      AlturaMinima := 178;
+      if Options.ShowLegend then
+        Inc(AlturaMinima, ((Length(Series) + 1) div 2) * 16);
+    end;
+    { Calcula as barras antes de definir o bitmap para evitar alternancia
+      de tamanho entre repinturas ao aparecer a primeira barra de rolagem. }
+    BarraHorizontal := False;
+    BarraVertical := False;
+    for I := 1 to 3 do
+    begin
+      LarguraUtil := Largura;
+      AlturaUtil := Altura;
+      if BarraVertical then Dec(LarguraUtil, GetSystemMetrics(SM_CXVSCROLL));
+      if BarraHorizontal then Dec(AlturaUtil, GetSystemMetrics(SM_CYHSCROLL));
+      BarraHorizontal := LarguraMinima > LarguraUtil;
+      BarraVertical := AlturaMinima > AlturaUtil;
+    end;
+    if LarguraMinima > LarguraUtil then LarguraUtil := LarguraMinima;
+    if AlturaMinima > AlturaUtil then AlturaUtil := AlturaMinima;
+    Largura := LarguraUtil;
+    Altura := AlturaUtil;
+    if Largura < 1 then Largura := 1;
+    if Altura < 1 then Altura := 1;
+    Result.SetSize(Largura, Altura);
+    GenerateStyledMultiSeriesChart(Result.Canvas, Series, Tipo, Largura, Altura,
+      Titulo, Options, True, True);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TFrmCad_Recebimento.PintarGrafico(Indice: Integer);
+var
+  PaintBox: TPaintBox;
+  Scroll: TScrollBox;
+  Bitmap: TBitmap;
+  Titulo: string;
+  Largura, Altura: Integer;
+begin
+  case Indice of
+    1: PaintBox := FPaintBoxGrafico1;
+    2: PaintBox := FPaintBoxGrafico2;
+    3: PaintBox := FPaintBoxGrafico3;
+  else
+    Exit;
+  end;
+  if FPintandoGraficos[Indice] or (PaintBox = nil) then
+    Exit;
+  Scroll := FScrollGraficos[Indice];
+  FPintandoGraficos[Indice] := True;
+  try
+    Largura := Scroll.Width;
+    Altura := Scroll.Height;
+    Bitmap := CriarImagemGrafico(Indice, Largura, Altura, Titulo);
+    try
+      PaintBox.Width := Bitmap.Width;
+      PaintBox.Height := Bitmap.Height;
+      PaintBox.Canvas.Draw(0, 0, Bitmap);
+    finally
+      Bitmap.Free;
+    end;
+  finally
+    FPintandoGraficos[Indice] := False;
+  end;
+end;
+
+procedure TFrmCad_Recebimento.PintarGrafico1(Sender: TObject);
+begin
+  PintarGrafico(1);
+end;
+
+procedure TFrmCad_Recebimento.PintarGrafico2(Sender: TObject);
+begin
+  PintarGrafico(2);
+end;
+
+procedure TFrmCad_Recebimento.PintarGrafico3(Sender: TObject);
+begin
+  PintarGrafico(3);
+end;
+
+procedure TFrmCad_Recebimento.ImprimirGrafico(Indice: Integer);
+var
+  Series: TChartSeriesArray;
+  Options: TChartRenderOptions;
+  Tipo: TChartType;
+  Titulo: string;
+begin
+  if FScrollGraficos[Indice] = nil then Exit;
+  PrepararDadosGrafico(Indice, Series, Options, Tipo, Titulo);
+  PrintFinancialSeriesChart(Series, Tipo, Titulo, Options);
 end;
 
 procedure TFrmCad_Recebimento.AtualizarGrafico(PaintBox: TPaintBox);
@@ -2409,8 +2725,7 @@ end;
 
 procedure TFrmCad_Recebimento.dxButton5Click(Sender: TObject);
 begin
-  if FPaintBoxGrafico1 <> nil then
-    PrintPaintBoxChart(FPaintBoxGrafico1, 'Recebimentos e Pagamentos do Periodo Informado', True);
+  ImprimirGrafico(1);
 end;
 
 procedure TFrmCad_Recebimento.Pag_RecebClick(Sender: TObject);
@@ -2851,20 +3166,8 @@ begin
 end;
 
 procedure TFrmCad_Recebimento.dxButton6Click(Sender: TObject);
-var
-  ChartTitle: string;
 begin
-  if FPaintBoxGrafico2 <> nil then
-  begin
-    if Trim(EdNomeLoteamento.Text) = '' then
-      ChartTitle := 'Lot.: Todos - Previsao de Recebimentos no Vencimento do Periodo de ' +
-        XDEIni1.Text + ' a ' + XDEFim1.Text
-    else
-      ChartTitle := 'Lot.:' + EdNomeLoteamento.Text +
-        ' - Previsao de Recebimentos no Vencimento do Periodo de ' +
-        XDEIni1.Text + ' a ' + XDEFim1.Text;
-    PrintPaintBoxChart(FPaintBoxGrafico2, ChartTitle, True);
-  end;
+  ImprimirGrafico(2);
 end;
 
 procedure TFrmCad_Recebimento.tab_graficosClick(Sender: TObject);
@@ -3818,9 +4121,7 @@ end;
 
 procedure TFrmCad_Recebimento.dxButton9Click(Sender: TObject);
 begin
-  if FPaintBoxGrafico3 <> nil then
-    PrintPaintBoxChart(FPaintBoxGrafico3,
-      'Grafico de Inadimplencias ate a data de ' + DateToStr(Date - 1), True);
+  ImprimirGrafico(3);
 end;
 
 procedure TFrmCad_Recebimento.JBProcessoItems4Click(Sender: TObject);
@@ -4060,8 +4361,15 @@ end;
 
 
 procedure TFrmCad_Recebimento.AfterConstruction;
+var
+  PerfStep, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStep := PerformanceStart;
   inherited AfterConstruction;
+  PerformanceElapsed('Recebimento criar: AfterConstruction herdado', PerfStep);
+  PerfStep := PerformanceStart;
   { Estes eventos nao possuem manipuladores no DFM original. }
   ZQRecebimento.BeforeOpen := CobrancaAntesReabrir;
   ZQRecebimento.BeforeRefresh := CobrancaAntesReabrir;
@@ -4072,8 +4380,21 @@ begin
   ZQRecebimento4.Close;
   ZQRecebimento4.SQL.Clear;
   ZQRecebimento4.SQL.Add('Select * from Cobranca where saldo > ''0''');
+  { Somente a consulta inicial de metadados. Os graficos substituem este
+    SQL antes de abrir ZQFeito, mantendo seus filtros e calculos. }
+  ZQFeito.SQL.Clear;
+  ZQFeito.SQL.Add('SELECT * FROM (select dt_rec,vr_rec,recpag from receb_baixa join recbxhist on refbaixa=refer');
+  ZQFeito.SQL.Add(' join recebimento on idrecib=idrecebimento WHERE 1=0 group by idreceb_baixa) as A');
+  PerformanceElapsed('Recebimento criar: preparar eventos e SQL local existente', PerfStep);
+  PerfStep := PerformanceStart;
   EnsureRuntimeFields(Self);
+  PerformanceElapsed('Recebimento criar: campos runtime', PerfStep);
+  PerfStep := PerformanceStart;
   CriarGraficosRuntime;
+  PerformanceElapsed('Recebimento criar: componentes dos graficos', PerfStep);
+  finally
+    PerformanceElapsed('Recebimento criar: total AfterConstruction (inclui subetapas)', PerfTotal);
+  end;
 end;
 
 initialization

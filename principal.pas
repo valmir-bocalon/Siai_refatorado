@@ -1080,8 +1080,15 @@ begin
 end;
 
 procedure TFrm_principal.dxButton22Click(Sender: TObject);
+var
+  PerfStep, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStep := PerformanceStart;
   if not Verif_senha('Financeiro','Tela Principal','') then exit;
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: verificar acesso (inclui espera do usuario)', PerfStep);
+  PerfStep := PerformanceStart;
 //  FrmCad_Recebimento.Left := Frm_principal.Left+7;
 //  FrmCad_Recebimento.Top := Frm_principal.Top+135;
 //  FrmCad_Recebimento.show;
@@ -1128,16 +1135,29 @@ begin
 
 
 
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: painel inicial', PerfStep);
+  PerfStep := PerformanceStart;
   if FrmCad_Recebimento=nil then
      //FrmCad_Recebimento:=TFrmCad_Recebimento.Create(Application)
      FrmCad_Recebimento := TFrmCad_Recebimento.Create(Self)
   else
      FrmCad_Recebimento.bringToFront;
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: criar ou trazer formulario (inclui subetapas)', PerfStep);
+  PerfStep := PerformanceStart;
   FrmCad_Recebimento.ZQGerou.Open;
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: titulos gerados antes do Show', PerfStep);
+  PerfStep := PerformanceStart;
   FrmCad_Recebimento.Show;
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: Show e preparacao da tela (inclui subetapas)', PerfStep);
+  PerfStep := PerformanceStart;
   Panel1.Visible:=false;
   Application.ProcessMessages;
+  PerformanceElapsed('Recebimento acesso [botao Financeiro]: finalizar painel e mensagens', PerfStep);
 
+  finally
+    PerformanceElapsed('Recebimento acesso [botao Financeiro]: total do clique (inclui subetapas e espera do usuario)', PerfTotal);
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 procedure TFrm_principal.JBarraUtilItems2Click(Sender: TObject);
@@ -1426,18 +1446,34 @@ begin
 end;
 
 procedure TFrm_principal.ContasReceberPagar1Click(Sender: TObject);
+var
+  PerfStep, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStep := PerformanceStart;
   if not Verif_senha('Financeiro','Tela Principal','') then exit;
+  PerformanceElapsed('Recebimento acesso [menu Contas Receber/Pagar]: verificar acesso (inclui espera do usuario)', PerfStep);
+  PerfStep := PerformanceStart;
 //  FrmCad_Recebimento.Left := Frm_principal.Left+7;
 //  FrmCad_Recebimento.Top := Frm_principal.Top+135;
 //  FrmCad_Recebimento.show;
   Panel1.Visible:=true;
   Application.ProcessMessages;
 
+  PerformanceElapsed('Recebimento acesso [menu Contas Receber/Pagar]: painel inicial', PerfStep);
+  PerfStep := PerformanceStart;
   if FrmCad_Recebimento=nil then
      FrmCad_Recebimento:=TFrmCad_Recebimento.Create(Application);
+  PerformanceElapsed('Recebimento acesso [menu Contas Receber/Pagar]: criar ou trazer formulario (inclui subetapas)', PerfStep);
+  PerfStep := PerformanceStart;
   FrmCad_Recebimento.Show;
+  PerformanceElapsed('Recebimento acesso [menu Contas Receber/Pagar]: Show e preparacao da tela (inclui subetapas)', PerfStep);
 
+  finally
+    PerformanceElapsed('Recebimento acesso [menu Contas Receber/Pagar]: total do clique (inclui subetapas e espera do usuario)', PerfTotal);
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 procedure TFrm_principal.ReajustedeParcelas1Click(Sender: TObject);
@@ -1481,8 +1517,15 @@ begin
 end;
 
 procedure TFrm_principal.Financeiro1Click(Sender: TObject);
+var
+  PerfStep, PerfTotal: UInt64;
 begin
+  PerfTotal := PerformanceStart;
+  try
+  PerfStep := PerformanceStart;
   if not Verif_senha('Financeiro','Tela Principal','') then exit;
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: verificar acesso (inclui espera do usuario)', PerfStep);
+  PerfStep := PerformanceStart;
 //  FrmCad_Recebimento.Left := Frm_principal.Left+7;
 //  FrmCad_Recebimento.Top := Frm_principal.Top+135;
 //  FrmCad_Recebimento.show;
@@ -1490,52 +1533,83 @@ begin
   Application.ProcessMessages;
 
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: painel inicial', PerfStep);
+  PerfStep := PerformanceStart;
   DM_tabelas.ZQTipodoc.close;
   DM_tabelas.ZQTipodoc.SQL.Clear;
   DM_tabelas.ZQTipodoc.sql.Add('select * from tipodocumento');
   DM_tabelas.ZQTipodoc.open;
   DM_tabelas.ZQTipodoc.First;
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: tipos de documento global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_tabelas.ZQPlanoDeContas.close;
   DM_tabelas.ZQPlanoDeContas.SQL.clear;
   DM_tabelas.ZQPlanoDeContas.SQL.Add('Select * from Plano_contas');
   DM_tabelas.ZQPlanoDeContas.open;
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: plano de contas global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_tabelas.ZQReBxHi.close;
   DM_tabelas.ZQReBxHi.SQL.Clear;
   DM_tabelas.ZQReBxHi.SQL.Add('select * from RecBxHist limit 100');
   DM_tabelas.ZQReBxHi.open;
 
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: historico de baixas global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_TAbelas.ZQRecebBxTemp.Close;
   DM_TAbelas.ZQRecebBxTemp.SQL.Clear;
   DM_TAbelas.ZQRecebBxTemp.SQL.Add('SELECT * FROM (recbxhist as H join recebimento as R ON R.idrecebimento=H.idrecib)join receb_baixa as B ON B.refbaixa=H.refer limit 100');
   DM_TAbelas.ZQRecebBxTemp.open;
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: composicao das baixas global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_Tabelas.ZQCheque.Close;
   DM_Tabelas.ZQCheque.SQL.Clear;
   DM_Tabelas.ZQCheque.SQL.Add('select * from cheque_rec');
   DM_Tabelas.ZQCheque.open;
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: cheques global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_tabelas.ZQRecebimento.Close;
   DM_tabelas.ZQRecebimento.SQL.Clear;
-  DM_tabelas.ZQRecebimento.SQL.Add('Select * from Recebimento order by DT_Vencimento limit 100');
+  DM_Tabelas.ZQRecebimento.SQL.Add('Select  idrecebimento,documento,cliente,usuario,Dt_Entrada,Dt_Vencimento,Valor,Observ,VrDoc,ordem,TipDoc,saldo,marcar,RefBaixa,refvinda,contabil,empresa,');
+  DM_Tabelas.ZQRecebimento.SQL.Add('        custodaparcela,origem,adversa,recpag,numordem,idloteamento,venda_idvenda,quadralote,numboleto,Substituicao,sq,nomeadversa,Reajustado,Data_reajuste,');
+  DM_Tabelas.ZQRecebimento.SQL.Add('        somar,Proximo_Reajuste,Parcelas_fixas,observ_estorno,tip,juros,descontos,Data_Quitacao,sld_antes_reajuste,Percentual_reajuste,juridico,data_juridico,');
+  DM_Tabelas.ZQRecebimento.SQL.Add('        dt_nao_pagou_no_mes,descricao_juridico,multa,mora ');
+  DM_tabelas.ZQRecebimento.SQL.Add(' from Recebimento  r where not exists (select 1 from rescisao rs where r.venda_idvenda=rs.idvenda) order by r.DT_Vencimento LIMIT 200, 50');
   DM_tabelas.ZQRecebimento.Open;
   DM_Tabelas.ZQRecebimento.Last;
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: consulta e Last do recebimento global', PerfStep);
+  PerfStep := PerformanceStart;
   DM_Tabelas.ZQContaBancaria.SQL.Clear;
   DM_Tabelas.ZQContaBancaria.SQL.Add('Select * from conta_bancaria');
   DM_Tabelas.ZQContaBancaria.Open;
 
 
 
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: contas bancarias global', PerfStep);
+  PerfStep := PerformanceStart;
   if FrmCad_Recebimento=nil then
      FrmCad_Recebimento:=TFrmCad_Recebimento.Create(Application);
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: criar ou trazer formulario (inclui subetapas)', PerfStep);
+  PerfStep := PerformanceStart;
   FrmCad_Recebimento.ZQGerou.Open;
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: titulos gerados antes do Show', PerfStep);
+  PerfStep := PerformanceStart;
   FrmCad_Recebimento.Show;
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: Show e preparacao da tela (inclui subetapas)', PerfStep);
+  PerfStep := PerformanceStart;
   Panel1.Visible:=false;
   Application.ProcessMessages;
+  PerformanceElapsed('Recebimento acesso [menu Financeiro]: finalizar painel e mensagens', PerfStep);
 
+  finally
+    PerformanceElapsed('Recebimento acesso [menu Financeiro]: total do clique (inclui subetapas e espera do usuario)', PerfTotal);
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 procedure TFrm_principal.abelaPrice1Click(Sender: TObject);

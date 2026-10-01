@@ -539,6 +539,7 @@ begin
           (AOwner.ClassName = 'TFrmPesqCobranca') or
           (AOwner.ClassName = 'TFrmPesqRecebimento') or
           (AOwner.ClassName = 'TFrmCad_Recebimento') or
+          (AOwner.ClassName = 'TFrm_Participante') or
           (AOwner.ClassName = 'TFrmRelRecebimento') or
           { Formularios medidos no diagnostico de vendas. Todos possuem
             campos recriados por esta unidade; a sonda privada apenas evita

@@ -10,6 +10,7 @@ uses
 type
   { A fixture with the startup owner's class name; no real SIAI module is loaded. }
   TDM_Tabelas = class(TComponent);
+  TFrm_Participante = class(TComponent);
   TLegacyMetadataFixture = class(TComponent);
   TDerivedMetadataQuery = class(TZQuery);
   TEvents = class
@@ -206,7 +207,7 @@ begin
   end;
 end;
 
-procedure TestRuntimeFields(Optimized: Boolean);
+procedure TestRuntimeFields(Optimized: Boolean; OwnerClass: TComponentClass = nil);
 var
   Owner: TComponent;
   Lookup, Q: TZQuery;
@@ -223,7 +224,8 @@ var
   end;
 
 begin
-  if Optimized then Owner := TDM_Tabelas.Create(nil)
+  if OwnerClass <> nil then Owner := OwnerClass.Create(nil)
+  else if Optimized then Owner := TDM_Tabelas.Create(nil)
   else Owner := TLegacyMetadataFixture.Create(nil);
   Events := TEvents.Create;
   try
@@ -291,7 +293,7 @@ begin
     Q.Edit;
     Q.FieldByName('label').AsString := PreviousLabel;
     Q.Post;
-    Pass('runtime field classes, calculated/native lookup, auto-open, reuse, reopen and edit/post; optimized=' + BoolToStr(Optimized, True));
+    Pass('runtime field classes, calculated/native lookup, auto-open, reuse, reopen and edit/post; owner=' + Owner.ClassName + '; optimized=' + BoolToStr(Optimized, True));
   finally
     Owner.Free;
     Events.Free;
@@ -343,6 +345,7 @@ begin
     TestReadOnlyQuery;
     TestRuntimeFields(False);
       TestRuntimeFields(True);
+      TestRuntimeFields(True, TFrm_Participante);
     finally
       Connection.Free;
     end;
