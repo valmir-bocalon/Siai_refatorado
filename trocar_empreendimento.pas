@@ -978,7 +978,7 @@ begin
 //  edvenda.Text:='';
 //  DM_Tabelas.ZQImovel.Locate('idimovel',DBEImovel.Text,[]);
 //  DM_Tabelas.ZQImovel.Edit;
-//  DM_Tabelas.ZQImoveldisponivel.Value := 'NºO';
+//  DM_Tabelas.ZQImoveldisponivel.Value := 'NÃO';
 //  DM_Tabelas.ZQImovel.Post;
 
   if DM_Tabelas.ZQVenda.State in [DsEdit,DsInsert] then

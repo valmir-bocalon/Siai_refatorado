@@ -1680,7 +1680,7 @@ begin
     end;
     DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
     DM_Tabelas.ZQImovel.Edit;
-    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
+    DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NÃO';
     DM_Tabelas.ZQImovel.Post;
 
     if DM_TAbelas.ZQmemorial.Active=false then
@@ -2506,7 +2506,7 @@ begin
         DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
         DM_Tabelas.ZQImovel.Edit;
         DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
+        DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÃO';
         DM_Tabelas.ZQImovel.Post;
 
         if DM_TAbelas.ZQmemorial.active= false then
@@ -2579,7 +2579,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',  DM_Tabelas.ZQProposta.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÃO';
       DM_Tabelas.ZQImovel.Post;
 
       DM_Tabelas.ZQComprador_proposta.close;
@@ -6130,8 +6130,8 @@ begin
     if (DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString='SIM') then
      begin
        DM_Tabelas.ZQimovel.Edit;
-       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='NºO';
-       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='NºO';
+       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString:='NÃO';
+       DM_Tabelas.ZQImovel.FieldByName('proposta').AsString:='NÃO';
        DM_Tabelas.ZQimovel.post;
      end;
   end;
@@ -6342,7 +6342,7 @@ begin
       DM_Tabelas.ZQImovel.Locate('idimovel',DM_Tabelas.ZQVenda.FieldByName('imovel').AsLargeInt,[]);
       DM_Tabelas.ZQImovel.Edit;
       DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM';
-      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NºO';
+      DM_Tabelas.ZQImovel.FieldByName('proposta').AsString := 'NÃO';
       DM_Tabelas.ZQImovel.Post;
 
       if DM_TAbelas.ZQmemorial.active= false then

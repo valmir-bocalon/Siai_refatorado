@@ -647,7 +647,7 @@ begin
       Write(f,espacos(12)); // 1ª mensagem 315 a 326
 //      Write(f,copy(FrmRelRecebimento.CDS_MarcaTitquadralote.Value,1,12)); // 1ª mensagem 315 a 326
       Write(f,copy(tiramascara(FrmRelRecebimento.CDS_MarcaTitcep_cob.Value)+espacos(8),1,8));  // cep
-      Write(f,COPY('SR. CAIXA, NºO RECEBER APÓS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposição}
+      Write(f,COPY('SR. CAIXA, NÃO RECEBER APÓS 30 (TRINTA) DIAS DE VENCIMENTO.'+espacos(60),1,60));  // decomposição}
 
 
 
@@ -3683,7 +3683,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -4054,7 +4054,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -4714,7 +4714,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -5106,7 +5106,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -5706,7 +5706,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -6105,7 +6105,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -6740,7 +6740,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -7167,7 +7167,7 @@ begin
                   ValorDesconto                                    := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
                 end;
                // tony pediu para trocar a mensagem no dia 28/11/2012
-    //            RLBTitulo2.Instrucoes.Text                       := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+    //            RLBTitulo2.Instrucoes.Text                       := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
     //            RLBTitulo2.Instrucoes.Text                       := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
@@ -7906,7 +7906,7 @@ begin
               RLBTitulo2.ValorDesconto   := truncar((FrmRelRecebimento.CDS_MarcaTitvalor.Value * DM_Tabelas.ZQContaBancaria.FieldByName('Perc_descontos').AsFloat)/100,2);
             end;
            // tony pediu para trocar a mensagem no dia 28/11/2012
-//            RLBTitulo2.Instrucoes.Text := trim('NºO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
+//            RLBTitulo2.Instrucoes.Text := trim('NÃO RECEBER APÓS 30 DIAS DE VENCIMENTO.Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 
 //            RLBTitulo2.Instrucoes.Text := trim('N. Parcela:'+FrmRelRecebimento.CDS_MarcaTitordem.Value+' Ref.:'+FrmRelRecebimento.CDS_MarcaTitquadralote.Value);
 

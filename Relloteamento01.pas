@@ -132,7 +132,7 @@ begin
     if Frm_Relloteamento.FCBS.Checked Then
       Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('SIM')
     else
-      Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('NºO');
+      Frm_Relloteamento.ZQImov.Filter := 'disponivel='+quotedstr('NÃO');
     Frm_Relloteamento.ZQImov.Filtered := True;
   end;
   Frm_Relloteamento.ZQImov.RecordCount;

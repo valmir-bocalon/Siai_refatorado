@@ -936,7 +936,7 @@ begin
   edvenda.Text:='';
   DM_Tabelas.ZQImovel.Locate('idimovel',DBEImovel.Text,[]);
   DM_Tabelas.ZQImovel.Edit;
-  DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
+  DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NÃO';
   DM_Tabelas.ZQImovel.Post;
 
 

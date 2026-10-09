@@ -220,7 +220,7 @@ begin
     if FCBS.Checked Then
       ZQImov.Filter := 'disponivel='+quotedstr('SIM')
     else
-      ZQImov.Filter := 'disponivel='+quotedstr('NºO');
+      ZQImov.Filter := 'disponivel='+quotedstr('NÃO');
     ZQImov.Filtered := True;
   end;
   if CBObs.Checked=false then

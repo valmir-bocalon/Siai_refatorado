@@ -158,7 +158,7 @@ begin
       if SGPart.Cells[4,varlinhas]='VERDADEIRO' then
         DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'SIM'
       else
-        DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NºO';
+        DM_Tabelas.ZQimovel.FieldByName('disponivel').AsString := 'NÃO';
       DM_Tabelas.ZQimovel.FieldByName('medidafrente').AsString := SGPart.Cells[7,varlinhas];
       DM_Tabelas.ZQimovel.FieldByName('medidafundo').AsString := SGPart.Cells[8,varlinhas];
       DM_Tabelas.ZQimovel.FieldByName('medidadedireita').AsString := SGPart.Cells[9,varlinhas];
