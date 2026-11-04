@@ -714,22 +714,16 @@ begin
 end;
 
 procedure TFrmCad_ContasBancarias.dxButtonREMESSAClick(Sender: TObject);
-var
-rg:TBookMark;
+var IdArquivo, IdConta: Int64;
 begin
-  if not Verif_senha('Conta Bancária','Remessas','') Then Exit;
-//  Frm_RelREMESSA.Top := Frm_RelREMESSA.Top+105;
-  //Frm_RelREMESSA.Left := Frm_RelREMESSA.Left-5+(Frm_RelREMESSA.Width-Frm_RelREMESSA.Width);
-  numero.Caption:=DM_Tabelas.ZQBancRemes.FieldByName('gerado').Text+DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString;
-  rg := DM_Tabelas.ZQBancRemes.GetBookMark;
+if not Verif_senha('Conta Bancária','Remessas','') Then Exit;
+  if not DM_Tabelas.ZQBancRemes.Active or DM_Tabelas.ZQBancRemes.IsEmpty then Exit;
+  IdArquivo := DM_Tabelas.ZQBancRemes.FieldByName('idbanco_remessa').AsLargeInt;
+  IdConta := DM_Tabelas.ZQContaBancaria.FieldByName('idconta_bancaria').AsLargeInt;
   if Frm_RelREMESSA=nil then
-     Frm_RelREMESSA:=TFrm_RelREMESSA.Create(Self);
+    Frm_RelREMESSA := TFrm_RelREMESSA.Create(Self);
+  Frm_RelREMESSA.SelecionarArquivo(IdArquivo, IdConta);
   AbrirModal(Self, Frm_RelREMESSA);
-  Frm_RelREMESSA:=nil;
-  Frm_RelREMESSA.Free;
-  DM_Tabelas.ZQBancRemes.GotoBookMark(rg);
-  DM_Tabelas.ZQBancRemes.FreeBookMark(rg);
-  DM_Tabelas.ZQRemes_Receb2.close;
 end;
 
 procedure TFrmCad_ContasBancarias.psnumExit(Sender: TObject);

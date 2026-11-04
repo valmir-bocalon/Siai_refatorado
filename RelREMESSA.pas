@@ -5,7 +5,7 @@ interface
 uses ButtonDxArround, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, XBanner, TFlatCheckBoxUnit, CheckLst,
   DB, DBClient, Grids, DBGrids, ZAbstractRODataset, ZAbstractDataset,
-  ZDataset, ExtCtrls;
+  ZDataset, ExtCtrls, RLReport;
 
 type
   TFrm_RelREMESSA = class(TForm)
@@ -45,10 +45,27 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
+    FIdArquivo: Int64;
+    FIdConta: Int64;
+    FCabecalho: TZReadOnlyQuery;
+    FDetalhes: TZReadOnlyQuery;
+    FLoteamento: TZReadOnlyQuery;
+    FDSDetalhes: TDataSource;
+    FDSLoteamento: TDataSource;
+    FImprimindo: Boolean;
+    FAntesImprimir: TRLBeforePrintEvent;
+    FAposImprimir: TRLAfterPrintEvent;
+    FInicioPreparo: UInt64;
+    procedure AtualizarBotoes;
+    procedure CarregarDetalhes;
+    procedure VisualizarArquivo(ARetorno: Boolean);
+    procedure AntesImprimir(Sender: TObject; var PrintIt: Boolean);
+    procedure AposImprimir(Sender: TObject);
 
     procedure AfterConstruction; override;
   public
     { Public declarations }
+    procedure SelecionarArquivo(AIdArquivo, AIdConta: Int64);
   end;
 
 var
@@ -57,7 +74,7 @@ var
 implementation
 
 uses tabelas, RelImovel01, RelImovelREMESSA, UFrmContasBancarias,
-  RelImovelREMESSA2, uRuntimeFields, uSiaiPreviewModal;
+  RelImovelREMESSA2, uRuntimeFields, uSiaiPreviewModal, uSiaiPerformance, funcoes, FINANmsg;
 
 {$R *.dfm}
 
@@ -67,38 +84,34 @@ begin
 end;
 
 procedure TFrm_RelREMESSA.FormShow(Sender: TObject);
+var Inicio: UInt64;
 begin
-  DM_Tabelas.ZQBancRemes.First;
+  Timer1.Enabled := False;
   CDSRemess.Close;
   CDSRemess.CreateDataSet;
-  DM_Tabelas.ZQBancRemes.DisableControls;
-  while not DM_Tabelas.ZQBancRemes.Eof do
-  begin
-  if DM_Tabelas.ZQBancRemes.FieldByName('gerado').Text+DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString=FrmCad_ContasBancarias.numero.Caption then
+  FCabecalho.Close;
+  FCabecalho.ParamByName('idarquivo').AsLargeInt := FIdArquivo;
+  FCabecalho.ParamByName('idconta').AsLargeInt := FIdConta;
+  Inicio := PerformanceStart;
+  try
+    FCabecalho.Open;
+    if not FCabecalho.IsEmpty then
     begin
-      CDSRemess.Insert;
-      CDSRemessmarca.Value := 0;
-      CDSRemessremessa.Value := DM_Tabelas.ZQBancRemes.FieldByName('remessa').AsInteger;
-      CDSRemessgerado.Value := DM_Tabelas.ZQBancRemes.FieldByName('gerado').AsDateTime;
-      CDSRemessidbanco_remessa.Value:=DM_Tabelas.ZQBancRemes.FieldByName('idbanco_remessa').AsLargeInt;
-      CDSRemessidbanco.Value:=DM_Tabelas.ZQBancRemes.FieldByName('idbanco').AsInteger;
-      CDSRemessnomearq.Value:=DM_Tabelas.ZQBancRemes.FieldByName('nomearq').AsString;
+      CDSRemess.Append;
+      CDSRemessmarca.AsInteger := 0;
+      CDSRemessremessa.AsInteger := FCabecalho.FieldByName('remessa').AsInteger;
+      CDSRemessgerado.Value := FCabecalho.FieldByName('gerado').Value;
+      CDSRemessidbanco_remessa.AsLargeInt := FCabecalho.FieldByName('idbanco_remessa').AsLargeInt;
+      CDSRemessidbanco.AsInteger := FCabecalho.FieldByName('idbanco').AsInteger;
+      CDSRemessnomearq.AsString := FCabecalho.FieldByName('nomearq').AsString;
       CDSRemess.Post;
     end;
-{    else
-       CDSRemessmarca.Value := 1;
-    CDSRemessremessa.Value := DM_Tabelas.ZQBancRemesremessa.Value;
-    CDSRemessgerado.Value := DM_Tabelas.ZQBancRemesgerado.Value;
-    CDSRemessidbanco_remessa.Value:=DM_Tabelas.ZQBancRemesidbanco_remessa.Value;
-    CDSRemessidbanco.Value:=DM_Tabelas.ZQBancRemesidbanco.Value;
-    CDSRemessnomearq.Value:=DM_Tabelas.ZQBancRemesnomearq.Value;
-    CDSRemess.Post;}
-    DM_Tabelas.ZQBancRemes.Next;
+  finally
+    FCabecalho.Close;
+    PerformanceElapsed('Rel remessas: buscar arquivo selecionado', Inicio);
   end;
-
-  FrmCad_ContasBancarias.numero.Caption:='';
-  DM_Tabelas.ZQRemes_Receb2.open;
-  Timer1.enabled:=true;
+  AtualizarBotoes;
+  Timer1.Enabled := not CDSRemess.IsEmpty;
 end;
 
 procedure TFrm_RelREMESSA.DXBMarcEmpreeClick(Sender: TObject);
@@ -167,84 +180,183 @@ End;
 
 procedure TFrm_RelREMESSA.BtRelatorioClick(Sender: TObject);
 begin
-  CDSRemess.Filtered:=false;
-  CDSRemess.Filter := 'marca=0';
-  CDSRemess.Filtered := True;
-  CDSRemess.RecordCount;
-
-  DM_Tabelas.ZQRemes_Receb2.MasterSource:=DS_Remess;
-  DM_Tabelas.ZQRemes_Receb2.MasterFields:='idbanco_remessa';
-  DM_Tabelas.ZQRemes_Receb2.LinkedFields:='remessa';
- 
-  if RLReportREMESSA=nil then
-     RLReportREMESSA:=TRLReportREMESSA.Create(Application);
-  RLReportREMESSA.RLLabel2.Caption:=CDSRemessnomearq.Value;
-  ExibirRelatorioModal(Self, RLReportREMESSA.RLReportREMESSA);
-  RLReportREMESSA:=nil;
-  CDSRemess.Filtered := False;
+  VisualizarArquivo(False);
 end;
 
 procedure TFrm_RelREMESSA.dxButton1Click(Sender: TObject);
 begin
-  CDSRemess.Filtered:=false;
-  CDSRemess.Filter := 'marca=0';
-  CDSRemess.Filtered := True;
-
-
-  DM_Tabelas.ZQRemes_Receb2.MasterSource:=DS_Remess;
-  DM_Tabelas.ZQRemes_Receb2.MasterFields:='idbanco_remessa';
-  DM_Tabelas.ZQRemes_Receb2.LinkedFields:='remessa';
-
-  if RLReportREMESSA2=nil then
-     RLReportREMESSA2:=TRLReportREMESSA2.Create(Application);
-  RLReportREMESSA2.RLLabel2.Caption:=CDSRemessnomearq.Value;
-  ExibirRelatorioModal(Self, RLReportREMESSA2.RLReportREMESSA2);
-  RLReportREMESSA2:=nil;
-  CDSRemess.Filtered := False;
-
+  VisualizarArquivo(True);
 end;
 
 procedure TFrm_RelREMESSA.Timer1Timer(Sender: TObject);
-var
-posi:integer;
-ext:string;
+var Posicao: Integer; Extensao: string;
 begin
   //simula pressionamento dos botões
-  posi:=pos('.',CDSRemessnomearq.Value);
-  inc(posi);
-  ext:=uppercase(copy(CDSRemessnomearq.Value,posi,3));
-  if (ext='REM') or (ext='TST') then
-  begin
-    if assigned(BtRelatorio.OnClick) then
-    begin
-      Timer1.enabled:=false;
-      BtRelatorio.OnClick(BtRelatorio);
-    end;  
-  end
-  else
-  begin
-    if assigned(dxButton1.OnClick) then
-    begin
-      Timer1.enabled:=false;
-      dxButton1.OnClick(dxButton1);
-    end;
-  end;
-
+  Timer1.Enabled := False;
+  if FImprimindo or not CDSRemess.Active or CDSRemess.IsEmpty then Exit;
+  Posicao := Pos('.', CDSRemessnomearq.AsString);
+  Extensao := UpperCase(Copy(CDSRemessnomearq.AsString, Posicao+1, 3));
+  VisualizarArquivo(not ((Extensao='REM') or (Extensao='TST')));
 end;
 
-procedure TFrm_RelREMESSA.FormClose(Sender: TObject;
-  var Action: TCloseAction);
+procedure TFrm_RelREMESSA.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  DM_Tabelas.ZQBancRemes.EnableControls;
-  Frm_RelREMESSA:=nil;
-  Action:=CaFree;
+  if FImprimindo then
+  begin
+    Action := caNone;
+    Exit;
+  end;
+  Timer1.Enabled := False;
+  Frm_RelREMESSA := nil;
+  Action := caFree;
 end;
-
 
 procedure TFrm_RelREMESSA.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+  FCabecalho := TZReadOnlyQuery.Create(Self);
+  FCabecalho.Connection := DM_Tabelas.zconeccao;
+  FCabecalho.SQL.Text := 'select idbanco_remessa,remessa,idbanco,gerado,nomearq '+
+    'from banco_remessa where idbanco_remessa=:idarquivo and idbanco=:idconta';
+  FDetalhes := TZReadOnlyQuery.Create(Self);
+  FDetalhes.Connection := DM_Tabelas.zconeccao;
+  FDetalhes.SQL.Text :=
+    'select m.idremessa_receb,m.remessa,m.idrec,r.idrecebimento,r.documento,'+
+    'r.ordem,r.Dt_Entrada,r.Dt_Vencimento,r.Valor,r.adversa,r.idloteamento,'+
+    'r.quadralote,m.Nossonumero,m.ocorrencia,m.desc_motivo,m.credito,m.dt_ocorrencia,'+
+    'coalesce(p.nome_parte,r.nomeadversa) as nomeadversa '+
+    'from remessa_receb m join recebimento r on m.idrec=r.idrecebimento '+
+    'left join participante p on p.idpaticipante=r.adversa '+
+    'where m.remessa=:idarquivo '+
+    'order by r.idrecebimento,m.idremessa_receb';
+  FLoteamento := TZReadOnlyQuery.Create(Self);
+  FLoteamento.Connection := DM_Tabelas.zconeccao;
+  FLoteamento.SQL.Text := 'select idloteamento,apelido,logotipo '+
+    'from loteamento where idloteamento=:idloteamento';
+  FDSDetalhes := TDataSource.Create(Self);
+  FDSDetalhes.DataSet := FDetalhes;
+  FDSLoteamento := TDataSource.Create(Self);
+  FDSLoteamento.DataSet := FLoteamento;
+end;
+
+procedure TFrm_RelREMESSA.SelecionarArquivo(AIdArquivo, AIdConta: Int64);
+begin
+  FIdArquivo := AIdArquivo;
+  FIdConta := AIdConta;
+end;
+
+procedure TFrm_RelREMESSA.AtualizarBotoes;
+var Extensao: string; Posicao: Integer; Disponivel: Boolean;
+begin
+  Disponivel := CDSRemess.Active and not CDSRemess.IsEmpty and not FImprimindo;
+  Extensao := '';
+  if Disponivel then
+  begin
+    Posicao := Pos('.', CDSRemessnomearq.AsString);
+    Extensao := UpperCase(Copy(CDSRemessnomearq.AsString, Posicao+1, 3));
+  end;
+  BtRelatorio.Enabled := Disponivel and ((Extensao='REM') or (Extensao='TST'));
+  dxButton1.Enabled := Disponivel and not ((Extensao='REM') or (Extensao='TST'));
+  BTFechar.Enabled := not FImprimindo;
+end;
+
+procedure TFrm_RelREMESSA.CarregarDetalhes;
+var Inicio: UInt64; Campo: TField;
+begin
+  FDetalhes.Close;
+  FDetalhes.ParamByName('idarquivo').AsLargeInt := CDSRemessidbanco_remessa.AsLargeInt;
+  Inicio := PerformanceStart;
+  FDetalhes.Open;
+  FDetalhes.FetchAll;
+  Campo := FDetalhes.FieldByName('Valor');
+  if Campo is TNumericField then
+    TNumericField(Campo).DisplayFormat := '###,###,##0.00';
+  for Campo in FDetalhes.Fields do
+    if Campo is TDateTimeField then
+      TDateTimeField(Campo).DisplayFormat := 'dd/mm/yyyy';
+  FDetalhes.First;
+  PerformanceElapsed('Rel remessas: detalhes do arquivo selecionado', Inicio);
+  FLoteamento.Close;
+  if FDetalhes.IsEmpty then
+    FLoteamento.ParamByName('idloteamento').AsInteger := 0
+  else
+    FLoteamento.ParamByName('idloteamento').Value := FDetalhes.FieldByName('idloteamento').Value;
+  Inicio := PerformanceStart;
+  FLoteamento.Open;
+  PerformanceElapsed('Rel remessas: logotipo do empreendimento', Inicio);
+end;
+
+procedure TFrm_RelREMESSA.AntesImprimir(Sender: TObject; var PrintIt: Boolean);
+begin
+  FInicioPreparo := PerformanceStart;
+  if Assigned(FAntesImprimir) then FAntesImprimir(Sender, PrintIt);
+end;
+
+procedure TFrm_RelREMESSA.AposImprimir(Sender: TObject);
+begin
+  if Assigned(FAposImprimir) then FAposImprimir(Sender);
+  PerformanceElapsed('Rel remessas: preparar paginas do relatorio', FInicioPreparo);
+end;
+
+procedure TFrm_RelREMESSA.VisualizarArquivo(ARetorno: Boolean);
+var ModeloRemessa: TRLReportREMESSA; ModeloRetorno: TRLReportREMESSA2;
+    Relatorio: TRLReport; Modelo: TForm; Aviso: TFormMensagem;
+begin
+  Timer1.Enabled := False;
+  if FImprimindo or not CDSRemess.Active or CDSRemess.IsEmpty then Exit;
+  FImprimindo := True;
+  Modelo := nil;
+  try
+    AtualizarBotoes;
+    CDSRemess.Filtered := False;
+    CDSRemess.Filter := 'marca=0';
+    CDSRemess.Filtered := True;
+    if CDSRemess.IsEmpty then Exit;
+    CarregarDetalhes;
+    if FDetalhes.IsEmpty then
+    begin
+      Aviso := TFormMensagem.Create(Self);
+      try
+        Aviso.Frase.Caption := 'Nenhum título disponível para este relatório.';
+        AbrirModal(Self, Aviso);
+      finally
+        Aviso.Free;
+      end;
+      Exit;
+    end;
+    if ARetorno then
+    begin
+      ModeloRetorno := TRLReportREMESSA2.Create(Self);
+      Modelo := ModeloRetorno;
+      ModeloRetorno.ConfigurarFontes(FDSDetalhes, FDSLoteamento);
+      ModeloRetorno.RLLabel2.Caption := CDSRemessnomearq.AsString;
+      Relatorio := ModeloRetorno.RLReportREMESSA2;
+    end
+    else
+    begin
+      ModeloRemessa := TRLReportREMESSA.Create(Self);
+      Modelo := ModeloRemessa;
+      ModeloRemessa.ConfigurarFontes(FDSDetalhes, FDSLoteamento);
+      ModeloRemessa.RLLabel2.Caption := CDSRemessnomearq.AsString;
+      Relatorio := ModeloRemessa.RLReportREMESSA;
+    end;
+    FAntesImprimir := Relatorio.BeforePrint;
+    FAposImprimir := Relatorio.AfterPrint;
+    Relatorio.BeforePrint := AntesImprimir;
+    Relatorio.AfterPrint := AposImprimir;
+    ExibirRelatorioModal(Self, Relatorio);
+  finally
+    Modelo.Free;
+    FAntesImprimir := nil;
+    FAposImprimir := nil;
+    FLoteamento.Close;
+    FDetalhes.Close;
+    CDSRemess.Filtered := False;
+    FImprimindo := False;
+    AtualizarBotoes;
+    if PerformanceEnabled then FlushPerformanceLog;
+  end;
 end;
 
 end.

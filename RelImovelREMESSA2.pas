@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, RLReport, StdCtrls, XNum, RLFilters, RLPDFFilter, RLXLSFilter,
-  RLRichFilter;
+  RLRichFilter, DB;
 
 type
   TRLReportREMESSA2 = class(TForm)
@@ -67,6 +67,7 @@ type
     procedure AfterConstruction; override;
   public
     { Public declarations }
+    procedure ConfigurarFontes(ADetalhes, ACabecalho: TDataSource);
   end;
 
 var
@@ -83,28 +84,24 @@ begin
   RLReportREMESSA2.NewPage;
 end;
 
-procedure TRLReportREMESSA2.RLReportREMESSA2BeforePrint(Sender: TObject;
-  var PrintIt: Boolean);
+procedure TRLReportREMESSA2.RLReportREMESSA2BeforePrint(Sender: TObject; var PrintIt: Boolean);
 begin
- rtiti.Caption:=inttostr(DM_Tabelas.ZQRemes_Receb2.RecordCount);
- DM_Tabelas.ZQLoteamento.open; 
- DM_Tabelas.ZQLoteamento.Filtered:=false;
- DM_Tabelas.ZQLoteamento.Filter:='idloteamento='+quotedstr(DM_Tabelas.ZQRemes_Receb2.FieldByName('idloteamento').Text);
- DM_Tabelas.ZQLoteamento.Filtered:=true;
- 
+  if (RLReportREMESSA2.DataSource <> nil) and (RLReportREMESSA2.DataSource.DataSet <> nil) then
+    rtiti.Caption := IntToStr(RLReportREMESSA2.DataSource.DataSet.RecordCount)
+  else
+    rtiti.Caption := '0';
 end;
 
 procedure TRLReportREMESSA2.RLBand2AfterPrint(Sender: TObject);
 begin
-   DM_Tabelas.ZQLoteamento.Filtered:=false;
-   DM_Tabelas.ZQLoteamento.close;
-
+  { As consultas deste modelo pertencem apenas a esta visualizacao. }
 end;
 
 procedure TRLReportREMESSA2.RLBand1BeforePrint(Sender: TObject;
   var PrintIt: Boolean);
 begin
-  RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
+  if Frm_principal <> nil then
+    RLLabel3.Caption:='Usuário:'+Frm_principal.xusuario.Caption;
 end;
 
 
@@ -112,6 +109,24 @@ procedure TRLReportREMESSA2.AfterConstruction;
 begin
   inherited AfterConstruction;
   EnsureRuntimeFields(Self);
+end;
+
+procedure TRLReportREMESSA2.ConfigurarFontes(ADetalhes, ACabecalho: TDataSource);
+begin
+  RLReportREMESSA2.DataSource := ADetalhes;
+  RLDBImage1.DataSource := ACabecalho;
+  RLDBText1.DataSource := ACabecalho;
+  RLDBText2.DataSource := ADetalhes;
+  RLDBText3.DataSource := ADetalhes;
+  RLDBText4.DataSource := ADetalhes;
+  RLDBText5.DataSource := ADetalhes;
+  RLDBText6.DataSource := ADetalhes;
+  RLDBText7.DataSource := ADetalhes;
+  RLDBText8.DataSource := ADetalhes;
+  RLDBText9.DataSource := ADetalhes;
+  RLDBText10.DataSource := ADetalhes;
+  RLDBText11.DataSource := ADetalhes;
+  RLDBResult1.DataSource := ADetalhes;
 end;
 
 end.
