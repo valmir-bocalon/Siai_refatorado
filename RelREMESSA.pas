@@ -57,7 +57,7 @@ var
 implementation
 
 uses tabelas, RelImovel01, RelImovelREMESSA, UFrmContasBancarias,
-  RelImovelREMESSA2, uRuntimeFields;
+  RelImovelREMESSA2, uRuntimeFields, uSiaiPreviewModal;
 
 {$R *.dfm}
 
@@ -179,7 +179,7 @@ begin
   if RLReportREMESSA=nil then
      RLReportREMESSA:=TRLReportREMESSA.Create(Application);
   RLReportREMESSA.RLLabel2.Caption:=CDSRemessnomearq.Value;
-  RLReportREMESSA.RLReportREMESSA.PreviewModal;
+  ExibirRelatorioModal(Self, RLReportREMESSA.RLReportREMESSA);
   RLReportREMESSA:=nil;
   CDSRemess.Filtered := False;
 end;
@@ -198,7 +198,7 @@ begin
   if RLReportREMESSA2=nil then
      RLReportREMESSA2:=TRLReportREMESSA2.Create(Application);
   RLReportREMESSA2.RLLabel2.Caption:=CDSRemessnomearq.Value;
-  RLReportREMESSA2.RLReportREMESSA2.PreviewModal;
+  ExibirRelatorioModal(Self, RLReportREMESSA2.RLReportREMESSA2);
   RLReportREMESSA2:=nil;
   CDSRemess.Filtered := False;
 
